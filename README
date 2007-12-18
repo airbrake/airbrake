@@ -1,0 +1,16 @@
+HoptoadNotifier
+===============
+
+This is the notifier plugin for integrating apps with Hoptoad. When an
+uncaught exception occurs, HoptoadNotifier will POST the relevant data
+to the Hoptoad server specified in your environment.rb
+
+  HoptoadNotifier.url      = "http://192.168.1.33:3000/notices/"
+  HoptoadNotifier.app_name = "my_sweet_app"
+  
+Then make sure you have
+
+  include HoptoadNotifier::Catcher
+
+in your ApplicationController, and all exceptions will be logged to Hoptoad
+where they can be aggregated, filtered, and searched.
