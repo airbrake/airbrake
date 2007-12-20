@@ -7,6 +7,8 @@ module HoptoadNotifier
   def self.app_name; @app_name; end
   def self.app_name= app_name; @app_name = app_name; end
   
+  def self.filter_params; @filter_params ||= []; end
+  
   module Catcher
     def self.included target
       target.send( :include, Handlers )
@@ -24,9 +26,9 @@ module HoptoadNotifier
           data = {
             'project_name'  => HoptoadNotifier.app_name,
             'error_message' => exception.message,
-            'backtrace' => exception.backtrace.to_json,
+            'backtrace' => clean_backtrace(exception.backtrace).to_json,
             'request'   => {
-              'params'     => request.parameters.to_hash,
+              'params'     => clean_params(request.parameters.to_hash),
               'rails_root' => File.expand_path(RAILS_ROOT),
               'url'        => "#{request.protocol}#{request.host}#{request.request_uri}"
             }.to_json,
@@ -61,7 +63,7 @@ module HoptoadNotifier
           case response
           when Net::HTTPSuccess then
             logger.info "Hoptoad Success: #{response.class}"
-          when Net::HTTPRedirect then
+          when Net::HTTPRedirection then
             logger.info "Hoptoad Success: #{response.class}"
           else
             logger.error "Hoptoad Failure: #{response.class}"
@@ -87,6 +89,29 @@ module HoptoadNotifier
           "#{CGI.escape(context)}=#{CGI.escape(thing.to_s)}"
         end
       end
+      
+      def clean_backtrace backtrace
+        backtrace.to_a.map do |line|
+          line = line.to_s
+          line.gsub!(/#{RAILS_ROOT}/, "[RAILS_ROOT]")
+          Gem.path.each do |path|
+            line.gsub!(/#{path}/, "[GEM_PATH]")
+          end
+          line.gsub!(/^\.\//, "")
+          line
+        end
+      end
+      
+      def clean_params params
+        params.each do |k, v|
+          should_filter ||= k.to_s.match(/password/)
+          HoptoadNotifier.filter_params.each do |filter|
+            should_filter ||= k.to_s.match(/#{filter}/)
+          end
+          params[k] = "<filtered>" if should_filter
+        end
+      end
+      
     end
   end
 end
