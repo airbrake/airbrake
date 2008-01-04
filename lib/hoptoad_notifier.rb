@@ -1,17 +1,19 @@
 # Plugin for applications to automatically post errors to Hoptoad.
 module HoptoadNotifier
-  
-  def self.url; @url; end
-  def self.url= url; @url = URI.parse(url); end
-  
-  def self.app_name; @app_name; end
-  def self.app_name= app_name; @app_name = app_name; end
-  
-  def self.filter_params; @filter_params ||= []; end
-  
+
+  class << self
+    attr_accessor :url, :app_name
+
+    def url= url
+      @url = URI.parse(url)
+    end
+
+    def filter_params
+      @filter_params ||= %w(password)
+    end
+  end
+
   module Catcher
-     
-    private
     
     def rescue_action_in_public exception
       if is_a_404?(exception)
@@ -54,14 +56,14 @@ module HoptoadNotifier
     def inform_hoptoad data
       url = HoptoadNotifier.url
       Net::HTTP.start(url.host, url.port) do |http|
-        response = http.post(url.path, to_params(data), {'Accept', 'text/xml, application/xml'})
+        response = http.post(url.path, to_params(data), {'Accept' => 'text/xml, application/xml'})
         case response
         when Net::HTTPSuccess then
           logger.info "Hoptoad Success: #{response.class}"
         when Net::HTTPRedirection then
           logger.info "Hoptoad Success: #{response.class}"
         else
-          logger.error "Hoptoad Failure: #{response.class}"
+          logger.error "Hoptoad Failure: #{response.class}\n#{response.body if response.respond_to? :body}"
         end
       end
     end
@@ -99,11 +101,9 @@ module HoptoadNotifier
     
     def clean_params params
       params.each do |k, v|
-        should_filter ||= k.to_s.match(/password/)
-        HoptoadNotifier.filter_params.each do |filter|
-          should_filter ||= k.to_s.match(/#{filter}/)
+        params[k] = "<filtered>" if HoptoadNotifier.filter_params.any? do |filter|
+          k.to_s.match(/#{filter}/)
         end
-        params[k] = "<filtered>" if should_filter
       end
     end
       

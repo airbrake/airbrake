@@ -8,7 +8,7 @@ require 'action_controller'
 require 'action_controller/test_process'
 require File.join(File.dirname(__FILE__), "..", "lib", "hoptoad_notifier")
 
-class HoptoadController < ActionController::Base
+class ::HoptoadController < ActionController::Base
   def rescue_action e
     puts "rescue_action"
     rescue_action_in_public e
@@ -63,7 +63,6 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       setup do
         ::HoptoadController.send(:include, ::HoptoadNotifier::Catcher)
         assert @controller.private_methods.include?("inform_hoptoad")
-        debugger
       end
       
       should "prevent raises" do
