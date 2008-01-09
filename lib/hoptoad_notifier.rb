@@ -21,19 +21,21 @@ module HoptoadNotifier
       else
         render_error_page
         data = {
-          'project_name'  => HoptoadNotifier.app_name,
-          'error_message' => exception.message,
-          'backtrace' => clean_backtrace(exception.backtrace).to_json,
-          'request'   => {
-            'params'     => clean_params(request.parameters.to_hash),
-            'rails_root' => File.expand_path(RAILS_ROOT),
-            'url'        => "#{request.protocol}#{request.host}#{request.request_uri}"
-          }.to_json,
-          'session' => {
-            'key' => session.instance_variable_get("@session_id"),
-            'data' => session.instance_variable_get("@data")
-          }.to_json,
-          'environment' => ENV.to_hash.to_json
+          'notice' => {
+            'project_name'  => HoptoadNotifier.app_name,
+            'error_message' => exception.message,
+            'backtrace' => clean_backtrace(exception.backtrace),
+            'request'   => {
+              'params'     => clean_params(request.parameters.to_hash),
+              'rails_root' => File.expand_path(RAILS_ROOT),
+              'url'        => "#{request.protocol}#{request.host}#{request.request_uri}"
+            },
+            'session' => {
+              'key' => session.instance_variable_get("@session_id"),
+              'data' => session.instance_variable_get("@data")
+            },
+            'environment' => ENV.to_hash
+          }
         }
         inform_hoptoad(data)
       end
@@ -57,7 +59,11 @@ module HoptoadNotifier
     def inform_hoptoad data
       url = HoptoadNotifier.url
       Net::HTTP.start(url.host, url.port) do |http|
-        response = http.post(url.path, to_params(data), {'Accept' => 'text/xml, application/xml'})
+        headers = {
+          'Content-type' => 'application/x-yaml',
+          'Accept' => 'text/xml, application/xml'
+        }
+        response = http.post url.path, data.to_yaml, headers
         case response
         when Net::HTTPSuccess then
           logger.info "Hoptoad Success: #{response.class}"
@@ -75,17 +81,6 @@ module HoptoadNotifier
         ActionController::UnknownController,
         ActionController::UnknownAction
       ].include?( exception )
-    end
-    
-    def to_params thing, context = "notice"
-      case thing
-      when Hash
-        thing.map{|key, val| to_params(val, "#{context}[#{key}]") }.join("&")
-      when Array
-        thing.map{|val| to_params(val, "#{context}[]") }.join("&")
-      else
-        "#{CGI.escape(context)}=#{CGI.escape(thing.to_s)}"
-      end
     end
     
     def clean_backtrace backtrace
