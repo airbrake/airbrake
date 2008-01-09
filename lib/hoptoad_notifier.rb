@@ -51,6 +51,7 @@ module HoptoadNotifier
         wants.html { render :file => "#{RAILS_ROOT}/public/500.html", :status => :internal_server_error }
         wants.all  { render :nothing => true, :status => :internal_server_error }
       end
+     
     end
 
     def inform_hoptoad data

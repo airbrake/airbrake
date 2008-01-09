@@ -6,26 +6,22 @@ require 'mocha'
 require 'shoulda'
 require 'action_controller'
 require 'action_controller/test_process'
+require 'active_record'
 require File.join(File.dirname(__FILE__), "..", "lib", "hoptoad_notifier")
 
-class ::HoptoadController < ActionController::Base
+RAILS_ROOT = File.join( File.dirname(__FILE__), "fixtures" )
+
+class HoptoadController < ActionController::Base
   def rescue_action e
-    puts "rescue_action"
-    rescue_action_in_public e
-  end
-  
-  def rescue_action_in_public e
-    puts "rescue_action_in_public"
     raise e
   end
   
   def do_raise
-    render :text => "raise"
     raise "Hoptoad"
   end
   
   def do_not_raise
-    render :text => "no raise"
+    render :text => "Success"
   end
 end
 
@@ -61,8 +57,13 @@ class HoptoadNotifierTest < Test::Unit::TestCase
     
     context "with the notifier installed" do
       setup do
-        ::HoptoadController.send(:include, ::HoptoadNotifier::Catcher)
-        assert @controller.private_methods.include?("inform_hoptoad")
+        class ::HoptoadController
+          include HoptoadNotifier::Catcher
+          def rescue_action e
+            rescue_action_in_public e
+          end
+        end
+        assert @controller.methods.include?("inform_hoptoad")
       end
       
       should "prevent raises" do
