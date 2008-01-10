@@ -2,14 +2,49 @@
 module HoptoadNotifier
 
   class << self
-    attr_accessor :url, :app_name
+    attr_accessor :host, :port, :secure, :api_key, :project_name, :filter_params
+    attr_reader   :backtrace_filters
 
-    def url= url
-      @url = URI.parse(url)
+    def exceptions_for_404
+      @exceptions_for_404 ||= []
+    end
+    
+    def filter_backtrace &block
+      (@backtrace_filters ||= []) << block
     end
 
-    def filter_params
-      @filter_params ||= %w(password)
+    def port
+      @port || (secure ? 443 : 80)
+    end
+
+    def params_filters
+      @params_filters ||= %w(password)
+    end
+    
+    def configure
+      yield self
+    end
+    
+    def protocol
+      secure ? "https" : "http"
+    end
+    
+    def url
+      URI.parse("#{protocol}://#{host}:#{port}/notices/")
+    end
+  end
+
+  filter_backtrace do |line|
+    line.gsub(/#{RAILS_ROOT}/, "[RAILS_ROOT]")
+  end
+
+  filter_backtrace do |line|
+    line.gsub(/^\.\//, "")
+  end
+
+  filter_backtrace do |line|
+    Gem.path.inject(line) do |line, path|
+      line.gsub(/#{path}/, "[GEM_ROOT]")
     end
   end
 
@@ -21,12 +56,13 @@ module HoptoadNotifier
       else
         render_error_page
         data = {
+          'api_key' => HoptoadNotifier.api_key,
           'notice' => {
-            'project_name'  => HoptoadNotifier.app_name,
+            'project_name'  => HoptoadNotifier.project_name,
             'error_message' => exception.message,
-            'backtrace' => clean_backtrace(exception.backtrace),
+            'backtrace' => clean_hoptoad_backtrace(exception.backtrace),
             'request'   => {
-              'params'     => clean_params(request.parameters.to_hash),
+              'params'     => clean_hoptoad_params(request.parameters.to_hash),
               'rails_root' => File.expand_path(RAILS_ROOT),
               'url'        => "#{request.protocol}#{request.host}#{request.request_uri}"
             },
@@ -40,6 +76,8 @@ module HoptoadNotifier
         inform_hoptoad(data)
       end
     end
+    
+    private
 
     def render_not_found_page
       respond_to do |wants|
@@ -63,7 +101,8 @@ module HoptoadNotifier
           'Content-type' => 'application/x-yaml',
           'Accept' => 'text/xml, application/xml'
         }
-        response = http.post url.path, data.to_yaml, headers
+        # http.use_ssl = HoptoadNotifier.secure
+        response = http.post(url.path, data.to_yaml, headers)
         case response
         when Net::HTTPSuccess then
           logger.info "Hoptoad Success: #{response.class}"
@@ -79,25 +118,22 @@ module HoptoadNotifier
       [ 
         ActiveRecord::RecordNotFound,
         ActionController::UnknownController,
-        ActionController::UnknownAction
-      ].include?( exception )
+        ActionController::UnknownAction,
+        *HoptoadNotifier.exceptions_for_404
+      ].include?( exception.class )
     end
     
-    def clean_backtrace backtrace
+    def clean_hoptoad_backtrace backtrace
       backtrace.to_a.map do |line|
-        line = line.to_s
-        line.gsub!(/#{RAILS_ROOT}/, "[RAILS_ROOT]")
-        Gem.path.each do |path|
-          line.gsub!(/#{path}/, "[GEM_PATH]")
+        HoptoadNotifier.backtrace_filters.inject(line) do |line, proc|
+          proc.call(line)
         end
-        line.gsub!(/^\.\//, "")
-        line
       end
     end
     
-    def clean_params params
+    def clean_hoptoad_params params
       params.each do |k, v|
-        params[k] = "<filtered>" if HoptoadNotifier.filter_params.any? do |filter|
+        params[k] = "<filtered>" if HoptoadNotifier.params_filters.any? do |filter|
           k.to_s.match(/#{filter}/)
         end
       end
