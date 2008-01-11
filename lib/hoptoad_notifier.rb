@@ -2,7 +2,7 @@
 module HoptoadNotifier
 
   class << self
-    attr_accessor :host, :port, :secure, :api_key, :project_name, :filter_params
+    attr_accessor :host, :port, :secure, :project_name, :filter_params
     attr_reader   :backtrace_filters
 
     def exceptions_for_404
@@ -56,7 +56,6 @@ module HoptoadNotifier
       else
         render_error_page
         data = {
-          'api_key' => HoptoadNotifier.api_key,
           'notice' => {
             'project_name'  => HoptoadNotifier.project_name,
             'error_message' => exception.message,
