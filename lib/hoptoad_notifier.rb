@@ -1,3 +1,5 @@
+require 'net/http'
+
 # Plugin for applications to automatically post errors to Hoptoad.
 module HoptoadNotifier
 
