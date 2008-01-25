@@ -55,14 +55,12 @@ class HoptoadNotifierTest < Test::Unit::TestCase
         config.host = "host"
         config.port = 3333
         config.secure = true
-        config.api_key = "1234"
         config.project_name = "bob"
       end
       
       assert_equal "host", HoptoadNotifier.host
       assert_equal 3333,   HoptoadNotifier.port
       assert_equal true,   HoptoadNotifier.secure
-      assert_equal "1234", HoptoadNotifier.api_key
       assert_equal "bob",  HoptoadNotifier.project_name
     end
     

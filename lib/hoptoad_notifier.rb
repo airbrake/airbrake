@@ -60,7 +60,7 @@ module HoptoadNotifier
         data = {
           'notice' => {
             'project_name'  => HoptoadNotifier.project_name,
-            'error_message' => exception.message,
+            'error_message' => "#{exception.class.name}: #{exception.message}",
             'backtrace' => clean_hoptoad_backtrace(exception.backtrace),
             'request'   => {
               'params'     => clean_hoptoad_params(request.parameters.to_hash),
@@ -120,6 +120,7 @@ module HoptoadNotifier
         ActiveRecord::RecordNotFound,
         ActionController::UnknownController,
         ActionController::UnknownAction,
+        ActionController::RoutingError,
         *HoptoadNotifier.exceptions_for_404
       ].include?( exception.class )
     end
