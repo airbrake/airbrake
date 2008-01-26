@@ -25,6 +25,11 @@ class HoptoadController < ActionController::Base
   def do_not_raise
     render :text => "Success"
   end
+  
+  def manual_inform_hoptoad
+    inform_hoptoad(Exception.new)
+    render :text => "Success"
+  end
 end
 
 class HoptoadNotifierTest < Test::Unit::TestCase
@@ -47,7 +52,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
           rescue_action_in_public e
         end
       end
-      assert @controller.private_methods.include?("inform_hoptoad")
+      assert @controller.private_methods.include?("send_to_hoptoad")
     end
 
     should "be done with a block" do
@@ -138,11 +143,11 @@ class HoptoadNotifierTest < Test::Unit::TestCase
             rescue_action_in_public e
           end
         end
-        assert @controller.private_methods.include?("inform_hoptoad")
+        assert @controller.private_methods.include?("send_to_hoptoad")
       end
       
       should "prevent raises" do
-        @controller.expects(:inform_hoptoad)
+        @controller.expects(:send_to_hoptoad)
         assert_nothing_raised do
           request("do_raise")
         end
@@ -151,6 +156,13 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       should "allow a non-raising action to complete" do
         assert_nothing_raised do
           request("do_not_raise")
+        end
+      end
+      
+      should "allow manual sending of exceptions" do
+        @controller.expects(:send_to_hoptoad)
+        assert_nothing_raised do
+          request("manual_inform_hoptoad")
         end
       end
     end

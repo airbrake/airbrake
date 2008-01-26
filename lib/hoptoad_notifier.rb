@@ -57,28 +57,35 @@ module HoptoadNotifier
         render_not_found_page
       else
         render_error_page
-        data = {
-          'notice' => {
-            'project_name'  => HoptoadNotifier.project_name,
-            'error_message' => "#{exception.class.name}: #{exception.message}",
-            'backtrace' => clean_hoptoad_backtrace(exception.backtrace),
-            'request'   => {
-              'params'     => clean_hoptoad_params(request.parameters.to_hash),
-              'rails_root' => File.expand_path(RAILS_ROOT),
-              'url'        => "#{request.protocol}#{request.host}#{request.request_uri}"
-            },
-            'session' => {
-              'key' => session.instance_variable_get("@session_id"),
-              'data' => session.instance_variable_get("@data")
-            },
-            'environment' => ENV.to_hash
-          }
-        }
-        inform_hoptoad(data)
+        inform_hoptoad(exception)
       end
     end
     
+    def inform_hoptoad exception
+      send_to_hoptoad(exception_to_data(exception))
+    end
+    
     private
+
+    def exception_to_data exception
+      {
+        'notice' => {
+          'project_name'  => HoptoadNotifier.project_name,
+          'error_message' => "#{exception.class.name}: #{exception.message}",
+          'backtrace' => clean_hoptoad_backtrace(exception.backtrace),
+          'request'   => {
+            'params'     => clean_hoptoad_params(request.parameters.to_hash),
+            'rails_root' => File.expand_path(RAILS_ROOT),
+            'url'        => "#{request.protocol}#{request.host}#{request.request_uri}"
+          },
+          'session' => {
+            'key' => session.instance_variable_get("@session_id"),
+            'data' => session.instance_variable_get("@data")
+          },
+          'environment' => ENV.to_hash
+        }
+      }
+    end
 
     def render_not_found_page
       respond_to do |wants|
@@ -95,7 +102,7 @@ module HoptoadNotifier
      
     end
 
-    def inform_hoptoad data
+    def send_to_hoptoad data
       url = HoptoadNotifier.url
       Net::HTTP.start(url.host, url.port) do |http|
         headers = {
