@@ -59,13 +59,13 @@ module HoptoadNotifier
         render_error_page
         inform_hoptoad(exception)
       end
-    end
-    
+    end 
+        
+    private
+
     def inform_hoptoad exception
       send_to_hoptoad(exception_to_data(exception))
     end
-    
-    private
 
     def exception_to_data exception
       {
