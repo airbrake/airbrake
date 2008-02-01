@@ -34,6 +34,21 @@ module HoptoadNotifier
     def url
       URI.parse("#{protocol}://#{host}:#{port}/notices/")
     end
+    
+    def default_notification_options
+      {
+        :project_name  => HoptoadNotifier.project_name,
+        :error_message => 'Notification',
+        :backtrace     => caller,
+        :request       => {},
+        :session       => {},
+        :environment   => ENV.to_hash
+      }
+    end
+    
+    def notify notice = {}
+      Sender.new.inform_hoptoad( default_notification_options.merge(notice) )
+    end
   end
 
   filter_backtrace do |line|
@@ -57,33 +72,35 @@ module HoptoadNotifier
         render_not_found_page
       else
         render_error_page
-        inform_hoptoad(exception)
+        inform_hoptoad(exception_to_data(exception))
       end
     end 
         
     private
 
-    def inform_hoptoad exception
-      send_to_hoptoad(exception_to_data(exception))
+    def inform_hoptoad notification
+      notification[:backtrace] = clean_hoptoad_backtrace(notification[:backtrace])
+      if notification[:request].is_a?(Hash) && notification[:request][:params].is_a?(Hash)
+        notification[:request][:params] = clean_hoptoad_params(notification[:request][:params])
+      end
+      send_to_hoptoad(:notice => notification)
     end
 
     def exception_to_data exception
       {
-        'notice' => {
-          'project_name'  => HoptoadNotifier.project_name,
-          'error_message' => "#{exception.class.name}: #{exception.message}",
-          'backtrace' => clean_hoptoad_backtrace(exception.backtrace),
-          'request'   => {
-            'params'     => clean_hoptoad_params(request.parameters.to_hash),
-            'rails_root' => File.expand_path(RAILS_ROOT),
-            'url'        => "#{request.protocol}#{request.host}#{request.request_uri}"
-          },
-          'session' => {
-            'key' => session.instance_variable_get("@session_id"),
-            'data' => session.instance_variable_get("@data")
-          },
-          'environment' => ENV.to_hash
-        }
+        :project_name  => HoptoadNotifier.project_name,
+        :error_message => "#{exception.class.name}: #{exception.message}",
+        :backtrace     => exception.backtrace,
+        :request       => {
+          :params        => request.parameters.to_hash,
+          :rails_root    => File.expand_path(RAILS_ROOT),
+          :url           => "#{request.protocol}#{request.host}#{request.request_uri}"
+        },
+        :session       => {
+          :key           => session.instance_variable_get("@session_id"),
+          :data          => session.instance_variable_get("@data")
+        },
+        :environment   => ENV.to_hash
       }
     end
 
@@ -110,11 +127,9 @@ module HoptoadNotifier
           'Accept' => 'text/xml, application/xml'
         }
         # http.use_ssl = HoptoadNotifier.secure
-        response = http.post(url.path, data.to_yaml, headers)
+        response = http.post(url.path, stringify_keys(data).to_yaml, headers)
         case response
         when Net::HTTPSuccess then
-          logger.info "Hoptoad Success: #{response.class}"
-        when Net::HTTPRedirection then
           logger.info "Hoptoad Success: #{response.class}"
         else
           logger.error "Hoptoad Failure: #{response.class}\n#{response.body if response.respond_to? :body}"
@@ -147,6 +162,24 @@ module HoptoadNotifier
         end
       end
     end
+    
+    def convert_symbol_keys_to_strings(input = {})
+      input.inject({}) do |result, pair|
+        result[pair.first.to_s] = pair.last
+        result
+      end
+    end
+    
+    def stringify_keys(hash)
+      hash.inject({}) do |h, pair|
+        h[pair.first.to_s] = pair.last.is_a?(Hash) ? stringify_keys(pair.last) : pair.last
+        h
+      end
+    end
       
+  end
+
+  class Sender
+    include HoptoadNotifier::Catcher
   end
 end

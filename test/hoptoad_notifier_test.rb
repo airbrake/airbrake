@@ -89,8 +89,8 @@ class HoptoadNotifierTest < Test::Unit::TestCase
         end
       end
 
-      assert HoptoadNotifier.params_filters.include? "abc"
-      assert HoptoadNotifier.params_filters.include? "def"
+      assert HoptoadNotifier.params_filters.include?( "abc" )
+      assert HoptoadNotifier.params_filters.include?( "def" )
       
       assert_equal( {:abc => "<filtered>", :def => "<filtered>", :ghi => "789"},
                     @controller.send(:clean_hoptoad_params, :abc => "123", :def => "456", :ghi => "789" ) )
@@ -165,6 +165,18 @@ class HoptoadNotifierTest < Test::Unit::TestCase
           request("manual_inform_hoptoad")
         end
       end
+    end
+  end
+  
+  context "Sending a notification without an exception" do
+    should "send sensible defaults" do
+      sender    = HoptoadNotifier::Sender.new
+      backtrace = caller
+      options   = HoptoadNotifier.default_notification_options.merge(:error_message => "123", :backtrace => backtrace)
+      HoptoadNotifier::Sender.expects(:new).returns(sender)
+      sender.expects(:inform_hoptoad).with(options)
+      
+      HoptoadNotifier.notify(:error_message => "123", :backtrace => backtrace)
     end
   end
 
