@@ -5,8 +5,11 @@ This is the notifier plugin for integrating apps with Hoptoad. When an
 uncaught exception occurs, HoptoadNotifier will POST the relevant data
 to the Hoptoad server specified in your environment.rb
 
-  HoptoadNotifier.url      = "http://192.168.1.33:3000/notices/"
-  HoptoadNotifier.app_name = "my_sweet_app"
+  HoptoadNotifier.configure do |config|
+    config.host         = "hoptoad.thoughtbot.com"
+    config.port         = 80
+    config.project_name = "my sweet app"
+  end
   
 Then make sure you have
 
