@@ -106,7 +106,7 @@ module HoptoadNotifier
           :key           => session.instance_variable_get("@session_id"),
           :data          => session.instance_variable_get("@data")
         },
-        :environment   => ENV.to_hash
+        :environment   => ENV.to_hash.merge(request.env.to_hash)
       }
     end
 
