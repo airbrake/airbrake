@@ -47,7 +47,13 @@ module HoptoadNotifier
     end
     
     def notify notice = {}
-      Sender.new.inform_hoptoad( default_notification_options.merge(notice) )
+      sender = Sender.new
+      case notice
+      when Hash
+        sender.inform_hoptoad( default_notification_options.merge(notice) )
+      when Exception
+        sender.inform_hoptoad( sender.exception_to_data(notice) )
+      end
     end
   end
 

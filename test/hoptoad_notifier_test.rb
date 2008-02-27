@@ -168,15 +168,36 @@ class HoptoadNotifierTest < Test::Unit::TestCase
     end
   end
   
-  context "Sending a notification without an exception" do
-    should "send sensible defaults" do
-      sender    = HoptoadNotifier::Sender.new
-      backtrace = caller
-      options   = HoptoadNotifier.default_notification_options.merge(:error_message => "123", :backtrace => backtrace)
-      HoptoadNotifier::Sender.expects(:new).returns(sender)
-      sender.expects(:inform_hoptoad).with(options)
-      
-      HoptoadNotifier.notify(:error_message => "123", :backtrace => backtrace)
+  context "Sending a notification" do
+    context "with an exception" do
+      should "send as if it were a normally caugh exception" do
+        sender    = HoptoadNotifier::Sender.new
+        exception = begin
+          raise
+        rescue => caught_exception
+          caught_exception
+        end
+        options   = HoptoadNotifier.default_notification_options.merge(:error_message => "123",
+                                                                       :backtrace => exception.backtrace)
+
+        HoptoadNotifier::Sender.expects(:new).returns(sender)
+        sender.expects(:exception_to_data).with(exception).returns(options)
+        sender.expects(:inform_hoptoad).with(options)
+
+        HoptoadNotifier.notify(exception)
+      end
+    end
+    context "without an exception" do
+      should "send sensible defaults" do
+        sender    = HoptoadNotifier::Sender.new
+        backtrace = caller
+        options   = HoptoadNotifier.default_notification_options.merge(:error_message => "123",
+                                                                       :backtrace => backtrace)
+        HoptoadNotifier::Sender.expects(:new).returns(sender)
+        sender.expects(:inform_hoptoad).with(options)
+
+        HoptoadNotifier.notify(:error_message => "123", :backtrace => backtrace)
+      end
     end
   end
 
