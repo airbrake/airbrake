@@ -82,8 +82,6 @@ module HoptoadNotifier
       end
     end 
         
-    private
-
     def inform_hoptoad notification
       notification[:backtrace] = clean_hoptoad_backtrace(notification[:backtrace])
       if notification[:request].is_a?(Hash) && notification[:request][:params].is_a?(Hash)
@@ -109,6 +107,8 @@ module HoptoadNotifier
         :environment   => ENV.to_hash.merge(request.env.to_hash)
       }
     end
+
+    private
 
     def render_not_found_page
       respond_to do |wants|
