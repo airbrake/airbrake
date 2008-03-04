@@ -35,7 +35,7 @@ module HoptoadNotifier
       URI.parse("#{protocol}://#{host}:#{port}/notices/")
     end
     
-    def default_notification_options
+    def default_notice_options
       {
         :project_name  => HoptoadNotifier.project_name,
         :error_message => 'Notification',
@@ -47,13 +47,7 @@ module HoptoadNotifier
     end
     
     def notify notice = {}
-      sender = Sender.new
-      case notice
-      when Hash
-        sender.inform_hoptoad( default_notification_options.merge(notice) )
-      when Exception
-        sender.inform_hoptoad( sender.exception_to_data(notice) )
-      end
+      Sender.new.inform_hoptoad( notice )
     end
   end
 
@@ -72,57 +66,65 @@ module HoptoadNotifier
   end
 
   module Catcher
+
+    def self.included(base)
+      base.alias_method_chain :rescue_action_in_public, :hoptoad
+    end
     
-    def rescue_action_in_public exception
-      if is_a_404?(exception)
-        render_not_found_page
-      else
-        render_error_page
-        inform_hoptoad(exception_to_data(exception))
-      end
+    def rescue_action_in_public_with_hoptoad exception
+      inform_hoptoad(exception)
+      rescue_action_in_public_without_hoptoad(exception)
     end 
         
-    def inform_hoptoad notification
-      notification[:backtrace] = clean_hoptoad_backtrace(notification[:backtrace])
-      if notification[:request].is_a?(Hash) && notification[:request][:params].is_a?(Hash)
-        notification[:request][:params] = clean_hoptoad_params(notification[:request][:params])
-      end
-      send_to_hoptoad(:notice => notification)
-    end
-
-    def exception_to_data exception
-      {
-        :project_name  => HoptoadNotifier.project_name,
-        :error_message => "#{exception.class.name}: #{exception.message}",
-        :backtrace     => exception.backtrace,
-        :request       => {
-          :params        => request.parameters.to_hash,
-          :rails_root    => File.expand_path(RAILS_ROOT),
-          :url           => "#{request.protocol}#{request.host}#{request.request_uri}"
-        },
-        :session       => {
-          :key           => session.instance_variable_get("@session_id"),
-          :data          => session.instance_variable_get("@data")
-        },
-        :environment   => ENV.to_hash.merge(request.env.to_hash)
-      }
+    def inform_hoptoad hash_or_exception
+      notice = normalize_notice(hash_or_exception)
+      clean_notice(notice)
+      send_to_hoptoad(:notice => notice)
     end
 
     private
 
-    def render_not_found_page
-      respond_to do |wants|
-        wants.html { render :file => "#{RAILS_ROOT}/public/404.html", :status => :not_found }
-        wants.all  { render :nothing => true, :status => :not_found }
+    def exception_to_data exception
+      data = {
+        :project_name  => HoptoadNotifier.project_name,
+        :error_message => "#{exception.class.name}: #{exception.message}",
+        :backtrace     => exception.backtrace,
+        :environment   => ENV.to_hash
+      }
+
+      if self.respond_to? :request
+        data[:request] = {
+          :params      => request.parameters.to_hash,
+          :rails_root  => File.expand_path(RAILS_ROOT),
+          :url         => "#{request.protocol}#{request.host}#{request.request_uri}"
+        }
+        data[:environment].merge!(request.env.to_hash)
+      end
+
+      if self.respond_to? :session
+        data[:session] = {
+          :key         => session.instance_variable_get("@session_id"),
+          :data        => session.instance_variable_get("@data")
+        }
+      end
+
+      data
+    end
+
+    def normalize_notice(notice)
+      case notice
+      when Hash
+        HoptoadNotifier.default_notice_options.merge(notice)
+      when Exception
+        exception_to_data(notice)
       end
     end
 
-    def render_error_page
-      respond_to do |wants|
-        wants.html { render :file => "#{RAILS_ROOT}/public/500.html", :status => :internal_server_error }
-        wants.all  { render :nothing => true, :status => :internal_server_error }
+    def clean_notice(notice)
+      notice[:backtrace] = clean_hoptoad_backtrace(notice[:backtrace])
+      if notice[:request].is_a?(Hash) && notice[:request][:params].is_a?(Hash)
+        notice[:request][:params] = clean_hoptoad_params(notice[:request][:params])
       end
-     
     end
 
     def send_to_hoptoad data
@@ -143,16 +145,6 @@ module HoptoadNotifier
       end
     end
     
-    def is_a_404? exception
-      [ 
-        ActiveRecord::RecordNotFound,
-        ActionController::UnknownController,
-        ActionController::UnknownAction,
-        ActionController::RoutingError,
-        *HoptoadNotifier.exceptions_for_404
-      ].include?( exception.class )
-    end
-    
     def clean_hoptoad_backtrace backtrace
       backtrace.to_a.map do |line|
         HoptoadNotifier.backtrace_filters.inject(line) do |line, proc|
@@ -169,13 +161,6 @@ module HoptoadNotifier
       end
     end
     
-    def convert_symbol_keys_to_strings(input = {})
-      input.inject({}) do |result, pair|
-        result[pair.first.to_s] = pair.last
-        result
-      end
-    end
-    
     def stringify_keys(hash)
       hash.inject({}) do |h, pair|
         h[pair.first.to_s] = pair.last.is_a?(Hash) ? stringify_keys(pair.last) : pair.last
@@ -186,6 +171,9 @@ module HoptoadNotifier
   end
 
   class Sender
+    def rescue_action_in_public(exception)
+    end
+
     include HoptoadNotifier::Catcher
   end
 end

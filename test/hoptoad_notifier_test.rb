@@ -95,20 +95,6 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       assert_equal( {:abc => "<filtered>", :def => "<filtered>", :ghi => "789"},
                     @controller.send(:clean_hoptoad_params, :abc => "123", :def => "456", :ghi => "789" ) )
     end
-    
-    should "add exceptions to the expected-as-404 list" do
-      class HNException < Exception; end
-      class Not404Exception < Exception; end
-      
-      assert_difference "HoptoadNotifier.exceptions_for_404.length", 1 do
-        HoptoadNotifier.configure do |config|
-          config.exceptions_for_404 << HNException
-        end
-      end
-
-      assert @controller.send( :is_a_404?, HNException.new )
-      assert !@controller.send( :is_a_404?, Not404Exception.new )
-    end
   end
 
   context "The hoptoad test controller" do
@@ -148,6 +134,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       
       should "prevent raises" do
         @controller.expects(:send_to_hoptoad)
+        @controller.expects(:rescue_action_in_public_without_hoptoad)
         assert_nothing_raised do
           request("do_raise")
         end
@@ -168,35 +155,50 @@ class HoptoadNotifierTest < Test::Unit::TestCase
     end
   end
   
-  context "Sending a notification" do
+  context "Sending a notice" do
     context "with an exception" do
-      should "send as if it were a normally caugh exception" do
-        sender    = HoptoadNotifier::Sender.new
-        exception = begin
+      setup do
+        @sender    = HoptoadNotifier::Sender.new
+        @backtrace = caller
+        @exception = begin
           raise
         rescue => caught_exception
           caught_exception
         end
-        options   = HoptoadNotifier.default_notification_options.merge(:error_message => "123",
-                                                                       :backtrace => exception.backtrace)
+        @options   = {:error_message => "123",
+                      :backtrace => @backtrace}
+        HoptoadNotifier.instance_variable_set("@backtrace_filters", [])
+        HoptoadNotifier::Sender.expects(:new).returns(@sender)
+      end
 
-        HoptoadNotifier::Sender.expects(:new).returns(sender)
-        sender.expects(:exception_to_data).with(exception).returns(options)
-        sender.expects(:inform_hoptoad).with(options)
+      should "send as if it were a normally caught exception" do
+        @sender.expects(:inform_hoptoad).with(@exception)
+        HoptoadNotifier.notify(@exception)
+      end
 
-        HoptoadNotifier.notify(exception)
+      should "make sure the exception is munged into a hash" do
+        options = {
+          :backtrace     => @exception.backtrace,
+          :environment   => ENV.to_hash,
+          :error_message => "#{@exception.class.name}: #{@exception.message}",
+          :project_name  => HoptoadNotifier.project_name,
+        }
+        @sender.expects(:send_to_hoptoad).with(:notice => options)
+        HoptoadNotifier.notify(@exception)
       end
     end
     context "without an exception" do
-      should "send sensible defaults" do
-        sender    = HoptoadNotifier::Sender.new
-        backtrace = caller
-        options   = HoptoadNotifier.default_notification_options.merge(:error_message => "123",
-                                                                       :backtrace => backtrace)
-        HoptoadNotifier::Sender.expects(:new).returns(sender)
-        sender.expects(:inform_hoptoad).with(options)
+      setup do
+        @sender    = HoptoadNotifier::Sender.new
+        @backtrace = caller
+        @options   = {:error_message => "123",
+                      :backtrace => @backtrace}
+        HoptoadNotifier::Sender.expects(:new).returns(@sender)
+      end
 
-        HoptoadNotifier.notify(:error_message => "123", :backtrace => backtrace)
+      should "send sensible defaults" do
+        @sender.expects(:inform_hoptoad).with(@options)
+        HoptoadNotifier.notify(:error_message => "123", :backtrace => @backtrace)
       end
     end
   end
