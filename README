@@ -17,3 +17,7 @@ Then make sure you have
 
 in your ApplicationController, and all exceptions will be logged to Hoptoad
 where they can be aggregated, filtered, and searched.
+
+You can test hoptoad from the production environment by running 'rake hoptoad:test'
+from your RAILS_ROOT.
+
