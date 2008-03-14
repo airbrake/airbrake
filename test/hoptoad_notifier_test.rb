@@ -11,7 +11,7 @@ require 'net/http'
 require 'net/https'
 require File.join(File.dirname(__FILE__), "..", "lib", "hoptoad_notifier")
 
-RAILS_ROOT = File.join( File.dirname(__FILE__), "fixtures" )
+RAILS_ROOT = File.join( File.dirname(__FILE__), "rails_root" )
 
 class HoptoadController < ActionController::Base
   def rescue_action e
