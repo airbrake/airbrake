@@ -4,16 +4,32 @@ namespace :hoptoad do
     require 'action_controller/test_process'
     require 'application'
 
-    request = ActionController::TestRequest.new
-    request.env['REQUEST_METHOD'] = 'GET'
-    request.action = 'test_hoptoad'
+    request = ActionController::TestRequest.new({
+      'action'     => 'dummy_action',
+      'controller' => 'application',
+      '_method'    => 'GET'
+    })
 
     response = ActionController::TestResponse.new
 
-    controller = ApplicationController.new
-    def controller.test_hoptoad; raise 'Testing hoptoad via "rake hoptoad:test"'; end
-    controller.class.action_methods << 'test_hoptoad'
+    class HoptoadTestingException < RuntimeError; end
 
+    puts 'Setting up the Controller.'
+    controller = ApplicationController.new
+    class ApplicationController
+      # This is to bypass any filters that may prevent access to the action.
+      prepend_before_filter :test_hoptoad
+      def test_hoptoad
+        puts 'Raising an error to simulate application failure.'
+        raise HoptoadTestingException, 'Testing hoptoad via "rake hoptoad:test". If you can see this, it works.'
+      end
+
+      # Ensure we actually have an action to go to.
+      def dummy_action; end
+    end
+
+    puts 'Processing request.'
     controller.process(request, response)
   end
 end
+
