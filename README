@@ -3,11 +3,21 @@ HoptoadNotifier
 
 This is the notifier plugin for integrating apps with Hoptoad.
 
-When an uncaught exception occurs, HoptoadNotifier will POST 
-the relevant data to the Hoptoad server specified in your environment.
+When an uncaught exception occurs, HoptoadNotifier will POST the relevant data 
+to the Hoptoad server specified in your environment.
 
-You should have something like this in your environment.rb file 
-(or config/initializers/hoptoad.rb in rails 2).
+
+INSTALLATION
+
+From your project's RAILS_ROOT, run:
+
+	piston import https://svn.thoughtbot.com/plugins/hoptoad_notifier/trunk vendor/plugin/hoptoad_notifier
+	
+
+CONFIGURATION
+
+You should have something like this in your environment.rb file (or 
+config/initializers/hoptoad.rb in rails 2).
 
   HoptoadNotifier.configure do |config|
     config.host         = 'hoptoad.thoughtbot.com'
@@ -15,18 +25,52 @@ You should have something like this in your environment.rb file
     config.project_name = 'my fancy application'
   end
   
-Then, to enable hoptoad in your appication, include this code:
+Then, to enable hoptoad in your appication, include this code...
 
   include HoptoadNotifier::Catcher
 
-in your ApplicationController, and all exceptions will be logged 
-to Hoptoad where they can be aggregated, filtered, sorted, 
-analyzed, massaged and searched.
+...at the top of your ApplicationController, and all exceptions will be logged 
+to Hoptoad where they can be aggregated, filtered, sorted, analyzed, massaged 
+and searched.
 
-You can test that hoptoad is working in your production environment 
-by using this rake task (from RAILS_ROOT):
+You can test that hoptoad is working in your production environment by using 
+this rake task (from RAILS_ROOT):
 
 	rake hoptoad:test RAILS_ENV=production
 
-If everything is configured properly, that task will send a notice 
-to hoptoad which will be visible immediately.
+If everything is configured properly, that task will send a notice to hoptoad 
+which will be visible immediately.
+
+
+USAGE
+
+For the most part, hoptoad works for itself.  Once you've included the notifier 
+in your ApplicationController, all errors will be rescued by the 
+#rescue_action_in_public provided by the plugin.
+
+If you want to log arbitrary things which you've rescued yourself from a 
+controller, you can do something like this:
+
+	...
+	rescue => ex
+	  inform_hoptoad(ex)
+		flash[:failure] = 'Encryptions could not be rerouted, try again.'
+	end
+	...
+
+The #inform_hoptoad call will send the notice over to hoptoad for later 
+analysis.
+
+
+TESTING
+
+When you run your tests, you might notice that the hoptoad service is recording 
+notices generated using #inform_hoptoad when you don't expect it to.  You can 
+use code like this in your test_helper.rb to redefine that method so those 
+errors are not reported while running tests.
+
+	module HoptoadNotifier::Catcher
+	  def inform_hoptoad(thing)
+	    # do nothing.
+	  end
+	end
