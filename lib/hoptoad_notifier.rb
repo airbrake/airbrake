@@ -68,7 +68,7 @@ module HoptoadNotifier
   module Catcher
 
     def self.included(base)
-      return if base.instance_methods.include? 'rescue_action_in_public_with_hoptoad'
+      return if base.instance_methods.include? 'rescue_action_in_public_without_hoptoad'
       base.alias_method_chain :rescue_action_in_public, :hoptoad
     end
     
