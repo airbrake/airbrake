@@ -135,8 +135,15 @@ module HoptoadNotifier
           'Content-type' => 'application/x-yaml',
           'Accept' => 'text/xml, application/xml'
         }
+        http.read_timeout = 5 # seconds
+        http.open_timeout = 2 # seconds
         # http.use_ssl = HoptoadNotifier.secure
-        response = http.post(url.path, stringify_keys(data).to_yaml, headers)
+        response = begin
+                     http.post(url.path, stringify_keys(data).to_yaml, headers)
+                   rescue TimeoutError => e
+                     logger.error "Timeout while contacting the Hoptoad server."
+                     nil
+                   end
         case response
         when Net::HTTPSuccess then
           logger.info "Hoptoad Success: #{response.class}"
