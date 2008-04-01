@@ -34,13 +34,13 @@ class HoptoadController < ActionController::Base
     raise ActiveRecord::StatementInvalid.new("Statement invalid")
   end
   
-  def manual_inform_hoptoad
+  def manual_notify
     notify(Exception.new)
     render :text => "Success"
   end
   
-  def manual_inform_hoptoad_ignored
-    inform_hoptoad(ActiveRecord::RecordNotFound.new("404"))
+  def manual_notify_ignored
+    notify(ActiveRecord::RecordNotFound.new("404"))
     render :text => "Success"
   end
 end
@@ -175,7 +175,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
         @controller.expects(:send_to_hoptoad)
         @controller.expects(:rescue_action_in_public_without_hoptoad).never
         assert_nothing_raised do
-          request("manual_inform_hoptoad_ignored")
+          request("manual_notify_ignored")
         end
       end
       
