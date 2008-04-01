@@ -47,7 +47,7 @@ module HoptoadNotifier
     end
     
     def notify notice = {}
-      Sender.new.inform_hoptoad( notice )
+      Sender.new.notify( notice )
     end
   end
 
@@ -73,15 +73,17 @@ module HoptoadNotifier
     end
     
     def rescue_action_in_public_with_hoptoad exception
-      inform_hoptoad(exception)
+      notify(exception)
       rescue_action_in_public_without_hoptoad(exception)
     end 
         
-    def inform_hoptoad hash_or_exception
+    def notify hash_or_exception
       notice = normalize_notice(hash_or_exception)
       clean_notice(notice)
       send_to_hoptoad(:notice => notice)
     end
+
+    alias_method :inform_hoptoad, :notify
 
     def logger
       ActiveRecord::Base.logger
@@ -123,7 +125,7 @@ module HoptoadNotifier
       when Hash
         HoptoadNotifier.default_notice_options.merge(notice)
       when Exception
-        exception_to_data(notice)
+        HoptoadNotifier.default_notice_options.merge(exception_to_data(notice))
       end
     end
 

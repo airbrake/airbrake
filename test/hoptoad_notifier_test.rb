@@ -26,8 +26,8 @@ class HoptoadController < ActionController::Base
     render :text => "Success"
   end
   
-  def manual_inform_hoptoad
-    inform_hoptoad(Exception.new)
+  def manual_notify
+    notify(Exception.new)
     render :text => "Success"
   end
 end
@@ -149,7 +149,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       should "allow manual sending of exceptions" do
         @controller.expects(:send_to_hoptoad)
         assert_nothing_raised do
-          request("manual_inform_hoptoad")
+          request("manual_notify")
         end
       end
     end
@@ -172,17 +172,17 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       end
 
       should "send as if it were a normally caught exception" do
-        @sender.expects(:inform_hoptoad).with(@exception)
+        @sender.expects(:notify).with(@exception)
         HoptoadNotifier.notify(@exception)
       end
 
       should "make sure the exception is munged into a hash" do
-        options = {
+        options = HoptoadNotifier.default_notice_options.merge({
           :backtrace     => @exception.backtrace,
           :environment   => ENV.to_hash,
           :error_message => "#{@exception.class.name}: #{@exception.message}",
           :project_name  => HoptoadNotifier.project_name,
-        }
+        })
         @sender.expects(:send_to_hoptoad).with(:notice => options)
         HoptoadNotifier.notify(@exception)
       end
@@ -197,7 +197,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       end
 
       should "send sensible defaults" do
-        @sender.expects(:inform_hoptoad).with(@options)
+        @sender.expects(:notify).with(@options)
         HoptoadNotifier.notify(:error_message => "123", :backtrace => @backtrace)
       end
     end
