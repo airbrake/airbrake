@@ -11,8 +11,8 @@ INSTALLATION
 
 From your project's RAILS_ROOT, run:
 
-	piston import https://svn.thoughtbot.com/plugins/hoptoad_notifier/trunk vendor/plugin/hoptoad_notifier
-	
+  piston import https://svn.thoughtbot.com/plugins/hoptoad_notifier/trunk vendor/plugin/hoptoad_notifier
+  
 
 CONFIGURATION
 
@@ -54,24 +54,31 @@ controller, you can do something like this:
 
   ...
   rescue => ex
-    inform_hoptoad(ex)
+    notify(ex)
     flash[:failure] = 'Encryptions could not be rerouted, try again.'
   end
   ...
 
-The #inform_hoptoad call will send the notice over to hoptoad for later 
+The #notify call will send the notice over to hoptoad for later 
 analysis.
 
 
 FILTERING
 
-You can specify a whitelist of errors, that Hoptoad will not report on.  Use this feature when you are so apathetic to certain errors that you don't want them even logged.  If you simply don't want to receive email notifications for certain errors, consider using the filters on the Hoptoad server application.
+You can specify a whitelist of errors, that Hoptoad will not report on.  Use 
+this feature when you are so apathetic to certain errors that you don't want 
+them even logged.  If you simply don't want to receive email notifications for
+certain errors, consider using the filters on the Hoptoad server application.
+
+This filter will only be applied to automatic notifications, not manual 
+notifications (when #notify is called directly).
 
 Hoptoad ignores the following exceptions by default:
   ActiveRecord::RecordNotFound
   CGI::Session::CookieStore::TamperedWithCookie
   
-To ignore errors in addition to those, specify their names in your Hoptoad configuration block.
+To ignore errors in addition to those, specify their names in your Hoptoad 
+configuration block.
 
   HoptoadNotifier.configure do |config|
     config.host         = 'hoptoad.thoughtbot.com'
@@ -79,7 +86,8 @@ To ignore errors in addition to those, specify their names in your Hoptoad confi
     config.ignore       = ['ActiveRecord::IgnoreThisError']
   end
 
-To ignore *only* certain errors (and override the defaults), use the #ignore_only attribute.
+To ignore *only* certain errors (and override the defaults), use the 
+#ignore_only attribute.
 
   HoptoadNotifier.configure do |config|
     config.host         = 'hoptoad.thoughtbot.com'
@@ -90,13 +98,13 @@ To ignore *only* certain errors (and override the defaults), use the #ignore_onl
 
 TESTING
 
-When you run your tests, you might notice that the hoptoad service is recording 
-notices generated using #inform_hoptoad when you don't expect it to.  You can 
+When you run your tests, you might notice that the hoptoad service is recording
+notices generated using #notify when you don't expect it to.  You can 
 use code like this in your test_helper.rb to redefine that method so those 
 errors are not reported while running tests.
 
-	module HoptoadNotifier::Catcher
-	  def inform_hoptoad(thing)
-	    # do nothing.
-	  end
-	end
+  module HoptoadNotifier::Catcher
+    def notify(thing)
+      # do nothing.
+    end
+  end
