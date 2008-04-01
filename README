@@ -23,6 +23,7 @@ config/initializers/hoptoad.rb in rails 2).
     config.host         = 'hoptoad.thoughtbot.com'
     config.port         = 80
     config.project_name = 'my fancy application'
+    config.ignore       = ['ActiveRecord::IgnoreThisError']
   end
   
 Then, to enable hoptoad in your appication, include this code...
@@ -36,7 +37,7 @@ and searched.
 You can test that hoptoad is working in your production environment by using 
 this rake task (from RAILS_ROOT):
 
-	rake hoptoad:test RAILS_ENV=production
+  rake hoptoad:test RAILS_ENV=production
 
 If everything is configured properly, that task will send a notice to hoptoad 
 which will be visible immediately.
@@ -51,15 +52,40 @@ in your ApplicationController, all errors will be rescued by the
 If you want to log arbitrary things which you've rescued yourself from a 
 controller, you can do something like this:
 
-	...
-	rescue => ex
-	  inform_hoptoad(ex)
-		flash[:failure] = 'Encryptions could not be rerouted, try again.'
-	end
-	...
+  ...
+  rescue => ex
+    inform_hoptoad(ex)
+    flash[:failure] = 'Encryptions could not be rerouted, try again.'
+  end
+  ...
 
 The #inform_hoptoad call will send the notice over to hoptoad for later 
 analysis.
+
+
+FILTERING
+
+You can specify a whitelist of errors, that Hoptoad will not report on.  Use this feature when you are so apathetic to certain errors that you don't want them even logged.  If you simply don't want to receive email notifications for certain errors, consider using the filters on the Hoptoad server application.
+
+Hoptoad ignores the following exceptions by default:
+  ActiveRecord::RecordNotFound
+  CGI::Session::CookieStore::TamperedWithCookie
+  
+To ignore errors in addition to those, specify their names in your Hoptoad configuration block.
+
+  HoptoadNotifier.configure do |config|
+    config.host         = 'hoptoad.thoughtbot.com'
+    config.project_name = 'my fancy application'
+    config.ignore       = ['ActiveRecord::IgnoreThisError']
+  end
+
+To ignore *only* certain errors (and override the defaults), use the #ignore_only attribute.
+
+  HoptoadNotifier.configure do |config|
+    config.host         = 'hoptoad.thoughtbot.com'
+    config.project_name = 'my fancy application'
+    config.ignore_only  = ['ActiveRecord::IgnoreThisError']
+  end
 
 
 TESTING

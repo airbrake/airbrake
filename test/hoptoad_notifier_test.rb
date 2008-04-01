@@ -26,8 +26,21 @@ class HoptoadController < ActionController::Base
     render :text => "Success"
   end
   
-  def manual_notify
+  def do_raise_ignored
+    raise ActiveRecord::RecordNotFound.new("404")
+  end
+  
+  def do_raise_not_ignored
+    raise ActiveRecord::StatementInvalid.new("Statement invalid")
+  end
+  
+  def manual_inform_hoptoad
     notify(Exception.new)
+    render :text => "Success"
+  end
+  
+  def manual_inform_hoptoad_ignored
+    inform_hoptoad(ActiveRecord::RecordNotFound.new("404"))
     render :text => "Success"
   end
 end
@@ -129,6 +142,10 @@ class HoptoadNotifierTest < Test::Unit::TestCase
             rescue_action_in_public e
           end
         end
+        HoptoadNotifier.ignore_only = HoptoadNotifier::IGNORE_DEFAULT
+      end
+      
+      should "have inserted its methods into the controller" do
         assert @controller.private_methods.include?("send_to_hoptoad")
       end
       
@@ -148,8 +165,85 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       
       should "allow manual sending of exceptions" do
         @controller.expects(:send_to_hoptoad)
+        @controller.expects(:rescue_action_in_public_without_hoptoad).never
         assert_nothing_raised do
           request("manual_notify")
+        end
+      end
+      
+      should "send even ignored exceptions if told manually" do
+        @controller.expects(:send_to_hoptoad)
+        @controller.expects(:rescue_action_in_public_without_hoptoad).never
+        assert_nothing_raised do
+          request("manual_inform_hoptoad_ignored")
+        end
+      end
+      
+      should "ignore default exceptions" do
+        @controller.expects(:send_to_hoptoad).never
+        @controller.expects(:rescue_action_in_public_without_hoptoad)
+        assert_nothing_raised do
+          request("do_raise_ignored")
+        end
+      end
+      
+      context "and configured to ignore additional exceptions" do
+        setup do
+          HoptoadNotifier.ignore = ["ActiveRecord::StatementInvalid"]
+        end
+        
+        should "still ignore default exceptions" do
+          @controller.expects(:send_to_hoptoad).never
+          @controller.expects(:rescue_action_in_public_without_hoptoad)
+          assert_nothing_raised do
+            request("do_raise_ignored")
+          end
+        end
+        
+        should "ignore specified exceptions" do
+          @controller.expects(:send_to_hoptoad).never
+          @controller.expects(:rescue_action_in_public_without_hoptoad)
+          assert_nothing_raised do
+            request("do_raise_not_ignored")
+          end
+        end
+        
+        should "not ignore unspecified, non-default exceptions" do
+          @controller.expects(:send_to_hoptoad)
+          @controller.expects(:rescue_action_in_public_without_hoptoad)
+          assert_nothing_raised do
+            request("do_raise")
+          end
+        end
+      end
+      
+      context "and configured to ignore only certain exceptions" do
+        setup do
+          HoptoadNotifier.ignore_only = ["ActiveRecord::StatementInvalid"]
+        end
+        
+        should "no longer ignore default exceptions" do
+          @controller.expects(:send_to_hoptoad)
+          @controller.expects(:rescue_action_in_public_without_hoptoad)
+          assert_nothing_raised do
+            request("do_raise_ignored")
+          end
+        end
+        
+        should "ignore specified exceptions" do
+          @controller.expects(:send_to_hoptoad).never
+          @controller.expects(:rescue_action_in_public_without_hoptoad)
+          assert_nothing_raised do
+            request("do_raise_not_ignored")
+          end
+        end
+        
+        should "not ignore unspecified, non-default exceptions" do
+          @controller.expects(:send_to_hoptoad)
+          @controller.expects(:rescue_action_in_public_without_hoptoad)
+          assert_nothing_raised do
+            request("do_raise")
+          end
         end
       end
     end
@@ -180,6 +274,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
         options = HoptoadNotifier.default_notice_options.merge({
           :backtrace     => @exception.backtrace,
           :environment   => ENV.to_hash,
+          :error_class   => @exception.class.name,
           :error_message => "#{@exception.class.name}: #{@exception.message}",
           :project_name  => HoptoadNotifier.project_name,
         })
@@ -201,6 +296,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
         HoptoadNotifier.notify(:error_message => "123", :backtrace => @backtrace)
       end
     end
+    
   end
 
 end
