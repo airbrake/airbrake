@@ -83,6 +83,12 @@ module HoptoadNotifier
       send_to_hoptoad(:notice => notice)
     end
 
+    def logger
+      ActiveRecord::Base.logger
+    rescue
+      @logger ||= Logger.new(STDERR)
+    end
+
     private
 
     def exception_to_data exception
@@ -175,7 +181,7 @@ module HoptoadNotifier
         h
       end
     end
-      
+
   end
 
   class Sender
