@@ -3,7 +3,7 @@ require 'net/http'
 # Plugin for applications to automatically post errors to Hoptoad.
 module HoptoadNotifier
 
-  IGNORE_DEFAULT = ["ActiveRecord::RecordNotFound", "CGI::Session::CookieStore::TamperedWithCookie"]
+  IGNORE_DEFAULT = [ActiveRecord::RecordNotFound, CGI::Session::CookieStore::TamperedWithCookie]
   
   class << self
     attr_accessor :host, :port, :secure, :project_name, :filter_params, :ignore
@@ -26,7 +26,7 @@ module HoptoadNotifier
     end
     
     def ignore=(names)
-      @ignore = self.ignore + names
+      @ignore += names
     end
     
     def ignore_only=(names)
@@ -87,7 +87,7 @@ module HoptoadNotifier
     end
     
     def rescue_action_in_public_with_hoptoad exception
-      notify(exception) unless ignored?(exception)
+      notify(exception) unless ignore?(exception)
       rescue_action_in_public_without_hoptoad(exception)
     end 
         
@@ -107,8 +107,8 @@ module HoptoadNotifier
 
     private
     
-    def ignored?(exception)
-      HoptoadNotifier.ignore.include?(exception.class.name)
+    def ignore?(exception)
+      HoptoadNotifier.ignore.include?(exception.class) || HoptoadNotifier.ignore.include?(exception.class.name)
     end
 
     def exception_to_data exception

@@ -189,7 +189,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       
       context "and configured to ignore additional exceptions" do
         setup do
-          HoptoadNotifier.ignore = ["ActiveRecord::StatementInvalid"]
+          HoptoadNotifier.ignore = [ActiveRecord::StatementInvalid]
         end
         
         should "still ignore default exceptions" do
@@ -219,7 +219,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       
       context "and configured to ignore only certain exceptions" do
         setup do
-          HoptoadNotifier.ignore_only = ["ActiveRecord::StatementInvalid"]
+          HoptoadNotifier.ignore_only = [ActiveRecord::StatementInvalid]
         end
         
         should "no longer ignore default exceptions" do
