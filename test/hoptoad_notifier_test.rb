@@ -74,14 +74,14 @@ class HoptoadNotifierTest < Test::Unit::TestCase
         config.port = 3333
         config.secure = true
         config.project_name = "bob"
-        config.ignore = [RuntimeError]
+        config.ignore << RuntimeError
       end
       
       assert_equal "host", HoptoadNotifier.host
       assert_equal 3333,   HoptoadNotifier.port
       assert_equal true,   HoptoadNotifier.secure
       assert_equal "bob",  HoptoadNotifier.project_name
-      assert_equal HoptoadNotifier::IGNORE_DEFAULT + [RuntimeError], HoptoadNotifier.ignore
+      assert_equal (HoptoadNotifier::IGNORE_DEFAULT + [RuntimeError]), HoptoadNotifier.ignore
     end
     
     should "add filters to the backtrace_filters" do
@@ -191,7 +191,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       
       context "and configured to ignore additional exceptions" do
         setup do
-          HoptoadNotifier.ignore = [ActiveRecord::StatementInvalid]
+          HoptoadNotifier.ignore << ActiveRecord::StatementInvalid
         end
         
         should "still ignore default exceptions" do
