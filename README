@@ -23,7 +23,7 @@ config/initializers/hoptoad.rb in rails 2).
     config.host         = 'hoptoad.thoughtbot.com'
     config.port         = 80
     config.project_name = 'my fancy application'
-    config.ignore       = ['ActiveRecord::IgnoreThisError']
+    config.ignore       << ActiveRecord::IgnoreThisError
   end
   
 Then, to enable hoptoad in your appication, include this code...
@@ -54,12 +54,12 @@ controller, you can do something like this:
 
   ...
   rescue => ex
-    notify(ex)
+    notify_hoptoad(ex)
     flash[:failure] = 'Encryptions could not be rerouted, try again.'
   end
   ...
 
-The #notify call will send the notice over to hoptoad for later 
+The #notify_hoptoad call will send the notice over to hoptoad for later 
 analysis.
 
 
@@ -75,8 +75,9 @@ notifications (when #notify is called directly).
 
 Hoptoad ignores the following exceptions by default:
   ActiveRecord::RecordNotFound
-  CGI::Session::CookieStore::TamperedWithCookie
+  ActionController::RoutingError
   ActionController::InvalidAuthenticityToken
+  CGI::Session::CookieStore::TamperedWithCookie
   
 To ignore errors in addition to those, specify their names in your Hoptoad 
 configuration block.
@@ -84,7 +85,7 @@ configuration block.
   HoptoadNotifier.configure do |config|
     config.host         = 'hoptoad.thoughtbot.com'
     config.project_name = 'my fancy application'
-    config.ignore       = ['ActiveRecord::IgnoreThisError']
+    config.ignore       << ActiveRecord::IgnoreThisError
   end
 
 To ignore *only* certain errors (and override the defaults), use the 
@@ -93,7 +94,7 @@ To ignore *only* certain errors (and override the defaults), use the
   HoptoadNotifier.configure do |config|
     config.host         = 'hoptoad.thoughtbot.com'
     config.project_name = 'my fancy application'
-    config.ignore_only  = ['ActiveRecord::IgnoreThisError']
+    config.ignore_only  = [ActiveRecord::IgnoreThisError]
   end
 
 
