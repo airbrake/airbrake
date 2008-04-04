@@ -1,6 +1,6 @@
 require 'net/http'
 
-# Plugin for applications to automatically post errors to Hoptoad.
+# Plugin for applications to automatically post errors to the Hoptoad of their choice.
 module HoptoadNotifier
 
   IGNORE_DEFAULT = [ActiveRecord::RecordNotFound, CGI::Session::CookieStore::TamperedWithCookie]
@@ -9,47 +9,55 @@ module HoptoadNotifier
     attr_accessor :host, :port, :secure, :project_name, :filter_params, :ignore
     attr_reader   :backtrace_filters
 
-    def exceptions_for_404
-      @exceptions_for_404 ||= []
-    end
-    
+    # Takes a block and adds it to the list of backtrace filters. When the filters
+    # run, the block will be handed each line of the backtrace and can modify
+    # it as necessary. For example, by default a path matching the RAILS_ROOT
+    # constant will be transformed into "[RAILS_ROOT]"
     def filter_backtrace &block
       (@backtrace_filters ||= []) << block
     end
 
+    # The port on which your Hoptoad server runs.
     def port
       @port || (secure ? 443 : 80)
     end
     
+    # Returns the list of errors that are being ignored. The array can be appended to.
     def ignore
-      @ignore || HoptoadNotifier::IGNORE_DEFAULT
+      @ignore ||= HoptoadNotifier::IGNORE_DEFAULT
     end
     
+    # Adds an error to the list of what gets ignored.
     def ignore=(names)
       @ignore += names
     end
     
+    # Sets the list of ignored errors to only what is passed in here. This method
+    # can be passed a single error or a list of errors.
     def ignore_only=(names)
-      @ignore = names
+      @ignore = [names].flatten
     end
 
+    # Returns a list of parameters that should be filtered out of what is sent to Hoptoad.
+    # By default, all "password" attributes will have their contents replaced.
     def params_filters
       @params_filters ||= %w(password)
     end
     
+    # Call this method to modify defaults in your initializers.
     def configure
       yield self
     end
     
-    def protocol
+    def protocol #:nodoc:
       secure ? "https" : "http"
     end
     
-    def url
+    def url #:nodoc:
       URI.parse("#{protocol}://#{host}:#{port}/notices/")
     end
     
-    def default_notice_options
+    def default_notice_options #:nodoc:
       {
         :project_name  => HoptoadNotifier.project_name,
         :error_message => 'Notification',
@@ -60,8 +68,17 @@ module HoptoadNotifier
       }
     end
     
+    # You can send an exception manually using this method, even when you are not in a
+    # controller. You can pass an exception or a hash that contains the attributes that
+    # would be sent to Hoptoad:
+    # * project_name: The name of this project.
+    # * error_message: The error returned by the exception (or the message you want to log).
+    # * backtrace: A backtrace, usually obtained with +caller+.
+    # * request: The controller's request object.
+    # * session: The contents of the user's session.
+    # * environment: ENV merged with the contents of the request's environment.
     def notify notice = {}
-      Sender.new.notify( notice )
+      Sender.new.notify_hoptoad( notice )
     end
   end
 
@@ -81,24 +98,30 @@ module HoptoadNotifier
 
   module Catcher
 
-    def self.included(base)
+    def self.included(base) #:nodoc:
       return if base.instance_methods.include? 'rescue_action_in_public_without_hoptoad'
       base.alias_method_chain :rescue_action_in_public, :hoptoad
     end
     
+    # Overrides the rescue_action method in ActionController::Base, but does not inhibit
+    # any custom processing that is defined with Rails 2's exception helpers.
     def rescue_action_in_public_with_hoptoad exception
-      notify(exception) unless ignore?(exception)
+      notify_hoptoad(exception) unless ignore?(exception)
       rescue_action_in_public_without_hoptoad(exception)
     end 
         
-    def notify hash_or_exception
+    # This method should be used for sending manual notifications while you are still
+    # inside the controller. Otherwise it works like HoptoadNotifier.notify. 
+    def notify_hoptoad hash_or_exception
       notice = normalize_notice(hash_or_exception)
       clean_notice(notice)
       send_to_hoptoad(:notice => notice)
     end
 
-    alias_method :inform_hoptoad, :notify
+    alias_method :inform_hoptoad, :notify_hoptoad
 
+    # Returns the default logger or a logger that prints to STDOUT. Necessary for manual
+    # notifications outside of controllers.
     def logger
       ActiveRecord::Base.logger
     rescue
@@ -107,11 +130,11 @@ module HoptoadNotifier
 
     private
     
-    def ignore?(exception)
+    def ignore?(exception) #:nodoc:
       HoptoadNotifier.ignore.include?(exception.class) || HoptoadNotifier.ignore.include?(exception.class.name)
     end
 
-    def exception_to_data exception
+    def exception_to_data exception #:nodoc:
       data = {
         :project_name  => HoptoadNotifier.project_name,
         :error_class   => exception.class.name,
@@ -139,7 +162,7 @@ module HoptoadNotifier
       data
     end
 
-    def normalize_notice(notice)
+    def normalize_notice(notice) #:nodoc:
       case notice
       when Hash
         HoptoadNotifier.default_notice_options.merge(notice)
@@ -148,14 +171,14 @@ module HoptoadNotifier
       end
     end
 
-    def clean_notice(notice)
+    def clean_notice(notice) #:nodoc:
       notice[:backtrace] = clean_hoptoad_backtrace(notice[:backtrace])
       if notice[:request].is_a?(Hash) && notice[:request][:params].is_a?(Hash)
         notice[:request][:params] = clean_hoptoad_params(notice[:request][:params])
       end
     end
 
-    def send_to_hoptoad data
+    def send_to_hoptoad data #:nodoc:
       url = HoptoadNotifier.url
       Net::HTTP.start(url.host, url.port) do |http|
         headers = {
@@ -180,7 +203,7 @@ module HoptoadNotifier
       end
     end
     
-    def clean_hoptoad_backtrace backtrace
+    def clean_hoptoad_backtrace backtrace #:nodoc:
       backtrace.to_a.map do |line|
         HoptoadNotifier.backtrace_filters.inject(line) do |line, proc|
           proc.call(line)
@@ -188,7 +211,7 @@ module HoptoadNotifier
       end
     end
     
-    def clean_hoptoad_params params
+    def clean_hoptoad_params params #:nodoc:
       params.each do |k, v|
         params[k] = "<filtered>" if HoptoadNotifier.params_filters.any? do |filter|
           k.to_s.match(/#{filter}/)
@@ -196,7 +219,7 @@ module HoptoadNotifier
       end
     end
     
-    def stringify_keys(hash)
+    def stringify_keys(hash) #:nodoc:
       hash.inject({}) do |h, pair|
         h[pair.first.to_s] = pair.last.is_a?(Hash) ? stringify_keys(pair.last) : pair.last
         h
@@ -205,6 +228,7 @@ module HoptoadNotifier
 
   end
 
+  # A dummy class for sending notifications manually outside of a controller.
   class Sender
     def rescue_action_in_public(exception)
     end

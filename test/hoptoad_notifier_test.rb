@@ -35,12 +35,12 @@ class HoptoadController < ActionController::Base
   end
   
   def manual_notify
-    notify(Exception.new)
+    notify_hoptoad(Exception.new)
     render :text => "Success"
   end
   
   def manual_notify_ignored
-    notify(ActiveRecord::RecordNotFound.new("404"))
+    notify_hoptoad(ActiveRecord::RecordNotFound.new("404"))
     render :text => "Success"
   end
 end
@@ -266,7 +266,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       end
 
       should "send as if it were a normally caught exception" do
-        @sender.expects(:notify).with(@exception)
+        @sender.expects(:notify_hoptoad).with(@exception)
         HoptoadNotifier.notify(@exception)
       end
 
@@ -292,7 +292,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       end
 
       should "send sensible defaults" do
-        @sender.expects(:notify).with(@options)
+        @sender.expects(:notify_hoptoad).with(@options)
         HoptoadNotifier.notify(:error_message => "123", :backtrace => @backtrace)
       end
     end
