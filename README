@@ -76,6 +76,7 @@ notifications (when #notify is called directly).
 Hoptoad ignores the following exceptions by default:
   ActiveRecord::RecordNotFound
   CGI::Session::CookieStore::TamperedWithCookie
+  ActionController::InvalidAuthenticityToken
   
 To ignore errors in addition to those, specify their names in your Hoptoad 
 configuration block.

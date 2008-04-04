@@ -46,7 +46,7 @@ class HoptoadController < ActionController::Base
 end
 
 class HoptoadNotifierTest < Test::Unit::TestCase
-  def request action = nil, method = :get
+  def request(action = nil, method = :get)
     @request = ActionController::TestRequest.new({
       "controller" => "hoptoad",
       "action"     => action ? action.to_s : "",
@@ -74,12 +74,14 @@ class HoptoadNotifierTest < Test::Unit::TestCase
         config.port = 3333
         config.secure = true
         config.project_name = "bob"
+        config.ignore = [RuntimeError]
       end
       
       assert_equal "host", HoptoadNotifier.host
       assert_equal 3333,   HoptoadNotifier.port
       assert_equal true,   HoptoadNotifier.secure
       assert_equal "bob",  HoptoadNotifier.project_name
+      assert_equal HoptoadNotifier::IGNORE_DEFAULT + [RuntimeError], HoptoadNotifier.ignore
     end
     
     should "add filters to the backtrace_filters" do
