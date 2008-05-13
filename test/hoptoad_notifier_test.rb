@@ -56,6 +56,18 @@ class HoptoadNotifierTest < Test::Unit::TestCase
     @controller.process(@request, @response)
   end
   
+  context "Hoptoad inclusion" do
+    should "be able to occur even outside Rails controllers" do    
+      assert_nothing_raised do
+        class MyHoptoad
+          include HoptoadNotifier::Catcher
+        end
+      end
+      my = MyHoptoad.new
+      assert my.respond_to?(:notify_hoptoad)
+    end
+  end
+  
   context "HoptoadNotifier configuration" do
     setup do
       @controller = HoptoadController.new

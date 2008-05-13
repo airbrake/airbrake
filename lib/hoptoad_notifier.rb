@@ -97,8 +97,9 @@ module HoptoadNotifier
   module Catcher
 
     def self.included(base) #:nodoc:
-      return if base.instance_methods.include? 'rescue_action_in_public_without_hoptoad'
-      base.alias_method_chain :rescue_action_in_public, :hoptoad
+      if base.instance_methods.include? 'rescue_action_in_public' and !base.instance_methods.include? 'rescue_action_in_public_without_hoptoad'
+        base.alias_method_chain :rescue_action_in_public, :hoptoad
+      end
     end
     
     # Overrides the rescue_action method in ActionController::Base, but does not inhibit
