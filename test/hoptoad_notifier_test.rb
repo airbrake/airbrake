@@ -86,7 +86,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
         config.port = 3333
         config.secure = true
         config.project_name = "bob"
-        config.ignore << RuntimeError
+        config.ignore << [ RuntimeError ]
       end
       
       assert_equal "host", HoptoadNotifier.host

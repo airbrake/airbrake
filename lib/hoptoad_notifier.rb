@@ -28,6 +28,8 @@ module HoptoadNotifier
     # Returns the list of errors that are being ignored. The array can be appended to.
     def ignore
       @ignore ||= (HoptoadNotifier::IGNORE_DEFAULT.dup)
+      @ignore.flatten!
+      @ignore
     end
     
     # Sets the list of ignored errors to only what is passed in here. This method
@@ -130,7 +132,8 @@ module HoptoadNotifier
     private
     
     def ignore?(exception) #:nodoc:
-      HoptoadNotifier.ignore.include?(exception.class) || HoptoadNotifier.ignore.include?(exception.class.name)
+      ignore_these = HoptoadNotifier.ignore.flatten
+      ignore_these.include?(exception.class) || ignore_these.include?(exception.class.name)
     end
 
     def exception_to_data exception #:nodoc:
