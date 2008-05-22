@@ -157,13 +157,14 @@ class HoptoadNotifierTest < Test::Unit::TestCase
           end
         end
         HoptoadNotifier.ignore_only = HoptoadNotifier::IGNORE_DEFAULT
+        @controller.stubs(:public_environment?).returns(true)
       end
       
       should "have inserted its methods into the controller" do
         assert @controller.private_methods.include?("send_to_hoptoad")
       end
       
-      should "prevent raises" do
+      should "prevent raises and send the error to hoptoad" do
         @controller.expects(:send_to_hoptoad)
         @controller.expects(:rescue_action_in_public_without_hoptoad)
         assert_nothing_raised do
@@ -179,6 +180,15 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       
       should "allow manual sending of exceptions" do
         @controller.expects(:send_to_hoptoad)
+        @controller.expects(:rescue_action_in_public_without_hoptoad).never
+        assert_nothing_raised do
+          request("manual_notify")
+        end
+      end
+      
+      should "disable manual sending of exceptions in a non-public (development or test) environment" do
+        @controller.stubs(:public_environment?).returns(false)
+        @controller.expects(:send_to_hoptoad).never
         @controller.expects(:rescue_action_in_public_without_hoptoad).never
         assert_nothing_raised do
           request("manual_notify")
@@ -277,6 +287,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
                       :backtrace => @backtrace}
         HoptoadNotifier.instance_variable_set("@backtrace_filters", [])
         HoptoadNotifier::Sender.expects(:new).returns(@sender)
+        @sender.stubs(:public_environment?).returns(true)
       end
 
       should "send as if it were a normally caught exception" do
@@ -292,6 +303,23 @@ class HoptoadNotifierTest < Test::Unit::TestCase
           :error_message => "#{@exception.class.name}: #{@exception.message}",
           :project_name  => HoptoadNotifier.project_name,
         })
+        @sender.expects(:send_to_hoptoad).with(:notice => options)
+        HoptoadNotifier.notify(@exception)
+      end
+      
+      should "parse massive one-line exceptions into multiple lines" do
+        @original_backtrace = "one big line\n   separated\n      by new lines\nand some spaces"
+        @expected_backtrace = ["one big line", "separated", "by new lines", "and some spaces"]
+        @exception.set_backtrace [@original_backtrace]
+        
+        options = HoptoadNotifier.default_notice_options.merge({
+          :backtrace     => @expected_backtrace,
+          :environment   => ENV.to_hash,
+          :error_class   => @exception.class.name,
+          :error_message => "#{@exception.class.name}: #{@exception.message}",
+          :project_name  => HoptoadNotifier.project_name,
+        })
+        
         @sender.expects(:send_to_hoptoad).with(:notice => options)
         HoptoadNotifier.notify(@exception)
       end

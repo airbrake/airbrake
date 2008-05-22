@@ -114,9 +114,11 @@ module HoptoadNotifier
     # This method should be used for sending manual notifications while you are still
     # inside the controller. Otherwise it works like HoptoadNotifier.notify. 
     def notify_hoptoad hash_or_exception
-      notice = normalize_notice(hash_or_exception)
-      clean_notice(notice)
-      send_to_hoptoad(:notice => notice)
+      if public_environment?
+        notice = normalize_notice(hash_or_exception)
+        clean_notice(notice)
+        send_to_hoptoad(:notice => notice)
+      end
     end
 
     alias_method :inform_hoptoad, :notify_hoptoad
@@ -130,6 +132,10 @@ module HoptoadNotifier
     end
 
     private
+    
+    def public_environment? #nodoc:
+      defined?(RAILS_ENV) and !['development', 'test'].include?(RAILS_ENV)
+    end
     
     def ignore?(exception) #:nodoc:
       ignore_these = HoptoadNotifier.ignore.flatten
@@ -206,6 +212,10 @@ module HoptoadNotifier
     end
     
     def clean_hoptoad_backtrace backtrace #:nodoc:
+      if backtrace.to_a.size == 1
+        backtrace = backtrace.to_a.first.split(/\n\s*/)
+      end
+    
       backtrace.to_a.map do |line|
         HoptoadNotifier.backtrace_filters.inject(line) do |line, proc|
           proc.call(line)
