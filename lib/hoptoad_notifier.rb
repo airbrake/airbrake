@@ -96,6 +96,7 @@ module HoptoadNotifier
     end
   end
 
+  # Include this module in Controllers in which you want to be notified of errors.
   module Catcher
 
     def self.included(base) #:nodoc:
