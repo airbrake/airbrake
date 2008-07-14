@@ -84,14 +84,14 @@ class HoptoadNotifierTest < Test::Unit::TestCase
         config.host = "host"
         config.port = 3333
         config.secure = true
-        config.project_name = "bob"
+        config.api_key = "1234567890abcdef"
         config.ignore << [ RuntimeError ]
       end
       
-      assert_equal "host", HoptoadNotifier.host
-      assert_equal 3333,   HoptoadNotifier.port
-      assert_equal true,   HoptoadNotifier.secure
-      assert_equal "bob",  HoptoadNotifier.project_name
+      assert_equal "host",              HoptoadNotifier.host
+      assert_equal 3333,                HoptoadNotifier.port
+      assert_equal true,                HoptoadNotifier.secure
+      assert_equal "1234567890abcdef",  HoptoadNotifier.api_key
       assert_equal (HoptoadNotifier::IGNORE_DEFAULT + [RuntimeError]), HoptoadNotifier.ignore
     end
     
@@ -301,7 +301,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
           :environment   => ENV.to_hash,
           :error_class   => @exception.class.name,
           :error_message => "#{@exception.class.name}: #{@exception.message}",
-          :project_name  => HoptoadNotifier.project_name,
+          :api_key       => HoptoadNotifier.api_key,
         })
         @sender.expects(:send_to_hoptoad).with(:notice => options)
         HoptoadNotifier.notify(@exception)
@@ -317,7 +317,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
           :environment   => ENV.to_hash,
           :error_class   => @exception.class.name,
           :error_message => "#{@exception.class.name}: #{@exception.message}",
-          :project_name  => HoptoadNotifier.project_name,
+          :api_key       => HoptoadNotifier.api_key,
         })
         
         @sender.expects(:send_to_hoptoad).with(:notice => options)

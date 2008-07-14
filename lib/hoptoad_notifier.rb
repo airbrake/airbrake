@@ -9,7 +9,7 @@ module HoptoadNotifier
                     CGI::Session::CookieStore::TamperedWithCookie]
   
   class << self
-    attr_accessor :host, :port, :secure, :project_name, :filter_params, :ignore
+    attr_accessor :host, :port, :secure, :api_key, :filter_params, :ignore
     attr_reader   :backtrace_filters
 
     # Takes a block and adds it to the list of backtrace filters. When the filters
@@ -59,7 +59,7 @@ module HoptoadNotifier
     
     def default_notice_options #:nodoc:
       {
-        :project_name  => HoptoadNotifier.project_name,
+        :api_key       => HoptoadNotifier.api_key,
         :error_message => 'Notification',
         :backtrace     => caller,
         :request       => {},
@@ -71,7 +71,8 @@ module HoptoadNotifier
     # You can send an exception manually using this method, even when you are not in a
     # controller. You can pass an exception or a hash that contains the attributes that
     # would be sent to Hoptoad:
-    # * project_name: The name of this project.
+    # * api_key: The API key for this project. The API key is a unique identifier that Hoptoad
+    #   uses for identification.
     # * error_message: The error returned by the exception (or the message you want to log).
     # * backtrace: A backtrace, usually obtained with +caller+.
     # * request: The controller's request object.
@@ -145,7 +146,7 @@ module HoptoadNotifier
 
     def exception_to_data exception #:nodoc:
       data = {
-        :project_name  => HoptoadNotifier.project_name,
+        :api_key       => HoptoadNotifier.api_key,
         :error_class   => exception.class.name,
         :error_message => "#{exception.class.name}: #{exception.message}",
         :backtrace     => exception.backtrace,

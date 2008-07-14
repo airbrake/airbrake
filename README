@@ -22,7 +22,7 @@ config/initializers/hoptoad.rb in rails 2).
   HoptoadNotifier.configure do |config|
     config.host         = 'hoptoad.thoughtbot.com'
     config.port         = 80
-    config.project_name = 'my fancy application'
+    config.api_key      = '1234567890abcdef'
     config.ignore       << ActiveRecord::IgnoreThisError
   end
   
@@ -84,7 +84,7 @@ configuration block.
 
   HoptoadNotifier.configure do |config|
     config.host         = 'hoptoad.thoughtbot.com'
-    config.project_name = 'my fancy application'
+    config.api_key      = '1234567890abcdef'
     config.ignore       << ActiveRecord::IgnoreThisError
   end
 
@@ -93,7 +93,7 @@ To ignore *only* certain errors (and override the defaults), use the
 
   HoptoadNotifier.configure do |config|
     config.host         = 'hoptoad.thoughtbot.com'
-    config.project_name = 'my fancy application'
+    config.api_key      = '1234567890abcdef'
     config.ignore_only  = [ActiveRecord::IgnoreThisError]
   end
 
