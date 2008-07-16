@@ -11,7 +11,7 @@ INSTALLATION
 
 From your project's RAILS_ROOT, run:
 
-  piston import https://svn.thoughtbot.com/plugins/hoptoad_notifier/trunk vendor/plugin/hoptoad_notifier
+  piston import https://svn.thoughtbot.com/plugins/hoptoad_notifier/trunk vendor/plugins/hoptoad_notifier
   
 
 CONFIGURATION
