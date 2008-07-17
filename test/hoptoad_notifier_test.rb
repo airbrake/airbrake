@@ -94,6 +94,11 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       assert_equal "1234567890abcdef",  HoptoadNotifier.api_key
       assert_equal (HoptoadNotifier::IGNORE_DEFAULT + [RuntimeError]), HoptoadNotifier.ignore
     end
+
+    should "set a default host" do
+      HoptoadNotifier.instance_variable_set("@host",nil)
+      assert_equal "hoptoadapp.com", HoptoadNotifier.host
+    end
     
     should "add filters to the backtrace_filters" do
       assert_difference "HoptoadNotifier.backtrace_filters.length" do

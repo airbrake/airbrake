@@ -24,6 +24,11 @@ module HoptoadNotifier
     def port
       @port || (secure ? 443 : 80)
     end
+
+    # The host to connect to.
+    def host
+      @host ||= 'hoptoadapp.com'
+    end
     
     # Returns the list of errors that are being ignored. The array can be appended to.
     def ignore
