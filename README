@@ -20,7 +20,6 @@ You should have something like this in your environment.rb file (or
 config/initializers/hoptoad.rb in rails 2).
 
   HoptoadNotifier.configure do |config|
-    config.host         = 'hoptoad.thoughtbot.com'
     config.port         = 80
     config.api_key      = '1234567890abcdef'
     config.ignore       << ActiveRecord::IgnoreThisError
@@ -83,7 +82,6 @@ To ignore errors in addition to those, specify their names in your Hoptoad
 configuration block.
 
   HoptoadNotifier.configure do |config|
-    config.host         = 'hoptoad.thoughtbot.com'
     config.api_key      = '1234567890abcdef'
     config.ignore       << ActiveRecord::IgnoreThisError
   end
@@ -92,7 +90,6 @@ To ignore *only* certain errors (and override the defaults), use the
 #ignore_only attribute.
 
   HoptoadNotifier.configure do |config|
-    config.host         = 'hoptoad.thoughtbot.com'
     config.api_key      = '1234567890abcdef'
     config.ignore_only  = [ActiveRecord::IgnoreThisError]
   end
