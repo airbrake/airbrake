@@ -2,11 +2,10 @@ namespace :hoptoad do
   desc "Verify your plugin installation by sending a test exception to the hoptoad service"
   task :test => :environment do
     require 'action_controller/test_process'
-    require 'application'
 
     request = ActionController::TestRequest.new({
-      'action'     => 'dummy_action',
-      'controller' => 'application',
+      'action'     => 'verify',
+      'controller' => 'hoptoad_verification',
       '_method'    => 'GET'
     })
 
@@ -15,7 +14,6 @@ namespace :hoptoad do
     class HoptoadTestingException < RuntimeError; end
 
     puts 'Setting up the Controller.'
-    controller = ApplicationController.new
     class ApplicationController
       # This is to bypass any filters that may prevent access to the action.
       prepend_before_filter :test_hoptoad
@@ -24,12 +22,21 @@ namespace :hoptoad do
         raise HoptoadTestingException, 'Testing hoptoad via "rake hoptoad:test". If you can see this, it works.'
       end
 
+      def rescue_action exception
+        rescue_action_in_public exception
+      end
+
+      def public_environment?
+        true
+      end
+
       # Ensure we actually have an action to go to.
-      def dummy_action; end
+      def verify; end
     end
 
     puts 'Processing request.'
-    controller.process(request, response)
+    class HoptoadVerificationController < ApplicationController; end
+    HoptoadVerificationController.new.process(request, response)
   end
 end
 
