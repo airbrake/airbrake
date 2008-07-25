@@ -9,14 +9,9 @@ to the Hoptoad server specified in your environment.
 
 INSTALLATION
 
-From your project's RAILS_ROOT, run (for svn):
+From your project's RAILS_ROOT, run:
 
-  piston import https://svn.thoughtbot.com/plugins/hoptoad_notifier/trunk vendor/plugins/hoptoad_notifier
-
-Or for git:
-
- script/plugin install git://github.com/thoughtbot/hoptoad_notifier.git
-  
+  script/plugin install git://github.com/thoughtbot/hoptoad_notifier.git
 
 CONFIGURATION
 
@@ -24,9 +19,7 @@ You should have something like this in your environment.rb file (or
 config/initializers/hoptoad.rb in rails 2).
 
   HoptoadNotifier.configure do |config|
-    config.port         = 80
-    config.api_key      = '1234567890abcdef'
-    config.ignore       << ActiveRecord::IgnoreThisError
+    config.api_key = '1234567890abcdef'
   end
   
 Then, to enable hoptoad in your appication, include this code...
