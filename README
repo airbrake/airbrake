@@ -36,7 +36,10 @@ this rake task (from RAILS_ROOT):
   rake hoptoad:test RAILS_ENV=production
 
 If everything is configured properly, that task will send a notice to hoptoad 
-which will be visible immediately.
+which will be visible immediately. Note that your app must be able to run in
+production mode for this rake task to work, so it's quite possible that you can't
+run it from your development environment. Due to the way the exception handling
+works, this test can't be run from the development environment.
 
 
 USAGE
@@ -63,8 +66,7 @@ FILTERING
 
 You can specify a whitelist of errors, that Hoptoad will not report on.  Use 
 this feature when you are so apathetic to certain errors that you don't want 
-them even logged.  If you simply don't want to receive email notifications for
-certain errors, consider using the filters on the Hoptoad server application.
+them even logged.
 
 This filter will only be applied to automatic notifications, not manual 
 notifications (when #notify is called directly).

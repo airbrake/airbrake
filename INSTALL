@@ -36,4 +36,7 @@ this rake task (from RAILS_ROOT):
   rake hoptoad:test RAILS_ENV=production
 
 If everything is configured properly, that task will send a notice to hoptoad 
-which will be visible immediately.
+which will be visible immediately. Note that your app must be able to run in
+production mode for this rake task to work, so it's quite possible that you can't
+run it from your development environment. Due to the way the exception handling
+works, this test can't be run from the development environment.
