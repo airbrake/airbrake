@@ -1,0 +1,46 @@
+HoptoadNotifier
+===============
+
+This is the notifier plugin for integrating apps with Hoptoad.
+
+When an uncaught exception occurs, HoptoadNotifier will POST the relevant data 
+to the Hoptoad server specified in your environment.
+
+
+INSTALLATION
+
+From your project's RAILS_ROOT, run (for svn):
+
+  piston import https://svn.thoughtbot.com/plugins/hoptoad_notifier/trunk vendor/plugins/hoptoad_notifier
+
+Or for git:
+
+ script/plugin install git://github.com/thoughtbot/hoptoad_notifier.git
+  
+
+CONFIGURATION
+
+You should have something like this in your environment.rb file (or 
+config/initializers/hoptoad.rb in rails 2).
+
+  HoptoadNotifier.configure do |config|
+    config.port         = 80
+    config.api_key      = '1234567890abcdef'
+    config.ignore       << ActiveRecord::IgnoreThisError
+  end
+  
+Then, to enable hoptoad in your appication, include this code...
+
+  include HoptoadNotifier::Catcher
+
+...at the top of your ApplicationController, and all exceptions will be logged 
+to Hoptoad where they can be aggregated, filtered, sorted, analyzed, massaged 
+and searched.
+
+You can test that hoptoad is working in your production environment by using 
+this rake task (from RAILS_ROOT):
+
+  rake hoptoad:test RAILS_ENV=production
+
+If everything is configured properly, that task will send a notice to hoptoad 
+which will be visible immediately.

@@ -9,9 +9,13 @@ to the Hoptoad server specified in your environment.
 
 INSTALLATION
 
-From your project's RAILS_ROOT, run:
+From your project's RAILS_ROOT, run (for svn):
 
   piston import https://svn.thoughtbot.com/plugins/hoptoad_notifier/trunk vendor/plugins/hoptoad_notifier
+
+Or for git:
+
+ script/plugin install git://github.com/thoughtbot/hoptoad_notifier.git
   
 
 CONFIGURATION
