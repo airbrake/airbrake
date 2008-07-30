@@ -34,6 +34,10 @@ Then, to enable hoptoad in your appication, include this code...
 to Hoptoad where they can be aggregated, filtered, sorted, analyzed, massaged,
 and searched.
 
+** NOTE FOR RAILS 1.2.* USERS: **
+You will need to copy the hoptoad_notifier_tasks.rake file into your
+RAILS_ROOT/lib/tasks directory in order for the following to work:
+
 You can test that hoptoad is working in your production environment by using 
 this rake task (from RAILS_ROOT):
 
