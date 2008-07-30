@@ -3,10 +3,13 @@ require 'net/http'
 # Plugin for applications to automatically post errors to the Hoptoad of their choice.
 module HoptoadNotifier
 
-  IGNORE_DEFAULT = [ActiveRecord::RecordNotFound,
-                    ActionController::RoutingError,
-                    ActionController::InvalidAuthenticityToken,
-                    CGI::Session::CookieStore::TamperedWithCookie]
+  IGNORE_DEFAULT = ['ActiveRecord::RecordNotFound',
+                    'ActionController::RoutingError',
+                    'ActionController::InvalidAuthenticityToken',
+                    'CGI::Session::CookieStore::TamperedWithCookie']
+
+  # Some of these don't exist for Rails 1.2.*, so we have to consider that.
+  IGNORE_DEFAULT.map!{|e| Object.const_get(e) rescue nil }
   
   class << self
     attr_accessor :host, :port, :secure, :api_key, :filter_params, :ignore
