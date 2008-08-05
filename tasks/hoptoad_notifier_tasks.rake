@@ -19,8 +19,8 @@ namespace :hoptoad do
       # This is to bypass any filters that may prevent access to the action.
       prepend_before_filter :test_hoptoad
       def test_hoptoad
-        puts 'Raising an error to simulate application failure.'
-        raise HoptoadTestingException, 'Testing hoptoad via "rake hoptoad:test". If you can see this, it works.'
+        puts "Raising '#{exception_class.name}' to simulate application failure."
+        raise exception_class.new, 'Testing hoptoad via "rake hoptoad:test". If you can see this, it works.'
       end
 
       def rescue_action exception
@@ -33,6 +33,13 @@ namespace :hoptoad do
 
       # Ensure we actually have an action to go to.
       def verify; end
+
+      def exception_class
+        exception_name = ENV['EXCEPTION'] || "HoptoadTestingException"
+        Object.const_get(exception_name)
+      rescue
+        Object.const_set(exception_name, Class.new(Exception))
+      end
     end
 
     puts 'Processing request.'
