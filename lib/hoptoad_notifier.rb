@@ -9,10 +9,11 @@ module HoptoadNotifier
                     'CGI::Session::CookieStore::TamperedWithCookie']
 
   # Some of these don't exist for Rails 1.2.*, so we have to consider that.
-  IGNORE_DEFAULT.map!{|e| Object.const_get(e) rescue nil }
+  IGNORE_DEFAULT.map!{|e| eval(e) rescue nil }.compact!
+  IGNORE_DEFAULT.freeze
   
   class << self
-    attr_accessor :host, :port, :secure, :api_key, :filter_params, :ignore
+    attr_accessor :host, :port, :secure, :api_key, :filter_params
     attr_reader   :backtrace_filters
 
     # Takes a block and adds it to the list of backtrace filters. When the filters

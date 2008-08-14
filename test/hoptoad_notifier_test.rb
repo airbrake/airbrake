@@ -126,6 +126,10 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       assert_equal( {:abc => "<filtered>", :def => "<filtered>", :ghi => "789"},
                     @controller.send(:clean_hoptoad_params, :abc => "123", :def => "456", :ghi => "789" ) )
     end
+    
+    should "have at default ignored exceptions" do
+      assert HoptoadNotifier::IGNORE_DEFAULT.any?
+    end
   end
 
   context "The hoptoad test controller" do
