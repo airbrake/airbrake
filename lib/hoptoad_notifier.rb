@@ -243,7 +243,7 @@ module HoptoadNotifier
     end
     
     def stringify_keys(hash) #:nodoc:
-      hash.inject({}) do |h, pair|
+      hash.reject{|k,v| v.is_a? Module}.inject({}) do |h, pair|
         h[pair.first.to_s] = pair.last.is_a?(Hash) ? stringify_keys(pair.last) : pair.last
         h
       end
