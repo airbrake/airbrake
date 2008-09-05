@@ -13,7 +13,7 @@ module HoptoadNotifier
   IGNORE_DEFAULT.freeze
   
   class << self
-    attr_accessor :host, :port, :secure, :api_key, :params_filters, :environment_filters
+    attr_accessor :host, :port, :secure, :api_key, :filter_params
     attr_reader   :backtrace_filters
 
     # Takes a block and adds it to the list of backtrace filters. When the filters
