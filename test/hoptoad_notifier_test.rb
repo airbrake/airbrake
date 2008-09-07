@@ -141,7 +141,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       assert_equal( {:secret => "<filtered>", :supersecret => "<filtered>", :ghi => "789"},
                     @controller.send(:clean_hoptoad_environment, :secret => "123", :supersecret => "456", :ghi => "789" ) )
     end
-    
+
     should "have at default ignored exceptions" do
       assert HoptoadNotifier::IGNORE_DEFAULT.any?
     end
@@ -233,6 +233,21 @@ class HoptoadNotifierTest < Test::Unit::TestCase
         assert_nothing_raised do
           request("do_raise_ignored")
         end
+      end
+
+      should "filter non-serializable data" do
+        File.open(__FILE__) do |file|
+          assert_equal( {:ghi => "789"},
+                       @controller.send(:clean_non_serializable_data, :ghi => "789", :class => Class.new, :file => file) )
+        end
+      end
+
+      should "apply all params, environment and technical filters" do
+        notice = {:request => {:params => {}}, :environment => {}}
+        @controller.expects(:clean_hoptoad_backtrace)
+        @controller.expects(:clean_hoptoad_params)
+        @controller.expects(:clean_hoptoad_environment)
+        @controller.send(:clean_notice, notice)
       end
       
       context "and configured to ignore additional exceptions" do
@@ -348,6 +363,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
         HoptoadNotifier.notify(@exception)
       end
     end
+
     context "without an exception" do
       setup do
         @sender    = HoptoadNotifier::Sender.new
@@ -362,7 +378,5 @@ class HoptoadNotifierTest < Test::Unit::TestCase
         HoptoadNotifier.notify(:error_message => "123", :backtrace => @backtrace)
       end
     end
-    
   end
-
 end

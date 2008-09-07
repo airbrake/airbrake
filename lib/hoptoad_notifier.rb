@@ -131,7 +131,7 @@ module HoptoadNotifier
     def notify_hoptoad hash_or_exception
       if public_environment?
         notice = normalize_notice(hash_or_exception)
-        clean_notice(notice)
+        notice = clean_notice(notice)
         send_to_hoptoad(:notice => notice)
       end
     end
@@ -202,6 +202,7 @@ module HoptoadNotifier
       if notice[:environment].is_a?(Hash)
         notice[:environment] = clean_hoptoad_environment(notice[:environment])
       end
+      clean_non_serializable_data(notice)
     end
 
     def send_to_hoptoad data #:nodoc:
@@ -256,9 +257,20 @@ module HoptoadNotifier
         end
       end
     end
-    
+
+    def clean_non_serializable_data(notice) #:nodoc:
+      notice.select{|k,v| serialzable?(v) }.inject({}) do |h, pair|
+        h[pair.first] = pair.last.is_a?(Hash) ? clean_non_serializable_data(pair.last) : pair.last
+        h
+      end
+    end
+
+    def serialzable?(value) #:nodoc:
+      !(value.is_a?(Module) || value.kind_of?(IO))
+    end
+
     def stringify_keys(hash) #:nodoc:
-      hash.reject{|k,v| v.is_a? Module}.inject({}) do |h, pair|
+      hash.inject({}) do |h, pair|
         h[pair.first.to_s] = pair.last.is_a?(Hash) ? stringify_keys(pair.last) : pair.last
         h
       end
