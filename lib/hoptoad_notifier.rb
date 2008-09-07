@@ -52,6 +52,10 @@ module HoptoadNotifier
     def params_filters
       @params_filters ||= %w(password)
     end
+
+    def environment_filters
+      @environment_filters ||= %w()
+    end
     
     # Call this method to modify defaults in your initializers.
     def configure
@@ -195,6 +199,9 @@ module HoptoadNotifier
       if notice[:request].is_a?(Hash) && notice[:request][:params].is_a?(Hash)
         notice[:request][:params] = clean_hoptoad_params(notice[:request][:params])
       end
+      if notice[:environment].is_a?(Hash)
+        notice[:environment] = clean_hoptoad_environment(notice[:environment])
+      end
     end
 
     def send_to_hoptoad data #:nodoc:
@@ -237,6 +244,14 @@ module HoptoadNotifier
     def clean_hoptoad_params params #:nodoc:
       params.each do |k, v|
         params[k] = "<filtered>" if HoptoadNotifier.params_filters.any? do |filter|
+          k.to_s.match(/#{filter}/)
+        end
+      end
+    end
+    
+    def clean_hoptoad_environment env #:nodoc:
+      env.each do |k, v|
+        env[k] = "<filtered>" if HoptoadNotifier.environment_filters.any? do |filter|
           k.to_s.match(/#{filter}/)
         end
       end
