@@ -243,11 +243,24 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       end
 
       should "apply all params, environment and technical filters" do
-        notice = {:request => {:params => {}}, :environment => {}}
-        @controller.expects(:clean_hoptoad_backtrace)
-        @controller.expects(:clean_hoptoad_params)
-        @controller.expects(:clean_hoptoad_environment)
-        @controller.send(:clean_notice, notice)
+        params_hash = {:abc => 123}
+        environment_hash = {:def => 456}
+        backtrace_data = :backtrace_data
+
+        raw_notice = {:request => {:params => params_hash}, 
+                      :environment => environment_hash,
+                      :backtrace => backtrace_data}
+
+        processed_notice = {:backtrace => :backtrace_data, 
+                            :request => {:params => :params_data}, 
+                            :environment => :environment_data}
+
+        @controller.expects(:clean_hoptoad_backtrace).with(backtrace_data).returns(:backtrace_data)
+        @controller.expects(:clean_hoptoad_params).with(params_hash).returns(:params_data)
+        @controller.expects(:clean_hoptoad_environment).with(environment_hash).returns(:environment_data)
+        @controller.expects(:clean_non_serializable_data).with(processed_notice).returns(:serializable_data)
+
+        assert_equal(:serializable_data, @controller.send(:clean_notice, raw_notice))
       end
       
       context "and configured to ignore additional exceptions" do
