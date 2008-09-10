@@ -115,7 +115,8 @@ module HoptoadNotifier
 
     def self.included(base) #:nodoc:
       if base.instance_methods.include? 'rescue_action_in_public' and !base.instance_methods.include? 'rescue_action_in_public_without_hoptoad'
-        base.alias_method_chain :rescue_action_in_public, :hoptoad
+        base.send(:alias_method, :rescue_action_in_public_without_hoptoad, :rescue_action_in_public)
+        base.send(:alias_method, :rescue_action_in_public, :rescue_action_in_public_with_hoptoad)
       end
     end
     
