@@ -112,6 +112,19 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       assert_equal %w( 1234 1234 ), @controller.send(:clean_hoptoad_backtrace, %w( foo bar ))
     end
     
+    should "use standard rails logging filters on params and env" do
+      ::HoptoadController.class_eval do
+        filter_parameter_logging :ghi
+      end
+ 
+      expected = {"notice" => {"request" => {"params" => {"abc" => "123", "def" => "456", "ghi" => "[FILTERED]"}},
+                             "environment" => {"abc" => "123", "ghi" => "[FILTERED]"}}}
+      notice   = {"notice" => {"request" => {"params" => {"abc" => "123", "def" => "456", "ghi" => "789"}},
+                             "environment" => {"abc" => "123", "ghi" => "789"}}}
+      assert @controller.respond_to?(:filter_parameters)
+      assert_equal( expected[:notice], @controller.send(:clean_notice, notice)[:notice] )
+    end
+
     should "add filters to the params filters" do
       assert_difference "HoptoadNotifier.params_filters.length", 2 do
         HoptoadNotifier.configure do |config|
@@ -123,7 +136,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       assert HoptoadNotifier.params_filters.include?( "abc" )
       assert HoptoadNotifier.params_filters.include?( "def" )
       
-      assert_equal( {:abc => "<filtered>", :def => "<filtered>", :ghi => "789"},
+      assert_equal( {:abc => "[FILTERED]", :def => "[FILTERED]", :ghi => "789"},
                     @controller.send(:clean_hoptoad_params, :abc => "123", :def => "456", :ghi => "789" ) )
     end
 
@@ -138,7 +151,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       assert HoptoadNotifier.environment_filters.include?( "secret" )
       assert HoptoadNotifier.environment_filters.include?( "supersecret" )
       
-      assert_equal( {:secret => "<filtered>", :supersecret => "<filtered>", :ghi => "789"},
+      assert_equal( {:secret => "[FILTERED]", :supersecret => "[FILTERED]", :ghi => "789"},
                     @controller.send(:clean_hoptoad_environment, :secret => "123", :supersecret => "456", :ghi => "789" ) )
     end
 

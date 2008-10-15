@@ -179,7 +179,7 @@ module HoptoadNotifier
       if self.respond_to? :session
         data[:session] = {
           :key         => session.instance_variable_get("@session_id"),
-          :data        => session.instance_variable_get("@data")
+          :data        => session.instance_variable_get("@data").dup
         }
       end
 
@@ -198,9 +198,11 @@ module HoptoadNotifier
     def clean_notice(notice) #:nodoc:
       notice[:backtrace] = clean_hoptoad_backtrace(notice[:backtrace])
       if notice[:request].is_a?(Hash) && notice[:request][:params].is_a?(Hash)
+        notice[:request][:params] = filter_parameters(notice[:request][:params]) if respond_to?(:filter_parameters)
         notice[:request][:params] = clean_hoptoad_params(notice[:request][:params])
       end
       if notice[:environment].is_a?(Hash)
+        notice[:environment] = filter_parameters(notice[:environment]) if respond_to?(:filter_parameters)
         notice[:environment] = clean_hoptoad_environment(notice[:environment])
       end
       clean_non_serializable_data(notice)
@@ -245,7 +247,7 @@ module HoptoadNotifier
     
     def clean_hoptoad_params params #:nodoc:
       params.each do |k, v|
-        params[k] = "<filtered>" if HoptoadNotifier.params_filters.any? do |filter|
+        params[k] = "[FILTERED]" if HoptoadNotifier.params_filters.any? do |filter|
           k.to_s.match(/#{filter}/)
         end
       end
@@ -253,7 +255,7 @@ module HoptoadNotifier
     
     def clean_hoptoad_environment env #:nodoc:
       env.each do |k, v|
-        env[k] = "<filtered>" if HoptoadNotifier.environment_filters.any? do |filter|
+        env[k] = "[FILTERED]" if HoptoadNotifier.environment_filters.any? do |filter|
           k.to_s.match(/#{filter}/)
         end
       end
