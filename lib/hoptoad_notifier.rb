@@ -179,7 +179,7 @@ module HoptoadNotifier
       if self.respond_to? :session
         data[:session] = {
           :key         => session.instance_variable_get("@session_id"),
-          :data        => session.instance_variable_get("@data").dup
+          :data        => session.instance_variable_get("@data")
         }
       end
 
