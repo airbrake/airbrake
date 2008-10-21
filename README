@@ -70,11 +70,9 @@ You can also pass a hash to notify_hoptoad method and store whatever you want, n
 
   begin 
     params = { 
-      :quantity => total_quantity, 
-      :weight => total_weight, 
-      :country => country, 
-      :postcode => postcode 
-    } 
+      # params that you pass to a method that can throw an exception 
+    }
+    my_unpredicable_method(params) 
   rescue => e
     HoptoadNotifier.notify(
       :error_class => "Special Error", 
