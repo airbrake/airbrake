@@ -58,6 +58,12 @@ module HoptoadNotifier
     end
     
     # Call this method to modify defaults in your initializers.
+    #
+    # HoptoadNotifier.configure do |config|
+    #   config.api_key = '1234567890abcdef'
+    #   config.secure  = true
+    # end
+    #
     def configure
       yield self
     end
@@ -217,7 +223,7 @@ module HoptoadNotifier
         }
         http.read_timeout = 5 # seconds
         http.open_timeout = 2 # seconds
-        # http.use_ssl = HoptoadNotifier.secure
+        http.use_ssl = HoptoadNotifier.secure
         response = begin
                      http.post(url.path, stringify_keys(data).to_yaml, headers)
                    rescue TimeoutError => e

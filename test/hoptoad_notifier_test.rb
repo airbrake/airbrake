@@ -5,8 +5,6 @@ require 'shoulda'
 require 'action_controller'
 require 'action_controller/test_process'
 require 'active_record'
-# require 'net/http'
-# require 'net/https'
 require File.join(File.dirname(__FILE__), "..", "lib", "hoptoad_notifier")
 
 RAILS_ROOT = File.join( File.dirname(__FILE__), "rails_root" )
@@ -353,6 +351,66 @@ class HoptoadNotifierTest < Test::Unit::TestCase
         HoptoadNotifier.instance_variable_set("@backtrace_filters", [])
         HoptoadNotifier::Sender.expects(:new).returns(@sender)
         @sender.stubs(:public_environment?).returns(true)
+      end
+
+      context "when stubbing out Net::HTTP" do
+        setup do
+          @body = 'body'
+          @response = stub(:body => @body)
+          @http = stub(:post => @response, :read_timeout= => nil, :open_timeout= => nil, :use_ssl= => nil)
+          @sender.stubs(:logger).returns(stub(:error => nil, :info => nil))
+          Net::HTTP.stubs(:start).yields(@http)
+          HoptoadNotifier.port = nil
+          HoptoadNotifier.host = nil
+        end
+
+        context "on notify" do
+          setup { HoptoadNotifier.notify(@exception) }
+
+          before_should "post to the right url for non-ssl" do
+            HoptoadNotifier.secure = false
+            url = "http://hoptoadapp.com:80/notices/"
+            uri = URI.parse(url)
+            URI.expects(:parse).with(url).returns(uri)
+            @http.expects(:post).with(uri.path, anything, anything).returns(@response)
+          end
+
+          before_should "post to the right path" do
+            @http.expects(:post).with("/notices/", anything, anything).returns(@response)
+          end
+
+          before_should "call send_to_hoptoad" do
+            @sender.expects(:send_to_hoptoad)
+          end
+
+          before_should "set the open timeout to 2 seconds" do
+            @http.expects(:open_timeout=).with(2)
+          end
+
+          before_should "set the read timeout to 5 seconds" do
+            @http.expects(:read_timeout=).with(5)
+          end
+
+          before_should "connect to the right port for ssl" do
+            HoptoadNotifier.secure = true
+            Net::HTTP.expects(:start).with("hoptoadapp.com", 443).yields(@http)
+          end
+
+          before_should "connect to the right port for non-ssl" do
+            HoptoadNotifier.secure = false
+            Net::HTTP.expects(:start).with("hoptoadapp.com", 80).yields(@http)
+          end
+
+          before_should "use ssl if secure" do
+            HoptoadNotifier.secure = true
+            @http.expects(:use_ssl=).with(true)
+          end
+
+          before_should "not use ssl if not secure" do
+            HoptoadNotifier.secure = false
+            @http.expects(:use_ssl=).with(false)
+          end
+        end
       end
 
       should "send as if it were a normally caught exception" do
