@@ -1,4 +1,7 @@
 require 'net/http'
+require 'net/https'
+require 'rubygems'
+require 'active_support'
 
 # Plugin for applications to automatically post errors to the Hoptoad of their choice.
 module HoptoadNotifier
@@ -111,8 +114,10 @@ module HoptoadNotifier
   end
 
   filter_backtrace do |line|
-    Gem.path.inject(line) do |line, path|
-      line.gsub(/#{path}/, "[GEM_ROOT]")
+    if defined?(Gem)
+      Gem.path.inject(line) do |line, path|
+        line.gsub(/#{path}/, "[GEM_ROOT]")
+      end
     end
   end
 
@@ -223,7 +228,7 @@ module HoptoadNotifier
         }
         http.read_timeout = 5 # seconds
         http.open_timeout = 2 # seconds
-        http.use_ssl = HoptoadNotifier.secure
+        http.use_ssl = !!HoptoadNotifier.secure 
         response = begin
                      http.post(url.path, stringify_keys(data).to_yaml, headers)
                    rescue TimeoutError => e

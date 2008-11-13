@@ -407,7 +407,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
           end
 
           before_should "not use ssl if not secure" do
-            HoptoadNotifier.secure = false
+            HoptoadNotifier.secure = nil
             @http.expects(:use_ssl=).with(false)
           end
         end
