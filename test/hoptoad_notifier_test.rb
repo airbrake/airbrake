@@ -5,8 +5,8 @@ require 'shoulda'
 require 'action_controller'
 require 'action_controller/test_process'
 require 'active_record'
-require 'net/http'
-require 'net/https'
+# require 'net/http'
+# require 'net/https'
 require File.join(File.dirname(__FILE__), "..", "lib", "hoptoad_notifier")
 
 RAILS_ROOT = File.join( File.dirname(__FILE__), "rails_root" )
