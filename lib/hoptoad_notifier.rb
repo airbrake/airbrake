@@ -64,9 +64,10 @@ module HoptoadNotifier
     #
     # HoptoadNotifier.configure do |config|
     #   config.api_key = '1234567890abcdef'
-    #   config.secure  = true
+    #   config.secure  = false
     # end
     #
+    # NOTE: secure connections are not yet supported.
     def configure
       yield self
     end
