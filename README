@@ -8,6 +8,19 @@ to the Hoptoad server specified in your environment.
 
 
 INSTALLATION
+------------
+
+REMOVE EXCEPTION_NOTIFIER
+
+In your ApplicationController, REMOVE this line:
+
+  include ExceptionNotifiable
+
+In your config/environment* files, remove all references to ExceptionNotifier
+
+Remove the vendor/plugins/exception_notifier directory.
+
+INSTALL HOPTOAD_NOTIFIER
 
 From your project's RAILS_ROOT, run:
 
