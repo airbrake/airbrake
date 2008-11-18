@@ -9,7 +9,11 @@ fail "Please supply an API Key as the first argument" if ARGV.empty?
 RAILS_ENV = "production"
 RAILS_ROOT = "./"
 
+host = ARGV[1]
+host ||= "hoptoadapp.com"
+
 HoptoadNotifier.configure do |config|
+  config.host = host
   config.api_key = ARGV.first
 end
 
