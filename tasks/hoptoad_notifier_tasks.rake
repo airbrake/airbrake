@@ -14,6 +14,11 @@ namespace :hoptoad do
 
     class HoptoadTestingException < RuntimeError; end
 
+    unless ApplicationController.ancestors.include? HoptoadNotifier::Catcher
+      puts "You have not included HoptoadNotifier::Catcher in your ApplicationController!"
+      exit
+    end
+
     puts 'Setting up the Controller.'
     class ApplicationController
       # This is to bypass any filters that may prevent access to the action.
