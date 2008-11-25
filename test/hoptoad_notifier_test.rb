@@ -84,12 +84,24 @@ class HoptoadNotifierTest < Test::Unit::TestCase
         config.secure = true
         config.api_key = "1234567890abcdef"
         config.ignore << [ RuntimeError ]
+        config.proxy_host = 'proxyhost1'
+        config.proxy_port = '80'
+        config.proxy_user = 'user'
+        config.proxy_pass = 'secret'
+        config.http_open_timeout = 2
+        config.http_read_timeout = 5
       end
       
       assert_equal "host",              HoptoadNotifier.host
       assert_equal 3333,                HoptoadNotifier.port
       assert_equal true,                HoptoadNotifier.secure
       assert_equal "1234567890abcdef",  HoptoadNotifier.api_key
+      assert_equal 'proxyhost1',        HoptoadNotifier.proxy_host
+      assert_equal '80',                HoptoadNotifier.proxy_port
+      assert_equal 'user',              HoptoadNotifier.proxy_user
+      assert_equal 'secret',            HoptoadNotifier.proxy_pass
+      assert_equal 2,                   HoptoadNotifier.http_open_timeout
+      assert_equal 5,                   HoptoadNotifier.http_read_timeout
       assert_equal (HoptoadNotifier::IGNORE_DEFAULT + [RuntimeError]), HoptoadNotifier.ignore
     end
 
@@ -352,6 +364,39 @@ class HoptoadNotifierTest < Test::Unit::TestCase
         HoptoadNotifier::Sender.expects(:new).returns(@sender)
         @sender.stubs(:public_environment?).returns(true)
       end
+      
+      context "when using an HTTP Proxy" do
+        setup do
+          @body = 'body'
+          @response = stub(:body => @body)
+          @http = stub(:post => @response, :read_timeout= => nil, :open_timeout= => nil, :use_ssl= => nil)
+          @sender.stubs(:logger).returns(stub(:error => nil, :info => nil))
+          @proxy = stub          
+          @proxy.stubs(:start).yields(@http)
+          
+          HoptoadNotifier.port = nil
+          HoptoadNotifier.host = nil
+          HoptoadNotifier.secure = false
+                    
+          Net::HTTP.expects(:Proxy).with(
+            HoptoadNotifier.proxy_host, 
+            HoptoadNotifier.proxy_port, 
+            HoptoadNotifier.proxy_user, 
+            HoptoadNotifier.proxy_pass
+          ).returns(@proxy)
+        end
+        
+        context "on notify" do
+          setup { HoptoadNotifier.notify(@exception) }
+
+          before_should "post to Hoptoad" do            
+            url = "http://hoptoadapp.com:80/notices/"
+            uri = URI.parse(url)
+            URI.expects(:parse).with(url).returns(uri)
+            @http.expects(:post).with(uri.path, anything, anything).returns(@response)
+          end
+        end  
+      end
 
       context "when stubbing out Net::HTTP" do
         setup do
@@ -362,6 +407,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
           Net::HTTP.stubs(:start).yields(@http)
           HoptoadNotifier.port = nil
           HoptoadNotifier.host = nil
+          HoptoadNotifier.proxy_host = nil
         end
 
         context "on notify" do
@@ -383,12 +429,24 @@ class HoptoadNotifierTest < Test::Unit::TestCase
             @sender.expects(:send_to_hoptoad)
           end
 
-          before_should "set the open timeout to 2 seconds" do
+          before_should "default the open timeout to 2 seconds" do
+            HoptoadNotifier.http_open_timeout = nil
             @http.expects(:open_timeout=).with(2)
           end
 
-          before_should "set the read timeout to 5 seconds" do
+          before_should "default the read timeout to 5 seconds" do
+            HoptoadNotifier.http_read_timeout = nil
             @http.expects(:read_timeout=).with(5)
+          end
+          
+          before_should "allow override of the open timeout" do
+            HoptoadNotifier.http_open_timeout = 4
+            @http.expects(:open_timeout=).with(4)
+          end
+          
+          before_should "allow override of the read timeout" do
+            HoptoadNotifier.http_read_timeout = 10
+            @http.expects(:read_timeout=).with(10)
           end
 
           before_should "connect to the right port for ssl" do
