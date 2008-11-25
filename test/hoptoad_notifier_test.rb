@@ -461,12 +461,14 @@ class HoptoadNotifierTest < Test::Unit::TestCase
 
           before_should "use ssl if secure" do
             HoptoadNotifier.secure = true
-            @http.expects(:use_ssl=).with(true)
+            HoptoadNotifier.host = 'example.org'
+            Net::HTTP.expects(:start).with('example.org', 443).yields(@http)            
           end
 
           before_should "not use ssl if not secure" do
             HoptoadNotifier.secure = nil
-            @http.expects(:use_ssl=).with(false)
+            HoptoadNotifier.host = 'example.org'
+            Net::HTTP.expects(:start).with('example.org', 80).yields(@http)
           end
         end
       end
