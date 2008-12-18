@@ -372,7 +372,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
           @http = stub(:post => @response, :read_timeout= => nil, :open_timeout= => nil, :use_ssl= => nil)
           @sender.stubs(:logger).returns(stub(:error => nil, :info => nil))
           @proxy = stub          
-          @proxy.stubs(:start).yields(@http)
+          @proxy.stubs(:new).returns(@http)
           
           HoptoadNotifier.port = nil
           HoptoadNotifier.host = nil
@@ -404,7 +404,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
           @response = stub(:body => @body)
           @http = stub(:post => @response, :read_timeout= => nil, :open_timeout= => nil, :use_ssl= => nil)
           @sender.stubs(:logger).returns(stub(:error => nil, :info => nil))
-          Net::HTTP.stubs(:start).yields(@http)
+          Net::HTTP.stubs(:new).returns(@http)
           HoptoadNotifier.port = nil
           HoptoadNotifier.host = nil
           HoptoadNotifier.proxy_host = nil
@@ -451,24 +451,24 @@ class HoptoadNotifierTest < Test::Unit::TestCase
 
           before_should "connect to the right port for ssl" do
             HoptoadNotifier.secure = true
-            Net::HTTP.expects(:start).with("hoptoadapp.com", 443).yields(@http)
+            Net::HTTP.expects(:new).with("hoptoadapp.com", 443).returns(@http)
           end
 
           before_should "connect to the right port for non-ssl" do
             HoptoadNotifier.secure = false
-            Net::HTTP.expects(:start).with("hoptoadapp.com", 80).yields(@http)
+            Net::HTTP.expects(:new).with("hoptoadapp.com", 80).returns(@http)
           end
 
           before_should "use ssl if secure" do
             HoptoadNotifier.secure = true
             HoptoadNotifier.host = 'example.org'
-            Net::HTTP.expects(:start).with('example.org', 443).yields(@http)            
+            Net::HTTP.expects(:new).with('example.org', 443).returns(@http)            
           end
 
           before_should "not use ssl if not secure" do
             HoptoadNotifier.secure = nil
             HoptoadNotifier.host = 'example.org'
-            Net::HTTP.expects(:start).with('example.org', 80).yields(@http)
+            Net::HTTP.expects(:new).with('example.org', 80).returns(@http)
           end
         end
       end
