@@ -232,21 +232,22 @@ module HoptoadNotifier
     end
 
     def send_to_hoptoad data #:nodoc:
+      headers = {
+        'Content-type' => 'application/x-yaml',
+        'Accept' => 'text/xml, application/xml'
+      }
+
       url = HoptoadNotifier.url
       
-      Net::HTTP::Proxy(
-        HoptoadNotifier.proxy_host, 
-        HoptoadNotifier.proxy_port, 
-        HoptoadNotifier.proxy_user, 
-        HoptoadNotifier.proxy_pass).start(url.host, url.port) do |http|
-        
-        headers = {
-          'Content-type' => 'application/x-yaml',
-          'Accept' => 'text/xml, application/xml'
-        }
-        
+      http = Net::HTTP::Proxy(HoptoadNotifier.proxy_host, 
+                              HoptoadNotifier.proxy_port, 
+                              HoptoadNotifier.proxy_user, 
+                              HoptoadNotifier.proxy_pass).new(url.host, url.port)
+
+      http.use_ssl = true
         http.read_timeout = HoptoadNotifier.http_read_timeout
         http.open_timeout = HoptoadNotifier.http_open_timeout
+      http.use_ssl = !!HoptoadNotifier.secure 
 
         response = begin
           http.post(url.path, stringify_keys(data).to_yaml, headers)
@@ -255,12 +256,11 @@ module HoptoadNotifier
           nil
         end
        
-        case response
-        when Net::HTTPSuccess then
-          logger.info "Hoptoad Success: #{response.class}"
-        else
-          logger.error "Hoptoad Failure: #{response.class}\n#{response.body if response.respond_to? :body}"
-        end
+      case response
+      when Net::HTTPSuccess then
+        logger.info "Hoptoad Success: #{response.class}"
+      else
+        logger.error "Hoptoad Failure: #{response.class}\n#{response.body if response.respond_to? :body}"
       end
     end
     
