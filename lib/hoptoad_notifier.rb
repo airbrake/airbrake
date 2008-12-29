@@ -293,13 +293,13 @@ module HoptoadNotifier
     end
 
     def clean_non_serializable_data(notice) #:nodoc:
-      notice.select{|k,v| serialzable?(v) }.inject({}) do |h, pair|
+      notice.select{|k,v| serializable?(v) }.inject({}) do |h, pair|
         h[pair.first] = pair.last.is_a?(Hash) ? clean_non_serializable_data(pair.last) : pair.last
         h
       end
     end
 
-    def serialzable?(value) #:nodoc:
+    def serializable?(value) #:nodoc:
       !(value.is_a?(Module) || value.kind_of?(IO))
     end
 
