@@ -1,6 +1,7 @@
 require 'test/unit'
 require 'rubygems'
 require 'mocha'
+gem 'thoughtbot-shoulda', ">= 2.0.0"
 require 'shoulda'
 require 'action_controller'
 require 'action_controller/test_process'
