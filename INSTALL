@@ -39,13 +39,17 @@ is *not* enrivonment-specific. Hoptoad is smart enough to know what errors are
 caused by what environments, so your staging errors don't get mixed in with
 your production errors.)
 
-Then, to enable hoptoad in your appication, include this code...
+To enable hoptoad in your application, you must modify your application.rb to 
+include the module HoptoadNotifier::Catcher into your application controller.
 
-  include HoptoadNotifier::Catcher
+Example...
 
-...at the top of your ApplicationController, and all exceptions will be logged 
-to Hoptoad where they can be aggregated, filtered, sorted, analyzed, massaged,
-and searched.
+  class ApplicationController < ActionController::Base
+    include HoptoadNotifier::Catcher
+  end
+
+After this is in place, all exceptions will be logged to Hoptoad where they can 
+be aggregated, filtered, sorted, analyzed, massaged, and searched.
 
 ** NOTE FOR RAILS 1.2.* USERS: **
 You will need to copy the hoptoad_notifier_tasks.rake file into your
