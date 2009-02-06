@@ -18,7 +18,7 @@ module HoptoadNotifier
   class << self
     attr_accessor :host, :port, :secure, :api_key, :http_open_timeout, :http_read_timeout,
                   :proxy_host, :proxy_port, :proxy_user, :proxy_pass
-    attr_reader   :backtrace_filters
+    attr_reader   :backtrace_filters, :ignore_by_filters
 
     # Takes a block and adds it to the list of backtrace filters. When the filters
     # run, the block will be handed each line of the backtrace and can modify
@@ -55,6 +55,14 @@ module HoptoadNotifier
       @ignore
     end
     
+    # Takes a block and adds it to the list of ignore filters.  When the filters
+    # run, the block will be handed the exception.  If the block yields a value
+    # equivalent to "true," the exception will be ignored, otherwise it will be
+    # processed by hoptoad.
+    def ignore_by_filter &block
+      (@ignore_by_filters ||= []) << block
+    end
+ 
     # Sets the list of ignored errors to only what is passed in here. This method
     # can be passed a single error or a list of errors.
     def ignore_only=(names)
@@ -178,7 +186,7 @@ module HoptoadNotifier
     
     def ignore?(exception) #:nodoc:
       ignore_these = HoptoadNotifier.ignore.flatten
-      ignore_these.include?(exception.class) || ignore_these.include?(exception.class.name)
+      ignore_these.include?(exception.class) || ignore_these.include?(exception.class.name) || HoptoadNotifier.ignore_by_filters.find {|filter| filter.call(exception_to_data(exception))}
     end
 
     def exception_to_data exception #:nodoc:

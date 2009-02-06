@@ -44,12 +44,12 @@ class HoptoadController < ActionController::Base
 end
 
 class HoptoadNotifierTest < Test::Unit::TestCase
-  def request(action = nil, method = :get)
+  def request(action = nil, method = :get, params = {})
     @request = ActionController::TestRequest.new({
       "controller" => "hoptoad",
       "action"     => action ? action.to_s : "",
       "_method"    => method.to_s
-    })
+    }.merge(params))
     @response = ActionController::TestResponse.new
     @controller.process(@request, @response)
   end
@@ -290,6 +290,14 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       context "and configured to ignore additional exceptions" do
         setup do
           HoptoadNotifier.ignore << ActiveRecord::StatementInvalid
+
+          HoptoadNotifier.configure do |config|
+            config.ignore_by_filter do |exception_data|
+              if exception_data[:error_class] == "RuntimeError"
+                true if exception_data[:request][:params]['blah'] == 'skip'
+              end
+            end
+          end
         end
         
         should "still ignore default exceptions" do
@@ -315,8 +323,16 @@ class HoptoadNotifierTest < Test::Unit::TestCase
             request("do_raise")
           end
         end
+  
+        should "ignore exceptions based on param data" do
+          @controller.expects(:notify_hoptoad).never
+          @controller.expects(:rescue_action_in_public_without_hoptoad)
+          assert_nothing_raised do
+            request("do_raise", "get", :blah => 'skip')
+          end
+        end
       end
-      
+
       context "and configured to ignore only certain exceptions" do
         setup do
           HoptoadNotifier.ignore_only = [ActiveRecord::StatementInvalid]
