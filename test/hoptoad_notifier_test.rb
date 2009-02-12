@@ -6,6 +6,8 @@ require 'shoulda'
 require 'action_controller'
 require 'action_controller/test_process'
 require 'active_record'
+require 'active_record/base'
+require 'active_support/testing/core_ext/test/unit/assertions' 
 require File.join(File.dirname(__FILE__), "..", "lib", "hoptoad_notifier")
 
 RAILS_ROOT = File.join( File.dirname(__FILE__), "rails_root" )
@@ -45,11 +47,8 @@ end
 
 class HoptoadNotifierTest < Test::Unit::TestCase
   def request(action = nil, method = :get)
-    @request = ActionController::TestRequest.new({
-      "controller" => "hoptoad",
-      "action"     => action ? action.to_s : "",
-      "_method"    => method.to_s
-    })
+    @request = ActionController::TestRequest.new
+    @request.action = action ? action.to_s : ""
     @response = ActionController::TestResponse.new
     @controller.process(@request, @response)
   end
