@@ -249,12 +249,12 @@ module HoptoadNotifier
         http.open_timeout = HoptoadNotifier.http_open_timeout
       http.use_ssl = !!HoptoadNotifier.secure 
 
-        response = begin
-          http.post(url.path, stringify_keys(data).to_yaml, headers)
-        rescue TimeoutError => e
-          logger.error "Timeout while contacting the Hoptoad server."
-          nil
-        end
+      response = begin
+                   http.post(url.path, stringify_keys(data).to_yaml, headers)
+                 rescue TimeoutError => e
+                   logger.error "Timeout while contacting the Hoptoad server."
+                   nil
+                 end
        
       case response
       when Net::HTTPSuccess then
