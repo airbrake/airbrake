@@ -12,7 +12,9 @@ require File.join(File.dirname(__FILE__), "..", "lib", "hoptoad_notifier")
 RAILS_ROOT = File.join( File.dirname(__FILE__), "rails_root" )
 RAILS_ENV  = "test"
 
-class HoptoadController < ActionController::Base
+begin require 'redgreen'; rescue LoadError; end
+
+module TestMethods
   def rescue_action e
     raise e
   end
@@ -42,6 +44,10 @@ class HoptoadController < ActionController::Base
     notify_hoptoad(ActiveRecord::RecordNotFound.new("404"))
     render :text => "Success"
   end
+end
+
+class HoptoadController < ActionController::Base
+  include TestMethods
 end
 
 def request(action = nil, method = :get, user_agent = nil)

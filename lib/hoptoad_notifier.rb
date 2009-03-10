@@ -96,6 +96,9 @@ module HoptoadNotifier
     # NOTE: secure connections are not yet supported.
     def configure
       yield self
+      if defined?(ActionController::Base) && !ActionController::Base.include?(HoptoadNotifier::Catcher)
+        ActionController::Base.send(:include, HoptoadNotifier::Catcher)
+      end
     end
 
     def protocol #:nodoc:
