@@ -45,12 +45,13 @@ class HoptoadController < ActionController::Base
 end
 
 class HoptoadNotifierTest < Test::Unit::TestCase
-  def request(action = nil, method = :get)
+  def request(action = nil, method = :get, user_agent = nil)
     @request = ActionController::TestRequest.new({
       "controller" => "hoptoad",
       "action"     => action ? action.to_s : "",
       "_method"    => method.to_s
     })
+    @request.user_agent = user_agent unless user_agent.nil?
     @response = ActionController::TestResponse.new
     @controller.process(@request, @response)
   end
@@ -86,6 +87,8 @@ class HoptoadNotifierTest < Test::Unit::TestCase
         config.secure = true
         config.api_key = "1234567890abcdef"
         config.ignore << [ RuntimeError ]
+        config.ignore_user_agent << 'UserAgentString'
+        config.ignore_user_agent << /UserAgentRegexp/
         config.proxy_host = 'proxyhost1'
         config.proxy_port = '80'
         config.proxy_user = 'user'
@@ -104,6 +107,7 @@ class HoptoadNotifierTest < Test::Unit::TestCase
       assert_equal 'secret',            HoptoadNotifier.proxy_pass
       assert_equal 2,                   HoptoadNotifier.http_open_timeout
       assert_equal 5,                   HoptoadNotifier.http_read_timeout
+      assert_equal (HoptoadNotifier::IGNORE_USER_AGENT_DEFAULT + ['UserAgentString', /UserAgentRegexp/]), HoptoadNotifier.ignore_user_agent
       assert_equal (HoptoadNotifier::IGNORE_DEFAULT + [RuntimeError]), HoptoadNotifier.ignore
     end
 
@@ -346,6 +350,48 @@ class HoptoadNotifierTest < Test::Unit::TestCase
             request("do_raise")
           end
         end
+      end
+      
+      context "and configured to ignore certain user agents" do
+        setup do
+          HoptoadNotifier.ignore_user_agent << /Ignored/
+          HoptoadNotifier.ignore_user_agent << 'IgnoredUserAgent'
+        end
+        
+        should "ignore exceptions when user agent is being ignored" do
+          @controller.expects(:notify_hoptoad).never
+          @controller.expects(:rescue_action_in_public_without_hoptoad)
+          assert_nothing_raised do
+            request("do_raise", :get, 'IgnoredUserAgent')
+          end
+        end
+        
+        should "ignore exceptions when user agent is being ignored (regexp)" do
+          HoptoadNotifier.ignore_user_agent_only = [/Ignored/]
+          @controller.expects(:notify_hoptoad).never
+          @controller.expects(:rescue_action_in_public_without_hoptoad)
+          assert_nothing_raised do
+            request("do_raise", :get, 'IgnoredUserAgent')
+          end
+        end
+        
+        should "ignore exceptions when user agent is being ignored (string)" do
+          HoptoadNotifier.ignore_user_agent_only = ['IgnoredUserAgent']
+          @controller.expects(:notify_hoptoad).never
+          @controller.expects(:rescue_action_in_public_without_hoptoad)
+          assert_nothing_raised do
+            request("do_raise", :get, 'IgnoredUserAgent')
+          end
+        end
+        
+        should "not ignore exceptions when user agent is not being ignored" do
+          @controller.expects(:notify_hoptoad)
+          @controller.expects(:rescue_action_in_public_without_hoptoad)
+          assert_nothing_raised do
+            request("do_raise")
+          end
+        end
+        
       end
     end
   end

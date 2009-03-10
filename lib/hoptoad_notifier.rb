@@ -14,6 +14,8 @@ module HoptoadNotifier
   # Some of these don't exist for Rails 1.2.*, so we have to consider that.
   IGNORE_DEFAULT.map!{|e| eval(e) rescue nil }.compact!
   IGNORE_DEFAULT.freeze
+
+  IGNORE_USER_AGENT_DEFAULT = []
   
   class << self
     attr_accessor :host, :port, :secure, :api_key, :http_open_timeout, :http_read_timeout,
@@ -59,6 +61,19 @@ module HoptoadNotifier
     # can be passed a single error or a list of errors.
     def ignore_only=(names)
       @ignore = [names].flatten
+    end
+
+    # Returns the list of user agents that are being ignored. The array can be appended to.
+    def ignore_user_agent
+      @ignore_user_agent ||= (HoptoadNotifier::IGNORE_USER_AGENT_DEFAULT.dup)
+      @ignore_user_agent.flatten!
+      @ignore_user_agent
+    end
+    
+    # Sets the list of ignored user agents to only what is passed in here. This method
+    # can be passed a single user agent or a list of user agents.
+    def ignore_user_agent_only=(names)
+      @ignore_user_agent = [names].flatten
     end
 
     # Returns a list of parameters that should be filtered out of what is sent to Hoptoad.
@@ -146,7 +161,7 @@ module HoptoadNotifier
     # Overrides the rescue_action method in ActionController::Base, but does not inhibit
     # any custom processing that is defined with Rails 2's exception helpers.
     def rescue_action_in_public_with_hoptoad exception
-      notify_hoptoad(exception) unless ignore?(exception)
+      notify_hoptoad(exception) unless ignore?(exception) || ignore_user_agent?
       rescue_action_in_public_without_hoptoad(exception)
     end 
         
@@ -179,6 +194,18 @@ module HoptoadNotifier
     def ignore?(exception) #:nodoc:
       ignore_these = HoptoadNotifier.ignore.flatten
       ignore_these.include?(exception.class) || ignore_these.include?(exception.class.name)
+    end
+
+    def ignore_user_agent? #:nodoc:
+      HoptoadNotifier.ignore_user_agent.flatten.each do |ua|
+        if ua.is_a?(Regexp)
+          return true if request.user_agent =~ ua
+        else
+          return true if request.user_agent == ua
+        end
+      end
+      
+      return false
     end
 
     def exception_to_data exception #:nodoc:
