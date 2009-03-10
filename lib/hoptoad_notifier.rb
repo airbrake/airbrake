@@ -200,15 +200,7 @@ module HoptoadNotifier
     end
 
     def ignore_user_agent? #:nodoc:
-      HoptoadNotifier.ignore_user_agent.flatten.each do |ua|
-        if ua.is_a?(Regexp)
-          return true if request.user_agent =~ ua
-        else
-          return true if request.user_agent == ua
-        end
-      end
-
-      return false
+      HoptoadNotifier.ignore_user_agent.flatten.any? { |ua| ua === request.user_agent }
     end
 
     def exception_to_data exception #:nodoc:
