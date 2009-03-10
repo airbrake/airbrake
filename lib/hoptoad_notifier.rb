@@ -16,7 +16,7 @@ module HoptoadNotifier
   IGNORE_DEFAULT.freeze
 
   IGNORE_USER_AGENT_DEFAULT = []
-  
+
   class << self
     attr_accessor :host, :port, :secure, :api_key, :http_open_timeout, :http_read_timeout,
                   :proxy_host, :proxy_port, :proxy_user, :proxy_pass
@@ -39,24 +39,24 @@ module HoptoadNotifier
     def host
       @host ||= 'hoptoadapp.com'
     end
-    
+
     # The HTTP open timeout (defaults to 2 seconds).
     def http_open_timeout
       @http_open_timeout ||= 2
     end
-    
+
     # The HTTP read timeout (defaults to 5 seconds).
     def http_read_timeout
       @http_read_timeout ||= 5
     end
-    
+
     # Returns the list of errors that are being ignored. The array can be appended to.
     def ignore
       @ignore ||= (HoptoadNotifier::IGNORE_DEFAULT.dup)
       @ignore.flatten!
       @ignore
     end
-    
+
     # Sets the list of ignored errors to only what is passed in here. This method
     # can be passed a single error or a list of errors.
     def ignore_only=(names)
@@ -69,7 +69,7 @@ module HoptoadNotifier
       @ignore_user_agent.flatten!
       @ignore_user_agent
     end
-    
+
     # Sets the list of ignored user agents to only what is passed in here. This method
     # can be passed a single user agent or a list of user agents.
     def ignore_user_agent_only=(names)
@@ -85,7 +85,7 @@ module HoptoadNotifier
     def environment_filters
       @environment_filters ||= %w()
     end
-    
+
     # Call this method to modify defaults in your initializers.
     #
     # HoptoadNotifier.configure do |config|
@@ -97,15 +97,15 @@ module HoptoadNotifier
     def configure
       yield self
     end
-    
+
     def protocol #:nodoc:
       secure ? "https" : "http"
     end
-    
+
     def url #:nodoc:
       URI.parse("#{protocol}://#{host}:#{port}/notices/")
     end
-    
+
     def default_notice_options #:nodoc:
       {
         :api_key       => HoptoadNotifier.api_key,
@@ -116,7 +116,7 @@ module HoptoadNotifier
         :environment   => ENV.to_hash
       }
     end
-    
+
     # You can send an exception manually using this method, even when you are not in a
     # controller. You can pass an exception or a hash that contains the attributes that
     # would be sent to Hoptoad:
@@ -157,16 +157,16 @@ module HoptoadNotifier
         base.send(:alias_method, :rescue_action_in_public, :rescue_action_in_public_with_hoptoad)
       end
     end
-    
+
     # Overrides the rescue_action method in ActionController::Base, but does not inhibit
     # any custom processing that is defined with Rails 2's exception helpers.
     def rescue_action_in_public_with_hoptoad exception
       notify_hoptoad(exception) unless ignore?(exception) || ignore_user_agent?
       rescue_action_in_public_without_hoptoad(exception)
-    end 
-        
+    end
+
     # This method should be used for sending manual notifications while you are still
-    # inside the controller. Otherwise it works like HoptoadNotifier.notify. 
+    # inside the controller. Otherwise it works like HoptoadNotifier.notify.
     def notify_hoptoad hash_or_exception
       if public_environment?
         notice = normalize_notice(hash_or_exception)
@@ -186,11 +186,11 @@ module HoptoadNotifier
     end
 
     private
-    
+
     def public_environment? #nodoc:
       defined?(RAILS_ENV) and !['development', 'test'].include?(RAILS_ENV)
     end
-    
+
     def ignore?(exception) #:nodoc:
       ignore_these = HoptoadNotifier.ignore.flatten
       ignore_these.include?(exception.class) || ignore_these.include?(exception.class.name)
@@ -204,7 +204,7 @@ module HoptoadNotifier
           return true if request.user_agent == ua
         end
       end
-      
+
       return false
     end
 
@@ -265,10 +265,10 @@ module HoptoadNotifier
       }
 
       url = HoptoadNotifier.url
-      
-      http = Net::HTTP::Proxy(HoptoadNotifier.proxy_host, 
-                              HoptoadNotifier.proxy_port, 
-                              HoptoadNotifier.proxy_user, 
+
+      http = Net::HTTP::Proxy(HoptoadNotifier.proxy_host,
+                              HoptoadNotifier.proxy_port,
+                              HoptoadNotifier.proxy_user,
                               HoptoadNotifier.proxy_pass).new(url.host, url.port)
 
       http.use_ssl = true
@@ -282,7 +282,7 @@ module HoptoadNotifier
                    logger.error "Timeout while contacting the Hoptoad server."
                    nil
                  end
-       
+
       case response
       when Net::HTTPSuccess then
         logger.info "Hoptoad Success: #{response.class}"
@@ -290,19 +290,19 @@ module HoptoadNotifier
         logger.error "Hoptoad Failure: #{response.class}\n#{response.body if response.respond_to? :body}"
       end
     end
-    
+
     def clean_hoptoad_backtrace backtrace #:nodoc:
       if backtrace.to_a.size == 1
         backtrace = backtrace.to_a.first.split(/\n\s*/)
       end
-    
+
       backtrace.to_a.map do |line|
         HoptoadNotifier.backtrace_filters.inject(line) do |line, proc|
           proc.call(line)
         end
       end
     end
-    
+
     def clean_hoptoad_params params #:nodoc:
       params.each do |k, v|
         params[k] = "[FILTERED]" if HoptoadNotifier.params_filters.any? do |filter|
@@ -310,7 +310,7 @@ module HoptoadNotifier
         end
       end
     end
-    
+
     def clean_hoptoad_environment env #:nodoc:
       env.each do |k, v|
         env[k] = "[FILTERED]" if HoptoadNotifier.environment_filters.any? do |filter|
