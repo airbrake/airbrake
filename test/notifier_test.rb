@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-class NotifierTest < Test::Unit::TestCase
+class NotifierTest < ActiveSupport::TestCase
   context "Sending a notice" do
     context "with an exception" do
       setup do

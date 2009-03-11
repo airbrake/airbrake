@@ -3,12 +3,13 @@ require 'rubygems'
 require 'mocha'
 gem 'thoughtbot-shoulda', ">= 2.0.0"
 require 'shoulda'
-gem 'rails', "<= 2.2.2"
+gem 'rails', "<= 2.3.1"
 require 'action_controller'
 require 'action_controller/test_process'
 require 'active_record'
 require 'active_record/base'
-require 'active_support/testing/core_ext/test/unit/assertions'
+require 'active_support'
+require 'active_support/test_case'
 
 require File.join(File.dirname(__FILE__), "..", "lib", "hoptoad_notifier")
 
