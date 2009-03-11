@@ -32,19 +32,16 @@ You should have something like this in config/initializers/hoptoad.rb.
   HoptoadNotifier.configure do |config|
     config.api_key = '1234567890abcdef'
   end
-  
+
 (Please note that this configuration should be in a global configuration, and
-is *not* enrivonment-specific. Hoptoad is smart enough to know what errors are
+is *not* environment-specific. Hoptoad is smart enough to know what errors are
 caused by what environments, so your staging errors don't get mixed in with
 your production errors.)
 
-Then, to enable hoptoad in your application, include this code...
-
-  include HoptoadNotifier::Catcher
-
-...in your ApplicationController, and all exceptions will be logged to Hoptoad
-where they can be aggregated, filtered, sorted, analyzed, massaged, and
-searched.
+That should be it! Now all exceptions will be logged to Hoptoad where they can
+be aggregated, filtered, sorted, analyzed, massaged, and searched. In previous
+releases you had to include HoptoadNotifier::Catcher into your
+ApplicationController, but the plugin takes care of that now.
 
 ** NOTE FOR RAILS 1.2.* USERS: **
 You will need to copy the hoptoad_notifier_tasks.rake file into your
@@ -144,6 +141,15 @@ To ignore *only* certain errors (and override the defaults), use the
   HoptoadNotifier.configure do |config|
     config.api_key      = '1234567890abcdef'
     config.ignore_only  = [ActiveRecord::IgnoreThisError]
+  end
+
+To ignore certain user agents, add in the #ignore_user_agent attribute as a
+string or regexp:
+
+  HoptoadNotifier.configure do |config|
+    config.api_key      = '1234567890abcdef'
+    config.ignore_user_agent  << /Ignored/
+    config.ignore_user_agent << 'IgnoredUserAgent'
   end
 
 TESTING
