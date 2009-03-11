@@ -1,11 +1,21 @@
 require 'ginger'
 
+def create_scenario(version)
+  scenario = Ginger::Scenario.new
+  scenario[/^active_?support$/]    = version
+  scenario[/^active_?record$/]     = version
+  scenario[/^action_?pack$/]       = version
+  scenario[/^action_?controller$/] = version
+  scenario
+end
+
 Ginger.configure do |config|
-  rails_2_2_2 = Ginger::Scenario.new
-  rails_2_2_2[/rails/] = "2.2.2"
+  config.aliases["active_record"] = "activerecord"
+  config.aliases["active_support"] = "activesupport"
+  config.aliases["action_controller"] = "actionpack"
 
-  rails_2_3_1 = Ginger::Scenario.new
-  rails_2_3_1[/rails/] = "2.3.1"
-
-  config.scenarios << rails_2_2_2 << rails_2_3_1
+  config.scenarios << create_scenario("2.0.2")
+  config.scenarios << create_scenario("2.1.2")
+  config.scenarios << create_scenario("2.2.2")
+  config.scenarios << create_scenario("2.3.1")
 end
