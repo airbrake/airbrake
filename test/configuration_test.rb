@@ -49,6 +49,38 @@ class ConfigurationTest < Test::Unit::TestCase
       assert_equal "hoptoadapp.com", HoptoadNotifier.host
     end
 
+    context "clean backtraces" do
+      setup do
+        HoptoadNotifier.configure {}
+      end
+
+      should "remove trace from vendor/gems" do
+        dirty_backtrace =
+          ["vendor/gems/hoptoad_notifier-0.1.1/lib/hoptoad_notifier.rb:237:in `normalize_notice'",
+           "vendor/gems/hoptoad_notifier-0.1.1/lib/hoptoad_notifier.rb:175:in `notify_hoptoad'",
+           "app/controllers/posts_controller.rb:6:in `index'"]
+
+        clean_backtrace = @controller.send(:clean_hoptoad_backtrace, dirty_backtrace)
+        clean_backtrace.each do |line|
+          assert_no_match /^vendor\/gems\/hoptoad_notifier/, line
+        end
+        assert_equal 1, clean_backtrace.size
+      end
+
+      should "remove trace from vendor/plugins" do
+        dirty_backtrace =
+          ["vendor/plugins/hoptoad_notifier/lib/hoptoad_notifier.rb:237:in `normalize_notice'",
+           "vendor/plugins/hoptoad_notifier/lib/hoptoad_notifier.rb:175:in `notify_hoptoad'",
+           "app/controllers/posts_controller.rb:6:in `index'"]
+
+        clean_backtrace = @controller.send(:clean_hoptoad_backtrace, dirty_backtrace)
+        clean_backtrace.each do |line|
+          assert_no_match /^vendor\/plugins\/hoptoad_notifier/, line
+        end
+        assert_equal 1, clean_backtrace.size
+      end
+    end
+
     should "add filters to the backtrace_filters" do
       assert_difference "HoptoadNotifier.backtrace_filters.length" do
         HoptoadNotifier.configure do |config|
