@@ -49,8 +49,20 @@ class ConfigurationTest < ActiveSupport::TestCase
       assert_equal "hoptoadapp.com", HoptoadNotifier.host
     end
 
+    should "remove notifier trace when cleaning backtrace" do
+      HoptoadNotifier.configure {}
+      options = HoptoadNotifier.default_notice_options
+
+      options = @controller.send(:normalize_notice, {})
+      dirty_backtrace = @controller.send(:clean_hoptoad_backtrace, options[:backtrace])
+
+      dirty_backtrace.each do |line|
+        assert_no_match /lib\/hoptoad_notifier.rb/, line
+      end
+    end
+
     should "add filters to the backtrace_filters" do
-      assert_difference "HoptoadNotifier.backtrace_filters.length" do
+      assert_difference "HoptoadNotifier.backtrace_filters.length", 5 do
         HoptoadNotifier.configure do |config|
           config.filter_backtrace do |line|
             line = "1234"
