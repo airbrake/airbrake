@@ -20,7 +20,6 @@ module HoptoadNotifier
   class << self
     attr_accessor :host, :port, :secure, :api_key, :http_open_timeout, :http_read_timeout,
                   :proxy_host, :proxy_port, :proxy_user, :proxy_pass
-    #attr_reader   :backtrace_filters
 
     def backtrace_filters
       @backtrace_filters ||= []
@@ -99,7 +98,6 @@ module HoptoadNotifier
     #
     # NOTE: secure connections are not yet supported.
     def configure
-      self.backtrace_filters.clear
       add_default_filters
       yield self
       if defined?(ActionController::Base) && !ActionController::Base.include?(HoptoadNotifier::Catcher)
@@ -141,6 +139,8 @@ module HoptoadNotifier
     end
 
     def add_default_filters
+      self.backtrace_filters.clear
+
       filter_backtrace do |line|
         line.gsub(/#{RAILS_ROOT}/, "[RAILS_ROOT]")
       end
@@ -158,7 +158,7 @@ module HoptoadNotifier
       end
 
       filter_backtrace do |line|
-        line if line !~ /^vendor\/(plugins|gems)\/hoptoad_notifier/
+        line if line !~ /lib\/#{File.basename(__FILE__)}/
       end
     end
   end
