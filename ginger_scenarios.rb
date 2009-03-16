@@ -17,5 +17,5 @@ Ginger.configure do |config|
   config.scenarios << create_scenario("2.0.2")
   config.scenarios << create_scenario("2.1.2")
   config.scenarios << create_scenario("2.2.2")
-  config.scenarios << create_scenario("2.3.1")
+  config.scenarios << create_scenario("2.3.2")
 end
