@@ -138,6 +138,54 @@ class ControllerTest < ActiveSupport::TestCase
     end
   end
 
+  context "when the logger is overridden for an action" do
+    setup do
+      class ::IgnoreActionController < ::ActionController::Base
+        include TestMethods
+        include HoptoadNotifier::Catcher
+        def rescue_action e
+          rescue_action_in_public e
+        end
+        def logger
+          super unless action_name == "do_raise"
+        end
+      end
+      ::ActionController::Base.logger = Logger.new(STDOUT)
+      @controller = ::IgnoreActionController.new
+      @controller.stubs(:public_environment?).returns(true)
+      @controller.stubs(:rescue_action_in_public_without_hoptoad)
+
+      # stubbing out Net::HTTP as well
+      @body = 'body'
+      @http = stub(:post => @response, :read_timeout= => nil, :open_timeout= => nil, :use_ssl= => nil)
+      Net::HTTP.stubs(:new).returns(@http)
+      HoptoadNotifier.port = nil
+      HoptoadNotifier.host = nil
+      HoptoadNotifier.proxy_host = nil
+    end
+
+    should "work when action is called and request works" do
+      @response = stub(:body => @body, :class => Net::HTTPSuccess)
+      assert_nothing_raised do
+        request("do_raise")
+      end
+    end
+
+    should "work when action is called and request doesn't work" do
+      @response = stub(:body => @body, :class => Net::HTTPError)
+      assert_nothing_raised do
+        request("do_raise")
+      end
+    end
+
+    should "work when action is called and hoptoad times out" do
+      @http.stubs(:post).raises(TimeoutError)
+      assert_nothing_raised do
+        request("do_raise")
+      end
+    end
+  end
+
   context "The hoptoad test controller" do
     setup do
       @controller = ::HoptoadController.new

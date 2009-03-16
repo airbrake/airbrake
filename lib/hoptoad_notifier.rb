@@ -286,15 +286,15 @@ module HoptoadNotifier
       response = begin
                    http.post(url.path, stringify_keys(data).to_yaml, headers)
                  rescue TimeoutError => e
-                   logger.error "Timeout while contacting the Hoptoad server."
+                   logger.error "Timeout while contacting the Hoptoad server." if logger
                    nil
                  end
 
       case response
       when Net::HTTPSuccess then
-        logger.info "Hoptoad Success: #{response.class}"
+        logger.info "Hoptoad Success: #{response.class}" if logger
       else
-        logger.error "Hoptoad Failure: #{response.class}\n#{response.body if response.respond_to? :body}"
+        logger.error "Hoptoad Failure: #{response.class}\n#{response.body if response.respond_to? :body}" if logger
       end
     end
 
