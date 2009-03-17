@@ -2,7 +2,6 @@ namespace :hoptoad do
   desc "Verify your plugin installation by sending a test exception to the hoptoad service"
   task :test => :environment do
     require 'action_controller/test_process'
-    require 'application_controller'
 
     request = ActionController::TestRequest.new
 

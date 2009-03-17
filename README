@@ -58,8 +58,8 @@ which will be visible immediately.
 USAGE
 
 For the most part, hoptoad works for itself.  Once you've included the notifier 
-in your ApplicationController, all errors will be rescued by the 
-#rescue_action_in_public provided by the plugin.
+in your ApplicationController (which is now done automatically by the plugin), 
+all errors will be rescued by the #rescue_action_in_public provided by the plugin.
 
 If you want to log arbitrary things which you've rescued yourself from a 
 controller, you can do something like this:
