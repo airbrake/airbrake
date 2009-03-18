@@ -337,7 +337,11 @@ module HoptoadNotifier
     end
 
     def serializable?(value) #:nodoc:
-      !(value.is_a?(Module) || value.kind_of?(IO))
+      value.is_a?(Fixnum) || 
+      value.is_a?(Array)  || 
+      value.is_a?(String) || 
+      value.is_a?(Hash)   || 
+      value.is_a?(Bignum)
     end
 
     def stringify_keys(hash) #:nodoc:

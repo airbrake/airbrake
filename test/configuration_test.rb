@@ -40,8 +40,10 @@ class ConfigurationTest < ActiveSupport::TestCase
       assert_equal 'secret',            HoptoadNotifier.proxy_pass
       assert_equal 2,                   HoptoadNotifier.http_open_timeout
       assert_equal 5,                   HoptoadNotifier.http_read_timeout
-      assert_equal (HoptoadNotifier::IGNORE_USER_AGENT_DEFAULT + ['UserAgentString', /UserAgentRegexp/]), HoptoadNotifier.ignore_user_agent
-      assert_equal (HoptoadNotifier::IGNORE_DEFAULT + [RuntimeError]), HoptoadNotifier.ignore
+      assert_equal HoptoadNotifier::IGNORE_USER_AGENT_DEFAULT + ['UserAgentString', /UserAgentRegexp/], 
+                   HoptoadNotifier.ignore_user_agent
+      assert_equal HoptoadNotifier::IGNORE_DEFAULT + [RuntimeError], 
+                   HoptoadNotifier.ignore
     end
 
     should "set a default host" do
@@ -49,15 +51,35 @@ class ConfigurationTest < ActiveSupport::TestCase
       assert_equal "hoptoadapp.com", HoptoadNotifier.host
     end
 
+    [File.open(__FILE__), Proc.new { puts "boo!" }, Module.new].each do |object|
+      should "remove #{object.class} when cleaning environment" do
+        HoptoadNotifier.configure {}
+        notice = @controller.send(:normalize_notice, {})
+        notice[:environment][:strange_object] = object
+
+        assert_nil @controller.send(:clean_non_serializable_data, notice)[:environment][:strange_object]
+      end
+    end
+
+    [123, "string", 123_456_789_123_456_789, [:a, :b], {:a => 1}, HashWithIndifferentAccess.new].each do |object|
+      should "not remove #{object.class} when cleaning environment" do
+        HoptoadNotifier.configure {}
+        notice = @controller.send(:normalize_notice, {})
+        notice[:environment][:strange_object] = object
+
+        assert_equal object, @controller.send(:clean_non_serializable_data, notice)[:environment][:strange_object]
+      end
+    end
+
     should "remove notifier trace when cleaning backtrace" do
       HoptoadNotifier.configure {}
-      options = HoptoadNotifier.default_notice_options
+      notice = @controller.send(:normalize_notice, {})
 
-      options = @controller.send(:normalize_notice, {})
-      dirty_backtrace = @controller.send(:clean_hoptoad_backtrace, options[:backtrace])
+      assert notice[:backtrace].grep(%r{lib/hoptoad_notifier.rb}).any?, notice[:backtrace].inspect
 
+      dirty_backtrace = @controller.send(:clean_hoptoad_backtrace, notice[:backtrace])
       dirty_backtrace.each do |line|
-        assert_no_match /lib\/hoptoad_notifier.rb/, line
+        assert_no_match %r{lib/hoptoad_notifier.rb}, line
       end
     end
 
