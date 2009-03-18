@@ -20,3 +20,11 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_files.include('README')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+desc 'Run ginger tests'
+task :ginger do
+  $LOAD_PATH << File.join(*%w[vendor ginger lib])
+  ARGV.clear
+  ARGV << 'test'
+  load File.join(*%w[vendor ginger bin ginger])
+end

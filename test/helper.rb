@@ -3,6 +3,8 @@ require 'rubygems'
 require 'mocha'
 gem 'thoughtbot-shoulda', ">= 2.0.0"
 require 'shoulda'
+
+$LOAD_PATH << File.join(File.dirname(__FILE__), *%w[.. vendor ginger lib])
 require 'ginger'
 
 require 'action_controller'
