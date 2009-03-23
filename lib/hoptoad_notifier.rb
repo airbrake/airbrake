@@ -361,3 +361,4 @@ module HoptoadNotifier
     include HoptoadNotifier::Catcher
   end
 end
+

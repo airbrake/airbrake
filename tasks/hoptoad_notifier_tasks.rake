@@ -1,4 +1,10 @@
 namespace :hoptoad do
+  desc "Notify Hoptoad of a new deploy."
+  task :deploy => :environment do
+    require 'hoptoad_tasks'
+    HoptoadTasks.create_deploy(ENV['TO'])
+  end
+
   desc "Verify your plugin installation by sending a test exception to the hoptoad service"
   task :test => :environment do
     require 'action_controller/test_process'
