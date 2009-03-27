@@ -74,6 +74,20 @@ controller, you can do something like this:
 The #notify_hoptoad call will send the notice over to hoptoad for later 
 analysis.
 
+TRACKING DEPLOYMENTS IN HOPTOAD
+
+Paying Hoptoad plans support the ability to track deployments of your application in Hoptoad.
+By notify Hoptoad of your application deployments, all errors are resolved when a deploy occurs,
+so that you'll be notified again about any errors that reoccur after a deployment.
+
+Additionally, it's possible to review the errors in Hoptoad that occurred before and after a deploy.
+
+When Hoptoad is installed as a plugin this functionality is loaded automatically (if you have Capistrano version 2.0.0 or greater).
+
+When Hoptoad installed as a gem, you need to add 
+  require 'hoptoad_notifier/recipes/hoptoad'
+to your deploy.rb
+
 GOING BEYOND EXCEPTIONS
 
 You can also pass a hash to notify_hoptoad method and store whatever you want, not just an exception. And you can also use it anywhere, not just in controllers:
