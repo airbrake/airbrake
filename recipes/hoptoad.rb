@@ -6,14 +6,16 @@
 #
 # Defines deploy:notify_hoptoad which will send information about the deploy to Hoptoad.
 #
-after "deploy", "deploy:notify_hoptoad"
+after "deploy:cleanup", "deploy:notify_hoptoad"
 
 namespace :deploy do
   desc "Notify Hoptoad of the deployment"
-  task :notify_hoptoad, :roles => :app do
-    rake = fetch(:rake, "rake")
+  task :notify_hoptoad do
     rails_env = fetch(:rails_env, "production")
     local_user = ENV['USER'] || ENV['USERNAME']
-    run "cd #{current_release}; #{rake} RAILS_ENV=#{rails_env} hoptoad:deploy TO=#{rails_env} REVISION=#{current_revision} REPO=#{repository} USER=#{local_user}"
+    notify_command = "rake RAILS_ENV=#{rails_env} hoptoad:deploy TO=#{rails_env} REVISION=#{current_revision} REPO=#{repository} USER=#{local_user}"
+    puts "Notifying Hoptoad of Deploy (#{notify_command})..."
+    `#{notify_command}`
+    puts "Hoptoad Notification Complete."
   end
 end
