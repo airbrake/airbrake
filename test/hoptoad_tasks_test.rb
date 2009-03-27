@@ -25,8 +25,8 @@ class HoptoadTasksTest < ActiveSupport::TestCase
     context "in a configured project" do
       setup { HoptoadNotifier.configure { |config| config.api_key = "1234123412341234" } }
 
-      context "on deploy_to(nil)" do
-        setup { @output = HoptoadTasks.deploy_to(nil) }
+      context "on deploy({})" do
+        setup { @output = HoptoadTasks.deploy({}) }
 
         before_should "complain about missing rails env" do
           HoptoadTasks.expects(:puts).with(regexp_matches(/rails environment/i))
@@ -37,8 +37,8 @@ class HoptoadTasksTest < ActiveSupport::TestCase
         end
       end
 
-      context "on deploy_to('staging')" do
-        setup { @output = HoptoadTasks.deploy_to("staging") }
+      context "on deploy(:rails_env => 'staging')" do
+        setup { @output = HoptoadTasks.deploy(:rails_env => "staging") }
 
         before_should "post to http://hoptoadapp.com/deploys.txt" do
           URI.stubs(:parse).with('http://hoptoadapp.com/deploys.txt').returns(:uri)
@@ -89,8 +89,8 @@ class HoptoadTasksTest < ActiveSupport::TestCase
         end
       end
 
-      context "on deploy_to('staging')" do
-        setup { @output = HoptoadTasks.deploy_to("staging") }
+      context "on deploy(:rails_env => 'staging')" do
+        setup { @output = HoptoadTasks.deploy(:rails_env => "staging") }
 
         before_should "post to the custom host" do
           URI.stubs(:parse).with('http://custom.host/deploys.txt').returns(:uri)
@@ -102,8 +102,8 @@ class HoptoadTasksTest < ActiveSupport::TestCase
     context "when not configured" do
       setup { HoptoadNotifier.configure { |config| config.api_key = "" } }
 
-      context "on deploy_to('staging')" do
-        setup { @output = HoptoadTasks.deploy_to("staging") }
+      context "on deploy(:rails_env => 'staging')" do
+        setup { @output = HoptoadTasks.deploy(:rails_env => "staging") }
 
         before_should "complain about missing api key" do
           HoptoadTasks.expects(:puts).with(regexp_matches(/api key/i))
