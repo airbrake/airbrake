@@ -13,6 +13,6 @@ namespace :deploy do
   task :notify_hoptoad, :roles => :app do
     rake = fetch(:rake, "rake")
     rails_env = fetch(:rails_env, "production")
-    run "cd #{current_release}; #{rake} RAILS_ENV=#{rails_env} hoptoad:deploy TO=#{rails_env}"
+    run "cd #{current_release}; #{rake} RAILS_ENV=#{rails_env} hoptoad:deploy TO=#{rails_env} REVISION=#{current_revision} REPO=#{repository}"
   end
 end
