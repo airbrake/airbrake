@@ -9,11 +9,10 @@
 after "deploy", "deploy:notify_hoptoad"
 
 namespace :deploy do
-  Capistrano::Configuration.instance(:must_exist).load do
-    task :notify_hoptoad, :roles => :app do
-      rake = fetch(:rake, "rake")
-      rails_env = fetch(:rails_env, "production")
-      run "cd #{current_release}; #{rake} RAILS_ENV=#{rails_env} hoptoad:deploy TO=#{rails_env}"
-    end
+  desc "Notify Hoptoad of the deployment"
+  task :notify_hoptoad, :roles => :app do
+    rake = fetch(:rake, "rake")
+    rails_env = fetch(:rails_env, "production")
+    run "cd #{current_release}; #{rake} RAILS_ENV=#{rails_env} hoptoad:deploy TO=#{rails_env}"
   end
 end
