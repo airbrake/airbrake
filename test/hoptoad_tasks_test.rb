@@ -40,8 +40,8 @@ class HoptoadTasksTest < ActiveSupport::TestCase
       context "on deploy_to('staging')" do
         setup { @output = HoptoadTasks.deploy_to("staging") }
 
-        before_should "post to http://hoptoadapp.com/deploys" do
-          URI.stubs(:parse).with('http://hoptoadapp.com/deploys').returns(:uri)
+        before_should "post to http://hoptoadapp.com/deploys.txt" do
+          URI.stubs(:parse).with('http://hoptoadapp.com/deploys.txt').returns(:uri)
           Net::HTTP.expects(:post_form).with(:uri, kind_of(Hash)).returns(successful_response)
         end
 
@@ -93,7 +93,7 @@ class HoptoadTasksTest < ActiveSupport::TestCase
         setup { @output = HoptoadTasks.deploy_to("staging") }
 
         before_should "post to the custom host" do
-          URI.stubs(:parse).with('http://custom.host/deploys').returns(:uri)
+          URI.stubs(:parse).with('http://custom.host/deploys.txt').returns(:uri)
           Net::HTTP.expects(:post_form).with(:uri, kind_of(Hash)).returns(successful_response)
         end
       end
