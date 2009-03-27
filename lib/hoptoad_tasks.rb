@@ -14,7 +14,7 @@ module HoptoadTasks
       return false
     end
 
-    url = URI.parse("http://#{HoptoadNotifier.host}/deploys")
+    url = URI.parse("http://#{HoptoadNotifier.host}/deploys.txt")
     response = Net::HTTP.post_form(url, :api_key => HoptoadNotifier.api_key, "deploy[rails_env]" => rails_env)
     puts response.body
     return Net::HTTPSuccess === response
