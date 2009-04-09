@@ -106,6 +106,15 @@ def should_notify_normally
     @response = ActionController::TestResponse.new
     @controller.process(@request, @response)
   end
+
+  should "send session data to hoptoad when the session responds to to_hash" do
+    expect_session_data_for(@controller)
+    @request = ActionController::TestRequest.new
+    @request.action = 'do_raise'
+    @request.session.stubs(:to_hash).returns(:message => 'Hello')
+    @response = ActionController::TestResponse.new
+    @controller.process(@request, @response)
+  end
 end
 
 def should_auto_include_catcher
