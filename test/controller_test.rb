@@ -1,5 +1,23 @@
 require File.dirname(__FILE__) + '/helper'
 
+def expect_session_data_for(controller)
+  # NOTE: setting expectations on the controller is not a good idea here,
+  # because the controller is the unit we're trying to test. However, as all
+  # exception-related behavior is mixed into the controller itsef, we have
+  # little choice. Delegating notifier methods from the controller to a
+  # Sender could make this easier to maintain and test.
+
+  @controller.expects(:send_to_hoptoad).with do |params|
+    assert params.respond_to?(:to_hash), "The notifier needs a hash"
+    notice = params[:notice]
+    assert_not_nil notice, "No notice passed to the notifier"
+    assert_not_nil notice[:session][:key], "No session key was set"
+    assert_not_nil notice[:session][:data], "No session data was set"
+    true
+  end
+  @controller.stubs(:rescue_action_in_public_without_hoptoad)
+end
+
 def should_notify_normally
   should "have inserted its methods into the controller" do
     assert @controller.methods.include?("inform_hoptoad")
@@ -78,6 +96,15 @@ def should_notify_normally
     @controller.expects(:clean_non_serializable_data).with(processed_notice).returns(:serializable_data)
 
     assert_equal(:serializable_data, @controller.send(:clean_notice, raw_notice))
+  end
+
+  should "send session data to hoptoad when the session has @data" do
+    expect_session_data_for(@controller)
+    @request = ActionController::TestRequest.new
+    @request.action = 'do_raise'
+    @request.session.instance_variable_set("@data", { :message => 'Hello' })
+    @response = ActionController::TestResponse.new
+    @controller.process(@request, @response)
   end
 end
 
