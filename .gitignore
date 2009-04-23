@@ -7,4 +7,4 @@ public/system
 *.DS_Store
 coverage/*
 rdoc/
-
+tags
