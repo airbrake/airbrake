@@ -26,6 +26,18 @@ module HoptoadNotifier
       @backtrace_filters ||= []
     end
 
+    def ignore_by_filters
+      @ignore_by_filters ||= []
+    end
+
+    # Takes a block and adds it to the list of ignore filters.  When the filters
+    # run, the block will be handed the exception.  If the block yields a value
+    # equivalent to "true," the exception will be ignored, otherwise it will be
+    # processed by hoptoad.
+    def ignore_by_filter &block
+      self.ignore_by_filters << block
+    end
+
     # Takes a block and adds it to the list of backtrace filters. When the filters
     # run, the block will be handed each line of the backtrace and can modify
     # it as necessary. For example, by default a path matching the RAILS_ROOT
@@ -209,7 +221,7 @@ module HoptoadNotifier
 
     def ignore?(exception) #:nodoc:
       ignore_these = HoptoadNotifier.ignore.flatten
-      ignore_these.include?(exception.class) || ignore_these.include?(exception.class.name)
+      ignore_these.include?(exception.class) || ignore_these.include?(exception.class.name) || HoptoadNotifier.ignore_by_filters.find {|filter| filter.call(exception_to_data(exception))}
     end
 
     def ignore_user_agent? #:nodoc:

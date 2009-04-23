@@ -166,6 +166,15 @@ string or regexp:
     config.ignore_user_agent << 'IgnoredUserAgent'
   end
 
+To ignore exceptions based on other conditions, use #ignore_by_filter:
+
+  HoptoadNotifier.configure do |config|
+    config.api_key      = '1234567890abcdef'
+    config.ignore_by_filter do |exception_data|
+      true if exception_data[:error_class] == "RuntimeError"
+    end
+  end
+
 TESTING
 
 When you run your tests, you might notice that the hoptoad service is recording

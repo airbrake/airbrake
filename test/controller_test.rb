@@ -261,6 +261,26 @@ class ControllerTest < ActiveSupport::TestCase
 
       should_notify_normally
 
+      context "and configured to ignore_by_filter" do
+        setup do
+          HoptoadNotifier.configure do |config|
+            config.ignore_by_filter do |exception_data|
+              if exception_data[:error_class] == "RuntimeError"
+                true if exception_data[:request][:params]['blah'] == 'skip'
+              end
+            end
+          end
+        end
+
+        should "ignore exceptions based on param data" do
+          @controller.expects(:notify_hoptoad).never
+          @controller.expects(:rescue_action_in_public_without_hoptoad)
+          assert_nothing_raised do
+            request("do_raise", "get", nil, :blah => 'skip')
+          end
+        end
+      end
+
       context "and configured to ignore additional exceptions" do
         setup do
           HoptoadNotifier.ignore << ActiveRecord::StatementInvalid

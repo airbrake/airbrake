@@ -57,10 +57,11 @@ class HoptoadController < ActionController::Base
   include TestMethods
 end
 
-def request(action = nil, method = :get, user_agent = nil)
+def request(action = nil, method = :get, user_agent = nil, params = {})
   @request = ActionController::TestRequest.new
   @request.action = action ? action.to_s : ""
   @request.user_agent = user_agent unless user_agent.nil?
+  @request.query_parameters = @request.query_parameters.merge(params)
   @response = ActionController::TestResponse.new
   @controller.process(@request, @response)
 end
