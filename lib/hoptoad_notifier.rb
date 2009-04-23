@@ -203,8 +203,6 @@ module HoptoadNotifier
       end
     end
 
-    alias_method :inform_hoptoad, :notify_hoptoad
-
     # Returns the default logger or a logger that prints to STDOUT. Necessary for manual
     # notifications outside of controllers.
     def logger

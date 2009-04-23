@@ -6,4 +6,5 @@ public/system
 *.swp
 *.DS_Store
 coverage/*
+rdoc/
 

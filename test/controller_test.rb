@@ -20,7 +20,7 @@ end
 
 def should_notify_normally
   should "have inserted its methods into the controller" do
-    assert @controller.methods.include?("inform_hoptoad")
+    assert @controller.methods.include?("notify_hoptoad")
   end
 
   should "prevent raises and send the error to hoptoad" do
