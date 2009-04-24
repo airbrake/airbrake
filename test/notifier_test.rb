@@ -16,6 +16,7 @@ class NotifierTest < ActiveSupport::TestCase
         HoptoadNotifier.instance_variable_set("@backtrace_filters", [])
         HoptoadNotifier::Sender.expects(:new).returns(@sender)
         @sender.stubs(:public_environment?).returns(true)
+        HoptoadNotifier.stubs(:environment_info)
       end
 
       context "when using an HTTP Proxy" do

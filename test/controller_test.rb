@@ -190,6 +190,7 @@ class ControllerTest < ActiveSupport::TestCase
       @controller = ::IgnoreActionController.new
       @controller.stubs(:public_environment?).returns(true)
       @controller.stubs(:rescue_action_in_public_without_hoptoad)
+      HoptoadNotifier.stubs(:environment_info)
 
       # stubbing out Net::HTTP as well
       @body = 'body'
