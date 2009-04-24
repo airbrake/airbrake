@@ -18,7 +18,7 @@ module HoptoadNotifier
 
   IGNORE_USER_AGENT_DEFAULT = []
 
-  VERSION = "1.2"
+  VERSION = "1.2.0"
   LOG_PREFIX = "** [Hoptoad] "
 
   class << self
