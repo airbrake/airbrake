@@ -70,10 +70,12 @@ def should_notify_normally
     end
   end
 
-  should "filter non-serializable data" do
+  should "convert non-serializable data to strings" do
+    klass = Class.new
     File.open(__FILE__) do |file|
-      assert_equal( {:ghi => "789"},
-                   @controller.send(:clean_non_serializable_data, :ghi => "789", :class => Class.new, :file => file) )
+      data = { :ghi => "789", :klass => klass, :file => file }
+      assert_equal({ :ghi => "789", :file => file.to_s, :klass => klass.to_s },
+                   @controller.send(:clean_non_serializable_data, data))
     end
   end
 

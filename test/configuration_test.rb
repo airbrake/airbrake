@@ -52,12 +52,13 @@ class ConfigurationTest < ActiveSupport::TestCase
     end
 
     [File.open(__FILE__), Proc.new { puts "boo!" }, Module.new].each do |object|
-      should "remove #{object.class} when cleaning environment" do
+      should "convert #{object.class} to a string when cleaning environment" do
         HoptoadNotifier.configure {}
         notice = @controller.send(:normalize_notice, {})
         notice[:environment][:strange_object] = object
 
-        assert_nil @controller.send(:clean_non_serializable_data, notice)[:environment][:strange_object]
+        filtered_notice = @controller.send(:clean_non_serializable_data, notice)
+        assert_equal object.to_s, filtered_notice[:environment][:strange_object]
       end
     end
 
