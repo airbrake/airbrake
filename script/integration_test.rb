@@ -23,6 +23,6 @@ HoptoadNotifier.configure do |config|
   config.host    = host
   config.api_key = ARGV.first
 end
-puts "Sending #{secure or "in"}secure notification to project with key #{ARGV.first}"
+puts "Sending #{secure ? "" : "in"}secure notification to project with key #{ARGV.first}"
 HoptoadNotifier.notify(exception)
 
