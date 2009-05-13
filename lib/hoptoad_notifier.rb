@@ -118,7 +118,8 @@ module HoptoadNotifier
     end
 
     def environment_info
-      "[Rails: #{::Rails::VERSION::STRING}] [Ruby: #{RUBY_VERSION}] [RailsEnv: #{RAILS_ENV}]"
+      info = "[Ruby: #{RUBY_VERSION}]"
+      info << " [Rails: #{::Rails::VERSION::STRING}] [RailsEnv: #{RAILS_ENV}]" if defined?(Rails)
     end
 
     def write_verbose_log(message)

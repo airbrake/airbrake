@@ -2,6 +2,12 @@ require File.dirname(__FILE__) + '/helper'
 
 class NotifierTest < ActiveSupport::TestCase
   context "Sending a notice" do
+    should "not fail without rails environment" do
+      assert_nothing_raised do
+        HoptoadNotifier.environment_info
+      end
+    end
+
     context "with an exception" do
       setup do
         @sender    = HoptoadNotifier::Sender.new
