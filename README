@@ -79,7 +79,7 @@ To perform custom error processing after Hoptoad has been notified, define the i
 TRACKING DEPLOYMENTS IN HOPTOAD
 
 Paying Hoptoad plans support the ability to track deployments of your application in Hoptoad.
-By notify Hoptoad of your application deployments, all errors are resolved when a deploy occurs,
+By notifying Hoptoad of your application deployments, all errors are resolved when a deploy occurs,
 so that you'll be notified again about any errors that reoccur after a deployment.
 
 Additionally, it's possible to review the errors in Hoptoad that occurred before and after a deploy.
