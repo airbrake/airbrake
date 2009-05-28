@@ -140,7 +140,7 @@ Hoptoad ignores the following exceptions by default:
   ActionController::RoutingError
   ActionController::InvalidAuthenticityToken
   CGI::Session::CookieStore::TamperedWithCookie
-  
+
 To ignore errors in addition to those, specify their names in your Hoptoad 
 configuration block.
 
@@ -173,6 +173,16 @@ To ignore exceptions based on other conditions, use #ignore_by_filter:
     config.ignore_by_filter do |exception_data|
       true if exception_data[:error_class] == "RuntimeError"
     end
+  end
+
+To replace sensitive information sent to the hoptoad service with [FILTERED] use #environment_filters:
+
+  HoptoadNotifier.configure do |config|
+    config.api_key      = '1234567890abcdef'
+    config.environment_filters << "AWS_SECRET"
+    config.environment_filters << "EC2_PRIVATE_KEY"
+    config.environment_filters << "AWS_ACCESS"
+    config.environment_filters << "EC2_CERT"
   end
 
 TESTING
