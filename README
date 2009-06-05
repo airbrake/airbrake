@@ -74,6 +74,8 @@ controller, you can do something like this:
 The #notify_hoptoad call will send the notice over to hoptoad for later 
 analysis.
 
+To perform custom error processing after Hoptoad has been notified, define the instance method #rescue_action_in_public_without_hoptoad(exception) in your controller.
+
 TRACKING DEPLOYMENTS IN HOPTOAD
 
 Paying Hoptoad plans support the ability to track deployments of your application in Hoptoad.
