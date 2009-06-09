@@ -125,7 +125,7 @@ def should_auto_include_catcher
   end
 end
 
-class ControllerTest < ActiveSupport::TestCase
+class ControllerTest < Test::Unit::TestCase
   context "Hoptoad inclusion" do
     should "be able to occur even outside Rails controllers" do
       assert_nothing_raised do

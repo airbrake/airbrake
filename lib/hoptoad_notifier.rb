@@ -257,7 +257,9 @@ module HoptoadNotifier
     end
 
     def ignore_user_agent? #:nodoc:
-      HoptoadNotifier.ignore_user_agent.flatten.any? { |ua| ua === request.user_agent }
+      # Rails 1.2.6 doesn't have request.user_agent, so check for it here
+      user_agent = request.respond_to?(:user_agent) ? request.user_agent : request.env["HTTP_USER_AGENT"]
+      HoptoadNotifier.ignore_user_agent.flatten.any? { |ua| ua === user_agent }
     end
 
     def exception_to_data exception #:nodoc:

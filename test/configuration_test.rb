@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-class ConfigurationTest < ActiveSupport::TestCase
+class ConfigurationTest < Test::Unit::TestCase
   context "HoptoadNotifier configuration" do
     setup do
       @controller = HoptoadController.new

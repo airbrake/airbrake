@@ -12,7 +12,6 @@ require 'action_controller/test_process'
 require 'active_record'
 require 'active_record/base'
 require 'active_support'
-require 'active_support/test_case'
 
 require File.join(File.dirname(__FILE__), "..", "lib", "hoptoad_notifier")
 
@@ -57,14 +56,59 @@ class HoptoadController < ActionController::Base
   include TestMethods
 end
 
-class ActiveSupport::TestCase
+class Test::Unit::TestCase
   def request(action = nil, method = :get, user_agent = nil, params = {})
     @request = ActionController::TestRequest.new
     @request.action = action ? action.to_s : ""
-    @request.user_agent = user_agent unless user_agent.nil?
+
+    if user_agent
+      if @request.respond_to?(:user_agent=)
+        @request.user_agent = user_agent
+      else
+        @request.env["HTTP_USER_AGENT"] = user_agent
+      end
+    end
     @request.query_parameters = @request.query_parameters.merge(params)
     @response = ActionController::TestResponse.new
     @controller.process(@request, @response)
   end
+
+  # Borrowed from ActiveSupport 2.3.2
+  def assert_difference(expression, difference = 1, message = nil, &block)
+    b = block.send(:binding)
+    exps = Array.wrap(expression)
+    before = exps.map { |e| eval(e, b) }
+
+    yield
+
+    exps.each_with_index do |e, i|
+      error = "#{e.inspect} didn't change by #{difference}"
+      error = "#{message}.\n#{error}" if message
+      assert_equal(before[i] + difference, eval(e, b), error)
+    end
+  end
+
+  def assert_no_difference(expression, message = nil, &block)
+    assert_difference expression, 0, message, &block
+  end
 end
 
+# Also stolen from AS 2.3.2
+class Array
+  # Wraps the object in an Array unless it's an Array.  Converts the
+  # object to an Array using #to_ary if it implements that.
+  def self.wrap(object)
+    case object
+    when nil
+      []
+    when self
+      object
+    else
+      if object.respond_to?(:to_ary)
+        object.to_ary
+      else
+        [object]
+      end
+    end
+  end
+end

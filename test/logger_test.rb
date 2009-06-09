@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-class LoggerTest < ActiveSupport::TestCase
+class LoggerTest < Test::Unit::TestCase
   class ::LoggerController < ::ActionController::Base
     include HoptoadNotifier::Catcher
     include TestMethods

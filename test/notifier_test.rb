@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-class NotifierTest < ActiveSupport::TestCase
+class NotifierTest < Test::Unit::TestCase
   context "Sending a notice" do
     should "not fail without rails environment" do
       assert_nothing_raised do
