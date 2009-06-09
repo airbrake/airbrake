@@ -6,7 +6,8 @@
 #
 # Defines deploy:notify_hoptoad which will send information about the deploy to Hoptoad.
 #
-after "deploy:cleanup", "deploy:notify_hoptoad"
+after "deploy",            "deploy:notify_hoptoad"
+after "deploy:migrations", "deploy:notify_hoptoad"
 
 namespace :deploy do
   desc "Notify Hoptoad of the deployment"
