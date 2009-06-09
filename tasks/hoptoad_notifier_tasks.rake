@@ -11,9 +11,9 @@ namespace :hoptoad do
   desc "Verify your plugin installation by sending a test exception to the hoptoad service"
   task :test => :environment do
     require 'action_controller/test_process'
+    require 'app/controllers/application' if File.exists?('app/controllers/application.rb')
 
     request = ActionController::TestRequest.new
-
     response = ActionController::TestResponse.new
 
     class HoptoadTestingException < RuntimeError; end
