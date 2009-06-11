@@ -56,6 +56,7 @@ If everything is configured properly, that task will send a notice to hoptoad
 which will be visible immediately.
 
 USAGE
+-----
 
 For the most part, hoptoad works for itself.  Once you've included the notifier 
 in your ApplicationController (which is now done automatically by the plugin), 
@@ -77,6 +78,7 @@ analysis.
 To perform custom error processing after Hoptoad has been notified, define the instance method #rescue_action_in_public_without_hoptoad(exception) in your controller.
 
 TRACKING DEPLOYMENTS IN HOPTOAD
+-------------------------------
 
 Paying Hoptoad plans support the ability to track deployments of your application in Hoptoad.
 By notifying Hoptoad of your application deployments, all errors are resolved when a deploy occurs,
@@ -91,6 +93,7 @@ When Hoptoad installed as a gem, you need to add
 to your deploy.rb
 
 GOING BEYOND EXCEPTIONS
+-----------------------
 
 You can also pass a hash to notify_hoptoad method and store whatever you want, not just an exception. And you can also use it anywhere, not just in controllers:
 
@@ -129,6 +132,7 @@ Hoptoad merges the hash you pass with these default options:
 You can override any of those parameters.
 
 FILTERING
+---------
 
 You can specify a whitelist of errors, that Hoptoad will not report on.  Use 
 this feature when you are so apathetic to certain errors that you don't want 
@@ -188,6 +192,7 @@ To replace sensitive information sent to the hoptoad service with [FILTERED] use
   end
 
 TESTING
+-------
 
 When you run your tests, you might notice that the hoptoad service is recording
 notices generated using #notify when you don't expect it to.  You can 
@@ -200,7 +205,21 @@ errors are not reported while running tests.
     end
   end
 
+SUPPORTED RAILS VERSIONS
+------------------------
+
+The notifier currently supports the following versions of Rails:
+
+* 1.2.6
+* 2.0.2
+* 2.1.2
+* 2.2.2
+* 2.3.2
+
+Please open up a support ticket on Tender ( http://help.hoptoadapp.com ) if you're using a version of Rails that is not listed above and the notifier is not working properly.
+
 THANKS
+------
 
 Thanks to Eugene Bolshakov for the excellent write-up on GOING BEYOND EXCEPTIONS, which we have included above.
 
