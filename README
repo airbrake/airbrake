@@ -145,6 +145,7 @@ Hoptoad ignores the following exceptions by default:
   ActiveRecord::RecordNotFound
   ActionController::RoutingError
   ActionController::InvalidAuthenticityToken
+  ActionController::UnknownAction
   CGI::Session::CookieStore::TamperedWithCookie
 
 To ignore errors in addition to those, specify their names in your Hoptoad 
