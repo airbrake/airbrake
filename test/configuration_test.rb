@@ -10,7 +10,7 @@ class ConfigurationTest < Test::Unit::TestCase
           rescue_action_in_public e
         end
       end
-      assert @controller.methods.include?("notify_hoptoad")
+      assert @controller.respond_to?(:notify_hoptoad)
     end
 
     should "be done with a block" do

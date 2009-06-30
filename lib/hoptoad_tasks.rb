@@ -14,7 +14,7 @@ module HoptoadTasks
       return false
     end
 
-    params = {:api_key => HoptoadNotifier.api_key}
+    params = {'api_key' => HoptoadNotifier.api_key}
     opts.each {|k,v| params["deploy[#{k}]"] = v }
 
     url = URI.parse("http://#{HoptoadNotifier.host}/deploys.txt")
