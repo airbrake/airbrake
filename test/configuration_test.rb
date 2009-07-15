@@ -117,6 +117,8 @@ class ConfigurationTest < Test::Unit::TestCase
         end
       end
 
+      assert HoptoadNotifier.params_filters.include?( "password" )
+      assert HoptoadNotifier.params_filters.include?( "password_confirmation" )
       assert HoptoadNotifier.params_filters.include?( "abc" )
       assert HoptoadNotifier.params_filters.include?( "def" )
 

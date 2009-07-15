@@ -98,7 +98,7 @@ module HoptoadNotifier
     # Returns a list of parameters that should be filtered out of what is sent to Hoptoad.
     # By default, all "password" attributes will have their contents replaced.
     def params_filters
-      @params_filters ||= %w(password)
+      @params_filters ||= %w(password password_confirmation)
     end
 
     def environment_filters
