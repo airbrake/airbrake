@@ -8,6 +8,11 @@ class NotifierTest < Test::Unit::TestCase
       end
     end
 
+    should "have information about the notifier in the headers" do
+      assert_equal "Hoptoad Notifier", HoptoadNotifier::HEADERS['X-Hoptoad-Client-Name']
+      assert_equal HoptoadNotifier::VERSION, HoptoadNotifier::HEADERS['X-Hoptoad-Client-Version']
+    end
+
     context "with an exception" do
       setup do
         @sender    = HoptoadNotifier::Sender.new
@@ -53,7 +58,7 @@ class NotifierTest < Test::Unit::TestCase
             url = "http://hoptoadapp.com:80/notices/"
             uri = URI.parse(url)
             URI.expects(:parse).with(url).returns(uri)
-            @http.expects(:post).with(uri.path, anything, anything).returns(@response)
+            @http.expects(:post).with(uri.path, anything, HoptoadNotifier::HEADERS).returns(@response)
           end
         end
       end
@@ -78,11 +83,11 @@ class NotifierTest < Test::Unit::TestCase
             url = "http://hoptoadapp.com:80/notices/"
             uri = URI.parse(url)
             URI.expects(:parse).with(url).returns(uri)
-            @http.expects(:post).with(uri.path, anything, anything).returns(@response)
+            @http.expects(:post).with(uri.path, anything, HoptoadNotifier::HEADERS).returns(@response)
           end
 
           before_should "post to the right path" do
-            @http.expects(:post).with("/notices/", anything, anything).returns(@response)
+            @http.expects(:post).with("/notices/", anything, HoptoadNotifier::HEADERS).returns(@response)
           end
 
           before_should "call send_to_hoptoad" do

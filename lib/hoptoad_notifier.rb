@@ -21,6 +21,13 @@ module HoptoadNotifier
   VERSION = "1.2.3"
   LOG_PREFIX = "** [Hoptoad] "
 
+  HEADERS = {
+    'Content-type'             => 'application/x-yaml',
+    'Accept'                   => 'text/xml, application/xml',
+    'X-Hoptoad-Client-Name'    => 'Hoptoad Notifier',
+    'X-Hoptoad-Client-Version' => VERSION
+  }
+
   class << self
     attr_accessor :host, :port, :secure, :api_key, :http_open_timeout, :http_read_timeout,
                   :proxy_host, :proxy_port, :proxy_user, :proxy_pass, :output
@@ -321,11 +328,6 @@ module HoptoadNotifier
     end
 
     def send_to_hoptoad data #:nodoc:
-      headers = {
-        'Content-type' => 'application/x-yaml',
-        'Accept' => 'text/xml, application/xml'
-      }
-
       url = HoptoadNotifier.url
       http = Net::HTTP::Proxy(HoptoadNotifier.proxy_host,
                               HoptoadNotifier.proxy_port,
@@ -335,10 +337,10 @@ module HoptoadNotifier
       http.use_ssl = true
       http.read_timeout = HoptoadNotifier.http_read_timeout
       http.open_timeout = HoptoadNotifier.http_open_timeout
-      http.use_ssl = !!HoptoadNotifier.secure 
+      http.use_ssl = !!HoptoadNotifier.secure
 
       response = begin
-                   http.post(url.path, stringify_keys(data).to_yaml, headers)
+                   http.post(url.path, stringify_keys(data).to_yaml, HEADERS)
                  rescue TimeoutError => e
                    log :error, "Timeout while contacting the Hoptoad server."
                    nil
