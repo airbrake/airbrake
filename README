@@ -182,14 +182,17 @@ To ignore exceptions based on other conditions, use #ignore_by_filter:
     end
   end
 
-To replace sensitive information sent to the hoptoad service with [FILTERED] use #environment_filters:
+To replace sensitive information sent to the hoptoad service with [FILTERED] use #environment_filters or #params_filters:
 
   HoptoadNotifier.configure do |config|
     config.api_key      = '1234567890abcdef'
+
     config.environment_filters << "AWS_SECRET"
     config.environment_filters << "EC2_PRIVATE_KEY"
     config.environment_filters << "AWS_ACCESS"
     config.environment_filters << "EC2_CERT"
+
+    config.params_filters << "credit_card_number"
   end
 
 TESTING
