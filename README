@@ -38,6 +38,9 @@ is *not* environment-specific. Hoptoad is smart enough to know what errors are
 caused by what environments, so your staging errors don't get mixed in with
 your production errors.)
 
+After adding to your config/initializers like this you must restart your
+server. This will not affect the rake task but it bears stating.
+
 That should be it! Now all exceptions will be logged to Hoptoad where they can
 be aggregated, filtered, sorted, analyzed, massaged, and searched. In previous
 releases you had to include HoptoadNotifier::Catcher into your
