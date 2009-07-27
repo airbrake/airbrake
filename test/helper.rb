@@ -1,7 +1,10 @@
 require 'test/unit'
 require 'rubygems'
-require 'mocha'
+
+gem 'jferris-mocha', '0.9.5.0.1241126838'
+
 require 'shoulda'
+require 'mocha'
 
 $LOAD_PATH << File.join(File.dirname(__FILE__), *%w[.. vendor ginger lib])
 require 'ginger'
