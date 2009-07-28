@@ -8,8 +8,6 @@ require 'hoptoad_notifier/sender'
 # Plugin for applications to automatically post errors to the Hoptoad of their choice.
 module HoptoadNotifier
 
-  IGNORE_USER_AGENT_DEFAULT = []
-
   VERSION = "1.2.4"
   LOG_PREFIX = "** [Hoptoad] "
 
@@ -31,19 +29,6 @@ module HoptoadNotifier
     # values for all Hoptoad configuration options. See
     # HoptoadNotifier::Configuration.
     attr_accessor :configuration
-
-    # Returns the list of user agents that are being ignored. The array can be appended to.
-    def ignore_user_agent
-      @ignore_user_agent ||= (HoptoadNotifier::IGNORE_USER_AGENT_DEFAULT.dup)
-      @ignore_user_agent.flatten!
-      @ignore_user_agent
-    end
-
-    # Sets the list of ignored user agents to only what is passed in here. This method
-    # can be passed a single user agent or a list of user agents.
-    def ignore_user_agent_only=(names)
-      @ignore_user_agent = [names].flatten
-    end
 
     def report_ready
       write_verbose_log("Notifier #{VERSION} ready to catch errors")
@@ -179,7 +164,7 @@ module HoptoadNotifier
     def ignore_user_agent? #:nodoc:
       # Rails 1.2.6 doesn't have request.user_agent, so check for it here
       user_agent = request.respond_to?(:user_agent) ? request.user_agent : request.env["HTTP_USER_AGENT"]
-      HoptoadNotifier.ignore_user_agent.flatten.any? { |ua| ua === user_agent }
+      HoptoadNotifier.configuration.ignore_user_agent.flatten.any? { |ua| ua === user_agent }
     end
 
     def exception_to_data(exception) #:nodoc:

@@ -11,6 +11,7 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_default :http_open_timeout,   2
     assert_config_default :http_read_timeout,   5
     assert_config_default :ignore_by_filters,   []
+    assert_config_default :ignore_user_agent,   []
     assert_config_default :params_filters,
                           HoptoadNotifier::Configuration::DEFAULT_PARAMS_FILTERS
     assert_config_default :environment_filters, []
@@ -57,35 +58,31 @@ class ConfigurationTest < Test::Unit::TestCase
   end
 
   should "allow param filters to be appended" do
-    config = HoptoadNotifier::Configuration.new
-    original_filters = config.params_filters.dup
-    new_filter = 'hello'
-    config.params_filters << new_filter
-    assert_same_elements original_filters + [new_filter], config.params_filters
+    assert_appends_value :params_filters
   end
 
   should "allow environment filters to be appended" do
-    config = HoptoadNotifier::Configuration.new
-    original_filters = config.environment_filters.dup
-    new_filter = 'hello'
-    config.environment_filters << new_filter
-    assert_same_elements original_filters + [new_filter], config.environment_filters
+    assert_appends_value :environment_filters
+  end
+
+  should "allow ignored user agents to be appended" do
+    assert_appends_value :ignore_user_agent
   end
 
   should "allow backtrace filters to be appended" do
-    config = HoptoadNotifier::Configuration.new
-    original_filters = config.backtrace_filters.dup
-    new_filter = lambda {}
-    config.filter_backtrace(&new_filter)
-    assert_same_elements original_filters + [new_filter], config.backtrace_filters
+    assert_appends_value(:backtrace_filters) do |config|
+      new_filter = lambda {}
+      config.filter_backtrace(&new_filter)
+      new_filter
+    end
   end
 
   should "allow ignore by filters to be appended" do
-    config = HoptoadNotifier::Configuration.new
-    original_filters = config.ignore_by_filters.dup
-    new_filter = lambda {}
-    config.ignore_by_filter(&new_filter)
-    assert_same_elements original_filters + [new_filter], config.ignore_by_filters
+    assert_appends_value(:ignore_by_filters) do |config|
+      new_filter = lambda {}
+      config.ignore_by_filter(&new_filter)
+      new_filter
+    end
   end
 
   should "allow ignored exceptions to be appended" do
@@ -96,11 +93,12 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_same_elements original_filters + [new_filter], config.ignore
   end
 
-  should "allow ignore exceptions to be replaced" do
-    config = HoptoadNotifier::Configuration.new
-    new_filter = 'hello'
-    config.ignore_only = new_filter
-    assert_equal [new_filter], config.ignore
+  should "allow ignored exceptions to be replaced" do
+    assert_replaces(:ignore, :ignore_only=)
+  end
+
+  should "allow ignored user agents to be replaced" do
+    assert_replaces(:ignore_user_agent, :ignore_user_agent_only=)
   end
 
   def assert_config_default(option, default_value, config = nil)
@@ -113,4 +111,26 @@ class ConfigurationTest < Test::Unit::TestCase
     config.send(:"#{option}=", value)
     assert_equal value, config.send(option)
   end
+
+  def assert_appends_value(option, &block)
+    config = HoptoadNotifier::Configuration.new
+    original_values = config.send(option).dup
+    block ||= lambda do
+      new_value = 'hello'
+      config.send(option) << new_value
+      new_value
+    end
+    new_value = block.call(config)
+    assert_same_elements original_values + [new_value], config.send(option)
+  end
+
+  def assert_replaces(option, setter)
+    config = HoptoadNotifier::Configuration.new
+    new_value = 'hello'
+    config.send(setter, [new_value])
+    assert_equal [new_value], config.send(option)
+    config.send(setter, new_value)
+    assert_equal [new_value], config.send(option)
+  end
+
 end

@@ -46,8 +46,11 @@ module HoptoadNotifier
     # A list of filters for ignoring exceptions. See #ignore_by_filter.
     attr_reader :ignore_by_filters
 
-    # Returns the list of errors that are being ignored. The array can be appended to.
+    # A list of errors that are being ignored. The array can be appended to.
     attr_reader :ignore
+
+    # A list of user agents that are being ignored. The array can be appended to.
+    attr_reader :ignore_user_agent
 
     DEFAULT_PARAMS_FILTERS = %w(password password_confirmation).freeze
 
@@ -86,6 +89,7 @@ module HoptoadNotifier
       @backtrace_filters   = DEFAULT_BACKTRACE_FILTERS.dup
       @ignore_by_filters   = []
       @ignore              = IGNORE_DEFAULT.dup
+      @ignore_user_agent   = []
     end
 
     # Takes a block and adds it to the list of backtrace filters. When the filters
@@ -108,6 +112,12 @@ module HoptoadNotifier
     # can be passed a single error or a list of errors.
     def ignore_only=(names)
       @ignore = [names].flatten
+    end
+
+    # Sets the list of ignored user agents to only what is passed in here. This method
+    # can be passed a single user agent or a list of user agents.
+    def ignore_user_agent_only=(names)
+      @ignore_user_agent = [names].flatten
     end
 
     # Allows config options to be read like a hash
