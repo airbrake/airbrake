@@ -94,10 +94,6 @@ module HoptoadNotifier
       report_ready
     end
 
-    def protocol #:nodoc:
-      secure ? "https" : "http"
-    end
-
     def default_notice_options #:nodoc:
       {
         :api_key       => configuration.api_key,
