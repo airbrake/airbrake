@@ -5,15 +5,10 @@ module HoptoadNotifier
       :host, :port, :secure, :http_open_timeout, :http_read_timeout
 
     def initialize(options = {})
-      @secure = !!options.delete(:secure)
-      options = {
-        :protocol          => secure ? "https" : "http",
-        :host              => 'hoptoadapp.com',
-        :port              => secure ? 443 : 80,
-        :http_open_timeout => 2,
-        :http_read_timeout => 5
-      }.update(options)
-      options.each {|option, value| instance_variable_set("@#{option}", value) }
+      [:proxy_host, :proxy_port, :proxy_user, :proxy_pass, :protocol,
+        :host, :port, :secure, :http_open_timeout, :http_read_timeout].each do |option|
+        instance_variable_set("@#{option}", options[option])
+      end
     end
 
     def send_to_hoptoad(data) #:nodoc:

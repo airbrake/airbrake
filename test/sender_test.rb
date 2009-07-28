@@ -6,8 +6,10 @@ class SenderTest < Test::Unit::TestCase
     reset_config
   end
 
-  def build_sender(args = {})
-    HoptoadNotifier::Sender.new(args)
+  def build_sender(opts = {})
+    config = HoptoadNotifier::Configuration.new
+    opts.each {|opt, value| config.send(:"#{opt}=", value) }
+    HoptoadNotifier::Sender.new(config)
   end
 
   def send_exception(args = {})

@@ -203,9 +203,6 @@ class ControllerTest < Test::Unit::TestCase
       @body = 'body'
       @http = stub(:post => @response, :read_timeout= => nil, :open_timeout= => nil, :use_ssl= => nil)
       Net::HTTP.stubs(:new).returns(@http)
-      HoptoadNotifier.port = nil
-      HoptoadNotifier.host = nil
-      HoptoadNotifier.proxy_host = nil
     end
 
     should "work when action is called and request works" do

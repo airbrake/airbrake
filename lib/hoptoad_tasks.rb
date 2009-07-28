@@ -4,7 +4,7 @@ require 'active_support'
 
 module HoptoadTasks
   def self.deploy(opts = {})
-    if HoptoadNotifier.api_key.blank?
+    if HoptoadNotifier.configuration.api_key.blank?
       puts "I don't seem to be configured with an API key.  Please check your configuration."
       return false
     end
@@ -14,10 +14,10 @@ module HoptoadTasks
       return false
     end
 
-    params = {'api_key' => HoptoadNotifier.api_key}
+    params = {'api_key' => HoptoadNotifier.configuration.api_key}
     opts.each {|k,v| params["deploy[#{k}]"] = v }
 
-    url = URI.parse("http://#{HoptoadNotifier.host || 'hoptoadapp.com'}/deploys.txt")
+    url = URI.parse("http://#{HoptoadNotifier.configuration.host || 'hoptoadapp.com'}/deploys.txt")
     response = Net::HTTP.post_form(url, params)
     puts response.body
     return Net::HTTPSuccess === response

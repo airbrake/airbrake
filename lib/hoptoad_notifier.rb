@@ -2,6 +2,7 @@ require 'net/http'
 require 'net/https'
 require 'rubygems'
 require 'active_support'
+require 'hoptoad_notifier/configuration'
 require 'hoptoad_notifier/sender'
 
 # Plugin for applications to automatically post errors to the Hoptoad of their choice.
@@ -30,56 +31,16 @@ module HoptoadNotifier
   }
 
   class << self
-    attr_accessor :secure
-    # The API key for your project, found on the project edit form.
-    # The host to connect to (defaults to hoptoadapp.com).
-    attr_accessor :host
-    # The port on which your Hoptoad server runs (defaults to 443 for secure
-    # connections, 80 for insecure connections).
-    attr_accessor :port
-    # +true+ for https connections, +false+ for http connections.
-    attr_accessor :api_key
-    # The HTTP open timeout (defaults to 2 seconds).
-    attr_accessor :http_open_timeout
-    # The HTTP read timeout (defaults to 5 seconds).
-    attr_accessor :http_read_timeout
-    # The hostname of your proxy server (if using a proxy)
-    attr_accessor :proxy_host
-    # The port of your proxy server (if using a proxy)
-    attr_accessor :proxy_port
-    # The username to use when logging into your proxy server (if using a proxy)
-    attr_accessor :proxy_user
-    # The password to use when logging into your proxy server (if using a proxy)
-    attr_accessor :proxy_pass
-
     # (Internal)
     # The sender object is responsible for delivering formatted data to the Hoptoad server.
     # Must respond to #send_to_hoptoad. See HoptoadNotifier::Sender.
     attr_accessor :sender
 
-    def backtrace_filters
-      @backtrace_filters ||= []
-    end
-
-    def ignore_by_filters
-      @ignore_by_filters ||= []
-    end
-
-    # Takes a block and adds it to the list of ignore filters.  When the filters
-    # run, the block will be handed the exception.  If the block yields a value
-    # equivalent to "true," the exception will be ignored, otherwise it will be
-    # processed by hoptoad.
-    def ignore_by_filter(&block)
-      self.ignore_by_filters << block
-    end
-
-    # Takes a block and adds it to the list of backtrace filters. When the filters
-    # run, the block will be handed each line of the backtrace and can modify
-    # it as necessary. For example, by default a path matching the RAILS_ROOT
-    # constant will be transformed into "[RAILS_ROOT]"
-    def filter_backtrace(&block)
-      self.backtrace_filters << block
-    end
+    # (Internal)
+    # A Hoptoad configuration object. Must act like a hash and return sensible
+    # values for all Hoptoad configuration options. See
+    # HoptoadNotifier::Configuration.
+    attr_accessor :configuration
 
     # Returns the list of errors that are being ignored. The array can be appended to.
     def ignore
@@ -105,16 +66,6 @@ module HoptoadNotifier
     # can be passed a single user agent or a list of user agents.
     def ignore_user_agent_only=(names)
       @ignore_user_agent = [names].flatten
-    end
-
-    # Returns a list of parameters that should be filtered out of what is sent to Hoptoad.
-    # By default, all "password" attributes will have their contents replaced.
-    def params_filters
-      @params_filters ||= %w(password password_confirmation)
-    end
-
-    def environment_filters
-      @environment_filters ||= %w()
     end
 
     def report_ready
@@ -156,23 +107,13 @@ module HoptoadNotifier
     #
     # NOTE: secure connections are not yet supported.
     def configure
-      add_default_filters
-      yield self
+      new_configuration = Configuration.new
+      yield new_configuration
       if defined?(ActionController::Base) && !ActionController::Base.include?(HoptoadNotifier::Catcher)
         ActionController::Base.send(:include, HoptoadNotifier::Catcher)
       end
-      self.sender = Sender.new(
-        :proxy_host        => proxy_host,
-        :proxy_port        => proxy_port,
-        :proxy_user        => proxy_user,
-        :proxy_pass        => proxy_pass,
-        :protocol          => protocol,
-        :host              => host,
-        :port              => port,
-        :secure            => secure,
-        :http_open_timeout => http_open_timeout,
-        :http_read_timeout => http_read_timeout
-      )
+      self.configuration = new_configuration
+      self.sender = Sender.new(configuration)
       report_ready
     end
 
@@ -182,7 +123,7 @@ module HoptoadNotifier
 
     def default_notice_options #:nodoc:
       {
-        :api_key       => HoptoadNotifier.api_key,
+        :api_key       => configuration.api_key,
         :error_message => 'Notification',
         :backtrace     => caller,
         :request       => {},
@@ -203,30 +144,6 @@ module HoptoadNotifier
     # * environment: ENV merged with the contents of the request's environment.
     def notify(notice = {})
       DummySender.new.notify_hoptoad( notice )
-    end
-
-    def add_default_filters
-      self.backtrace_filters.clear
-
-      filter_backtrace do |line|
-        line.gsub(/#{RAILS_ROOT}/, "[RAILS_ROOT]")
-      end
-
-      filter_backtrace do |line|
-        line.gsub(/^\.\//, "")
-      end
-
-      filter_backtrace do |line|
-        if defined?(Gem)
-          Gem.path.inject(line) do |line, path|
-            line.gsub(/#{path}/, "[GEM_ROOT]")
-          end
-        end
-      end
-
-      filter_backtrace do |line|
-        line if line !~ /lib\/#{File.basename(__FILE__)}/
-      end
     end
   end
 
@@ -280,7 +197,10 @@ module HoptoadNotifier
 
     def ignore?(exception) #:nodoc:
       ignore_these = HoptoadNotifier.ignore.flatten
-      ignore_these.include?(exception.class) || ignore_these.include?(exception.class.name) || HoptoadNotifier.ignore_by_filters.find {|filter| filter.call(exception_to_data(exception))}
+      ignore_these.include?(exception.class) ||
+        ignore_these.include?(exception.class.name) ||
+        HoptoadNotifier.configuration.ignore_by_filters.
+          find {|filter| filter.call(exception_to_data(exception))}
     end
 
     def ignore_user_agent? #:nodoc:
@@ -291,7 +211,7 @@ module HoptoadNotifier
 
     def exception_to_data(exception) #:nodoc:
       data = {
-        :api_key       => HoptoadNotifier.api_key,
+        :api_key       => HoptoadNotifier.configuration.api_key,
         :error_class   => exception.class.name,
         :error_message => "#{exception.class.name}: #{exception.message}",
         :backtrace     => exception.backtrace,
@@ -347,7 +267,7 @@ module HoptoadNotifier
       end
 
       filtered = backtrace.to_a.map do |line|
-        HoptoadNotifier.backtrace_filters.inject(line) do |line, proc|
+        HoptoadNotifier.configuration.backtrace_filters.inject(line) do |line, proc|
           proc.call(line)
         end
       end
@@ -357,7 +277,7 @@ module HoptoadNotifier
 
     def clean_hoptoad_params(params) #:nodoc:
       params.each do |k, v|
-        params[k] = "[FILTERED]" if HoptoadNotifier.params_filters.any? do |filter|
+        params[k] = "[FILTERED]" if HoptoadNotifier.configuration.params_filters.any? do |filter|
           k.to_s.match(/#{filter}/)
         end
       end
@@ -365,7 +285,7 @@ module HoptoadNotifier
 
     def clean_hoptoad_environment(env) #:nodoc:
       env.each do |k, v|
-        env[k] = "[FILTERED]" if HoptoadNotifier.environment_filters.any? do |filter|
+        env[k] = "[FILTERED]" if HoptoadNotifier.configuration.environment_filters.any? do |filter|
           k.to_s.match(/#{filter}/)
         end
       end

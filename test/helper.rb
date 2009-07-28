@@ -102,13 +102,18 @@ class Test::Unit::TestCase
     HoptoadNotifier.sender = stub_sender
   end
 
+  def create_dummy
+    HoptoadNotifier::DummySender.new
+  end
+
   def reset_config
-    HoptoadNotifier.port       = nil
-    HoptoadNotifier.host       = nil
-    HoptoadNotifier.proxy_host = nil
-    HoptoadNotifier.secure     = false
-    HoptoadNotifier.api_key    = 'abc123'
-    HoptoadNotifier.backtrace_filters.clear
+    HoptoadNotifier.configure do |config|
+      config.api_key = 'abc123'
+    end
+  end
+
+  def clear_backtrace_filters
+    HoptoadNotifier.configuration.backtrace_filters.clear
   end
 
   def build_exception
