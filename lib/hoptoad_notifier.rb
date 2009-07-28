@@ -52,9 +52,6 @@ module HoptoadNotifier
     # The password to use when logging into your proxy server (if using a proxy)
     attr_accessor :proxy_pass
 
-    # TODO: what is this?
-    attr_accessor :output #:nodoc:
-
     # (Internal)
     # The sender object is responsible for delivering formatted data to the Hoptoad server.
     # Must respond to #send_to_hoptoad. See HoptoadNotifier::Sender.
