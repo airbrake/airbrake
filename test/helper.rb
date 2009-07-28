@@ -95,9 +95,11 @@ class Test::Unit::TestCase
   end
 
   def stub_sender
-    returning stub('sender', :send_to_hoptoad => nil) do |sender|
-      HoptoadNotifier::Sender.stubs(:new => sender)
-    end
+    stub('sender', :send_to_hoptoad => nil)
+  end
+
+  def stub_sender!
+    HoptoadNotifier.sender = stub_sender
   end
 
   def reset_config

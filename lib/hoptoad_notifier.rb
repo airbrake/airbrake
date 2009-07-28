@@ -33,6 +33,11 @@ module HoptoadNotifier
     attr_accessor :host, :port, :secure, :api_key, :http_open_timeout, :http_read_timeout,
                   :proxy_host, :proxy_port, :proxy_user, :proxy_pass, :output
 
+    # (Internal)
+    # The sender object is responsible for delivering formatted data to the Hoptoad server.
+    # Must respond to #send_to_hoptoad. See HoptoadNotifier::Sender.
+    attr_accessor :sender
+
     def backtrace_filters
       @backtrace_filters ||= []
     end
@@ -157,6 +162,7 @@ module HoptoadNotifier
       if defined?(ActionController::Base) && !ActionController::Base.include?(HoptoadNotifier::Catcher)
         ActionController::Base.send(:include, HoptoadNotifier::Catcher)
       end
+      self.sender = Sender.new
       report_ready
     end
 
@@ -244,7 +250,7 @@ module HoptoadNotifier
       if public_environment?
         notice = normalize_notice(hash_or_exception)
         notice = clean_notice(notice)
-        Sender.new.send_to_hoptoad(:notice => notice)
+        sender.send_to_hoptoad(:notice => notice)
       end
     end
 
@@ -257,6 +263,10 @@ module HoptoadNotifier
     end
 
     private
+
+    def sender # :nodoc:
+      HoptoadNotifier.sender
+    end
 
     def public_environment? #nodoc:
       defined?(RAILS_ENV) and !['development', 'test'].include?(RAILS_ENV)

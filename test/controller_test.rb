@@ -1,13 +1,7 @@
 require File.dirname(__FILE__) + '/helper'
 
 def expect_session_data_for(controller)
-  # NOTE: setting expectations on the controller is not a good idea here,
-  # because the controller is the unit we're trying to test. However, as all
-  # exception-related behavior is mixed into the controller itsef, we have
-  # little choice. Delegating notifier methods from the controller to a
-  # Sender could make this easier to maintain and test.
-
-  @sender.expects(:send_to_hoptoad).with do |params|
+  HoptoadNotifier.sender.expects(:send_to_hoptoad).with do |params|
     assert params.respond_to?(:to_hash), "The notifier needs a hash"
     notice = params[:notice]
     assert_not_nil notice, "No notice passed to the notifier"
@@ -167,7 +161,7 @@ class ControllerTest < Test::Unit::TestCase
 
         @controller = ::AutoIncludeController.new
         @controller.stubs(:public_environment?).returns(true)
-        @sender = stub_sender
+        stub_sender!
       end
 
       context "when included through the configure block" do
@@ -270,7 +264,7 @@ class ControllerTest < Test::Unit::TestCase
         end
         HoptoadNotifier.ignore_only = HoptoadNotifier::IGNORE_DEFAULT
         @controller.stubs(:public_environment?).returns(true)
-        @sender = stub_sender
+        stub_sender!
       end
 
       should_notify_normally

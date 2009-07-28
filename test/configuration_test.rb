@@ -144,5 +144,10 @@ class ConfigurationTest < Test::Unit::TestCase
     should "have at default ignored exceptions" do
       assert HoptoadNotifier::IGNORE_DEFAULT.any?
     end
+
+    should "set the sender" do
+      assert_not_nil HoptoadNotifier.sender
+      assert_respond_to HoptoadNotifier.sender, :send_to_hoptoad
+    end
   end
 end
