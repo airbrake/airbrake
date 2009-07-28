@@ -8,16 +8,6 @@ require 'hoptoad_notifier/sender'
 # Plugin for applications to automatically post errors to the Hoptoad of their choice.
 module HoptoadNotifier
 
-  IGNORE_DEFAULT = ['ActiveRecord::RecordNotFound',
-                    'ActionController::RoutingError',
-                    'ActionController::InvalidAuthenticityToken',
-                    'CGI::Session::CookieStore::TamperedWithCookie',
-                    'ActionController::UnknownAction']
-
-  # Some of these don't exist for Rails 1.2.*, so we have to consider that.
-  IGNORE_DEFAULT.map!{|e| eval(e) rescue nil }.compact!
-  IGNORE_DEFAULT.freeze
-
   IGNORE_USER_AGENT_DEFAULT = []
 
   VERSION = "1.2.4"
@@ -41,19 +31,6 @@ module HoptoadNotifier
     # values for all Hoptoad configuration options. See
     # HoptoadNotifier::Configuration.
     attr_accessor :configuration
-
-    # Returns the list of errors that are being ignored. The array can be appended to.
-    def ignore
-      @ignore ||= (HoptoadNotifier::IGNORE_DEFAULT.dup)
-      @ignore.flatten!
-      @ignore
-    end
-
-    # Sets the list of ignored errors to only what is passed in here. This method
-    # can be passed a single error or a list of errors.
-    def ignore_only=(names)
-      @ignore = [names].flatten
-    end
 
     # Returns the list of user agents that are being ignored. The array can be appended to.
     def ignore_user_agent
@@ -196,7 +173,7 @@ module HoptoadNotifier
     end
 
     def ignore?(exception) #:nodoc:
-      ignore_these = HoptoadNotifier.ignore.flatten
+      ignore_these = HoptoadNotifier.configuration.ignore.flatten
       ignore_these.include?(exception.class) ||
         ignore_these.include?(exception.class.name) ||
         HoptoadNotifier.configuration.ignore_by_filters.

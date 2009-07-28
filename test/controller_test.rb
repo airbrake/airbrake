@@ -144,7 +144,6 @@ class ControllerTest < Test::Unit::TestCase
 
     context "when auto-included" do
       setup do
-        HoptoadNotifier.ignore_only = HoptoadNotifier::IGNORE_DEFAULT
         HoptoadNotifier.configure do |config|
           config.api_key = "1234567890abcdef"
         end
@@ -193,6 +192,7 @@ class ControllerTest < Test::Unit::TestCase
           super unless action_name == "do_raise"
         end
       end
+      reset_config
       ::ActionController::Base.logger = Logger.new(STDOUT)
       @controller = ::IgnoreActionController.new
       @controller.stubs(:public_environment?).returns(true)
@@ -259,7 +259,7 @@ class ControllerTest < Test::Unit::TestCase
             rescue_action_in_public e
           end
         end
-        HoptoadNotifier.ignore_only = HoptoadNotifier::IGNORE_DEFAULT
+        reset_config
         @controller.stubs(:public_environment?).returns(true)
         stub_sender!
       end
@@ -288,7 +288,7 @@ class ControllerTest < Test::Unit::TestCase
 
       context "and configured to ignore additional exceptions" do
         setup do
-          HoptoadNotifier.ignore << ActiveRecord::StatementInvalid
+          HoptoadNotifier.configuration.ignore << ActiveRecord::StatementInvalid
         end
 
         should "still ignore default exceptions" do
@@ -318,7 +318,7 @@ class ControllerTest < Test::Unit::TestCase
 
       context "and configured to ignore only certain exceptions" do
         setup do
-          HoptoadNotifier.ignore_only = [ActiveRecord::StatementInvalid]
+          HoptoadNotifier.configuration.ignore_only = [ActiveRecord::StatementInvalid]
         end
 
         should "no longer ignore default exceptions" do

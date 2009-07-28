@@ -198,10 +198,6 @@ class NotifierTest < Test::Unit::TestCase
                                                         :ghi         => "789"))
   end
 
-  should "have at default ignored exceptions" do
-    assert HoptoadNotifier::IGNORE_DEFAULT.any?
-  end
-
   should "configure the sender" do
     sender = stub_sender
     HoptoadNotifier::Sender.stubs(:new => sender)

@@ -16,6 +16,8 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_default :environment_filters, []
     assert_config_default :backtrace_filters,
                           HoptoadNotifier::Configuration::DEFAULT_BACKTRACE_FILTERS
+    assert_config_default :ignore,
+                          HoptoadNotifier::Configuration::IGNORE_DEFAULT
   end
 
   should "provide default values for secure connections" do
@@ -84,6 +86,21 @@ class ConfigurationTest < Test::Unit::TestCase
     new_filter = lambda {}
     config.ignore_by_filter(&new_filter)
     assert_same_elements original_filters + [new_filter], config.ignore_by_filters
+  end
+
+  should "allow ignored exceptions to be appended" do
+    config = HoptoadNotifier::Configuration.new
+    original_filters = config.ignore.dup
+    new_filter = 'hello'
+    config.ignore << new_filter
+    assert_same_elements original_filters + [new_filter], config.ignore
+  end
+
+  should "allow ignore exceptions to be replaced" do
+    config = HoptoadNotifier::Configuration.new
+    new_filter = 'hello'
+    config.ignore_only = new_filter
+    assert_equal [new_filter], config.ignore
   end
 
   def assert_config_default(option, default_value, config = nil)

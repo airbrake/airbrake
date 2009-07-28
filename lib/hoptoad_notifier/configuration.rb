@@ -46,6 +46,9 @@ module HoptoadNotifier
     # A list of filters for ignoring exceptions. See #ignore_by_filter.
     attr_reader :ignore_by_filters
 
+    # Returns the list of errors that are being ignored. The array can be appended to.
+    attr_reader :ignore
+
     DEFAULT_PARAMS_FILTERS = %w(password password_confirmation).freeze
 
     DEFAULT_BACKTRACE_FILTERS = [
@@ -61,6 +64,16 @@ module HoptoadNotifier
       lambda { |line| line if line !~ %r{lib/hoptoad_notifier} }
     ].freeze
 
+    IGNORE_DEFAULT = ['ActiveRecord::RecordNotFound',
+                      'ActionController::RoutingError',
+                      'ActionController::InvalidAuthenticityToken',
+                      'CGI::Session::CookieStore::TamperedWithCookie',
+                      'ActionController::UnknownAction']
+
+    # Some of these don't exist for Rails 1.2.*, so we have to consider that.
+    IGNORE_DEFAULT.map!{|e| eval(e) rescue nil }.compact!
+    IGNORE_DEFAULT.freeze
+
     alias_method :secure?, :secure
 
     def initialize
@@ -72,6 +85,7 @@ module HoptoadNotifier
       @environment_filters = []
       @backtrace_filters   = DEFAULT_BACKTRACE_FILTERS.dup
       @ignore_by_filters   = []
+      @ignore              = IGNORE_DEFAULT.dup
     end
 
     # Takes a block and adds it to the list of backtrace filters. When the filters
@@ -88,6 +102,12 @@ module HoptoadNotifier
     # processed by hoptoad.
     def ignore_by_filter(&block)
       self.ignore_by_filters << block
+    end
+
+    # Sets the list of ignored errors to only what is passed in here. This method
+    # can be passed a single error or a list of errors.
+    def ignore_only=(names)
+      @ignore = [names].flatten
     end
 
     # Allows config options to be read like a hash
