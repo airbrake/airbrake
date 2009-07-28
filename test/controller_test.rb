@@ -7,7 +7,7 @@ def expect_session_data_for(controller)
   # little choice. Delegating notifier methods from the controller to a
   # Sender could make this easier to maintain and test.
 
-  @controller.expects(:send_to_hoptoad).with do |params|
+  @sender.expects(:send_to_hoptoad).with do |params|
     assert params.respond_to?(:to_hash), "The notifier needs a hash"
     notice = params[:notice]
     assert_not_nil notice, "No notice passed to the notifier"
@@ -123,9 +123,16 @@ def should_auto_include_catcher
   should "auto-include for ApplicationController" do
     assert ApplicationController.include?(HoptoadNotifier::Catcher)
   end
+
   should 'hide hoptoad methods' do
-    assert @controller.class.hidden_actions.include?('notify_hoptoad'), "Catchers should hide the :notify_hoptoad method"
-    assert @controller.class.hidden_actions.include?('inform_hoptoad'), "Catchers should hide the :inform_hoptoad method"
+    assert_hides 'notify_hoptoad'
+    assert_hides 'inform_hoptoad'
+  end
+
+  def assert_hides(method)
+    actions = @controller.class.hidden_actions
+    assert actions.include?(method),
+           "Catchers should hide the #{method} method (hidden: #{actions.inspect})"
   end
 end
 
@@ -143,6 +150,11 @@ class ControllerTest < Test::Unit::TestCase
 
     context "when auto-included" do
       setup do
+        HoptoadNotifier.ignore_only = HoptoadNotifier::IGNORE_DEFAULT
+        HoptoadNotifier.configure do |config|
+          config.api_key = "1234567890abcdef"
+        end
+
         class ::ApplicationController < ActionController::Base
         end
 
@@ -153,14 +165,9 @@ class ControllerTest < Test::Unit::TestCase
           end
         end
 
-        HoptoadNotifier.ignore_only = HoptoadNotifier::IGNORE_DEFAULT
         @controller = ::AutoIncludeController.new
         @controller.stubs(:public_environment?).returns(true)
-        @controller.stubs(:send_to_hoptoad)
-
-        HoptoadNotifier.configure do |config|
-          config.api_key = "1234567890abcdef"
-        end
+        @sender = stub_sender
       end
 
       context "when included through the configure block" do
@@ -263,7 +270,7 @@ class ControllerTest < Test::Unit::TestCase
         end
         HoptoadNotifier.ignore_only = HoptoadNotifier::IGNORE_DEFAULT
         @controller.stubs(:public_environment?).returns(true)
-        @controller.stubs(:send_to_hoptoad)
+        @sender = stub_sender
       end
 
       should_notify_normally

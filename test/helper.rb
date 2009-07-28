@@ -93,6 +93,47 @@ class Test::Unit::TestCase
   def assert_no_difference(expression, message = nil, &block)
     assert_difference expression, 0, message, &block
   end
+
+  def stub_sender
+    returning stub('sender', :send_to_hoptoad => nil) do |sender|
+      HoptoadNotifier::Sender.stubs(:new => sender)
+    end
+  end
+
+  def reset_config
+    HoptoadNotifier.port       = nil
+    HoptoadNotifier.host       = nil
+    HoptoadNotifier.proxy_host = nil
+    HoptoadNotifier.secure     = false
+    HoptoadNotifier.api_key    = 'abc123'
+    HoptoadNotifier.backtrace_filters.clear
+  end
+
+  def build_exception
+    raise
+  rescue => caught_exception
+    caught_exception
+  end
+
+  def build_notice_data(exception = nil)
+    exception ||= build_exception
+    {
+      :api_key       => 'abc123',
+      :error_class   => exception.class.name,
+      :error_message => "#{exception.class.name}: #{exception.message}",
+      :backtrace     => exception.backtrace,
+      :environment   => { 'PATH' => '/bin', 'REQUEST_URI' => '/users/1' },
+      :request       => {
+        :params     => { 'controller' => 'users', 'action' => 'show', 'id' => '1' },
+        :rails_root => '/path/to/application',
+        :url        => "http://test.host/users/1"
+      },
+      :session       => {
+        :key  => '123abc',
+        :data => { 'user_id' => '5', 'flash' => { 'notice' => 'Logged in successfully' } }
+      }
+    }
+  end
 end
 
 # Also stolen from AS 2.3.2
@@ -114,3 +155,14 @@ class Array
     end
   end
 end
+
+class FakeLogger
+  def info(*args);  end
+  def debug(*args); end
+  def warn(*args);  end
+  def error(*args); end
+  def fatal(*args); end
+end
+
+RAILS_DEFAULT_LOGGER = FakeLogger.new
+

@@ -2,6 +2,7 @@ require 'net/http'
 require 'net/https'
 require 'rubygems'
 require 'active_support'
+require 'hoptoad_notifier/sender'
 
 # Plugin for applications to automatically post errors to the Hoptoad of their choice.
 module HoptoadNotifier
@@ -44,7 +45,7 @@ module HoptoadNotifier
     # run, the block will be handed the exception.  If the block yields a value
     # equivalent to "true," the exception will be ignored, otherwise it will be
     # processed by hoptoad.
-    def ignore_by_filter &block
+    def ignore_by_filter(&block)
       self.ignore_by_filters << block
     end
 
@@ -52,7 +53,7 @@ module HoptoadNotifier
     # run, the block will be handed each line of the backtrace and can modify
     # it as necessary. For example, by default a path matching the RAILS_ROOT
     # constant will be transformed into "[RAILS_ROOT]"
-    def filter_backtrace &block
+    def filter_backtrace(&block)
       self.backtrace_filters << block
     end
 
@@ -188,8 +189,8 @@ module HoptoadNotifier
     # * request: The controller's request object.
     # * session: The contents of the user's session.
     # * environment: ENV merged with the contents of the request's environment.
-    def notify notice = {}
-      Sender.new.notify_hoptoad( notice )
+    def notify(notice = {})
+      DummySender.new.notify_hoptoad( notice )
     end
 
     def add_default_filters
@@ -224,24 +225,26 @@ module HoptoadNotifier
       if base.instance_methods.map(&:to_s).include? 'rescue_action_in_public' and !base.instance_methods.map(&:to_s).include? 'rescue_action_in_public_without_hoptoad'
         base.send(:alias_method, :rescue_action_in_public_without_hoptoad, :rescue_action_in_public)
         base.send(:alias_method, :rescue_action_in_public, :rescue_action_in_public_with_hoptoad)
-        base.hide_action(:notify_hoptoad, :inform_hoptoad) if base.respond_to?(:hide_action)
+        if base.respond_to?(:hide_action)
+          base.hide_action(:notify_hoptoad, :inform_hoptoad)
+        end
       end
     end
 
     # Overrides the rescue_action method in ActionController::Base, but does not inhibit
     # any custom processing that is defined with Rails 2's exception helpers.
-    def rescue_action_in_public_with_hoptoad exception
+    def rescue_action_in_public_with_hoptoad(exception)
       notify_hoptoad(exception) unless ignore?(exception) || ignore_user_agent?
       rescue_action_in_public_without_hoptoad(exception)
     end
 
     # This method should be used for sending manual notifications while you are still
     # inside the controller. Otherwise it works like HoptoadNotifier.notify.
-    def notify_hoptoad hash_or_exception
+    def notify_hoptoad(hash_or_exception)
       if public_environment?
         notice = normalize_notice(hash_or_exception)
         notice = clean_notice(notice)
-        send_to_hoptoad(:notice => notice)
+        Sender.new.send_to_hoptoad(:notice => notice)
       end
     end
 
@@ -270,7 +273,7 @@ module HoptoadNotifier
       HoptoadNotifier.ignore_user_agent.flatten.any? { |ua| ua === user_agent }
     end
 
-    def exception_to_data exception #:nodoc:
+    def exception_to_data(exception) #:nodoc:
       data = {
         :api_key       => HoptoadNotifier.api_key,
         :error_class   => exception.class.name,
@@ -322,40 +325,7 @@ module HoptoadNotifier
       clean_non_serializable_data(notice)
     end
 
-    def log(level, message, response = nil)
-      logger.send level, LOG_PREFIX + message if logger
-      HoptoadNotifier.report_environment_info
-      HoptoadNotifier.report_response_body(response.body) if response && response.respond_to?(:body)
-    end
-
-    def send_to_hoptoad data #:nodoc:
-      url = HoptoadNotifier.url
-      http = Net::HTTP::Proxy(HoptoadNotifier.proxy_host,
-                              HoptoadNotifier.proxy_port,
-                              HoptoadNotifier.proxy_user,
-                              HoptoadNotifier.proxy_pass).new(url.host, url.port)
-
-      http.use_ssl = true
-      http.read_timeout = HoptoadNotifier.http_read_timeout
-      http.open_timeout = HoptoadNotifier.http_open_timeout
-      http.use_ssl = !!HoptoadNotifier.secure
-
-      response = begin
-                   http.post(url.path, stringify_keys(data).to_yaml, HEADERS)
-                 rescue TimeoutError => e
-                   log :error, "Timeout while contacting the Hoptoad server."
-                   nil
-                 end
-
-      case response
-      when Net::HTTPSuccess then
-        log :info, "Success: #{response.class}", response
-      else
-        log :error, "Failure: #{response.class}", response
-      end
-    end
-
-    def clean_hoptoad_backtrace backtrace #:nodoc:
+    def clean_hoptoad_backtrace(backtrace) #:nodoc:
       if backtrace.to_a.size == 1
         backtrace = backtrace.to_a.first.split(/\n\s*/)
       end
@@ -369,7 +339,7 @@ module HoptoadNotifier
       filtered.compact
     end
 
-    def clean_hoptoad_params params #:nodoc:
+    def clean_hoptoad_params(params) #:nodoc:
       params.each do |k, v|
         params[k] = "[FILTERED]" if HoptoadNotifier.params_filters.any? do |filter|
           k.to_s.match(/#{filter}/)
@@ -377,7 +347,7 @@ module HoptoadNotifier
       end
     end
 
-    def clean_hoptoad_environment env #:nodoc:
+    def clean_hoptoad_environment(env) #:nodoc:
       env.each do |k, v|
         env[k] = "[FILTERED]" if HoptoadNotifier.environment_filters.any? do |filter|
           k.to_s.match(/#{filter}/)
@@ -398,17 +368,10 @@ module HoptoadNotifier
       end
     end
 
-    def stringify_keys(hash) #:nodoc:
-      hash.inject({}) do |h, pair|
-        h[pair.first.to_s] = pair.last.is_a?(Hash) ? stringify_keys(pair.last) : pair.last
-        h
-      end
-    end
-
   end
 
   # A dummy class for sending notifications manually outside of a controller.
-  class Sender
+  class DummySender
     def rescue_action_in_public(exception)
     end
 
