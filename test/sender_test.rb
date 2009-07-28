@@ -7,7 +7,7 @@ class SenderTest < Test::Unit::TestCase
   end
 
   def build_sender(args = {})
-    HoptoadNotifier::Sender.new
+    HoptoadNotifier::Sender.new(args)
   end
 
   def send_exception(args = {})
@@ -38,89 +38,83 @@ class SenderTest < Test::Unit::TestCase
 
     url = "http://hoptoadapp.com:80/notices/"
     uri = URI.parse(url)
-    send_exception
-    assert_received(http, :post) { |expect| expect.with(uri.path, anything, HoptoadNotifier::HEADERS) }
+
+    proxy_host = 'some.host'
+    proxy_port = 88
+    proxy_user = 'login'
+    proxy_pass = 'passwd'
+
+    send_exception(:proxy_host => proxy_host,
+                   :proxy_port => proxy_port,
+                   :proxy_user => proxy_user,
+                   :proxy_pass => proxy_pass)
+    assert_received(http, :post) do |expect| 
+      expect.with(uri.path, anything, HoptoadNotifier::HEADERS)
+    end
     assert_received(Net::HTTP, :Proxy) do |expect|
-      expect.with(
-        HoptoadNotifier.proxy_host,
-        HoptoadNotifier.proxy_port,
-        HoptoadNotifier.proxy_user,
-        HoptoadNotifier.proxy_pass
-      )
+      expect.with(proxy_host, proxy_port, proxy_user, proxy_pass)
     end
   end
 
   should "post to the right url for non-ssl" do
     http = stub_http
-    HoptoadNotifier.secure = false
     url = "http://hoptoadapp.com:80/notices/"
     uri = URI.parse(url)
-    send_exception
+    send_exception(:secure => false)
     assert_received(http, :post) {|expect| expect.with(uri.path, anything, HoptoadNotifier::HEADERS) }
   end
 
   should "post to the right path for ssl" do
     http = stub_http
-    HoptoadNotifier.secure = false
-    send_exception
+    send_exception(:secure => true)
     assert_received(http, :post) {|expect| expect.with("/notices/", anything, HoptoadNotifier::HEADERS) }
   end
 
   should "default the open timeout to 2 seconds" do
     http = stub_http
-    HoptoadNotifier.http_open_timeout = nil
     send_exception
     assert_received(http, :open_timeout=) {|expect| expect.with(2) }
   end
 
   should "default the read timeout to 5 seconds" do
     http = stub_http
-    HoptoadNotifier.http_read_timeout = nil
     send_exception
     assert_received(http, :read_timeout=) {|expect| expect.with(5) }
   end
 
   should "allow override of the open timeout" do
     http = stub_http
-    HoptoadNotifier.http_open_timeout = 4
-    send_exception
+    send_exception(:http_open_timeout => 4)
     assert_received(http, :open_timeout=) {|expect| expect.with(4) }
   end
 
   should "allow override of the read timeout" do
     http = stub_http
-    HoptoadNotifier.http_read_timeout = 10
-    send_exception
+    send_exception(:http_read_timeout => 10)
     assert_received(http, :read_timeout=) {|expect| expect.with(10) }
   end
 
   should "connect to the right port for ssl" do
     stub_http
-    HoptoadNotifier.secure = true
-    send_exception
+    send_exception(:secure => true)
     assert_received(Net::HTTP, :new) {|expect| expect.with("hoptoadapp.com", 443) }
   end
 
   should "connect to the right port for non-ssl" do
     stub_http
-    HoptoadNotifier.secure = false
-    send_exception
+    send_exception(:secure => false)
     assert_received(Net::HTTP, :new) {|expect| expect.with("hoptoadapp.com", 80) }
   end
 
   should "use ssl if secure" do
     stub_http
-    HoptoadNotifier.secure = true
-    HoptoadNotifier.host = 'example.org'
-    send_exception
+    send_exception(:secure => true, :host => 'example.org')
     assert_received(Net::HTTP, :new) {|expect| expect.with('example.org', 443) }
   end
 
   should "not use ssl if not secure" do
     stub_http
-    HoptoadNotifier.secure = nil
-    HoptoadNotifier.host = 'example.org'
-    send_exception
+    send_exception(:secure => false, :host => 'example.org')
     assert_received(Net::HTTP, :new) {|expect| expect.with('example.org', 80) }
   end
 

@@ -30,8 +30,30 @@ module HoptoadNotifier
   }
 
   class << self
-    attr_accessor :host, :port, :secure, :api_key, :http_open_timeout, :http_read_timeout,
-                  :proxy_host, :proxy_port, :proxy_user, :proxy_pass, :output
+    attr_accessor :secure
+    # The API key for your project, found on the project edit form.
+    # The host to connect to (defaults to hoptoadapp.com).
+    attr_accessor :host
+    # The port on which your Hoptoad server runs (defaults to 443 for secure
+    # connections, 80 for insecure connections).
+    attr_accessor :port
+    # +true+ for https connections, +false+ for http connections.
+    attr_accessor :api_key
+    # The HTTP open timeout (defaults to 2 seconds).
+    attr_accessor :http_open_timeout
+    # The HTTP read timeout (defaults to 5 seconds).
+    attr_accessor :http_read_timeout
+    # The hostname of your proxy server (if using a proxy)
+    attr_accessor :proxy_host
+    # The port of your proxy server (if using a proxy)
+    attr_accessor :proxy_port
+    # The username to use when logging into your proxy server (if using a proxy)
+    attr_accessor :proxy_user
+    # The password to use when logging into your proxy server (if using a proxy)
+    attr_accessor :proxy_pass
+
+    # TODO: what is this?
+    attr_accessor :output #:nodoc:
 
     # (Internal)
     # The sender object is responsible for delivering formatted data to the Hoptoad server.
@@ -60,26 +82,6 @@ module HoptoadNotifier
     # constant will be transformed into "[RAILS_ROOT]"
     def filter_backtrace(&block)
       self.backtrace_filters << block
-    end
-
-    # The port on which your Hoptoad server runs.
-    def port
-      @port || (secure ? 443 : 80)
-    end
-
-    # The host to connect to.
-    def host
-      @host ||= 'hoptoadapp.com'
-    end
-
-    # The HTTP open timeout (defaults to 2 seconds).
-    def http_open_timeout
-      @http_open_timeout ||= 2
-    end
-
-    # The HTTP read timeout (defaults to 5 seconds).
-    def http_read_timeout
-      @http_read_timeout ||= 5
     end
 
     # Returns the list of errors that are being ignored. The array can be appended to.
@@ -162,16 +164,23 @@ module HoptoadNotifier
       if defined?(ActionController::Base) && !ActionController::Base.include?(HoptoadNotifier::Catcher)
         ActionController::Base.send(:include, HoptoadNotifier::Catcher)
       end
-      self.sender = Sender.new
+      self.sender = Sender.new(
+        :proxy_host        => proxy_host,
+        :proxy_port        => proxy_port,
+        :proxy_user        => proxy_user,
+        :proxy_pass        => proxy_pass,
+        :protocol          => protocol,
+        :host              => host,
+        :port              => port,
+        :secure            => secure,
+        :http_open_timeout => http_open_timeout,
+        :http_read_timeout => http_read_timeout
+      )
       report_ready
     end
 
     def protocol #:nodoc:
       secure ? "https" : "http"
-    end
-
-    def url #:nodoc:
-      URI.parse("#{protocol}://#{host}:#{port}/notices/")
     end
 
     def default_notice_options #:nodoc:

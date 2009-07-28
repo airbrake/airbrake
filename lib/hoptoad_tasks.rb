@@ -17,7 +17,7 @@ module HoptoadTasks
     params = {'api_key' => HoptoadNotifier.api_key}
     opts.each {|k,v| params["deploy[#{k}]"] = v }
 
-    url = URI.parse("http://#{HoptoadNotifier.host}/deploys.txt")
+    url = URI.parse("http://#{HoptoadNotifier.host || 'hoptoadapp.com'}/deploys.txt")
     response = Net::HTTP.post_form(url, params)
     puts response.body
     return Net::HTTPSuccess === response

@@ -1,16 +1,29 @@
 module HoptoadNotifier
   class Sender
-    def send_to_hoptoad(data) #:nodoc:
-      url = HoptoadNotifier.url
-      http = Net::HTTP::Proxy(HoptoadNotifier.proxy_host,
-                              HoptoadNotifier.proxy_port,
-                              HoptoadNotifier.proxy_user,
-                              HoptoadNotifier.proxy_pass).new(url.host, url.port)
 
-      http.use_ssl = true
-      http.read_timeout = HoptoadNotifier.http_read_timeout
-      http.open_timeout = HoptoadNotifier.http_open_timeout
-      http.use_ssl = !!HoptoadNotifier.secure
+    attr_reader :proxy_host, :proxy_port, :proxy_user, :proxy_pass, :protocol,
+      :host, :port, :secure, :http_open_timeout, :http_read_timeout
+
+    def initialize(options = {})
+      @secure = !!options.delete(:secure)
+      options = {
+        :protocol          => secure ? "https" : "http",
+        :host              => 'hoptoadapp.com',
+        :port              => secure ? 443 : 80,
+        :http_open_timeout => 2,
+        :http_read_timeout => 5
+      }.update(options)
+      options.each {|option, value| instance_variable_set("@#{option}", value) }
+    end
+
+    def send_to_hoptoad(data) #:nodoc:
+      http =
+        Net::HTTP::Proxy(proxy_host, proxy_port, proxy_user, proxy_pass).
+        new(url.host, url.port)
+
+      http.read_timeout = http_read_timeout
+      http.open_timeout = http_open_timeout
+      http.use_ssl      = secure
 
       response = begin
                    http.post(url.path, stringify_keys(data).to_yaml, HEADERS)
@@ -28,6 +41,10 @@ module HoptoadNotifier
     end
 
     private
+
+    def url #:nodoc:
+      URI.parse("#{protocol}://#{host}:#{port}/notices/")
+    end
 
     def stringify_keys(hash) #:nodoc:
       hash.inject({}) do |h, pair|

@@ -46,11 +46,6 @@ class ConfigurationTest < Test::Unit::TestCase
                    HoptoadNotifier.ignore
     end
 
-    should "set a default host" do
-      HoptoadNotifier.instance_variable_set("@host",nil)
-      assert_equal "hoptoadapp.com", HoptoadNotifier.host
-    end
-
     [File.open(__FILE__), Proc.new { puts "boo!" }, Module.new].each do |object|
       should "convert #{object.class} to a string when cleaning environment" do
         HoptoadNotifier.configure {}
@@ -145,9 +140,21 @@ class ConfigurationTest < Test::Unit::TestCase
       assert HoptoadNotifier::IGNORE_DEFAULT.any?
     end
 
-    should "set the sender" do
-      assert_not_nil HoptoadNotifier.sender
-      assert_respond_to HoptoadNotifier.sender, :send_to_hoptoad
+    should "configure the sender" do
+      sender = stub_sender
+      HoptoadNotifier::Sender.stubs(:new => sender)
+
+      HoptoadNotifier.configure { |config| }
+
+      options = [:proxy_host, :proxy_port, :proxy_user, :proxy_pass, :protocol,
+      :host, :port, :secure, :http_open_timeout, :http_read_timeout].inject({}) do |opts, opt|
+        opts.merge(opt => HoptoadNotifier.send(opt))
+      end
+
+      assert_received(HoptoadNotifier::Sender, :new) do |expect|
+        expect.with(options)
+      end
+      assert_equal sender, HoptoadNotifier.sender
     end
   end
 end
