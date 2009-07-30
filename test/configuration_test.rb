@@ -53,8 +53,19 @@ class ConfigurationTest < Test::Unit::TestCase
 
   should "act like a hash" do
     config = HoptoadNotifier::Configuration.new
-    config.port = 888
-    assert_equal 888, config[:port]
+    hash = config.to_hash
+    [:api_key, :host, :port, :secure, :http_open_timeout, :http_read_timeout,
+      :proxy_host, :proxy_port, :proxy_user, :proxy_pass, :params_filters,
+      :environment_filters, :backtrace_filters, :ignore_by_filters, :ignore,
+      :ignore_user_agent, :port, :protocol].each do |option|
+      assert_equal config[option], hash[option], "Wrong value for #{option}"
+    end
+  end
+
+  should "be mergable" do
+    config = HoptoadNotifier::Configuration.new
+    hash = config.to_hash
+    assert_equal hash.merge(:key => 'value'), config.merge(:key => 'value')
   end
 
   should "allow param filters to be appended" do

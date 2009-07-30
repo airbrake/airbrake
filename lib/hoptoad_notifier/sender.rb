@@ -21,7 +21,7 @@ module HoptoadNotifier
       http.use_ssl      = secure
 
       response = begin
-                   http.post(url.path, stringify_keys(data).to_yaml, HEADERS)
+                   http.post(url.path, data, HEADERS)
                  rescue TimeoutError => e
                    log :error, "Timeout while contacting the Hoptoad server."
                    nil
@@ -39,13 +39,6 @@ module HoptoadNotifier
 
     def url #:nodoc:
       URI.parse("#{protocol}://#{host}:#{port}/notices/")
-    end
-
-    def stringify_keys(hash) #:nodoc:
-      hash.inject({}) do |h, pair|
-        h[pair.first.to_s] = pair.last.is_a?(Hash) ? stringify_keys(pair.last) : pair.last
-        h
-      end
     end
 
     def log(level, message, response = nil)

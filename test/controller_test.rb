@@ -1,12 +1,11 @@
 require File.dirname(__FILE__) + '/helper'
 
 def expect_session_data_for(controller)
-  HoptoadNotifier.sender.expects(:send_to_hoptoad).with do |params|
+  HoptoadNotifier::Notice.expects(:new).with do |params|
     assert params.respond_to?(:to_hash), "The notifier needs a hash"
-    notice = params[:notice]
-    assert_not_nil notice, "No notice passed to the notifier"
-    assert_not_nil notice[:session][:key], "No session key was set"
-    assert_not_nil notice[:session][:data], "No session data was set"
+    params = params.to_hash
+    assert_not_nil params, "No notice passed to the notifier"
+    assert_not_nil params[:session], "No session data was set"
     true
   end
   @controller.stubs(:rescue_action_in_public_without_hoptoad)
@@ -62,36 +61,6 @@ def should_notify_normally
     assert_nothing_raised do
       request("do_raise_ignored")
     end
-  end
-
-  should "convert non-serializable data to strings" do
-    klass = Class.new
-    File.open(__FILE__) do |file|
-      data = { :ghi => "789", :klass => klass, :file => file }
-      assert_equal({ :ghi => "789", :file => file.to_s, :klass => klass.to_s },
-                   @controller.send(:clean_non_serializable_data, data))
-    end
-  end
-
-  should "apply all params, environment and technical filters" do
-    params_hash = {:abc => 123}
-    environment_hash = {:def => 456}
-    backtrace_data = :backtrace_data
-
-    raw_notice = {:request => {:params => params_hash}, 
-                  :environment => environment_hash,
-                  :backtrace => backtrace_data}
-
-    processed_notice = {:backtrace => :backtrace_data, 
-                        :request => {:params => :params_data}, 
-                        :environment => :environment_data}
-
-    @controller.expects(:clean_hoptoad_backtrace).with(backtrace_data).returns(:backtrace_data)
-    @controller.expects(:clean_hoptoad_params).with(params_hash).returns(:params_data)
-    @controller.expects(:clean_hoptoad_environment).with(environment_hash).returns(:environment_data)
-    @controller.expects(:clean_non_serializable_data).with(processed_notice).returns(:serializable_data)
-
-    assert_equal(:serializable_data, @controller.send(:clean_notice, raw_notice))
   end
 
   should "send session data to hoptoad when the session has @data" do
@@ -348,8 +317,8 @@ class ControllerTest < Test::Unit::TestCase
 
       context "and configured to ignore certain user agents" do
         setup do
-          HoptoadNotifier.ignore_user_agent << /Ignored/
-          HoptoadNotifier.ignore_user_agent << 'IgnoredUserAgent'
+          HoptoadNotifier.configuration.ignore_user_agent << /Ignored/
+          HoptoadNotifier.configuration.ignore_user_agent << 'IgnoredUserAgent'
         end
 
         should "ignore exceptions when user agent is being ignored" do
@@ -361,7 +330,7 @@ class ControllerTest < Test::Unit::TestCase
         end
 
         should "ignore exceptions when user agent is being ignored (regexp)" do
-          HoptoadNotifier.ignore_user_agent_only = [/Ignored/]
+          HoptoadNotifier.configuration.ignore_user_agent_only = [/Ignored/]
           @controller.expects(:notify_hoptoad).never
           @controller.expects(:rescue_action_in_public_without_hoptoad)
           assert_nothing_raised do
@@ -370,7 +339,7 @@ class ControllerTest < Test::Unit::TestCase
         end
 
         should "ignore exceptions when user agent is being ignored (string)" do
-          HoptoadNotifier.ignore_user_agent_only = ['IgnoredUserAgent']
+          HoptoadNotifier.configuration.ignore_user_agent_only = ['IgnoredUserAgent']
           @controller.expects(:notify_hoptoad).never
           @controller.expects(:rescue_action_in_public_without_hoptoad)
           assert_nothing_raised do

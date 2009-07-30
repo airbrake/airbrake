@@ -4,6 +4,7 @@ require 'rubygems'
 require 'active_support'
 require 'hoptoad_notifier/configuration'
 require 'hoptoad_notifier/sender'
+require 'hoptoad_notifier/notice'
 
 # Plugin for applications to automatically post errors to the Hoptoad of their choice.
 module HoptoadNotifier
@@ -66,8 +67,6 @@ module HoptoadNotifier
     #   config.api_key = '1234567890abcdef'
     #   config.secure  = false
     # end
-    #
-    # NOTE: secure connections are not yet supported.
     def configure
       new_configuration = Configuration.new
       yield new_configuration
@@ -77,17 +76,6 @@ module HoptoadNotifier
       self.configuration = new_configuration
       self.sender = Sender.new(configuration)
       report_ready
-    end
-
-    def default_notice_options #:nodoc:
-      {
-        :api_key       => configuration.api_key,
-        :error_message => 'Notification',
-        :backtrace     => caller,
-        :request       => {},
-        :session       => {},
-        :environment   => ENV.to_hash
-      }
     end
 
     # You can send an exception manually using this method, even when you are not in a
@@ -100,8 +88,14 @@ module HoptoadNotifier
     # * request: The controller's request object.
     # * session: The contents of the user's session.
     # * environment: ENV merged with the contents of the request's environment.
-    def notify(notice = {})
-      DummySender.new.notify_hoptoad( notice )
+    def notify(exception, opts = {})
+      if exception.respond_to?(:to_hash)
+        opts = opts.merge(exception)
+      else
+        opts = opts.merge(:exception => exception)
+      end
+      notice = Notice.new(opts)
+      sender.send_to_hoptoad(notice.to_yaml)
     end
   end
 
@@ -129,9 +123,7 @@ module HoptoadNotifier
     # inside the controller. Otherwise it works like HoptoadNotifier.notify.
     def notify_hoptoad(hash_or_exception)
       if public_environment?
-        notice = normalize_notice(hash_or_exception)
-        notice = clean_notice(notice)
-        sender.send_to_hoptoad(:notice => notice)
+        HoptoadNotifier.notify(hash_or_exception, :session => session)
       end
     end
 
@@ -197,79 +189,6 @@ module HoptoadNotifier
       data
     end
 
-    def normalize_notice(notice) #:nodoc:
-      case notice
-      when Hash
-        HoptoadNotifier.default_notice_options.merge(notice)
-      when Exception
-        HoptoadNotifier.default_notice_options.merge(exception_to_data(notice))
-      end
-    end
-
-    def clean_notice(notice) #:nodoc:
-      notice[:backtrace] = clean_hoptoad_backtrace(notice[:backtrace])
-      if notice[:request].is_a?(Hash) && notice[:request][:params].is_a?(Hash)
-        notice[:request][:params] = filter_parameters(notice[:request][:params]) if respond_to?(:filter_parameters)
-        notice[:request][:params] = clean_hoptoad_params(notice[:request][:params])
-      end
-      if notice[:environment].is_a?(Hash)
-        notice[:environment] = filter_parameters(notice[:environment]) if respond_to?(:filter_parameters)
-        notice[:environment] = clean_hoptoad_environment(notice[:environment])
-      end
-      clean_non_serializable_data(notice)
-    end
-
-    def clean_hoptoad_backtrace(backtrace) #:nodoc:
-      if backtrace.to_a.size == 1
-        backtrace = backtrace.to_a.first.split(/\n\s*/)
-      end
-
-      filtered = backtrace.to_a.map do |line|
-        HoptoadNotifier.configuration.backtrace_filters.inject(line) do |line, proc|
-          proc.call(line)
-        end
-      end
-
-      filtered.compact
-    end
-
-    def clean_hoptoad_params(params) #:nodoc:
-      params.each do |k, v|
-        params[k] = "[FILTERED]" if HoptoadNotifier.configuration.params_filters.any? do |filter|
-          k.to_s.match(/#{filter}/)
-        end
-      end
-    end
-
-    def clean_hoptoad_environment(env) #:nodoc:
-      env.each do |k, v|
-        env[k] = "[FILTERED]" if HoptoadNotifier.configuration.environment_filters.any? do |filter|
-          k.to_s.match(/#{filter}/)
-        end
-      end
-    end
-
-    def clean_non_serializable_data(data) #:nodoc:
-      case data
-      when Hash
-        data.inject({}) do |result, (key, value)|
-          result.update(key => clean_non_serializable_data(value))
-        end
-      when Fixnum, Array, String, Bignum
-        data
-      else
-        data.to_s
-      end
-    end
-
-  end
-
-  # A dummy class for sending notifications manually outside of a controller.
-  class DummySender
-    def rescue_action_in_public(exception)
-    end
-
-    include HoptoadNotifier::Catcher
   end
 end
 

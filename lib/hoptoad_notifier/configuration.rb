@@ -1,6 +1,11 @@
 module HoptoadNotifier
   class Configuration
 
+    OPTIONS = [:api_key, :host, :port, :secure, :http_open_timeout, :http_read_timeout,
+      :proxy_host, :proxy_port, :proxy_user, :proxy_pass, :params_filters,
+      :environment_filters, :backtrace_filters, :ignore_by_filters, :ignore,
+      :ignore_user_agent, :port, :protocol].freeze
+
     # The API key for your project, found on the project edit form.
     attr_accessor :api_key
 
@@ -125,6 +130,18 @@ module HoptoadNotifier
       send(option)
     end
 
+    # Returns a hash of all configurable options
+    def to_hash
+      OPTIONS.inject({}) do |hash, option|
+        hash.merge(option.to_sym => send(option))
+      end
+    end
+
+    # Returns a hash of all configurable options merged with +hash+
+    def merge(hash)
+      to_hash.merge(hash)
+    end
+
     def port #:nodoc:
       @port ||= if secure?
                   443
@@ -140,5 +157,6 @@ module HoptoadNotifier
         'http'
       end
     end
+
   end
 end
