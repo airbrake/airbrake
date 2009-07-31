@@ -1,6 +1,9 @@
 require File.dirname(__FILE__) + '/helper'
 
 class ConfigurationTest < Test::Unit::TestCase
+
+  include DefinesConstants
+
   should "provide default values" do
     assert_config_default :proxy_host,          nil
     assert_config_default :proxy_port,          nil
@@ -110,6 +113,31 @@ class ConfigurationTest < Test::Unit::TestCase
 
   should "allow ignored user agents to be replaced" do
     assert_replaces(:ignore_user_agent, :ignore_user_agent_only=)
+  end
+
+  should "use development and test as development environments by default" do
+    config = HoptoadNotifier::Configuration.new
+    assert_same_elements %w(development test), config.development_environments
+  end
+
+  should "be public in a public RAILS_ENV" do
+    config = HoptoadNotifier::Configuration.new
+    config.development_environments = %w(development)
+    define_constant('RAILS_ENV', 'production')
+    assert config.public?
+  end
+
+  should "not be public in a development RAILS_ENV" do
+    config = HoptoadNotifier::Configuration.new
+    config.development_environments = %w(staging)
+    define_constant('RAILS_ENV', 'staging')
+    assert !config.public?
+  end
+
+  should "be public when RAILS_ENV is not defined" do
+    assert !defined?(RAILS_ENV)
+    config = HoptoadNotifier::Configuration.new
+    assert config.public?
   end
 
   def assert_config_default(option, default_value, config = nil)

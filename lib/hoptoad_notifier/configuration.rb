@@ -4,7 +4,7 @@ module HoptoadNotifier
     OPTIONS = [:api_key, :host, :port, :secure, :http_open_timeout, :http_read_timeout,
       :proxy_host, :proxy_port, :proxy_user, :proxy_pass, :params_filters,
       :environment_filters, :backtrace_filters, :ignore_by_filters, :ignore,
-      :ignore_user_agent, :port, :protocol].freeze
+      :ignore_user_agent, :port, :protocol, :development_environments].freeze
 
     # The API key for your project, found on the project edit form.
     attr_accessor :api_key
@@ -51,16 +51,25 @@ module HoptoadNotifier
     # A list of filters for ignoring exceptions. See #ignore_by_filter.
     attr_reader :ignore_by_filters
 
-    # A list of errors that are being ignored. The array can be appended to.
+    # A list of exception classes to ignore. The array can be appended to.
     attr_reader :ignore
 
     # A list of user agents that are being ignored. The array can be appended to.
     attr_reader :ignore_user_agent
 
+    # A list of environments in which notifications should not be sent.
+    attr_accessor :development_environments
+
     DEFAULT_PARAMS_FILTERS = %w(password password_confirmation).freeze
 
     DEFAULT_BACKTRACE_FILTERS = [
-      lambda { |line| line.gsub(/#{RAILS_ROOT}/, "[RAILS_ROOT]") },
+      lambda { |line|
+        if defined?(RAILS_ROOT)
+          line.gsub(/#{RAILS_ROOT}/, "[RAILS_ROOT]")
+        else
+          line
+        end
+      },
       lambda { |line| line.gsub(/^\.\//, "") },
       lambda { |line|
         if defined?(Gem)
@@ -85,16 +94,17 @@ module HoptoadNotifier
     alias_method :secure?, :secure
 
     def initialize
-      @secure              = false
-      @host                = 'hoptoadapp.com'
-      @http_open_timeout   = 2
-      @http_read_timeout   = 5
-      @params_filters      = DEFAULT_PARAMS_FILTERS.dup
-      @environment_filters = []
-      @backtrace_filters   = DEFAULT_BACKTRACE_FILTERS.dup
-      @ignore_by_filters   = []
-      @ignore              = IGNORE_DEFAULT.dup
-      @ignore_user_agent   = []
+      @secure                   = false
+      @host                     = 'hoptoadapp.com'
+      @http_open_timeout        = 2
+      @http_read_timeout        = 5
+      @params_filters           = DEFAULT_PARAMS_FILTERS.dup
+      @environment_filters      = []
+      @backtrace_filters        = DEFAULT_BACKTRACE_FILTERS.dup
+      @ignore_by_filters        = []
+      @ignore                   = IGNORE_DEFAULT.dup
+      @ignore_user_agent        = []
+      @development_environments = %w(development test)
     end
 
     # Takes a block and adds it to the list of backtrace filters. When the filters
@@ -158,5 +168,15 @@ module HoptoadNotifier
       end
     end
 
+    # Returns false if in a development environment, false otherwise.
+    def public?
+      !development_environments.include?(environment_name)
+    end
+
+    private
+
+    def environment_name
+      RAILS_ENV if defined?(RAILS_ENV)
+    end
   end
 end

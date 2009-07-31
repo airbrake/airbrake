@@ -1,54 +1,19 @@
 require File.dirname(__FILE__) + '/helper'
 
 def expect_session_data_for(controller)
-  HoptoadNotifier::Notice.expects(:new).with do |params|
-    assert params.respond_to?(:to_hash), "The notifier needs a hash"
-    params = params.to_hash
-    assert_not_nil params, "No notice passed to the notifier"
-    assert_not_nil params[:session], "No session data was set"
+  HoptoadNotifier.sender.expects(:send_to_hoptoad).with do |yaml|
+    data = YAML.load(yaml)
+    assert data.respond_to?(:to_hash), "The notifier needs a hash"
+    assert_not_nil data['session'], "No session was set"
+    assert_not_nil data['session']['data'], "No session data was set"
     true
-  end
+  end.returns(stub_notice)
   @controller.stubs(:rescue_action_in_public_without_hoptoad)
 end
 
 def should_notify_normally
-  should "have inserted its methods into the controller" do
-    assert @controller.respond_to?(:notify_hoptoad)
-  end
-
-  should "prevent raises and send the error to hoptoad" do
-    @controller.expects(:notify_hoptoad)
-    @controller.expects(:rescue_action_in_public_without_hoptoad)
-    assert_nothing_raised do
-      request("do_raise")
-    end
-  end
-
-  should "allow a non-raising action to complete" do
-    assert_nothing_raised do
-      request("do_not_raise")
-    end
-  end
-
-  should "allow manual sending of exceptions" do
-    @controller.expects(:notify_hoptoad)
-    @controller.expects(:rescue_action_in_public_without_hoptoad).never
-    assert_nothing_raised do
-      request("manual_notify")
-    end
-  end
-
-  should "disable manual sending of exceptions in a non-public (development or test) environment" do
-    @controller.stubs(:public_environment?).returns(false)
-    @controller.expects(:send_to_hoptoad).never
-    @controller.expects(:rescue_action_in_public_without_hoptoad).never
-    assert_nothing_raised do
-      request("manual_notify")
-    end
-  end
-
   should "send even ignored exceptions if told manually" do
-    @controller.expects(:notify_hoptoad)
+    expect_something_sent
     @controller.expects(:rescue_action_in_public_without_hoptoad).never
     assert_nothing_raised do
       request("manual_notify_ignored")
@@ -56,7 +21,7 @@ def should_notify_normally
   end
 
   should "ignore default exceptions" do
-    @controller.expects(:notify_hoptoad).never
+    expect_nothing_sent
     @controller.expects(:rescue_action_in_public_without_hoptoad)
     assert_nothing_raised do
       request("do_raise_ignored")
@@ -64,6 +29,7 @@ def should_notify_normally
   end
 
   should "send session data to hoptoad when the session has @data" do
+    stub_public_request!
     expect_session_data_for(@controller)
     @request = ActionController::TestRequest.new
     @request.action = 'do_raise'
@@ -73,6 +39,7 @@ def should_notify_normally
   end
 
   should "send session data to hoptoad when the session responds to to_hash" do
+    stub_public_request!
     expect_session_data_for(@controller)
     @request = ActionController::TestRequest.new
     @request.action = 'do_raise'
@@ -86,66 +53,56 @@ def should_auto_include_catcher
   should "auto-include for ApplicationController" do
     assert ApplicationController.include?(HoptoadNotifier::Catcher)
   end
-
-  should 'hide hoptoad methods' do
-    assert_hides 'notify_hoptoad'
-    assert_hides 'inform_hoptoad'
-  end
-
-  def assert_hides(method)
-    actions = @controller.class.hidden_actions
-    assert actions.include?(method),
-           "Catchers should hide the #{method} method (hidden: #{actions.inspect})"
-  end
 end
 
 class ControllerTest < Test::Unit::TestCase
-  context "Hoptoad inclusion" do
-    should "be able to occur even outside Rails controllers" do
-      assert_nothing_raised do
-        class MyHoptoad
+  def stub_public_request!
+    @controller.class.consider_all_requests_local = false
+    @controller.stubs(:local_request? => false)
+  end
+
+  def expect_something_sent
+    HoptoadNotifier.sender.expects(:send_to_hoptoad).with(anything)
+  end
+
+  def expect_nothing_sent
+    HoptoadNotifier.sender.expects(:send_to_hoptoad).never
+  end
+
+  context "when auto-included" do
+    setup do
+      HoptoadNotifier.configure do |config|
+        config.api_key = "1234567890abcdef"
+      end
+
+      class ::ApplicationController < ActionController::Base
+      end
+
+      class ::AutoIncludeController < ::ApplicationController
+        include TestMethods
+        def rescue_action e
+          rescue_action_in_public e
+        end
+      end
+
+      @controller = ::AutoIncludeController.new
+      stub_public_request!
+      stub_sender!
+    end
+
+    context "when included through the configure block" do
+      should_auto_include_catcher
+      should_notify_normally
+    end
+
+    context "when included both through configure and normally" do
+      setup do
+        class ::AutoIncludeController < ::ApplicationController
           include HoptoadNotifier::Catcher
         end
       end
-      my = MyHoptoad.new
-      assert my.respond_to?(:notify_hoptoad)
-    end
-
-    context "when auto-included" do
-      setup do
-        HoptoadNotifier.configure do |config|
-          config.api_key = "1234567890abcdef"
-        end
-
-        class ::ApplicationController < ActionController::Base
-        end
-
-        class ::AutoIncludeController < ::ApplicationController
-          include TestMethods
-          def rescue_action e
-            rescue_action_in_public e
-          end
-        end
-
-        @controller = ::AutoIncludeController.new
-        @controller.stubs(:public_environment?).returns(true)
-        stub_sender!
-      end
-
-      context "when included through the configure block" do
-        should_auto_include_catcher
-        should_notify_normally
-      end
-
-      context "when included both through configure and normally" do
-        setup do
-          class ::AutoIncludeController < ::ApplicationController
-            include HoptoadNotifier::Catcher
-          end
-        end
-        should_auto_include_catcher
-        should_notify_normally
-      end
+      should_auto_include_catcher
+      should_notify_normally
     end
   end
 
@@ -229,7 +186,7 @@ class ControllerTest < Test::Unit::TestCase
           end
         end
         reset_config
-        @controller.stubs(:public_environment?).returns(true)
+        stub_public_request!
         stub_sender!
       end
 
@@ -247,7 +204,7 @@ class ControllerTest < Test::Unit::TestCase
         end
 
         should "ignore exceptions based on param data" do
-          @controller.expects(:notify_hoptoad).never
+          expect_nothing_sent
           @controller.expects(:rescue_action_in_public_without_hoptoad)
           assert_nothing_raised do
             request("do_raise", "get", nil, :blah => 'skip')
@@ -261,7 +218,7 @@ class ControllerTest < Test::Unit::TestCase
         end
 
         should "still ignore default exceptions" do
-          @controller.expects(:notify_hoptoad).never
+          expect_nothing_sent
           @controller.expects(:rescue_action_in_public_without_hoptoad)
           assert_nothing_raised do
             request("do_raise_ignored")
@@ -269,7 +226,7 @@ class ControllerTest < Test::Unit::TestCase
         end
 
         should "ignore specified exceptions" do
-          @controller.expects(:notify_hoptoad).never
+          expect_nothing_sent
           @controller.expects(:rescue_action_in_public_without_hoptoad)
           assert_nothing_raised do
             request("do_raise_not_ignored")
@@ -277,7 +234,7 @@ class ControllerTest < Test::Unit::TestCase
         end
 
         should "not ignore unspecified, non-default exceptions" do
-          @controller.expects(:notify_hoptoad)
+          expect_something_sent
           @controller.expects(:rescue_action_in_public_without_hoptoad)
           assert_nothing_raised do
             request("do_raise")
@@ -291,7 +248,7 @@ class ControllerTest < Test::Unit::TestCase
         end
 
         should "no longer ignore default exceptions" do
-          @controller.expects(:notify_hoptoad)
+          expect_something_sent
           @controller.expects(:rescue_action_in_public_without_hoptoad)
           assert_nothing_raised do
             request("do_raise_ignored")
@@ -299,7 +256,7 @@ class ControllerTest < Test::Unit::TestCase
         end
 
         should "ignore specified exceptions" do
-          @controller.expects(:notify_hoptoad).never
+          expect_nothing_sent
           @controller.expects(:rescue_action_in_public_without_hoptoad)
           assert_nothing_raised do
             request("do_raise_not_ignored")
@@ -307,7 +264,7 @@ class ControllerTest < Test::Unit::TestCase
         end
 
         should "not ignore unspecified, non-default exceptions" do
-          @controller.expects(:notify_hoptoad)
+          expect_something_sent
           @controller.expects(:rescue_action_in_public_without_hoptoad)
           assert_nothing_raised do
             request("do_raise")
@@ -322,7 +279,7 @@ class ControllerTest < Test::Unit::TestCase
         end
 
         should "ignore exceptions when user agent is being ignored" do
-          @controller.expects(:notify_hoptoad).never
+          expect_nothing_sent
           @controller.expects(:rescue_action_in_public_without_hoptoad)
           assert_nothing_raised do
             request("do_raise", :get, 'IgnoredUserAgent')
@@ -331,7 +288,7 @@ class ControllerTest < Test::Unit::TestCase
 
         should "ignore exceptions when user agent is being ignored (regexp)" do
           HoptoadNotifier.configuration.ignore_user_agent_only = [/Ignored/]
-          @controller.expects(:notify_hoptoad).never
+          expect_nothing_sent
           @controller.expects(:rescue_action_in_public_without_hoptoad)
           assert_nothing_raised do
             request("do_raise", :get, 'IgnoredUserAgent')
@@ -340,7 +297,7 @@ class ControllerTest < Test::Unit::TestCase
 
         should "ignore exceptions when user agent is being ignored (string)" do
           HoptoadNotifier.configuration.ignore_user_agent_only = ['IgnoredUserAgent']
-          @controller.expects(:notify_hoptoad).never
+          expect_nothing_sent
           @controller.expects(:rescue_action_in_public_without_hoptoad)
           assert_nothing_raised do
             request("do_raise", :get, 'IgnoredUserAgent')
@@ -348,7 +305,7 @@ class ControllerTest < Test::Unit::TestCase
         end
 
         should "not ignore exceptions when user agent is not being ignored" do
-          @controller.expects(:notify_hoptoad)
+          expect_something_sent
           @controller.expects(:rescue_action_in_public_without_hoptoad)
           assert_nothing_raised do
             request("do_raise")

@@ -28,8 +28,9 @@ module HoptoadNotifier
     # See Configuration#environment_filters
     attr_reader :environment_filters
 
-    # A hash of parameters from the query string or post body
+    # A hash of parameters from the query string or post body.
     attr_reader :parameters
+    alias_method :params, :parameters
 
     # The Rails request during which the notice was raised, if any
     attr_reader :request
@@ -43,6 +44,12 @@ module HoptoadNotifier
     # The URL at which the error occurred (if any)
     attr_reader :url
 
+    # See Configuration#ignore
+    attr_reader :ignore
+
+    # See Configuration#ignore_by_filters
+    attr_reader :ignore_by_filters
+
     def initialize(args)
       self.args         = args
       self.exception    = args[:exception]
@@ -51,6 +58,8 @@ module HoptoadNotifier
       self.project_root = args[:project_root]
       self.url          = args[:url]
 
+      self.ignore              = args[:ignore]              || []
+      self.ignore_by_filters   = args[:ignore_by_filters]   || []
       self.backtrace_filters   = args[:backtrace_filters]   || []
       self.params_filters      = args[:params_filters]      || []
       self.environment_filters = args[:environment_filters] || []
@@ -84,11 +93,28 @@ module HoptoadNotifier
                 'session'       => { 'data' => session_data }
     end
 
+    def ignore?
+      ignored_class_names.include?(error_class) ||
+        ignore_by_filters.any? {|filter| filter.call(self) }
+    end
+
+    # Allows properties to be accessed using a hash-like syntax, such as:
+    #   notice[:error_message]
+    def [](method)
+      case method
+      when :request
+        self
+      else
+        send(method)
+      end
+    end
+
     private
 
     attr_writer :exception, :api_key, :backtrace, :error_class, :error_message,
       :environment, :backtrace_filters, :request, :parameters, :params_filters,
-      :environment_filters, :session_data, :project_root, :url
+      :environment_filters, :session_data, :project_root, :url, :ignore,
+      :ignore_by_filters
 
     # Arguments given in the initializer
     attr_accessor :args
@@ -205,6 +231,18 @@ module HoptoadNotifier
       self.session_data = session_data.instance_variable_get('@data') if session_data.instance_variables.include?('@data')
       self.session_data = session_data.to_hash if session_data.respond_to?(:to_hash)
       self.session_data = session_data[:data] if session_data[:data]
+    end
+
+    # Converts the mixed class instances and class names into just names
+    # TODO: move this into Configuration or another class
+    def ignored_class_names
+      ignore.collect do |string_or_class|
+        if string_or_class.respond_to?(:name)
+          string_or_class.name
+        else
+          string_or_class
+        end
+      end
     end
 
   end

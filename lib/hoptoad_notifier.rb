@@ -3,8 +3,9 @@ require 'net/https'
 require 'rubygems'
 require 'active_support'
 require 'hoptoad_notifier/configuration'
-require 'hoptoad_notifier/sender'
 require 'hoptoad_notifier/notice'
+require 'hoptoad_notifier/sender'
+require 'hoptoad_notifier/catcher'
 
 # Plugin for applications to automatically post errors to the Hoptoad of their choice.
 module HoptoadNotifier
@@ -89,106 +90,30 @@ module HoptoadNotifier
     # * session: The contents of the user's session.
     # * environment: ENV merged with the contents of the request's environment.
     def notify(exception, opts = {})
+      send_notice(build_notice_for(exception, opts))
+    end
+
+    def notify_or_ignore(exception, opts = {})
+      notice = build_notice_for(exception, opts)
+      send_notice(notice) unless notice.ignore?
+    end
+
+    private
+
+    def send_notice(notice)
+      if configuration.public?
+        sender.send_to_hoptoad(notice.to_yaml)
+      end
+    end
+
+    def build_notice_for(exception, opts = {})
       if exception.respond_to?(:to_hash)
         opts = opts.merge(exception)
       else
         opts = opts.merge(:exception => exception)
       end
-      notice = Notice.new(opts)
-      sender.send_to_hoptoad(notice.to_yaml)
+      Notice.new(configuration.merge(opts))
     end
-  end
-
-  # Include this module in Controllers in which you want to be notified of errors.
-  module Catcher
-
-    def self.included(base) #:nodoc:
-      if base.instance_methods.map(&:to_s).include? 'rescue_action_in_public' and !base.instance_methods.map(&:to_s).include? 'rescue_action_in_public_without_hoptoad'
-        base.send(:alias_method, :rescue_action_in_public_without_hoptoad, :rescue_action_in_public)
-        base.send(:alias_method, :rescue_action_in_public, :rescue_action_in_public_with_hoptoad)
-        if base.respond_to?(:hide_action)
-          base.hide_action(:notify_hoptoad, :inform_hoptoad)
-        end
-      end
-    end
-
-    # Overrides the rescue_action method in ActionController::Base, but does not inhibit
-    # any custom processing that is defined with Rails 2's exception helpers.
-    def rescue_action_in_public_with_hoptoad(exception)
-      notify_hoptoad(exception) unless ignore?(exception) || ignore_user_agent?
-      rescue_action_in_public_without_hoptoad(exception)
-    end
-
-    # This method should be used for sending manual notifications while you are still
-    # inside the controller. Otherwise it works like HoptoadNotifier.notify.
-    def notify_hoptoad(hash_or_exception)
-      if public_environment?
-        HoptoadNotifier.notify(hash_or_exception, :session => session)
-      end
-    end
-
-    # Returns the default logger or a logger that prints to STDOUT. Necessary for manual
-    # notifications outside of controllers.
-    def logger
-      ActiveRecord::Base.logger
-    rescue
-      @logger ||= Logger.new(STDERR)
-    end
-
-    private
-
-    def sender # :nodoc:
-      HoptoadNotifier.sender
-    end
-
-    def public_environment? #nodoc:
-      defined?(RAILS_ENV) and !['development', 'test'].include?(RAILS_ENV)
-    end
-
-    def ignore?(exception) #:nodoc:
-      ignore_these = HoptoadNotifier.configuration.ignore.flatten
-      ignore_these.include?(exception.class) ||
-        ignore_these.include?(exception.class.name) ||
-        HoptoadNotifier.configuration.ignore_by_filters.
-          find {|filter| filter.call(exception_to_data(exception))}
-    end
-
-    def ignore_user_agent? #:nodoc:
-      # Rails 1.2.6 doesn't have request.user_agent, so check for it here
-      user_agent = request.respond_to?(:user_agent) ? request.user_agent : request.env["HTTP_USER_AGENT"]
-      HoptoadNotifier.configuration.ignore_user_agent.flatten.any? { |ua| ua === user_agent }
-    end
-
-    def exception_to_data(exception) #:nodoc:
-      data = {
-        :api_key       => HoptoadNotifier.configuration.api_key,
-        :error_class   => exception.class.name,
-        :error_message => "#{exception.class.name}: #{exception.message}",
-        :backtrace     => exception.backtrace,
-        :environment   => ENV.to_hash
-      }
-
-      if self.respond_to? :request
-        data[:request] = {
-          :params      => request.parameters.to_hash,
-          :rails_root  => File.expand_path(RAILS_ROOT),
-          :url         => "#{request.protocol}#{request.host}#{request.request_uri}"
-        }
-        data[:environment].merge!(request.env.to_hash)
-      end
-
-      if self.respond_to? :session
-        data[:session] = {
-          :key         => session.instance_variable_get("@session_id"),
-          :data        => session.respond_to?(:to_hash) ?
-                            session.to_hash :
-                            session.instance_variable_get("@data")
-        }
-      end
-
-      data
-    end
-
   end
 end
 

@@ -2,6 +2,8 @@ require File.dirname(__FILE__) + '/helper'
 
 class NoticeTest < Test::Unit::TestCase
 
+  include DefinesConstants
+
   def configure
     returning HoptoadNotifier::Configuration.new do |config|
       config.api_key = 'abc123def456'
@@ -214,34 +216,68 @@ class NoticeTest < Test::Unit::TestCase
     assert_equal expected, actual
   end
 
-  def exception_to_data exception #:nodoc:
-    data = {
-      :api_key       => HoptoadNotifier.api_key,
-      :error_class   => exception.class.name,
-      :error_message => "#{exception.class.name}: #{exception.message}",
-      :backtrace     => exception.backtrace,
-      :environment   => ENV.to_hash
-    }
+  should "not ignore an exception not matching ignore filters" do
+    notice = build_notice(:error_class       => 'ArgumentError',
+                          :ignore            => ['Argument'],
+                          :ignore_by_filters => [lambda { false }])
+    assert !notice.ignore?
+  end
 
-    if self.respond_to? :request
-      data[:request] = {
-        :params      => request.parameters.to_hash,
-        :rails_root  => File.expand_path(RAILS_ROOT),
-        :url         => "#{request.protocol}#{request.host}#{request.request_uri}"
-      }
-      data[:environment].merge!(request.env.to_hash)
+  should "ignore an exception with a matching error class" do
+    notice = build_notice(:error_class => 'ArgumentError',
+                          :ignore      => [ArgumentError])
+    assert notice.ignore?
+  end
+
+  should "ignore an exception with a matching error class name" do
+    notice = build_notice(:error_class => 'ArgumentError',
+                          :ignore      => ['ArgumentError'])
+    assert notice.ignore?
+  end
+
+  should "ignore an exception with a matching filter" do
+    filter = lambda {|notice| notice.error_class == 'ArgumentError' }
+    notice = build_notice(:error_class       => 'ArgumentError',
+                          :ignore_by_filters => [filter])
+    assert notice.ignore?
+  end
+
+  should "not raise without an ignore list" do
+    notice = build_notice(:ignore => nil, :ignore_by_filters => nil)
+    assert_nothing_raised do
+      notice.ignore?
     end
+  end
 
-    if self.respond_to? :session
-      data[:session] = {
-        :key         => session.instance_variable_get("@session_id"),
-        :data        => session.respond_to?(:to_hash) ?
-                          session.to_hash :
-                          session.instance_variable_get("@data")
-      }
-    end
+  should "not raise when filtering without a RAILS_ROOT" do
+    assert !defined?(RAILS_ROOT)
+    assert_nothing_raised { build_notice }
+  end
 
-    data
+  should "filter out the RAILS_ROOT if there is one" do
+    project_root = '/some/path'
+    backtrace_with_root = ["#{project_root}/app/models/user.rb:7:in `latest'",
+                           "#{project_root}/app/controllers/users_controller.rb:13:in `index'",
+                           "/lib/something.rb:41:in `open'"]
+    backtrace_without_root = ["[RAILS_ROOT]/app/models/user.rb:7:in `latest'",
+                              "[RAILS_ROOT]/app/controllers/users_controller.rb:13:in `index'",
+                              "/lib/something.rb:41:in `open'"]
+    define_constant('RAILS_ROOT', project_root)
+
+    notice = build_notice(:backtrace => backtrace_with_root)
+
+    assert_equal backtrace_without_root, notice.backtrace
+  end
+
+  should "act like a hash" do
+    notice = build_notice(:error_message => 'some message')
+    assert_equal notice.error_message, notice[:error_message]
+  end
+
+  should "return params on notice[:request][:params]" do
+    params = { 'one' => 'two' }
+    notice = build_notice(:parameters => params)
+    assert_equal params, notice[:request][:params]
   end
 
   def assert_array_starts_with(expected, actual)

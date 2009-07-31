@@ -2,8 +2,25 @@ require File.dirname(__FILE__) + '/helper'
 
 class NotifierTest < Test::Unit::TestCase
 
+  include DefinesConstants
+
   def setup
+    super
     reset_config
+  end
+
+  def assert_sent(notice, notice_args)
+    assert_received(HoptoadNotifier::Notice, :new) {|expect| expect.with(has_entries(notice_args)) }
+    assert_received(notice, :to_yaml)
+    assert_received(HoptoadNotifier.sender, :send_to_hoptoad) {|expect| expect.with(notice.to_yaml) }
+  end
+
+  def set_public_env
+    define_constant('RAILS_ENV', 'production')
+  end
+
+  def set_development_env
+    define_constant('RAILS_ENV', 'development')
   end
 
   # TODO: what does this test?
@@ -53,19 +70,8 @@ class NotifierTest < Test::Unit::TestCase
     assert_equal sender, HoptoadNotifier.sender
   end
 
-  def stub_notice!
-    returning stub('notice', :to_yaml => 'some yaml') do |notice|
-      HoptoadNotifier::Notice.stubs(:new => notice)
-    end
-  end
-
-  def assert_sent(notice, notice_args)
-    assert_received(HoptoadNotifier::Notice, :new) {|expect| expect.with(notice_args) }
-    assert_received(notice, :to_yaml)
-    assert_received(HoptoadNotifier.sender, :send_to_hoptoad) {|expect| expect.with(notice.to_yaml) }
-  end
-
   should "create and send a notice for an exception" do
+    set_public_env
     exception = build_exception
     stub_sender!
     notice = stub_notice!
@@ -76,6 +82,7 @@ class NotifierTest < Test::Unit::TestCase
   end
 
   should "create and send a notice for a hash" do
+    set_public_env
     notice = stub_notice!
     notice_args = { :error_message => 'uh oh' }
     stub_sender!
@@ -85,7 +92,8 @@ class NotifierTest < Test::Unit::TestCase
     assert_sent(notice, notice_args)
   end
 
-  should "create and sent anotice for an exception and hash" do
+  should "create and sent a notice for an exception and hash" do
+    set_public_env
     exception = build_exception
     notice = stub_notice!
     notice_args = { :error_message => 'uh oh' }
@@ -95,4 +103,53 @@ class NotifierTest < Test::Unit::TestCase
 
     assert_sent(notice, notice_args.merge(:exception => exception))
   end
+
+  should "not create a notice in a development environment" do
+    set_development_env
+    sender = stub_sender!
+
+    HoptoadNotifier.notify(build_exception)
+    HoptoadNotifier.notify_or_ignore(build_exception)
+
+    assert_received(sender, :send_to_hoptoad) {|expect| expect.never }
+  end
+
+  should "not deliver an ignored exception when notifying implicitly" do
+    set_public_env
+    exception = build_exception
+    sender = stub_sender!
+    notice = stub_notice!
+    notice.stubs(:ignore? => true)
+
+    HoptoadNotifier.notify_or_ignore(exception)
+
+    assert_received(sender, :send_to_hoptoad) {|expect| expect.never }
+  end
+
+  should "deliver an ignored exception when notifying manually" do
+    set_public_env
+    exception = build_exception
+    sender = stub_sender!
+    notice = stub_notice!
+    notice.stubs(:ignore? => true)
+
+    HoptoadNotifier.notify(exception)
+
+    assert_sent(notice, :exception => exception)
+  end
+
+  should "pass config to created notices" do
+    exception = build_exception
+    config_opts = { 'one' => 'two', 'three' => 'four' }
+    notice = stub_notice!
+    stub_sender!
+    HoptoadNotifier.configuration = stub('config', :merge => config_opts, :public? => true)
+
+    HoptoadNotifier.notify(exception)
+
+    assert_received(HoptoadNotifier::Notice, :new) do |expect|
+      expect.with(has_entries(config_opts))
+    end
+  end
+
 end

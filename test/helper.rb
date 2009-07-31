@@ -17,9 +17,6 @@ require 'active_support'
 
 require File.join(File.dirname(__FILE__), "..", "lib", "hoptoad_notifier")
 
-RAILS_ROOT = File.join( File.dirname(__FILE__), "rails_root" )
-RAILS_ENV  = "test"
-
 begin require 'redgreen'; rescue LoadError; end
 
 module TestMethods
@@ -102,6 +99,16 @@ class Test::Unit::TestCase
     HoptoadNotifier.sender = stub_sender
   end
 
+  def stub_notice
+    stub('notice', :to_yaml => 'some yaml', :ignore? => false)
+  end
+
+  def stub_notice!
+    returning stub_notice do |notice|
+      HoptoadNotifier::Notice.stubs(:new => notice)
+    end
+  end
+
   def create_dummy
     HoptoadNotifier::DummySender.new
   end
@@ -140,6 +147,23 @@ class Test::Unit::TestCase
         :data => { 'user_id' => '5', 'flash' => { 'notice' => 'Logged in successfully' } }
       }
     }
+  end
+end
+
+module DefinesConstants
+  def setup
+    @defined_constants = []
+  end
+
+  def teardown
+    @defined_constants.each do |constant|
+      Object.__send__(:remove_const, constant)
+    end
+  end
+
+  def define_constant(name, value)
+    Object.const_set(name, value)
+    @defined_constants << name
   end
 end
 
