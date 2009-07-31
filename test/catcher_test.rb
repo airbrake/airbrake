@@ -4,18 +4,6 @@ class CatcherTest < Test::Unit::TestCase
 
   include DefinesConstants
 
-  class CollectingSender
-    attr_reader :collected
-
-    def initialize
-      @collected = []
-    end
-
-    def send_to_hoptoad(data)
-      @collected << data
-    end
-  end
-
   def setup
     super
     reset_config
@@ -42,6 +30,13 @@ class CatcherTest < Test::Unit::TestCase
       define_method(:index, &action)
       def local_request?
         local
+      end
+    end
+    if opts[:user_agent]
+      if opts[:request].respond_to?(:user_agent=)
+        opts[:request].user_agent = opts[:user_agent]
+      else
+        opts[:request].env["HTTP_USER_AGENT"] = opts[:user_agent]
       end
     end
     klass.consider_all_requests_local = opts[:all_local]
@@ -132,12 +127,21 @@ class CatcherTest < Test::Unit::TestCase
     end
   end
 
-  def assert_caught_and_sent
-    assert !HoptoadNotifier.sender.collected.empty?
+  should "ignore exceptions when user agent is being ignored by regular expression" do
+    HoptoadNotifier.configuration.ignore_user_agent_only = [/Ignored/]
+    process_action(:user_agent => 'ShouldBeIgnored') { raise 'Oh no' }
+    assert_caught_and_not_sent
   end
 
-  def assert_caught_and_not_sent
-    assert HoptoadNotifier.sender.collected.empty?
+  should "ignore exceptions when user agent is being ignored by string" do
+    HoptoadNotifier.configuration.ignore_user_agent_only = ['IgnoredUserAgent']
+    process_action(:user_agent => 'IgnoredUserAgent') { raise 'Oh no' }
+    assert_caught_and_not_sent
   end
 
+  should "not ignore exceptions when user agent is not being ignored" do
+    HoptoadNotifier.configuration.ignore_user_agent_only = ['IgnoredUserAgent']
+    process_action(:user_agent => 'NonIgnoredAgent') { raise 'Oh no' }
+    assert_caught_and_sent
+  end
 end

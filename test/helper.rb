@@ -148,6 +148,15 @@ class Test::Unit::TestCase
       }
     }
   end
+
+  def assert_caught_and_sent
+    assert !HoptoadNotifier.sender.collected.empty?
+  end
+
+  def assert_caught_and_not_sent
+    assert HoptoadNotifier.sender.collected.empty?
+  end
+
 end
 
 module DefinesConstants
@@ -184,6 +193,19 @@ class Array
         [object]
       end
     end
+  end
+
+end
+
+class CollectingSender
+  attr_reader :collected
+
+  def initialize
+    @collected = []
+  end
+
+  def send_to_hoptoad(data)
+    @collected << data
   end
 end
 
