@@ -1,16 +1,5 @@
 require File.dirname(__FILE__) + '/helper'
 
-def expect_session_data_for(controller)
-  HoptoadNotifier.sender.expects(:send_to_hoptoad).with do |yaml|
-    data = YAML.load(yaml)
-    assert data.respond_to?(:to_hash), "The notifier needs a hash"
-    assert_not_nil data['session'], "No session was set"
-    assert_not_nil data['session']['data'], "No session data was set"
-    true
-  end.returns(stub_notice)
-  @controller.stubs(:rescue_action_in_public_without_hoptoad)
-end
-
 def should_notify_normally
   should "send even ignored exceptions if told manually" do
     @controller.expects(:rescue_action_in_public_without_hoptoad).never
@@ -26,26 +15,6 @@ def should_notify_normally
       request("do_raise_ignored")
     end
     assert_caught_and_not_sent
-  end
-
-  should "send session data to hoptoad when the session has @data" do
-    stub_public_request!
-    expect_session_data_for(@controller)
-    @request = ActionController::TestRequest.new
-    @request.action = 'do_raise'
-    @request.session.instance_variable_set("@data", { :message => 'Hello' })
-    @response = ActionController::TestResponse.new
-    @controller.process(@request, @response)
-  end
-
-  should "send session data to hoptoad when the session responds to to_hash" do
-    stub_public_request!
-    expect_session_data_for(@controller)
-    @request = ActionController::TestRequest.new
-    @request.action = 'do_raise'
-    @request.session.stubs(:to_hash).returns(:message => 'Hello')
-    @response = ActionController::TestResponse.new
-    @controller.process(@request, @response)
   end
 end
 
@@ -183,110 +152,6 @@ class ControllerTest < Test::Unit::TestCase
       end
 
       should_notify_normally
-
-      context "and configured to ignore_by_filter" do
-        setup do
-          HoptoadNotifier.configuration.ignore_by_filter do |exception_data|
-            if exception_data[:error_class] == "RuntimeError"
-              true if exception_data[:request][:params]['blah'] == 'skip'
-            end
-          end
-        end
-
-        should "ignore exceptions based on param data" do
-          @controller.expects(:rescue_action_in_public_without_hoptoad)
-          assert_nothing_raised do
-            request("do_raise", "get", nil, :blah => 'skip')
-          end
-          assert_caught_and_not_sent
-        end
-      end
-
-      context "and configured to ignore additional exceptions" do
-        setup do
-          HoptoadNotifier.configuration.ignore << ActiveRecord::StatementInvalid
-        end
-
-        should "still ignore default exceptions" do
-          @controller.expects(:rescue_action_in_public_without_hoptoad)
-          assert_nothing_raised do
-            request("do_raise_ignored")
-          end
-          assert_caught_and_not_sent
-        end
-
-        should "ignore specified exceptions" do
-          @controller.expects(:rescue_action_in_public_without_hoptoad)
-          assert_nothing_raised do
-            request("do_raise_not_ignored")
-          end
-          assert_caught_and_not_sent
-        end
-
-        should "not ignore unspecified, non-default exceptions" do
-          @controller.expects(:rescue_action_in_public_without_hoptoad)
-          assert_nothing_raised do
-            request("do_raise")
-          end
-          assert_caught_and_sent
-        end
-      end
-
-      context "and configured to ignore only certain exceptions" do
-        setup do
-          HoptoadNotifier.configuration.ignore_only = [ActiveRecord::StatementInvalid]
-        end
-
-        should "no longer ignore default exceptions" do
-          @controller.expects(:rescue_action_in_public_without_hoptoad)
-          assert_nothing_raised do
-            request("do_raise_ignored")
-          end
-          assert_caught_and_sent
-        end
-
-        should "ignore specified exceptions" do
-          @controller.expects(:rescue_action_in_public_without_hoptoad)
-          assert_nothing_raised do
-            request("do_raise_not_ignored")
-          end
-          assert_caught_and_not_sent
-        end
-
-        should "not ignore unspecified, non-default exceptions" do
-          @controller.expects(:rescue_action_in_public_without_hoptoad)
-          assert_nothing_raised do
-            request("do_raise")
-          end
-          assert_caught_and_sent
-        end
-      end
-
-      should "ignore exceptions when user agent is being ignored by regular expression" do
-        HoptoadNotifier.configuration.ignore_user_agent_only = [/Ignored/]
-        @controller.expects(:rescue_action_in_public_without_hoptoad)
-        assert_nothing_raised do
-          request("do_raise", :get, 'IgnoredUserAgent')
-        end
-        assert_caught_and_not_sent
-      end
-
-      should "ignore exceptions when user agent is being ignored by string" do
-        HoptoadNotifier.configuration.ignore_user_agent_only = ['IgnoredUserAgent']
-        @controller.expects(:rescue_action_in_public_without_hoptoad)
-        assert_nothing_raised do
-          request("do_raise", :get, 'IgnoredUserAgent')
-        end
-        assert_caught_and_not_sent
-      end
-
-      should "not ignore exceptions when user agent is not being ignored" do
-        @controller.expects(:rescue_action_in_public_without_hoptoad)
-        assert_nothing_raised do
-          request("do_raise")
-        end
-        assert_caught_and_sent
-      end
     end
   end
 end
