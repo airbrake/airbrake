@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
 
-require File.join(File.dirname(__FILE__), "..", "lib", "hoptoad_notifier")
+$: << File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
+require 'hoptoad_notifier'
 
 fail "Please supply an API Key as the first argument" if ARGV.empty?
 
 RAILS_ENV = "production"
 RAILS_ROOT = "./"
+RAILS_DEFAULT_LOGGER = Logger.new(STDOUT)
 
 host = ARGV[1]
 host ||= "hoptoadapp.com"
