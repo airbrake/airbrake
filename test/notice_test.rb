@@ -213,7 +213,7 @@ class NoticeTest < Test::Unit::TestCase
     }
 
 
-    assert_equal expected, actual
+    assert_equal expected, actual['notice']
   end
 
   should "not ignore an exception not matching ignore filters" do

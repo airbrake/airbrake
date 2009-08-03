@@ -80,17 +80,18 @@ module HoptoadNotifier
     end
 
     def to_yaml
-      YAML.dump 'api_key'       => api_key,
-                'error_class'   => error_class,
-                'error_message' => "#{error_class}: #{error_message}",
-                'backtrace'     => backtrace,
-                'environment'   => environment,
-                'request'       => {
-                  'params'     => parameters,
-                  'rails_root' => project_root,
-                  'url'        => url
-                },
-                'session'       => { 'data' => session_data }
+      data = { 'api_key'       => api_key,
+               'error_class'   => error_class,
+               'error_message' => "#{error_class}: #{error_message}",
+               'backtrace'     => backtrace,
+               'environment'   => environment,
+               'request'       => {
+                 'params'     => parameters,
+                 'rails_root' => project_root,
+                 'url'        => url
+               },
+               'session'       => { 'data' => session_data } }
+      YAML.dump 'notice' => data
     end
 
     def ignore?
