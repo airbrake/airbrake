@@ -15,7 +15,7 @@ module HoptoadNotifier
     # any custom processing that is defined with Rails 2's exception helpers.
     def rescue_action_in_public_with_hoptoad(exception)
       unless ignore_user_agent?
-        HoptoadNotifier.notify_or_ignore(exception, :request => request)
+        HoptoadNotifier.notify_or_ignore(exception, request_data_for_hoptoad)
       end
       rescue_action_in_public_without_hoptoad(exception)
     end
@@ -24,7 +24,7 @@ module HoptoadNotifier
     # inside the controller. Otherwise it works like HoptoadNotifier.notify.
     def notify_hoptoad(hash_or_exception)
       unless consider_all_requests_local || local_request?
-        HoptoadNotifier.notify(hash_or_exception, :request => request)
+        HoptoadNotifier.notify(hash_or_exception, request_data_for_hoptoad)
       end
     end
 
@@ -32,6 +32,11 @@ module HoptoadNotifier
       # Rails 1.2.6 doesn't have request.user_agent, so check for it here
       user_agent = request.respond_to?(:user_agent) ? request.user_agent : request.env["HTTP_USER_AGENT"]
       HoptoadNotifier.configuration.ignore_user_agent.flatten.any? { |ua| ua === user_agent }
+    end
+
+    def request_data_for_hoptoad
+      { :request => request,
+        :session => session.to_hash }
     end
 
   end

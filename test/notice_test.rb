@@ -83,29 +83,6 @@ class NoticeTest < Test::Unit::TestCase
     assert_equal data, notice.session_data
   end
 
-  should "accept session data from a session object that converts to a hash" do
-    data = { 'one' => 'two' }
-    session = stub('session', :to_hash => data)
-    notice = build_notice(:session => session)
-    assert_equal data, notice.session_data
-  end
-
-  should "accept session data from a session object with a @data variable" do
-    data = { 'one' => 'two' }
-    session = "session"
-    session.instance_variable_set('@data', data)
-    notice = build_notice(:session => session)
-    assert_equal data, notice.session_data
-  end
-
-  should "accept session data from a request object with a session method" do
-    data = { 'one' => 'two' }
-    session = stub('session', :to_hash => data)
-    request = stub_request(:session => session)
-    notice = build_notice(:request => request)
-    assert_equal data, notice.session_data
-  end
-
   should "set the environment from a hash or ENV" do
     custom_env = { 'string' => 'value' }
     custom_notice = build_notice(:environment => custom_env)

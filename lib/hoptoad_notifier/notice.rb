@@ -53,6 +53,7 @@ module HoptoadNotifier
     def initialize(args)
       self.args         = args
       self.exception    = args[:exception]
+      # TODO: should this be in Catcher?
       self.request      = args[:request]
       self.api_key      = args[:api_key]
       self.project_root = args[:project_root]
@@ -228,9 +229,7 @@ module HoptoadNotifier
     end
 
     def find_session_data
-      self.session_data = args[:session_data] || args[:session] || request.try(:session) || {}
-      self.session_data = session_data.instance_variable_get('@data') if session_data.instance_variables.include?('@data')
-      self.session_data = session_data.to_hash if session_data.respond_to?(:to_hash)
+      self.session_data = args[:session_data] || args[:session] || {}
       self.session_data = session_data[:data] if session_data[:data]
     end
 
