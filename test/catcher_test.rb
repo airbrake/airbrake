@@ -30,8 +30,8 @@ class CatcherTest < Test::Unit::TestCase
 
   def assert_sent_parameter_data(data)
     assert_not_nil notice = last_sent_notice_data, "should send a notice"
-    assert_not_nil notice['params'], "should send parameters, (got #{notice.inspect})"
-    assert_equal data, notice['params']
+    assert_not_nil request = notice['request'], "should send a request, (got #{notice.inspect})"
+    assert_equal data, request['params']
   end
 
   def sender
@@ -67,6 +67,7 @@ class CatcherTest < Test::Unit::TestCase
     klass.local                       = opts[:local]
     controller = klass.new
     controller.stubs(:rescue_action_in_public_without_hoptoad)
+    opts[:request].query_parameters = opts[:request].query_parameters.merge(opts[:params] || {})
     opts[:request].session.clear
     opts[:request].session.merge!(opts[:session] || {})
     controller.process(opts[:request], opts[:response])
@@ -142,14 +143,6 @@ class CatcherTest < Test::Unit::TestCase
   should "not create actions from Hoptoad methods" do
     controller = build_controller_class.new
     assert_equal [], HoptoadNotifier::Catcher.instance_methods
-  end
-
-  should "pass the request to the notifier" do
-    stub_notice!
-    controller = process_action_with_automatic_notification(:public => true)
-    assert_received(HoptoadNotifier::Notice, :new) do |expect|
-      expect.with(has_entries(:request => controller.request))
-    end
   end
 
   should "ignore exceptions when user agent is being ignored by regular expression" do

@@ -32,9 +32,6 @@ module HoptoadNotifier
     attr_reader :parameters
     alias_method :params, :parameters
 
-    # The Rails request during which the notice was raised, if any
-    attr_reader :request
-
     # A hash of session data from the request
     attr_reader :session_data
 
@@ -53,8 +50,6 @@ module HoptoadNotifier
     def initialize(args)
       self.args         = args
       self.exception    = args[:exception]
-      # TODO: should this be in Catcher?
-      self.request      = args[:request]
       self.api_key      = args[:api_key]
       self.project_root = args[:project_root]
       self.url          = args[:url]
@@ -64,8 +59,7 @@ module HoptoadNotifier
       self.backtrace_filters   = args[:backtrace_filters]   || []
       self.params_filters      = args[:params_filters]      || []
       self.environment_filters = args[:environment_filters] || []
-
-      self.parameters = request_attribute(:parameters, {})
+      self.parameters          = args[:parameters]          || {}
 
       self.environment   = args[:environment] || ENV.to_hash
       self.backtrace     = exception_attribute(:backtrace, caller)
@@ -114,7 +108,7 @@ module HoptoadNotifier
     private
 
     attr_writer :exception, :api_key, :backtrace, :error_class, :error_message,
-      :environment, :backtrace_filters, :request, :parameters, :params_filters,
+      :environment, :backtrace_filters, :parameters, :params_filters,
       :environment_filters, :session_data, :project_root, :url, :ignore,
       :ignore_by_filters
 
@@ -188,17 +182,6 @@ module HoptoadNotifier
         end
       else
         data.to_s
-      end
-    end
-
-    # Returns the given attribute from the request, if one exists. Otherwise,
-    # looks for the attribute as key in the arguments hash given to the
-    # initializer.
-    def request_attribute(attribute, default = nil)
-      if request
-        request.send(attribute)
-      else
-        args[attribute] || default
       end
     end
 

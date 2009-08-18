@@ -59,16 +59,9 @@ class NoticeTest < Test::Unit::TestCase
   end
 
   should "accept parameters from a request or hash" do
-    request    = stub_request
-    parameters = request.parameters
-
-    notice_from_request = build_notice(:request => request)
-    assert_equal notice_from_request.parameters,
-                 parameters,
-                 "params not correctly set from a request"
-
+    parameters = { 'one' => 'two' }
     notice_from_hash = build_notice(:parameters => parameters)
-    assert_equal notice_from_hash.parameters, parameters, "params not correctly set from a hash"
+    assert_equal notice_from_hash.parameters, parameters
   end
 
   should "accept session data from a session[:data] hash" do

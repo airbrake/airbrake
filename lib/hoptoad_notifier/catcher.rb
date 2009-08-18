@@ -35,8 +35,8 @@ module HoptoadNotifier
     end
 
     def request_data_for_hoptoad
-      { :request => request,
-        :session => session.to_hash }
+      { :parameters   => params.to_hash,
+        :session_data => session.to_hash }
     end
 
   end
