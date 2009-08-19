@@ -23,10 +23,22 @@ class CatcherTest < Test::Unit::TestCase
   end
 
   def assert_sent_hash(hash, xpath)
-    doc = last_sent_notice_document
     hash.each do |key, value|
-      assert_valid_node doc, "#{xpath}/var[@key = '#{key}']", value
+      assert_sent_element value.to_s, "#{xpath}/var[@key = '#{key}']"
     end
+  end
+
+  def assert_sent_element(value, xpath)
+    assert_valid_node last_sent_notice_document, xpath, value
+  end
+
+  def assert_sent_request_info_for(request)
+    params = request.params.to_hash
+    assert_sent_hash params, '/notice/request/params'
+    assert_sent_element params['controller'], '/notice/request/controller'
+    assert_sent_element params['action'], '/notice/request/action'
+    assert_sent_element request.url, '/notice/request/url'
+    assert_sent_hash request.env, '/notice/request/cgi-data'
   end
 
   def sender
@@ -173,14 +185,14 @@ class CatcherTest < Test::Unit::TestCase
 
   should "send request data for manual notification" do
     params = { 'controller' => "users", 'action' => "create" }
-    process_action_with_manual_notification(:params => params)
-    assert_sent_hash params, "/notice/request/params"
+    controller = process_action_with_manual_notification(:params => params)
+    assert_sent_request_info_for controller.request
   end
 
   should "send request data for automatic notification" do
     params = { 'controller' => "users", 'action' => "create" }
-    process_action_with_automatic_notification(:params => params)
-    assert_sent_hash params, "/notice/request/params"
+    controller = process_action_with_automatic_notification(:params => params)
+    assert_sent_request_info_for controller.request
   end
 
 end

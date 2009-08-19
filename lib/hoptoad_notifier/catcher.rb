@@ -36,7 +36,11 @@ module HoptoadNotifier
 
     def request_data_for_hoptoad
       { :parameters   => params.to_hash,
-        :session_data => session.to_hash }
+        :session_data => session.to_hash,
+        :controller   => params[:controller],
+        :action       => params[:action],
+        :url          => request.url,
+        :cgi_data     => request.env }
     end
 
   end
