@@ -22,28 +22,24 @@ class CatcherTest < Test::Unit::TestCase
     end
   end
 
-  def assert_sent_session_data(data)
-    assert_not_nil notice = last_sent_notice_data, "should send a notice"
-    assert_not_nil notice['session'], "should send a session, (got #{notice.inspect})"
-    assert_equal data, notice['session']['data']
-  end
-
-  def assert_sent_parameter_data(data)
-    assert_not_nil notice = last_sent_notice_data, "should send a notice"
-    assert_not_nil request = notice['request'], "should send a request, (got #{notice.inspect})"
-    assert_equal data, request['params']
+  def assert_sent_hash(hash, xpath)
+    doc = last_sent_notice_document
+    hash.each do |key, value|
+      assert_valid_node doc, "#{xpath}/var[@key = '#{key}']", value
+    end
   end
 
   def sender
     HoptoadNotifier.sender
   end
 
-  def last_sent_notice_yaml
+  def last_sent_notice_xml
     sender.collected.last
   end
 
-  def last_sent_notice_data
-    YAML.load(last_sent_notice_yaml)['notice']
+  def last_sent_notice_document
+    assert_not_nil xml = last_sent_notice_xml, "No xml was sent"
+    Nokogiri::XML.parse(xml)
   end
 
   def process_action(opts = {}, &action)
@@ -166,25 +162,25 @@ class CatcherTest < Test::Unit::TestCase
   should "send session data for manual notifications" do
     data = { 'one' => 'two' }
     process_action_with_manual_notification(:session => data)
-    assert_sent_session_data data
+    assert_sent_hash data, "/notice/request/session"
   end
 
   should "send session data for automatic notification" do
     data = { 'one' => 'two' }
     process_action_with_automatic_notification(:session => data)
-    assert_sent_session_data data
+    assert_sent_hash data, "/notice/request/session"
   end
 
   should "send request data for manual notification" do
     params = { 'controller' => "users", 'action' => "create" }
     process_action_with_manual_notification(:params => params)
-    assert_sent_parameter_data params
+    assert_sent_hash params, "/notice/request/params"
   end
 
   should "send request data for automatic notification" do
     params = { 'controller' => "users", 'action' => "create" }
     process_action_with_automatic_notification(:params => params)
-    assert_sent_parameter_data params
+    assert_sent_hash params, "/notice/request/params"
   end
 
 end

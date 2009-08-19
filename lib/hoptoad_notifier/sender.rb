@@ -1,6 +1,8 @@
 module HoptoadNotifier
   class Sender
 
+    NOTICES_URI = '/api/v2/notices/'.freeze
+
     attr_reader :proxy_host, :proxy_port, :proxy_user, :proxy_pass, :protocol,
       :host, :port, :secure, :http_open_timeout, :http_read_timeout
 
@@ -38,7 +40,7 @@ module HoptoadNotifier
     private
 
     def url #:nodoc:
-      URI.parse("#{protocol}://#{host}:#{port}/notices/")
+      URI.parse("#{protocol}://#{host}:#{port}").merge(NOTICES_URI)
     end
 
     def log(level, message, response = nil)

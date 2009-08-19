@@ -60,12 +60,15 @@ module HoptoadNotifier
     # A list of environments in which notifications should not be sent.
     attr_accessor :development_environments
 
+    # The path to the project in which the error occurred, such as the RAILS_ROOT
+    attr_accessor :project_root
+
     DEFAULT_PARAMS_FILTERS = %w(password password_confirmation).freeze
 
     DEFAULT_BACKTRACE_FILTERS = [
       lambda { |line|
-        if defined?(RAILS_ROOT)
-          line.gsub(/#{RAILS_ROOT}/, "[RAILS_ROOT]")
+        if defined?(HoptoadNotifier.configuration.project_root)
+          line.gsub(/#{HoptoadNotifier.configuration.project_root}/, "[PROJECT_ROOT]")
         else
           line
         end

@@ -6,6 +6,7 @@ require 'hoptoad_notifier/configuration'
 require 'hoptoad_notifier/notice'
 require 'hoptoad_notifier/sender'
 require 'hoptoad_notifier/catcher'
+require 'hoptoad_notifier/backtrace'
 
 # Plugin for applications to automatically post errors to the Hoptoad of their choice.
 module HoptoadNotifier
@@ -102,7 +103,7 @@ module HoptoadNotifier
 
     def send_notice(notice)
       if configuration.public?
-        sender.send_to_hoptoad(notice.to_yaml)
+        sender.send_to_hoptoad(notice.to_xml)
       end
     end
 

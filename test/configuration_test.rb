@@ -9,6 +9,7 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_default :proxy_port,          nil
     assert_config_default :proxy_user,          nil
     assert_config_default :proxy_pass,          nil
+    assert_config_default :project_root,        nil
     assert_config_default :secure,              false
     assert_config_default :host,                'hoptoadapp.com'
     assert_config_default :http_open_timeout,   2
@@ -48,6 +49,7 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_overridable :port
     assert_config_overridable :http_open_timeout
     assert_config_overridable :http_read_timeout
+    assert_config_overridable :project_root
   end
 
   should "have an api key" do

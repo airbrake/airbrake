@@ -14,6 +14,7 @@ require 'action_controller/test_process'
 require 'active_record'
 require 'active_record/base'
 require 'active_support'
+require 'nokogiri'
 
 require File.join(File.dirname(__FILE__), "..", "lib", "hoptoad_notifier")
 
@@ -100,7 +101,7 @@ class Test::Unit::TestCase
   end
 
   def stub_notice
-    stub('notice', :to_yaml => 'some yaml', :ignore? => false)
+    stub('notice', :to_xml => 'some yaml', :ignore? => false)
   end
 
   def stub_notice!
@@ -157,6 +158,21 @@ class Test::Unit::TestCase
     assert HoptoadNotifier.sender.collected.empty?
   end
 
+  def assert_array_starts_with(expected, actual)
+    assert_respond_to actual, :to_ary
+    array = actual.to_ary.reverse
+    expected.reverse.each_with_index do |value, i|
+      assert_equal value, array[i]
+    end
+  end
+
+  def assert_valid_node(document, xpath, content)
+    nodes = document.xpath(xpath)
+    assert nodes.any?{|node| node.content == content },
+           "Expected xpath #{xpath} to have content #{content}, " +
+           "but found #{nodes.map { |n| n.content }} in #{nodes.size} matching nodes." +
+           "Document:\n#{document.to_s}"
+  end
 end
 
 module DefinesConstants

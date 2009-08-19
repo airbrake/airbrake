@@ -11,8 +11,8 @@ class NotifierTest < Test::Unit::TestCase
 
   def assert_sent(notice, notice_args)
     assert_received(HoptoadNotifier::Notice, :new) {|expect| expect.with(has_entries(notice_args)) }
-    assert_received(notice, :to_yaml)
-    assert_received(HoptoadNotifier.sender, :send_to_hoptoad) {|expect| expect.with(notice.to_yaml) }
+    assert_received(notice, :to_xml)
+    assert_received(HoptoadNotifier.sender, :send_to_hoptoad) {|expect| expect.with(notice.to_xml) }
   end
 
   def set_public_env

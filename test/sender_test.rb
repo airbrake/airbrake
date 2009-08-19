@@ -38,7 +38,7 @@ class SenderTest < Test::Unit::TestCase
     proxy    = stub(:new => http)
     Net::HTTP.stubs(:Proxy => proxy)
 
-    url = "http://hoptoadapp.com:80/notices/"
+    url = "http://hoptoadapp.com:80#{HoptoadNotifier::Sender::NOTICES_URI}"
     uri = URI.parse(url)
 
     proxy_host = 'some.host'
@@ -60,7 +60,7 @@ class SenderTest < Test::Unit::TestCase
 
   should "post to the right url for non-ssl" do
     http = stub_http
-    url = "http://hoptoadapp.com:80/notices/"
+    url = "http://hoptoadapp.com:80#{HoptoadNotifier::Sender::NOTICES_URI}"
     uri = URI.parse(url)
     send_exception(:secure => false)
     assert_received(http, :post) {|expect| expect.with(uri.path, anything, HoptoadNotifier::HEADERS) }
@@ -69,7 +69,7 @@ class SenderTest < Test::Unit::TestCase
   should "post to the right path for ssl" do
     http = stub_http
     send_exception(:secure => true)
-    assert_received(http, :post) {|expect| expect.with("/notices/", anything, HoptoadNotifier::HEADERS) }
+    assert_received(http, :post) {|expect| expect.with(HoptoadNotifier::Sender::NOTICES_URI, anything, HoptoadNotifier::HEADERS) }
   end
 
   should "default the open timeout to 2 seconds" do
