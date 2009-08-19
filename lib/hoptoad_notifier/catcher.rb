@@ -3,10 +3,10 @@ module HoptoadNotifier
   module Catcher
 
     def self.included(base) #:nodoc:
-      # if base.instance_methods.map(&:to_s).include? 'rescue_action_in_public' and !base.instance_methods.map(&:to_s).include? 'rescue_action_in_public_without_hoptoad'
+      if base.instance_methods.map(&:to_s).include? 'rescue_action_in_public' and !base.instance_methods.map(&:to_s).include? 'rescue_action_in_public_without_hoptoad'
         base.send(:alias_method, :rescue_action_in_public_without_hoptoad, :rescue_action_in_public)
         base.send(:alias_method, :rescue_action_in_public, :rescue_action_in_public_with_hoptoad)
-      # end
+      end
     end
 
     private
@@ -35,12 +35,21 @@ module HoptoadNotifier
     end
 
     def request_data_for_hoptoad
-      { :parameters   => params.to_hash,
-        :session_data => session.to_hash,
-        :controller   => params[:controller],
-        :action       => params[:action],
-        :url          => request.url,
-        :cgi_data     => request.env }
+      { :parameters       => filter_if_filtering(params.to_hash),
+        :session_data     => session.to_hash,
+        :controller       => params[:controller],
+        :action           => params[:action],
+        :url              => request.url,
+        :cgi_data         => filter_if_filtering(request.env),
+        :environment_vars => filter_if_filtering(ENV) }
+    end
+
+    def filter_if_filtering(hash)
+      if respond_to?(:filter_parameters)
+        filter_parameters(hash)
+      else
+        hash
+      end
     end
 
   end

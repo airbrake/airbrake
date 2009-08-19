@@ -64,6 +64,9 @@ class CatcherTest < Test::Unit::TestCase
         local
       end
     end
+    if opts[:filters]
+      klass.filter_parameter_logging *opts[:filters]
+    end
     if opts[:user_agent]
       if opts[:request].respond_to?(:user_agent=)
         opts[:request].user_agent = opts[:user_agent]
@@ -193,6 +196,23 @@ class CatcherTest < Test::Unit::TestCase
     params = { 'controller' => "users", 'action' => "create" }
     controller = process_action_with_automatic_notification(:params => params)
     assert_sent_request_info_for controller.request
+  end
+
+  should "use standard rails logging filters on params and env" do
+    filtered_params = { "abc" => "123",
+                        "def" => "456",
+                        "ghi" => "[FILTERED]" }
+    ENV['ghi'] = 'abc'
+    filtered_env = { 'ghi' => '[FILTERED]' }
+    filtered_cgi = { 'REQUEST_METHOD' => '[FILTERED]' }
+
+    process_action_with_automatic_notification(:filters => [:ghi, :request_method],
+                                               :params => { "abc" => "123",
+                                                            "def" => "456",
+                                                            "ghi" => "789" })
+    assert_sent_hash filtered_params, '/notice/request/params'
+    assert_sent_hash filtered_env, '/notice/server-environment'
+    assert_sent_hash filtered_cgi, '/notice/request/cgi-data'
   end
 
 end

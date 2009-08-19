@@ -55,20 +55,6 @@ class NotifierTest < Test::Unit::TestCase
     end
   end
 
-  should_eventually "use standard rails logging filters on params and env" do
-    ::HoptoadController.class_eval do
-      filter_parameter_logging :ghi
-    end
-    controller = HoptoadController.new
-
-    expected = {"notice" => {"request" => {"params" => {"abc" => "123", "def" => "456", "ghi" => "[FILTERED]"}},
-                           "environment" => {"abc" => "123", "ghi" => "[FILTERED]"}}}
-    notice   = {"notice" => {"request" => {"params" => {"abc" => "123", "def" => "456", "ghi" => "789"}},
-                           "environment" => {"abc" => "123", "ghi" => "789"}}}
-    assert controller.respond_to?(:filter_parameters)
-    assert_equal( expected[:notice], controller.send(:clean_notice, notice)[:notice] )
-  end
-
   should "configure the sender" do
     sender = stub_sender
     HoptoadNotifier::Sender.stubs(:new => sender)
