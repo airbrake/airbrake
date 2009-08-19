@@ -16,11 +16,11 @@ class NotifierTest < Test::Unit::TestCase
   end
 
   def set_public_env
-    define_constant('RAILS_ENV', 'production')
+    HoptoadNotifier.configure { |config| config.environment_name = 'production' }
   end
 
   def set_development_env
-    define_constant('RAILS_ENV', 'development')
+    HoptoadNotifier.configure { |config| config.environment_name = 'development' }
   end
 
   # TODO: what does this test?
@@ -43,6 +43,16 @@ class NotifierTest < Test::Unit::TestCase
 
     assert_kind_of HoptoadNotifier::Configuration, yielded_configuration
     assert_equal yielded_configuration, HoptoadNotifier.configuration
+  end
+
+  should "not remove existing config options when configuring twice" do
+    first_config = nil
+    HoptoadNotifier.configure do |config|
+      first_config = config
+    end
+    HoptoadNotifier.configure do |config|
+      assert_equal first_config, config
+    end
   end
 
   should_eventually "use standard rails logging filters on params and env" do

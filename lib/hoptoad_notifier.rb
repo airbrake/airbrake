@@ -47,7 +47,8 @@ module HoptoadNotifier
 
     def environment_info
       info = "[Ruby: #{RUBY_VERSION}]"
-      info << " [Rails: #{::Rails::VERSION::STRING}] [RailsEnv: #{RAILS_ENV}]" if defined?(Rails)
+      info << " [Rails: #{::Rails::VERSION::STRING}]" if defined?(Rails)
+      info << " [Env: #{configuration.environment_name}]"
     end
 
     def write_verbose_log(message)
@@ -70,12 +71,8 @@ module HoptoadNotifier
     #   config.secure  = false
     # end
     def configure
-      new_configuration = Configuration.new
-      yield new_configuration
-      if defined?(ActionController::Base) && !ActionController::Base.include?(HoptoadNotifier::Catcher)
-        ActionController::Base.send(:include, HoptoadNotifier::Catcher)
-      end
-      self.configuration = new_configuration
+      self.configuration ||= Configuration.new
+      yield(configuration)
       self.sender = Sender.new(configuration)
       report_ready
     end

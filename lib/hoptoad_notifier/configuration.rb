@@ -60,8 +60,20 @@ module HoptoadNotifier
     # A list of environments in which notifications should not be sent.
     attr_accessor :development_environments
 
+    # The name of the environment the application is running in
+    attr_accessor :environment_name
+
     # The path to the project in which the error occurred, such as the RAILS_ROOT
     attr_accessor :project_root
+
+    # The name of the notifier library being used to send notifications (such as "Hoptoad Notifier")
+    attr_accessor :notifier_name
+
+    # The version of the notifier library being used to send notifications (such as "1.0.2")
+    attr_accessor :notifier_version
+
+    # The url of the notifier library being used to send notifications
+    attr_accessor :notifier_url
 
     DEFAULT_PARAMS_FILTERS = %w(password password_confirmation).freeze
 
@@ -108,6 +120,9 @@ module HoptoadNotifier
       @ignore                   = IGNORE_DEFAULT.dup
       @ignore_user_agent        = []
       @development_environments = %w(development test)
+      @notifier_name            = 'Hoptoad Notifier'
+      @notifier_version         = VERSION
+      @notifier_url             = 'http://hoptoadapp.com'
     end
 
     # Takes a block and adds it to the list of backtrace filters. When the filters
@@ -174,12 +189,6 @@ module HoptoadNotifier
     # Returns false if in a development environment, false otherwise.
     def public?
       !development_environments.include?(environment_name)
-    end
-
-    private
-
-    def environment_name
-      RAILS_ENV if defined?(RAILS_ENV)
     end
   end
 end

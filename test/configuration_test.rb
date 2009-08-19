@@ -10,6 +10,10 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_default :proxy_user,          nil
     assert_config_default :proxy_pass,          nil
     assert_config_default :project_root,        nil
+    assert_config_default :environment_name,    nil
+    assert_config_default :notifier_version,    HoptoadNotifier::VERSION
+    assert_config_default :notifier_name,       'Hoptoad Notifier'
+    assert_config_default :notifier_url,        'http://hoptoadapp.com'
     assert_config_default :secure,              false
     assert_config_default :host,                'hoptoadapp.com'
     assert_config_default :http_open_timeout,   2
@@ -50,6 +54,10 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_overridable :http_open_timeout
     assert_config_overridable :http_read_timeout
     assert_config_overridable :project_root
+    assert_config_overridable :notifier_version
+    assert_config_overridable :notifier_name
+    assert_config_overridable :notifier_url
+    assert_config_overridable :environment_name
   end
 
   should "have an api key" do
@@ -122,22 +130,21 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_same_elements %w(development test), config.development_environments
   end
 
-  should "be public in a public RAILS_ENV" do
+  should "be public in a public environment" do
     config = HoptoadNotifier::Configuration.new
     config.development_environments = %w(development)
-    define_constant('RAILS_ENV', 'production')
+    config.environment_name = 'production'
     assert config.public?
   end
 
-  should "not be public in a development RAILS_ENV" do
+  should "not be public in a development environment" do
     config = HoptoadNotifier::Configuration.new
     config.development_environments = %w(staging)
-    define_constant('RAILS_ENV', 'staging')
+    config.environment_name = 'staging'
     assert !config.public?
   end
 
-  should "be public when RAILS_ENV is not defined" do
-    assert !defined?(RAILS_ENV)
+  should "be public without an environment name" do
     config = HoptoadNotifier::Configuration.new
     assert config.public?
   end
