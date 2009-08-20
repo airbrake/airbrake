@@ -8,3 +8,5 @@ public/system
 coverage/*
 rdoc/
 tags
+.yardoc
+doc
