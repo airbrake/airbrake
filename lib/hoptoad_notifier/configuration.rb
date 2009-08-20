@@ -1,4 +1,5 @@
 module HoptoadNotifier
+  # Used to set up and modify settings for the notifier.
   class Configuration
 
     OPTIONS = [:api_key, :backtrace_filters, :development_environments,
@@ -172,7 +173,14 @@ module HoptoadNotifier
       to_hash.merge(hash)
     end
 
-    def port #:nodoc:
+    # Returns false if in a development environment, false otherwise.
+    def public?
+      !development_environments.include?(environment_name)
+    end
+
+    protected
+
+    def port
       @port ||= if secure?
                   443
                 else
@@ -180,17 +188,12 @@ module HoptoadNotifier
                 end
     end
 
-    def protocol #:nodoc:
+    def protocol
       if secure?
         'https'
       else
         'http'
       end
-    end
-
-    # Returns false if in a development environment, false otherwise.
-    def public?
-      !development_environments.include?(environment_name)
     end
   end
 end
