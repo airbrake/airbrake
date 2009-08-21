@@ -82,6 +82,7 @@ module HoptoadNotifier
     #
     # @param [Exception] exception The exception you want to notify Hoptoad about.
     # @param [Hash] opts Data that will be sent to Hoptoad.
+    #
     # @option opts [String] :api_key The API key for this project. The API key is a unique identifier that Hoptoad uses for identification.
     # @option opts [String] :error_message The error returned by the exception (or the message you want to log).
     # @option opts [String] :backtrace A backtrace, usually obtained with +caller+.

@@ -44,7 +44,7 @@ be aggregated, filtered, sorted, analyzed, massaged, and searched. In previous
 releases you had to include HoptoadNotifier::Catcher into your
 ApplicationController, but the plugin takes care of that now.
 
-*NOTE FOR RAILS 1.2.* USERS:*
+=== NOTE FOR RAILS 1.2.* USERS:
 
 You will need to copy the hoptoad_notifier_tasks.rake file into your
 RAILS_ROOT/lib/tasks directory in order for the following to work:

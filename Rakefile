@@ -23,6 +23,7 @@ end
 begin
   require 'yard'
   YARD::Rake::YardocTask.new do |t|
+    t.files   = ['lib/**/*.rb', 'TESTING.rdoc']
   end
 rescue LoadError
 end
