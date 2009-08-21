@@ -1,6 +1,8 @@
 module HoptoadNotifier
+  # Front end to parsing the backtrace for each notice
   class Backtrace
 
+    # Handles backtrace parsing line by line
     class Line
 
       INPUT_FORMAT = %r{^([^:]+):(\d+)(?::in `([^']+)')?$}.freeze
@@ -14,6 +16,9 @@ module HoptoadNotifier
       # The method of the line (such as index)
       attr_reader :method
 
+      # Parses a single line of a given backtrace
+      # @param [String] unparsed_line The raw line from +caller+ or some backtrace
+      # @return [Line] The parsed backtrace line
       def self.parse(unparsed_line)
         _, file, number, method = unparsed_line.match(INPUT_FORMAT).to_a
         new(file, number, method)
@@ -25,6 +30,7 @@ module HoptoadNotifier
         self.method = method
       end
 
+      # Reconstructs the line in a readable fashion
       def to_s
         "#{file}:#{number}:in `#{method}'"
       end
@@ -42,6 +48,7 @@ module HoptoadNotifier
       attr_writer :file, :number, :method
     end
 
+    # holder for an Array of Backtrace::Line instances
     attr_reader :lines
 
     def self.parse(ruby_backtrace, opts = {})

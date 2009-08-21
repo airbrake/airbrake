@@ -65,6 +65,7 @@ module HoptoadNotifier
     end
 
     # Call this method to modify defaults in your initializers.
+    #
     # @example
     #   HoptoadNotifier.configure do |config|
     #     config.api_key = '1234567890abcdef'
@@ -77,9 +78,7 @@ module HoptoadNotifier
       report_ready
     end
 
-    # You can send an exception manually using this method, even when you are not in a
-    # controller. You can pass an exception or a hash that contains the attributes that
-    # would be sent to Hoptoad:
+    # Sends an exception manually using this method, even when you are not in a controller.
     #
     # @param [Exception] exception The exception you want to notify Hoptoad about.
     # @param [Hash] opts Data that will be sent to Hoptoad.

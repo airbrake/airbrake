@@ -130,33 +130,50 @@ module HoptoadNotifier
 
     # Takes a block and adds it to the list of backtrace filters. When the filters
     # run, the block will be handed each line of the backtrace and can modify
-    # it as necessary. For example, by default a path matching the RAILS_ROOT
-    # constant will be transformed into "[RAILS_ROOT]"
+    # it as necessary.
+    #
+    # @example
+    #   config.filter_bracktrace do |line|
+    #     line.gsub(/^#{Rails.root}/, "[RAILS_ROOT]")
+    #   end
+    #
+    # @param [Proc] block The new backtrace filter.
+    # @yieldparam [String] line A line in the backtrace.
     def filter_backtrace(&block)
       self.backtrace_filters << block
     end
 
-    # Takes a block and adds it to the list of ignore filters.  When the filters
-    # run, the block will be handed the exception.  If the block yields a value
-    # equivalent to "true," the exception will be ignored, otherwise it will be
-    # processed by hoptoad.
+    # Takes a block and adds it to the list of ignore filters.
+    # When the filters run, the block will be handed the exception.
+    # @example
+    #   config.ignore_by_filter do |exception_data|
+    #     true if exception_data[:error_class] == "RuntimeError"
+    #   end
+    #
+    # @param [Proc] block The new ignore filter
+    # @yieldparam [Hash] data The exception data given to +HoptoadNotifier.notify+
+    # @yieldreturn [Boolean] If the block returns true the exception will be ignored, otherwise it will be processed by hoptoad.
     def ignore_by_filter(&block)
       self.ignore_by_filters << block
     end
 
-    # Sets the list of ignored errors to only what is passed in here. This method
-    # can be passed a single error or a list of errors.
+    # Overrides the list of default ignored errors.
+    #
+    # @param [Array<Exception>] names A list of exceptions to ignore.
     def ignore_only=(names)
       @ignore = [names].flatten
     end
 
-    # Sets the list of ignored user agents to only what is passed in here. This method
-    # can be passed a single user agent or a list of user agents.
+    # Overrides the list of default ignored user agents
+    #
+    # @param [Array<String>] A list of user agents to ignore
     def ignore_user_agent_only=(names)
       @ignore_user_agent = [names].flatten
     end
 
     # Allows config options to be read like a hash
+    #
+    # @param [Symbol] option Key for a given attribute
     def [](option)
       send(option)
     end
@@ -169,11 +186,14 @@ module HoptoadNotifier
     end
 
     # Returns a hash of all configurable options merged with +hash+
+    #
+    # @param [Hash] hash A set of configuration options that will take precedence over the defaults
     def merge(hash)
       to_hash.merge(hash)
     end
 
-    # Returns false if in a development environment, false otherwise.
+    # Determines if the notifier will send notices.
+    # @return [Boolean] Returns +false+ if in a development environment, +true+ otherwise.
     def public?
       !development_environments.include?(environment_name)
     end

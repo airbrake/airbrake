@@ -2,6 +2,7 @@ module HoptoadNotifier
   # Include this module in Controllers in which you want to be notified of errors.
   module Catcher
 
+    # Sets up an alias chain to catch exceptions when Rails does
     def self.included(base) #:nodoc:
       if base.instance_methods.map(&:to_s).include? 'rescue_action_in_public' and !base.instance_methods.map(&:to_s).include? 'rescue_action_in_public_without_hoptoad'
         base.send(:alias_method, :rescue_action_in_public_without_hoptoad, :rescue_action_in_public)

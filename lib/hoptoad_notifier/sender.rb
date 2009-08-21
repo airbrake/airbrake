@@ -1,10 +1,8 @@
 module HoptoadNotifier
+  # Sends out the notice to Hoptoad
   class Sender
 
     NOTICES_URI = '/api/v2/notices/'.freeze
-
-    attr_reader :proxy_host, :proxy_port, :proxy_user, :proxy_pass, :protocol,
-      :host, :port, :secure, :http_open_timeout, :http_read_timeout
 
     def initialize(options = {})
       [:proxy_host, :proxy_port, :proxy_user, :proxy_pass, :protocol,
@@ -13,7 +11,10 @@ module HoptoadNotifier
       end
     end
 
-    def send_to_hoptoad(data) #:nodoc:
+    # Sends the notice data off to Hoptoad for processing.
+    #
+    # @param [String] data The XML notice to be sent off
+    def send_to_hoptoad(data)
       http =
         Net::HTTP::Proxy(proxy_host, proxy_port, proxy_user, proxy_pass).
         new(url.host, url.port)
@@ -39,7 +40,10 @@ module HoptoadNotifier
 
     private
 
-    def url #:nodoc:
+    attr_reader :proxy_host, :proxy_port, :proxy_user, :proxy_pass, :protocol,
+      :host, :port, :secure, :http_open_timeout, :http_read_timeout
+
+    def url
       URI.parse("#{protocol}://#{host}:#{port}").merge(NOTICES_URI)
     end
 

@@ -102,6 +102,7 @@ module HoptoadNotifier
       clean_environment
     end
 
+    # Converts the given notice to XML
     def to_xml
       builder = Builder::XmlMarkup.new
       builder.instruct!
@@ -152,13 +153,18 @@ module HoptoadNotifier
       xml.to_s
     end
 
+    # Determines if this notice should be ignored
     def ignore?
       ignored_class_names.include?(error_class) ||
         ignore_by_filters.any? {|filter| filter.call(self) }
     end
 
-    # Allows properties to be accessed using a hash-like syntax, such as:
+    # Allows properties to be accessed using a hash-like syntax
+    #
+    # @example
     #   notice[:error_message]
+    # @param [String] method The given key for an attribute
+    # @return The attribute value, or self if given +:request+
     def [](method)
       case method
       when :request
