@@ -15,7 +15,7 @@ module HoptoadNotifier
   LOG_PREFIX = "** [Hoptoad] "
 
   HEADERS = {
-    'Content-type'             => 'application/x-yaml',
+    'Content-type'             => 'text/xml',
     'Accept'                   => 'text/xml, application/xml',
     'X-Hoptoad-Client-Name'    => 'Hoptoad Notifier',
     'X-Hoptoad-Client-Version' => VERSION
