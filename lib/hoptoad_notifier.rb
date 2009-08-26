@@ -16,9 +16,7 @@ module HoptoadNotifier
 
   HEADERS = {
     'Content-type'             => 'text/xml',
-    'Accept'                   => 'text/xml, application/xml',
-    'X-Hoptoad-Client-Name'    => 'Hoptoad Notifier',
-    'X-Hoptoad-Client-Version' => VERSION
+    'Accept'                   => 'text/xml, application/xml'
   }
 
   class << self

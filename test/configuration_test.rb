@@ -67,10 +67,12 @@ class ConfigurationTest < Test::Unit::TestCase
   should "act like a hash" do
     config = HoptoadNotifier::Configuration.new
     hash = config.to_hash
-    [:api_key, :host, :port, :secure, :http_open_timeout, :http_read_timeout,
-      :proxy_host, :proxy_port, :proxy_user, :proxy_pass, :params_filters,
-      :environment_filters, :backtrace_filters, :ignore_by_filters, :ignore,
-      :ignore_user_agent, :port, :protocol].each do |option|
+    [:api_key, :backtrace_filters, :development_environments,
+      :environment_filters, :environment_name, :host, :http_open_timeout,
+        :http_read_timeout, :ignore, :ignore_by_filters, :ignore_user_agent,
+        :notifier_name, :notifier_url, :notifier_version, :params_filters,
+        :project_root, :port, :protocol, :proxy_host, :proxy_pass, :proxy_port,
+        :proxy_user, :secure].each do |option|
       assert_equal config[option], hash[option], "Wrong value for #{option}"
     end
   end

@@ -23,18 +23,6 @@ class NotifierTest < Test::Unit::TestCase
     HoptoadNotifier.configure { |config| config.environment_name = 'development' }
   end
 
-  # TODO: what does this test?
-  should "send without rails environment" do
-    assert_nothing_raised do
-      HoptoadNotifier.environment_info
-    end
-  end
-
-  should "send information about the notifier in the headers" do
-    assert_equal "Hoptoad Notifier", HoptoadNotifier::HEADERS['X-Hoptoad-Client-Name']
-    assert_equal HoptoadNotifier::VERSION, HoptoadNotifier::HEADERS['X-Hoptoad-Client-Version']
-  end
-
   should "yield and save a configuration when configuring" do
     yielded_configuration = nil
     HoptoadNotifier.configure do |config|

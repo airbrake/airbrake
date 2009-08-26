@@ -1,10 +1,12 @@
 module HoptoadNotifier
   class Configuration
 
-    OPTIONS = [:api_key, :host, :port, :secure, :http_open_timeout, :http_read_timeout,
-      :proxy_host, :proxy_port, :proxy_user, :proxy_pass, :params_filters,
-      :environment_filters, :backtrace_filters, :ignore_by_filters, :ignore,
-      :ignore_user_agent, :port, :protocol, :development_environments].freeze
+    OPTIONS = [:api_key, :backtrace_filters, :development_environments,
+      :environment_filters, :environment_name, :host, :http_open_timeout,
+        :http_read_timeout, :ignore, :ignore_by_filters, :ignore_user_agent,
+        :notifier_name, :notifier_url, :notifier_version, :params_filters,
+        :project_root, :port, :protocol, :proxy_host, :proxy_pass, :proxy_port,
+        :proxy_user, :secure].freeze
 
     # The API key for your project, found on the project edit form.
     attr_accessor :api_key
