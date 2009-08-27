@@ -15,6 +15,8 @@ module HoptoadNotifier
     #
     # @param [String] data The XML notice to be sent off
     def send_to_hoptoad(data)
+      logger.debug { "Sending request to #{url.to_s}:\n#{data}" }
+
       http =
         Net::HTTP::Proxy(proxy_host, proxy_port, proxy_user, proxy_pass).
         new(url.host, url.port)
