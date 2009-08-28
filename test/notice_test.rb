@@ -198,10 +198,7 @@ class NoticeTest < Test::Unit::TestCase
     end
 
     should "validate against the XML schema" do
-      xsd_path = File.join(File.dirname(__FILE__), "hoptoad_2_0.xsd")
-      schema = Nokogiri::XML::Schema.new(IO.read(xsd_path))
-      errors = schema.validate(@document)
-      assert errors.empty?, errors.collect{|e| e.message }.join
+      assert_valid_notice_document @document
     end
 
     should "serialize a Notice to XML when sent #to_xml" do
@@ -236,6 +233,39 @@ class NoticeTest < Test::Unit::TestCase
       assert_valid_node(@document, "//server-environment/environment-name", "RAILS_ENV")
       assert_valid_node(@document, "//server-environment/var/@key",         "varkey")
       assert_valid_node(@document, "//server-environment/var",              "varvalue")
+    end
+  end
+
+  should "not send empty request data" do
+    notice = build_notice
+    assert_nil notice.url
+    assert_nil notice.controller
+    assert_nil notice.action
+
+    xml = notice.to_xml
+    document = Nokogiri::XML.parse(xml)
+    assert_nil document.at('//request/url')
+    assert_nil document.at('//request/controller')
+    assert_nil document.at('//request/action')
+
+    assert_valid_notice_document document
+  end
+
+  %w(url controller action).each do |var|
+    should "send a request if #{var} is present" do
+      notice = build_notice(var.to_sym => 'value')
+      xml = notice.to_xml
+      document = Nokogiri::XML.parse(xml)
+      assert_not_nil document.at('//request')
+    end
+  end
+
+  %w(parameters cgi_data session_data).each do |var|
+    should "send a request if #{var} is present" do
+      notice = build_notice(var.to_sym => { 'key' => 'value' })
+      xml = notice.to_xml
+      document = Nokogiri::XML.parse(xml)
+      assert_not_nil document.at('//request')
     end
   end
 
@@ -317,5 +347,12 @@ class NoticeTest < Test::Unit::TestCase
       assert_kind_of Array, hash[:array], "arrays should be kept"
       assert_equal object.to_s, hash[:array].first, "array members should be serialized"
     end
+  end
+
+  def assert_valid_notice_document(document)
+    xsd_path = File.join(File.dirname(__FILE__), "hoptoad_2_0.xsd")
+    schema = Nokogiri::XML::Schema.new(IO.read(xsd_path))
+    errors = schema.validate(document)
+    assert errors.empty?, errors.collect{|e| e.message }.join
   end
 end

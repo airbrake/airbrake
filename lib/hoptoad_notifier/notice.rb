@@ -124,23 +124,30 @@ module HoptoadNotifier
             end
           end
         end
-        notice.request do |request|
-          request.url(url)
-          request.controller(controller)
-          request.action(action)
-          unless parameters.blank?
-            request.params do |params|
-              xml_vars_for(params, parameters)
+        if url ||
+            controller ||
+            action ||
+            !parameters.blank? ||
+            !cgi_data.blank? ||
+            !session_data.blank?
+          notice.request do |request|
+            request.url(url)
+            request.controller(controller)
+            request.action(action)
+            unless parameters.blank?
+              request.params do |params|
+                xml_vars_for(params, parameters)
+              end
             end
-          end
-          unless session_data.blank?
-            request.session do |session|
-              xml_vars_for(session, session_data)
+            unless session_data.blank?
+              request.session do |session|
+                xml_vars_for(session, session_data)
+              end
             end
-          end
-          unless cgi_data.blank?
-            request.tag!("cgi-data") do |cgi_datum|
-              xml_vars_for(cgi_datum, cgi_data)
+            unless cgi_data.blank?
+              request.tag!("cgi-data") do |cgi_datum|
+                xml_vars_for(cgi_datum, cgi_data)
+              end
             end
           end
         end
