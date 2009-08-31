@@ -39,6 +39,11 @@ namespace :hoptoad do
       exit
     end
 
+    puts "Configuration:"
+    HoptoadNotifier.configuration.to_hash.each do |key, value|
+      puts sprintf("%25s: %s", key.to_s, value.inspect.slice(0, 55))
+    end
+
     puts 'Setting up the Controller.'
     class ApplicationController
       # This is to bypass any filters that may prevent access to the action.
