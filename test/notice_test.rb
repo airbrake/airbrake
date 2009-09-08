@@ -141,6 +141,13 @@ class NoticeTest < Test::Unit::TestCase
     assert_equal({}, notice.session_data)
   end
 
+  should "use the caller as the backtrace for an exception without a backtrace" do
+    backtrace = HoptoadNotifier::Backtrace.parse(caller)
+    notice = build_notice(:exception => StandardError.new('error'), :backtrace => nil)
+
+    assert_array_starts_with backtrace.lines, notice.backtrace.lines
+  end
+
   should "convert unserializable objects to strings" do
     assert_serializes_hash(:environment_vars)
     assert_serializes_hash(:parameters)

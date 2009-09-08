@@ -200,11 +200,7 @@ module HoptoadNotifier
     #
     # If no exception or hash key is available, +default+ will be used.
     def exception_attribute(attribute, default = nil, &block)
-      if exception
-        from_exception(attribute, &block)
-      else
-        args[attribute] || default
-      end
+      (exception && from_exception(attribute, &block)) || args[attribute] || default
     end
 
     # Gets a property named +attribute+ from an exception.
@@ -291,8 +287,8 @@ module HoptoadNotifier
 
     def xml_vars_for(builder, hash)
       hash.each do |key, value|
-        if value.is_a?(Hash)
-          builder.var(:key => key){|b| xml_vars_for(b, value) }
+        if value.respond_to?(:to_hash)
+          builder.var(:key => key){|b| xml_vars_for(b, value.to_hash) }
         else
           builder.var(value.to_s, :key => key)
         end
