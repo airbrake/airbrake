@@ -136,4 +136,51 @@ class NotifierTest < Test::Unit::TestCase
     end
   end
 
+  context "building notice JSON for an exception" do
+    setup do
+      @params    = { :controller => "users", :action => "create" }
+      @exception = build_exception
+      @hash      = HoptoadNotifier.build_lookup_hash_for(@exception, @params)
+    end
+
+    should "set action" do
+      assert_equal @params[:action], @hash[:action]
+    end
+
+    should "set controller" do
+      assert_equal @params[:controller], @hash[:controller]
+    end
+
+    should "set line number" do
+      assert @hash[:line_number] =~ /\d+/
+    end
+
+    should "set file" do
+      assert_equal './test/helper.rb', @hash[:file]
+    end
+
+    should "set rails_env to production" do
+      assert_equal 'production', @hash[:rails_env]
+    end
+
+    should "set error class" do
+      assert_equal 'RuntimeError', @hash[:error_class]
+    end
+
+    should "not set file or line number with no backtrace" do
+      @exception.stubs(:backtrace).returns([])
+
+      @hash = HoptoadNotifier.build_lookup_hash_for(@exception)
+
+      assert_nil @hash[:line_number]
+      assert_nil @hash[:file]
+    end
+
+    should "not set action or controller when not provided" do
+      @hash = HoptoadNotifier.build_lookup_hash_for(@exception)
+
+      assert_nil @hash[:action]
+      assert_nil @hash[:controller]
+    end
+  end
 end

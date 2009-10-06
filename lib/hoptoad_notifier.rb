@@ -101,6 +101,23 @@ module HoptoadNotifier
       send_notice(notice) unless notice.ignore?
     end
 
+    def build_lookup_hash_for(exception, options = {})
+      notice = build_notice_for(exception, options)
+
+      result = {}
+      result[:rails_env]   = 'production'
+      result[:action]      = notice.action      rescue nil
+      result[:controller]  = notice.controller  rescue nil
+      result[:error_class] = notice.error_class if notice.error_class
+
+      unless notice.backtrace.lines.empty?
+        result[:file]        = notice.backtrace.lines.first.file
+        result[:line_number] = notice.backtrace.lines.first.number
+      end
+
+      result
+    end
+
     private
 
     def send_notice(notice)
