@@ -2,7 +2,7 @@ module HoptoadNotifier
   # Sends out the notice to Hoptoad
   class Sender
 
-    NOTICES_URI = '/api/v2/notices/'.freeze
+    NOTICES_URI = '/notifier_api/v2/notices/'.freeze
 
     def initialize(options = {})
       [:proxy_host, :proxy_port, :proxy_user, :proxy_pass, :protocol,
