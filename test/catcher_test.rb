@@ -211,7 +211,6 @@ class CatcherTest < Test::Unit::TestCase
                                                             "def" => "456",
                                                             "ghi" => "789" })
     assert_sent_hash filtered_params, '/notice/request/params'
-    assert_sent_hash filtered_env, '/notice/server-environment'
     assert_sent_hash filtered_cgi, '/notice/request/cgi-data'
   end
 

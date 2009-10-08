@@ -98,18 +98,6 @@ class NoticeTest < Test::Unit::TestCase
     assert_equal data, notice.session_data
   end
 
-  should "set the environment vars from a hash or ENV" do
-    custom_env = { 'string' => 'value' }
-    custom_notice = build_notice(:environment_vars => custom_env)
-    assert_equal custom_env, custom_notice.environment_vars,
-                 "should take an environment from a hash"
-
-    default_notice = build_notice({})
-    assert_equal ENV.to_hash,
-                 default_notice.environment_vars,
-                 "should set environment vars to ENV without a hash"
-  end
-
   should "accept an environment name" do
     assert_equal 'development', build_notice(:environment_name => 'development').environment_name
   end
@@ -136,7 +124,6 @@ class NoticeTest < Test::Unit::TestCase
 
     assert_equal 'Notification', notice.error_message
     assert_array_starts_with backtrace.lines, notice.backtrace.lines
-    assert_equal ENV.to_hash, notice.environment_vars
     assert_equal({}, notice.parameters)
     assert_equal({}, notice.session_data)
   end
@@ -149,7 +136,6 @@ class NoticeTest < Test::Unit::TestCase
   end
 
   should "convert unserializable objects to strings" do
-    assert_serializes_hash(:environment_vars)
     assert_serializes_hash(:parameters)
   end
 
@@ -161,17 +147,6 @@ class NoticeTest < Test::Unit::TestCase
 
     assert_equal({ 'abc' => "[FILTERED]", 'def' => "[FILTERED]", 'ghi' => "789" },
                  notice.parameters)
-  end
-
-  should "filter environment data" do
-    filters = %w(secret supersecret)
-    env     = { :secret      => "123",
-                :supersecret => "456",
-                :ghi         => "789" }
-    notice = build_notice(:environment_vars => env, :environment_filters => filters)
-
-    assert_equal({ :secret => "[FILTERED]", :supersecret => "[FILTERED]", :ghi => "789" },
-                 notice.environment_vars)
   end
 
   context "a Notice turned into XML" do
@@ -195,8 +170,7 @@ class NoticeTest < Test::Unit::TestCase
         :session_data     => { "sessionkey" => "sessionvalue" },
         :cgi_data         => { "cgikey" => "cgivalue" },
         :project_root     => "RAILS_ROOT",
-        :environment_name => "RAILS_ENV",
-        :environment_vars => { "varkey" => "varvalue" }
+        :environment_name => "RAILS_ENV"
       })
 
       @xml = @notice.to_xml
@@ -238,8 +212,6 @@ class NoticeTest < Test::Unit::TestCase
 
       assert_valid_node(@document, "//server-environment/project-root",     "RAILS_ROOT")
       assert_valid_node(@document, "//server-environment/environment-name", "RAILS_ENV")
-      assert_valid_node(@document, "//server-environment/var/@key",         "varkey")
-      assert_valid_node(@document, "//server-environment/var",              "varvalue")
     end
   end
 

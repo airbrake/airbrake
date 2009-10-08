@@ -13,9 +13,6 @@ module HoptoadNotifier
     # The name of the class of error (such as RuntimeError)
     attr_reader :error_class
 
-    # The server environment variables at the time of the error
-    attr_reader :environment_vars
-
     # The name of the server environment (such as "production")
     attr_reader :environment_name
 
@@ -30,9 +27,6 @@ module HoptoadNotifier
 
     # See Configuration#params_filters
     attr_reader :params_filters
-
-    # See Configuration#environment_filters
-    attr_reader :environment_filters
 
     # A hash of parameters from the query string or post body.
     attr_reader :parameters
@@ -83,12 +77,10 @@ module HoptoadNotifier
       self.ignore_by_filters   = args[:ignore_by_filters]   || []
       self.backtrace_filters   = args[:backtrace_filters]   || []
       self.params_filters      = args[:params_filters]      || []
-      self.environment_filters = args[:environment_filters] || []
       self.parameters          = args[:parameters]          || {}
       self.controller          = args[:controller]
       self.action              = args[:action]
 
-      self.environment_vars = args[:environment_vars] || ENV.to_hash
       self.environment_name = args[:environment_name]
       self.cgi_data         = args[:cgi_data]
       self.backtrace        = Backtrace.parse(exception_attribute(:backtrace, caller))
@@ -99,7 +91,6 @@ module HoptoadNotifier
 
       find_session_data
       clean_params
-      clean_environment
     end
 
     # Converts the given notice to XML
@@ -154,7 +145,6 @@ module HoptoadNotifier
         notice.tag!("server-environment") do |env|
           env.tag!("project-root", project_root)
           env.tag!("environment-name", environment_name)
-          xml_vars_for(env, environment_vars)
         end
       end
       xml.to_s
@@ -184,7 +174,7 @@ module HoptoadNotifier
     private
 
     attr_writer :exception, :api_key, :backtrace, :error_class, :error_message,
-      :environment_vars, :backtrace_filters, :parameters, :params_filters,
+      :backtrace_filters, :parameters, :params_filters,
       :environment_filters, :session_data, :project_root, :url, :ignore,
       :ignore_by_filters, :notifier_name, :notifier_url, :notifier_version,
       :controller, :action, :cgi_data, :environment_name
@@ -249,19 +239,6 @@ module HoptoadNotifier
       if params_filters
         parameters.keys.each do |key|
           parameters[key] = "[FILTERED]" if params_filters.any? do |filter|
-            key.to_s.include?(filter)
-          end
-        end
-      end
-    end
-
-    # Replaces the contents of params that match params_filters.
-    # TODO: extract this to a different class
-    def clean_environment
-      clean_unserializable_data_from(:environment_vars)
-      if environment_filters
-        environment_vars.keys.each do |key|
-          environment_vars[key] = "[FILTERED]" if environment_filters.any? do |filter|
             key.to_s.include?(filter)
           end
         end
