@@ -36,7 +36,7 @@
         <xs:complexType>
           <xs:attribute name="file" type="xs:string" use="required"/>
           <xs:attribute name="number" type="xs:string" use="required"/>
-          <xs:attribute name="method" type="xs:string" use="required"/>
+          <xs:attribute name="method" type="xs:string" use="optional"/>
         </xs:complexType>
       </xs:element>
     </xs:sequence>
@@ -68,9 +68,8 @@
 
   <xs:complexType name="serverEnvironment">
     <xs:sequence>
-      <xs:element name="project-root" type="xs:string"/>
+      <xs:element name="project-root" type="xs:string" minOccurs="0"/>
       <xs:element name="environment-name" type="xs:string"/>
-      <xs:element name="var" type="var" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complextype>
 
