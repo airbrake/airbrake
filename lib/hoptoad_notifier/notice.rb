@@ -98,7 +98,7 @@ module HoptoadNotifier
     def to_xml
       builder = Builder::XmlMarkup.new
       builder.instruct!
-      xml = builder.notice(:version => HoptoadNotifier::VERSION) do |notice|
+      xml = builder.notice(:version => HoptoadNotifier::API_VERSION) do |notice|
         notice.tag!("api-key", api_key)
         notice.notifier do |notifier|
           notifier.name(notifier_name)
