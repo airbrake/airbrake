@@ -45,8 +45,8 @@
   <xs:complexType name="request">
     <xs:all>
       <xs:element name="url" type="xs:string"/>
-      <xs:element name="controller" type="xs:string"/>
-      <xs:element name="action" type="xs:string"/>
+      <xs:element name="component" type="xs:string"/>
+      <xs:element name="action" type="xs:string" minOccurs="0"/>
       <xs:element name="params" type="varList" minOccurs="0"/>
       <xs:element name="session" type="varList" minOccurs="0"/>
       <xs:element name="cgi-data" type="varList" minOccurs="0"/>

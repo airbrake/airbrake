@@ -36,8 +36,13 @@ class NoticeTest < Test::Unit::TestCase
     assert_equal project_root, notice.project_root
   end
 
-  should "accept a controller" do
-    assert_equal 'users_controller', build_notice(:controller => 'users_controller').controller
+  should "accept a component" do
+    assert_equal 'users_controller', build_notice(:component => 'users_controller').controller
+  end
+
+  should "alias the component as controller" do
+    assert_equal 'users_controller', build_notice(:controller => 'users_controller').component
+    assert_equal 'users_controller', build_notice(:component => 'users_controller').controller
   end
 
   should "accept a action" do
@@ -197,7 +202,7 @@ class NoticeTest < Test::Unit::TestCase
       assert_valid_node(@document, "//error/backtrace/line/@method", @notice.backtrace.lines.first.method)
 
       assert_valid_node(@document, "//request/url",        @notice.url)
-      assert_valid_node(@document, "//request/controller", @notice.controller)
+      assert_valid_node(@document, "//request/component", @notice.controller)
       assert_valid_node(@document, "//request/action",     @notice.action)
 
       assert_valid_node(@document, "//request/params/var/@key",     "paramskey")
@@ -224,7 +229,7 @@ class NoticeTest < Test::Unit::TestCase
     xml = notice.to_xml
     document = Nokogiri::XML.parse(xml)
     assert_nil document.at('//request/url')
-    assert_nil document.at('//request/controller')
+    assert_nil document.at('//request/component')
     assert_nil document.at('//request/action')
 
     assert_valid_notice_document document

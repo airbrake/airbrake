@@ -35,7 +35,7 @@ class CatcherTest < Test::Unit::TestCase
   def assert_sent_request_info_for(request)
     params = request.params.to_hash
     assert_sent_hash params, '/notice/request/params'
-    assert_sent_element params['controller'], '/notice/request/controller'
+    assert_sent_element params['controller'], '/notice/request/component'
     assert_sent_element params['action'], '/notice/request/action'
     assert_sent_element request.url, '/notice/request/url'
     assert_sent_hash request.env, '/notice/request/cgi-data'

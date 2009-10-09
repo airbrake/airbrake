@@ -32,8 +32,9 @@ module HoptoadNotifier
     attr_reader :parameters
     alias_method :params, :parameters
 
-    # The controller (if any) which was used in this request
-    attr_reader :controller
+    # The component (if any) which was used in this request (usually the controller)
+    attr_reader :component
+    alias_method :controller, :component
 
     # The action (if any) that was called in this request
     attr_reader :action
@@ -78,7 +79,7 @@ module HoptoadNotifier
       self.backtrace_filters   = args[:backtrace_filters]   || []
       self.params_filters      = args[:params_filters]      || []
       self.parameters          = args[:parameters]          || {}
-      self.controller          = args[:controller]
+      self.component           = args[:component] || args[:controller]
       self.action              = args[:action]
 
       self.environment_name = args[:environment_name]
@@ -123,7 +124,7 @@ module HoptoadNotifier
             !session_data.blank?
           notice.request do |request|
             request.url(url)
-            request.controller(controller)
+            request.component(controller)
             request.action(action)
             unless parameters.blank?
               request.params do |params|
@@ -177,7 +178,7 @@ module HoptoadNotifier
       :backtrace_filters, :parameters, :params_filters,
       :environment_filters, :session_data, :project_root, :url, :ignore,
       :ignore_by_filters, :notifier_name, :notifier_url, :notifier_version,
-      :controller, :action, :cgi_data, :environment_name
+      :component, :action, :cgi_data, :environment_name
 
     # Arguments given in the initializer
     attr_accessor :args
