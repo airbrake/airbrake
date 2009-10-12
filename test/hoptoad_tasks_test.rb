@@ -69,6 +69,13 @@ class HoptoadTasksTest < Test::Unit::TestCase
             end
           end
 
+          before_should "use the :api_key param if it's passed in." do
+            @options[:api_key] = "value"
+            Net::HTTP.expects(:post_form).
+              with(kind_of(URI), has_entries("api_key" => "value")).
+              returns(successful_response)
+          end
+
           before_should "puts the response body on success" do
             HoptoadTasks.expects(:puts).with("body")
             Net::HTTP.expects(:post_form).with(any_parameters).returns(successful_response('body'))
