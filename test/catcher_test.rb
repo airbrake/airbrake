@@ -24,7 +24,12 @@ class CatcherTest < Test::Unit::TestCase
 
   def assert_sent_hash(hash, xpath)
     hash.each do |key, value|
-      assert_sent_element value.to_s, "#{xpath}/var[@key = '#{key}']"
+      element_xpath = "#{xpath}/var[@key = '#{key}']"
+      if value.respond_to?(:to_hash)
+        assert_sent_hash value.to_hash, element_xpath
+      else
+        assert_sent_element value.to_s, element_xpath
+      end
     end
   end
 

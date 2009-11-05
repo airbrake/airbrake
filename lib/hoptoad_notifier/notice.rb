@@ -106,7 +106,7 @@ module HoptoadNotifier
           notifier.url(notifier_url)
         end
         notice.error do |error|
-          error.class(error_class)
+          error.tag!('class', error_class)
           error.message(error_message)
           error.backtrace do |backtrace|
             self.backtrace.lines.each do |line|

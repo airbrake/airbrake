@@ -256,7 +256,7 @@ class NoticeTest < Test::Unit::TestCase
   should "not ignore an exception not matching ignore filters" do
     notice = build_notice(:error_class       => 'ArgumentError',
                           :ignore            => ['Argument'],
-                          :ignore_by_filters => [lambda { false }])
+                          :ignore_by_filters => [lambda { |notice| false }])
     assert !notice.ignore?
   end
 

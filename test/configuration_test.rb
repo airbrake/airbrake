@@ -165,7 +165,7 @@ class ConfigurationTest < Test::Unit::TestCase
   def assert_appends_value(option, &block)
     config = HoptoadNotifier::Configuration.new
     original_values = config.send(option).dup
-    block ||= lambda do
+    block ||= lambda do |config|
       new_value = 'hello'
       config.send(option) << new_value
       new_value
