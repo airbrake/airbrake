@@ -44,22 +44,22 @@ be aggregated, filtered, sorted, analyzed, massaged, and searched. In previous
 releases you had to include HoptoadNotifier::Catcher into your
 ApplicationController, but the plugin takes care of that now.
 
-=== NOTE FOR RAILS 1.2.* USERS:
-
-You will need to copy the hoptoad_notifier_tasks.rake file into your
-RAILS_ROOT/lib/tasks directory in order for the following to work:
-
-You can test that hoptoad is working in your production environment by using 
+You can test that Hoptoad is working in your production environment by using 
 this rake task (from RAILS_ROOT):
 
   rake hoptoad:test
 
-If everything is configured properly, that task will send a notice to hoptoad 
+If everything is configured properly, that task will send a notice to Hoptoad 
 which will be visible immediately.
+
+=== NOTE FOR RAILS 1.2.* USERS:
+
+You will need to copy the hoptoad_notifier_tasks.rake file into your
+RAILS_ROOT/lib/tasks directory in order for the rake hoptoad:test task to work.
 
 == Usage
 
-for the most part, hoptoad works for itself.  Once you've included the notifier 
+for the most part, Hoptoad works for itself.  Once you've included the notifier 
 in your ApplicationController (which is now done automatically by the plugin), 
 all errors will be rescued by the #rescue_action_in_public provided by the plugin.
 
@@ -73,14 +73,13 @@ controller, you can do something like this:
   end
   ...
 
-The #notify_hoptoad call will send the notice over to hoptoad for later 
-analysis.
+The #notify_hoptoad call will send the notice over to Hoptoad for later analysis. While in your controllers you use the notify_hoptoad method, anywhere else in your code, use HoptoadNotifier.notify.
 
 To perform custom error processing after Hoptoad has been notified, define the instance method #rescue_action_in_public_without_hoptoad(exception) in your controller.
 
-== Tracking deployments in hoptoad
+== Tracking deployments in Hoptoad
 
-paying Hoptoad plans support the ability to track deployments of your application in Hoptoad.
+Paying Hoptoad plans support the ability to track deployments of your application in Hoptoad.
 By notifying Hoptoad of your application deployments, all errors are resolved when a deploy occurs,
 so that you'll be notified again about any errors that reoccur after a deployment.
 
@@ -88,7 +87,7 @@ Additionally, it's possible to review the errors in Hoptoad that occurred before
 
 When Hoptoad is installed as a plugin this functionality is loaded automatically (if you have Capistrano version 2.0.0 or greater).
 
-When Hoptoad installed as a gem, you need to add
+When Hoptoad is installed as a gem, you need to add
 
   require 'hoptoad_notifier/recipes/hoptoad'
 
@@ -182,7 +181,7 @@ To ignore exceptions based on other conditions, use #ignore_by_filter:
     end
   end
 
-To replace sensitive information sent to the hoptoad service with [FILTERED] use #params_filters:
+To replace sensitive information sent to the Hoptoad service with [FILTERED] use #params_filters:
 
   HoptoadNotifier.configure do |config|
     config.api_key      = '1234567890abcdef'
@@ -194,7 +193,7 @@ hoptoad_notifier will reuse filters specified by #filter_params_logging.
 
 == Testing
 
-When you run your tests, you might notice that the hoptoad service is recording
+When you run your tests, you might notice that the Hoptoad service is recording
 notices generated using #notify when you don't expect it to.  You can 
 use code like this in your test_helper.rb to redefine that method so those 
 errors are not reported while running tests.
