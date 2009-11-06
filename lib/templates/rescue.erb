@@ -50,8 +50,8 @@ var Hoptoad = {
     var element = document.createElement('a');
 
     element.id   = 'hoptoad';
-    element.href = 'http://' + this.host + '/projects/' + error.project_id +
-                   '/errors/' + error.id;
+    element.href = 'http://' + error.subdomain + '.' + this.host +
+                   '/projects/' + error.project_id + '/errors/' + error.id;
     element.appendChild(text);
 
     body.insertBefore(element, body.firstChild);
