@@ -5,6 +5,11 @@ This is the notifier plugin for integrating apps with Hoptoad.
 When an uncaught exception occurs, HoptoadNotifier will POST the relevant data 
 to the Hoptoad server specified in your environment.
 
+== Help
+
+* {IRC}[irc://irc.freenode.net/thoughtbot]
+* {mailing list}[http://groups.google.com/group/hoptoad-notifier-dev]
+
 == Installation
 
 === Remove exception_notifier
