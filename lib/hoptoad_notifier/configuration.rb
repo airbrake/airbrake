@@ -198,14 +198,8 @@ module HoptoadNotifier
       !development_environments.include?(environment_name)
     end
 
-    protected
-
     def port
-      @port ||= if secure?
-                  443
-                else
-                  80
-                end
+      @port || default_port
     end
 
     def protocol
@@ -215,5 +209,17 @@ module HoptoadNotifier
         'http'
       end
     end
+
+    private
+
+    def default_port
+      if secure?
+        443
+      else
+        80
+      end
+    end
+
   end
+
 end

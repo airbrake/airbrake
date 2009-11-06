@@ -32,15 +32,23 @@ class ConfigurationTest < Test::Unit::TestCase
   should "provide default values for secure connections" do
     config = HoptoadNotifier::Configuration.new
     config.secure = true
-    assert_config_default :port,     443,     config
-    assert_config_default :protocol, 'https', config
+    assert_equal 443, config.port
+    assert_equal 'https', config.protocol
   end
 
   should "provide default values for insecure connections" do
     config = HoptoadNotifier::Configuration.new
     config.secure = false
-    assert_config_default :port,     80,     config
-    assert_config_default :protocol, 'http', config
+    assert_equal 80, config.port
+    assert_equal 'http', config.protocol
+  end
+
+  should "not cache inferred ports" do
+    config = HoptoadNotifier::Configuration.new
+    config.secure = false
+    config.port
+    config.secure = true
+    assert_equal 443, config.port
   end
 
   should "allow values to be overwritten" do
