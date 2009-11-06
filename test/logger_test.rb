@@ -40,6 +40,12 @@ class LoggerTest < Test::Unit::TestCase
     assert_logged /Notifier (.*) ready/
   end
 
+  should "not report that notifier is ready when internally configured" do
+    stub_verbose_log
+    HoptoadNotifier.configure(true) { |config | }
+    assert_not_logged /.*/
+  end
+
   should "print environment info a successful notification without a body" do
     reset_config
     stub_verbose_log

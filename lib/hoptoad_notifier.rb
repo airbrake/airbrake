@@ -72,11 +72,11 @@ module HoptoadNotifier
     #     config.api_key = '1234567890abcdef'
     #     config.secure  = false
     #   end
-    def configure
+    def configure(silent = false)
       self.configuration ||= Configuration.new
       yield(configuration)
       self.sender = Sender.new(configuration)
-      report_ready
+      report_ready unless silent
     end
 
     # Sends an exception manually using this method, even when you are not in a controller.
