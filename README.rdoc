@@ -218,6 +218,7 @@ the notifier currently supports the following versions of Rails:
 * 2.1.2
 * 2.2.2
 * 2.3.2
+* 2.3.3
 * 2.3.4
 
 Please open up a support ticket on Tender ( http://help.hoptoadapp.com ) if you're using a version of Rails that is not listed above and the notifier is not working properly.
