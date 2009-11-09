@@ -47,7 +47,7 @@ module HoptoadNotifier
 
     def filter_if_filtering(hash)
       if respond_to?(:filter_parameters)
-        filter_parameters(hash)
+        filter_parameters(hash) rescue hash
       else
         hash
       end
