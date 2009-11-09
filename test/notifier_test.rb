@@ -148,7 +148,7 @@ class NotifierTest < Test::Unit::TestCase
     end
 
     should "set controller" do
-      assert_equal @params[:controller], @hash[:controller]
+      assert_equal @params[:controller], @hash[:component]
     end
 
     should "set line number" do
@@ -160,7 +160,7 @@ class NotifierTest < Test::Unit::TestCase
     end
 
     should "set rails_env to production" do
-      assert_equal 'production', @hash[:rails_env]
+      assert_equal 'production', @hash[:environment_name]
     end
 
     should "set error class" do

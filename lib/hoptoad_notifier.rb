@@ -105,10 +105,10 @@ module HoptoadNotifier
       notice = build_notice_for(exception, options)
 
       result = {}
-      result[:rails_env]   = 'production'
-      result[:action]      = notice.action      rescue nil
-      result[:controller]  = notice.controller  rescue nil
-      result[:error_class] = notice.error_class if notice.error_class
+      result[:action]           = notice.action      rescue nil
+      result[:component]        = notice.component   rescue nil
+      result[:error_class]      = notice.error_class if notice.error_class
+      result[:environment_name] = 'production'
 
       unless notice.backtrace.lines.empty?
         result[:file]        = notice.backtrace.lines.first.file
