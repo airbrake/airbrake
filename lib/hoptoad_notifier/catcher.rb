@@ -7,6 +7,8 @@ module HoptoadNotifier
       if base.instance_methods.map(&:to_s).include? 'rescue_action_in_public' and !base.instance_methods.map(&:to_s).include? 'rescue_action_in_public_without_hoptoad'
         base.send(:alias_method, :rescue_action_in_public_without_hoptoad, :rescue_action_in_public)
         base.send(:alias_method, :rescue_action_in_public, :rescue_action_in_public_with_hoptoad)
+        base.send(:alias_method, :rescue_action_locally_without_hoptoad, :rescue_action_locally)
+        base.send(:alias_method, :rescue_action_locally, :rescue_action_locally_with_hoptoad)
       end
     end
 
@@ -19,6 +21,23 @@ module HoptoadNotifier
         HoptoadNotifier.notify_or_ignore(exception, request_data_for_hoptoad)
       end
       rescue_action_in_public_without_hoptoad(exception)
+    end
+
+    def rescue_action_locally_with_hoptoad(exception)
+      result = rescue_action_locally_without_hoptoad(exception)
+
+      if HoptoadNotifier.configuration.development_lookup
+        path   = "#{File.dirname(File.dirname(__FILE__))}/templates/rescue.erb"
+        notice = HoptoadNotifier.build_lookup_hash_for(exception, request_data_for_hoptoad)
+
+        result << @template.render(
+          :file   => path,
+          :locals => { :host    => HoptoadNotifier.configuration.host,
+                       :api_key => HoptoadNotifier.configuration.api_key,
+                       :notice  => notice })
+      end
+
+      result
     end
 
     # This method should be used for sending manual notifications while you are still

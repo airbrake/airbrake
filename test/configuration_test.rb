@@ -27,6 +27,7 @@ class ConfigurationTest < Test::Unit::TestCase
                           HoptoadNotifier::Configuration::DEFAULT_BACKTRACE_FILTERS
     assert_config_default :ignore,
                           HoptoadNotifier::Configuration::IGNORE_DEFAULT
+    assert_config_default :development_lookup, true
   end
 
   should "provide default values for secure connections" do
@@ -66,6 +67,7 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_overridable :notifier_name
     assert_config_overridable :notifier_url
     assert_config_overridable :environment_name
+    assert_config_overridable :development_lookup
   end
 
   should "have an api key" do
@@ -80,7 +82,7 @@ class ConfigurationTest < Test::Unit::TestCase
         :http_read_timeout, :ignore, :ignore_by_filters, :ignore_user_agent,
         :notifier_name, :notifier_url, :notifier_version, :params_filters,
         :project_root, :port, :protocol, :proxy_host, :proxy_pass, :proxy_port,
-        :proxy_user, :secure].each do |option|
+        :proxy_user, :secure, :development_lookup].each do |option|
       assert_equal config[option], hash[option], "Wrong value for #{option}"
     end
   end

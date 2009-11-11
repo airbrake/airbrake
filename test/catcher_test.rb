@@ -219,4 +219,39 @@ class CatcherTest < Test::Unit::TestCase
     assert_sent_hash filtered_cgi, '/notice/request/cgi-data'
   end
 
+  context "for a local error with development lookup enabled" do
+    setup do
+      HoptoadNotifier.configuration.development_lookup = true
+      HoptoadNotifier.stubs(:build_lookup_hash_for).returns({ :awesome => 2 })
+
+      @controller = process_action_with_automatic_notification(:local => true)
+      @response   = @controller.response
+    end
+
+    should "append custom CSS and JS to response body for a local error" do
+      assert_match /text\/css/, @response.body
+      assert_match /text\/javascript/, @response.body
+    end
+
+    should "contain host, API key and notice JSON" do
+      assert_match HoptoadNotifier.configuration.host.to_json, @response.body
+      assert_match HoptoadNotifier.configuration.api_key.to_json, @response.body
+      assert_match ({ :awesome => 2 }).to_json, @response.body
+    end
+  end
+
+  context "for a local error with development lookup disabled" do
+    setup do
+      HoptoadNotifier.configuration.development_lookup = false
+
+      @controller = process_action_with_automatic_notification(:local => true)
+      @response   = @controller.response
+    end
+
+    should "not append custom CSS and JS to response for a local error" do
+      assert_no_match /text\/css/, @response.body
+      assert_no_match /text\/javascript/, @response.body
+    end
+  end
+
 end

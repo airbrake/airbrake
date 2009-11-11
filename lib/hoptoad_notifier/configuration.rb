@@ -3,11 +3,11 @@ module HoptoadNotifier
   class Configuration
 
     OPTIONS = [:api_key, :backtrace_filters, :development_environments,
-      :environment_filters, :environment_name, :host, :http_open_timeout,
-        :http_read_timeout, :ignore, :ignore_by_filters, :ignore_user_agent,
-        :notifier_name, :notifier_url, :notifier_version, :params_filters,
-        :project_root, :port, :protocol, :proxy_host, :proxy_pass, :proxy_port,
-        :proxy_user, :secure].freeze
+        :development_lookup, :environment_filters, :environment_name, :host,
+        :http_open_timeout, :http_read_timeout, :ignore, :ignore_by_filters,
+        :ignore_user_agent, :notifier_name, :notifier_url, :notifier_version,
+        :params_filters, :project_root, :port, :protocol, :proxy_host,
+        :proxy_pass, :proxy_port, :proxy_user, :secure].freeze
 
     # The API key for your project, found on the project edit form.
     attr_accessor :api_key
@@ -62,6 +62,9 @@ module HoptoadNotifier
 
     # A list of environments in which notifications should not be sent.
     attr_accessor :development_environments
+
+    # +true+ if you want to check for production errors matching development errors, +false+ otherwise.
+    attr_accessor :development_lookup
 
     # The name of the environment the application is running in
     attr_accessor :environment_name
@@ -123,6 +126,7 @@ module HoptoadNotifier
       @ignore                   = IGNORE_DEFAULT.dup
       @ignore_user_agent        = []
       @development_environments = %w(development test)
+      @development_lookup       = true
       @notifier_name            = 'Hoptoad Notifier'
       @notifier_version         = VERSION
       @notifier_url             = 'http://hoptoadapp.com'
