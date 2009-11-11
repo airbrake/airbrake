@@ -156,7 +156,7 @@ class NotifierTest < Test::Unit::TestCase
     end
 
     should "set file" do
-      assert_equal './test/helper.rb', @hash[:file]
+      assert_match /\/test\/helper\.rb$/, @hash[:file]
     end
 
     should "set rails_env to production" do
