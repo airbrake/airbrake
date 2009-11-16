@@ -11,7 +11,7 @@ require 'hoptoad_notifier/backtrace'
 # Plugin for applications to automatically post errors to the Hoptoad of their choice.
 module HoptoadNotifier
 
-  VERSION = "2.0.3"
+  VERSION = "2.0.4"
   API_VERSION = "2.0"
   LOG_PREFIX = "** [Hoptoad] "
 
