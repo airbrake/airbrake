@@ -27,14 +27,15 @@ module HoptoadNotifier
       result = rescue_action_locally_without_hoptoad(exception)
 
       if HoptoadNotifier.configuration.development_lookup
-        path   = "#{File.dirname(File.dirname(__FILE__))}/templates/rescue.erb"
+        path   = File.join(File.dirname(__FILE__), '..', 'templates', 'rescue.erb')
         notice = HoptoadNotifier.build_lookup_hash_for(exception, request_data_for_hoptoad)
 
         result << @template.render(
-          :file   => path,
-          :locals => { :host    => HoptoadNotifier.configuration.host,
-                       :api_key => HoptoadNotifier.configuration.api_key,
-                       :notice  => notice })
+          :file          => path,
+          :use_full_path => false,
+          :locals        => { :host    => HoptoadNotifier.configuration.host,
+                              :api_key => HoptoadNotifier.configuration.api_key,
+                              :notice  => notice })
       end
 
       result
@@ -56,10 +57,10 @@ module HoptoadNotifier
 
     def request_data_for_hoptoad
       { :parameters       => filter_if_filtering(params.to_hash),
-        :session_data     => session.to_hash,
+        :session_data     => session.data,
         :controller       => params[:controller],
         :action           => params[:action],
-        :url              => request.url,
+        :url              => "#{request.protocol}#{request.host}#{request.request_uri}",
         :cgi_data         => filter_if_filtering(request.env),
         :environment_vars => filter_if_filtering(ENV) }
     end

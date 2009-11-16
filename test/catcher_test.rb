@@ -8,6 +8,7 @@ class CatcherTest < Test::Unit::TestCase
     super
     reset_config
     HoptoadNotifier.sender = CollectingSender.new
+    define_constant('RAILS_ROOT', '/path/to/rails/root')
   end
 
   def ignore(exception_class)
@@ -38,11 +39,12 @@ class CatcherTest < Test::Unit::TestCase
   end
 
   def assert_sent_request_info_for(request)
-    params = request.params.to_hash
+    params = request.parameters.to_hash
     assert_sent_hash params, '/notice/request/params'
     assert_sent_element params['controller'], '/notice/request/component'
     assert_sent_element params['action'], '/notice/request/action'
-    assert_sent_element request.url, '/notice/request/url'
+    assert_sent_element "#{request.protocol}#{request.host}#{request.request_uri}",
+                        '/notice/request/url'
     assert_sent_hash request.env, '/notice/request/cgi-data'
   end
 
@@ -84,8 +86,7 @@ class CatcherTest < Test::Unit::TestCase
     controller = klass.new
     controller.stubs(:rescue_action_in_public_without_hoptoad)
     opts[:request].query_parameters = opts[:request].query_parameters.merge(opts[:params] || {})
-    opts[:request].session.clear
-    opts[:request].session.merge!(opts[:session] || {})
+    opts[:request].session = ActionController::TestSession.new(opts[:session] || {})
     controller.process(opts[:request], opts[:response])
     controller
   end
@@ -192,13 +193,13 @@ class CatcherTest < Test::Unit::TestCase
   end
 
   should "send request data for manual notification" do
-    params = { 'controller' => "users", 'action' => "create" }
+    params = { 'controller' => "hoptoad_test", 'action' => "index" }
     controller = process_action_with_manual_notification(:params => params)
     assert_sent_request_info_for controller.request
   end
 
   should "send request data for automatic notification" do
-    params = { 'controller' => "users", 'action' => "create" }
+    params = { 'controller' => "hoptoad_test", 'action' => "index" }
     controller = process_action_with_automatic_notification(:params => params)
     assert_sent_request_info_for controller.request
   end
