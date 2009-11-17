@@ -74,6 +74,10 @@ namespace :hoptoad do
       rescue
         Object.const_set(exception_name, Class.new(Exception))
       end
+
+      def logger
+        nil
+      end
     end
 
     puts 'Processing request.'
