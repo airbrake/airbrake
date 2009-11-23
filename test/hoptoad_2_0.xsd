@@ -64,13 +64,13 @@
       <xs:element name="var" type="var" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="key" type="xs:string" use="required"/>
-  </xs:complextype>
+  </xs:complexType>
 
   <xs:complexType name="serverEnvironment">
     <xs:sequence>
       <xs:element name="project-root" type="xs:string" minOccurs="0"/>
       <xs:element name="environment-name" type="xs:string"/>
     </xs:sequence>
-  </xs:complextype>
+  </xs:complexType>
 
 </xs:schema>
