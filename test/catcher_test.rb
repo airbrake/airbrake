@@ -255,4 +255,35 @@ class CatcherTest < Test::Unit::TestCase
     end
   end
 
+  should "call session.to_hash if available" do
+    hash_data = {:key => :value}
+
+    session = ActionController::TestSession.new
+    ActionController::TestSession.stubs(:new).returns(session)
+    session.stubs(:to_hash).returns(hash_data)
+
+    process_action_with_automatic_notification
+    assert_received(session, :to_hash)
+    assert_received(session, :data) { |expect| expect.never }
+    assert_caught_and_sent
+  end
+
+  should "call session.data if session.to_hash is undefined" do
+    hash_data = {:key => :value}
+
+    session = ActionController::TestSession.new
+    ActionController::TestSession.stubs(:new).returns(session)
+    session.stubs(:data).returns(hash_data)
+    if session.respond_to?(:to_hash)
+      class << session
+        undef to_hash
+      end
+    end
+
+    process_action_with_automatic_notification
+    assert_received(session, :to_hash) { |expect| expect.never }
+    assert_received(session, :data) { |expect| expect.at_least_once }
+    assert_caught_and_sent
+  end
+
 end

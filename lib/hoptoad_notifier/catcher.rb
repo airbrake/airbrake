@@ -57,7 +57,7 @@ module HoptoadNotifier
 
     def request_data_for_hoptoad
       { :parameters       => filter_if_filtering(params.to_hash),
-        :session_data     => session.data,
+        :session_data     => session_data,
         :controller       => params[:controller],
         :action           => params[:action],
         :url              => "#{request.protocol}#{request.host}#{request.request_uri}",
@@ -70,6 +70,14 @@ module HoptoadNotifier
         filter_parameters(hash) rescue hash
       else
         hash
+      end
+    end
+
+    def session_data
+      if session.respond_to?(:to_hash)
+        session.to_hash
+      else
+        session.data
       end
     end
 
