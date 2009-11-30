@@ -26,7 +26,7 @@ Remove the vendor/plugins/exception_notifier directory.
 
 from your project's RAILS_ROOT, run:
 
-  script/plugin install git://github.com/thoughtbot/hoptoad_notifier.git
+  script/plugin install -f git://github.com/thoughtbot/hoptoad_notifier.git
 
 === Configuration
 
