@@ -30,7 +30,7 @@ from your project's RAILS_ROOT, run:
 
 === Configuration
 
-you should have something like this in config/initializers/hoptoad.rb.
+You should have something like this in config/initializers/hoptoad.rb.
 
   HoptoadNotifier.configure do |config|
     config.api_key = '1234567890abcdef'
