@@ -5,6 +5,9 @@ class NotifierTest < Test::Unit::TestCase
   class OriginalException < Exception
   end
 
+  class ContinuedException < Exception
+  end
+
   include DefinesConstants
 
   def setup
@@ -198,6 +201,21 @@ class NotifierTest < Test::Unit::TestCase
       should "unwrap exceptions that provide #original_exception" do
         @hash = HoptoadNotifier.build_lookup_hash_for(@exception)
         assert_equal "NotifierTest::OriginalException", @hash[:error_class]
+      end
+    end
+
+    context "when an exception that provides #continued_exception is raised" do
+      setup do
+        @exception.stubs(:continued_exception).returns(begin
+          raise NotifierTest::ContinuedException.new
+        rescue Exception => e
+          e
+        end)
+      end
+
+      should "unwrap exceptions that provide #continued_exception" do
+        @hash = HoptoadNotifier.build_lookup_hash_for(@exception)
+        assert_equal "NotifierTest::ContinuedException", @hash[:error_class]
       end
     end
   end
