@@ -2,6 +2,9 @@ require File.dirname(__FILE__) + '/helper'
 
 class NotifierTest < Test::Unit::TestCase
 
+  class OriginalException < Exception
+  end
+
   include DefinesConstants
 
   def setup
@@ -181,6 +184,21 @@ class NotifierTest < Test::Unit::TestCase
 
       assert_nil @hash[:action]
       assert_nil @hash[:controller]
+    end
+
+    context "when an exception that provides #original_exception is raised" do
+      setup do
+        @exception.stubs(:original_exception).returns(begin
+          raise NotifierTest::OriginalException.new
+        rescue Exception => e
+          e
+        end)
+      end
+
+      should "unwrap exceptions that provide #original_exception" do
+        @hash = HoptoadNotifier.build_lookup_hash_for(@exception)
+        assert_equal "NotifierTest::OriginalException", @hash[:error_class]
+      end
     end
   end
 end

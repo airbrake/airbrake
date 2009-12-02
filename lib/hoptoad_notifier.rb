@@ -127,12 +127,22 @@ module HoptoadNotifier
     end
 
     def build_notice_for(exception, opts = {})
+      exception = unwrap_exception(exception)
       if exception.respond_to?(:to_hash)
         opts = opts.merge(exception)
       else
         opts = opts.merge(:exception => exception)
       end
       Notice.new(configuration.merge(opts))
+    end
+
+    def unwrap_exception(exception)
+      if exception.respond_to?(:original_exception)
+        exception.original_exception
+      else
+        exception
+      end
+
     end
   end
 end
