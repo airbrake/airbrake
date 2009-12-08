@@ -24,7 +24,8 @@ module HoptoadTasks
       return false
     end
 
-    params = {'api_key' => HoptoadNotifier.configuration.api_key}
+    params = {'api_key' => opts.delete(:api_key) ||
+                             HoptoadNotifier.configuration.api_key}
     opts.each {|k,v| params["deploy[#{k}]"] = v }
 
     url = URI.parse("http://#{HoptoadNotifier.configuration.host || 'hoptoadapp.com'}/deploys.txt")

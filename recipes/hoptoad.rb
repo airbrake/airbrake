@@ -16,6 +16,7 @@ namespace :deploy do
     local_user = ENV['USER'] || ENV['USERNAME']
     executable = RUBY_PLATFORM.downcase.include?('mswin') ? 'rake.bat' : 'rake'
     notify_command = "#{executable} hoptoad:deploy TO=#{rails_env} REVISION=#{current_revision} REPO=#{repository} USER=#{local_user}"
+    notify_command << " API_KEY=#{ENV['API_KEY']}" if ENV['API_KEY']
     puts "Notifying Hoptoad of Deploy (#{notify_command})"
     `#{notify_command}`
     puts "Hoptoad Notification Complete."
