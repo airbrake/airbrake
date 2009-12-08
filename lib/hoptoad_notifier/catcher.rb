@@ -60,7 +60,7 @@ module HoptoadNotifier
         :session_data     => session_data,
         :controller       => params[:controller],
         :action           => params[:action],
-        :url              => "#{request.protocol}#{request.host}#{request.request_uri}",
+        :url              => request_url,
         :cgi_data         => filter_if_filtering(request.env),
         :environment_vars => filter_if_filtering(ENV) }
     end
@@ -81,5 +81,15 @@ module HoptoadNotifier
       end
     end
 
+    def request_url
+      url = "#{request.protocol}#{request.host}"
+
+      unless [80, 443].include?(request.port)
+        url << ":#{request.port}"
+      end
+
+      url << request.request_uri
+      url
+    end
   end
 end
