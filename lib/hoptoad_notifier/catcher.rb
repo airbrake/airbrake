@@ -17,8 +17,8 @@ module HoptoadNotifier
     # Overrides the rescue_action method in ActionController::Base, but does not inhibit
     # any custom processing that is defined with Rails 2's exception helpers.
     def rescue_action_in_public_with_hoptoad(exception)
-      unless ignore_user_agent?
-        HoptoadNotifier.notify_or_ignore(exception, request_data_for_hoptoad)
+      unless hoptoad_ignore_user_agent?
+        HoptoadNotifier.notify_or_ignore(exception, hoptoad_request_data)
       end
       rescue_action_in_public_without_hoptoad(exception)
     end
@@ -28,7 +28,7 @@ module HoptoadNotifier
 
       if HoptoadNotifier.configuration.development_lookup
         path   = File.join(File.dirname(__FILE__), '..', 'templates', 'rescue.erb')
-        notice = HoptoadNotifier.build_lookup_hash_for(exception, request_data_for_hoptoad)
+        notice = HoptoadNotifier.build_lookup_hash_for(exception, hoptoad_request_data)
 
         result << @template.render(
           :file          => path,
@@ -45,27 +45,27 @@ module HoptoadNotifier
     # inside the controller. Otherwise it works like HoptoadNotifier.notify.
     def notify_hoptoad(hash_or_exception)
       unless consider_all_requests_local || local_request?
-        HoptoadNotifier.notify(hash_or_exception, request_data_for_hoptoad)
+        HoptoadNotifier.notify(hash_or_exception, hoptoad_request_data)
       end
     end
 
-    def ignore_user_agent? #:nodoc:
+    def hoptoad_ignore_user_agent? #:nodoc:
       # Rails 1.2.6 doesn't have request.user_agent, so check for it here
       user_agent = request.respond_to?(:user_agent) ? request.user_agent : request.env["HTTP_USER_AGENT"]
       HoptoadNotifier.configuration.ignore_user_agent.flatten.any? { |ua| ua === user_agent }
     end
 
-    def request_data_for_hoptoad
-      { :parameters       => filter_if_filtering(params.to_hash),
-        :session_data     => session_data,
+    def hoptoad_request_data
+      { :parameters       => hoptoad_filter_if_filtering(params.to_hash),
+        :session_data     => hoptoad_session_data,
         :controller       => params[:controller],
         :action           => params[:action],
-        :url              => request_url,
-        :cgi_data         => filter_if_filtering(request.env),
-        :environment_vars => filter_if_filtering(ENV) }
+        :url              => hoptoad_request_url,
+        :cgi_data         => hoptoad_filter_if_filtering(request.env),
+        :environment_vars => hoptoad_filter_if_filtering(ENV) }
     end
 
-    def filter_if_filtering(hash)
+    def hoptoad_filter_if_filtering(hash)
       if respond_to?(:filter_parameters)
         filter_parameters(hash) rescue hash
       else
@@ -73,7 +73,7 @@ module HoptoadNotifier
       end
     end
 
-    def session_data
+    def hoptoad_session_data
       if session.respond_to?(:to_hash)
         session.to_hash
       else
@@ -81,7 +81,7 @@ module HoptoadNotifier
       end
     end
 
-    def request_url
+    def hoptoad_request_url
       url = "#{request.protocol}#{request.host}"
 
       unless [80, 443].include?(request.port)
