@@ -242,6 +242,9 @@ module HoptoadNotifier
         clean_unserializable_data_from(:cgi_data)
         filter(cgi_data)
       end
+      if session_data
+        clean_unserializable_data_from(:session_data)
+      end
     end
 
     def filter(hash)

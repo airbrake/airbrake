@@ -143,6 +143,7 @@ class NoticeTest < Test::Unit::TestCase
   should "convert unserializable objects to strings" do
     assert_serializes_hash(:parameters)
     assert_serializes_hash(:cgi_data)
+    assert_serializes_hash(:session_data)
   end
 
   should "filter parameters" do
