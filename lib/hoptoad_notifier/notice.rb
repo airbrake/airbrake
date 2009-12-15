@@ -237,12 +237,28 @@ module HoptoadNotifier
     # TODO: extract this to a different class
     def clean_params
       clean_unserializable_data_from(:parameters)
+      filter(parameters)
+      if cgi_data
+        clean_unserializable_data_from(:cgi_data)
+        filter(cgi_data)
+      end
+    end
+
+    def filter(hash)
       if params_filters
-        parameters.keys.each do |key|
-          parameters[key] = "[FILTERED]" if params_filters.any? do |filter|
-            key.to_s.include?(filter)
+        hash.each do |key, value|
+          if filter_key?(key)
+            hash[key] = "[FILTERED]"
+          elsif value.respond_to?(:to_hash)
+            filter(hash[key])
           end
         end
+      end
+    end
+
+    def filter_key?(key)
+      params_filters.any? do |filter|
+        key.to_s.include?(filter)
       end
     end
 

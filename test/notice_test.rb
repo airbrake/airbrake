@@ -142,16 +142,15 @@ class NoticeTest < Test::Unit::TestCase
 
   should "convert unserializable objects to strings" do
     assert_serializes_hash(:parameters)
+    assert_serializes_hash(:cgi_data)
   end
 
   should "filter parameters" do
-    filters = %w(abc def)
-    params  = { 'abc' => "123", 'def' => "456", 'ghi' => "789" }
+    assert_filters_hash(:parameters)
+  end
 
-    notice = build_notice(:params_filters => filters, :parameters => params)
-
-    assert_equal({ 'abc' => "[FILTERED]", 'def' => "[FILTERED]", 'ghi' => "789" },
-                 notice.parameters)
+  should "filter cgi data" do
+    assert_filters_hash(:cgi_data)
   end
 
   context "a Notice turned into XML" do
@@ -339,4 +338,19 @@ class NoticeTest < Test::Unit::TestCase
     errors = schema.validate(document)
     assert errors.empty?, errors.collect{|e| e.message }.join
   end
+
+  def assert_filters_hash(attribute)
+    filters  = %w(abc def)
+    original = { 'abc' => "123", 'def' => "456", 'ghi' => "789", 'nested' => { 'abc' => '100' } }
+    filtered = { 'abc'    => "[FILTERED]",
+                 'def'    => "[FILTERED]",
+                 'ghi'    => "789",
+                 'nested' => { 'abc' => '[FILTERED]' } }
+
+    notice = build_notice(:params_filters => filters, attribute => original)
+
+    assert_equal(filtered,
+                 notice.send(attribute))
+  end
+
 end
