@@ -209,8 +209,6 @@ module HoptoadNotifier
       end
     end
 
-    # A list of environment keys that should be filtered out of what is send to Hoptoad.
-    # Deprecated and has no effect.
     def environment_filters
       warn 'config.environment_filters has been deprecated and has no effect.'
       []
