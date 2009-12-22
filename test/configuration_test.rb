@@ -22,7 +22,6 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_default :ignore_user_agent,   []
     assert_config_default :params_filters,
                           HoptoadNotifier::Configuration::DEFAULT_PARAMS_FILTERS
-    assert_config_default :environment_filters, []
     assert_config_default :backtrace_filters,
                           HoptoadNotifier::Configuration::DEFAULT_BACKTRACE_FILTERS
     assert_config_default :ignore,
@@ -78,11 +77,11 @@ class ConfigurationTest < Test::Unit::TestCase
     config = HoptoadNotifier::Configuration.new
     hash = config.to_hash
     [:api_key, :backtrace_filters, :development_environments,
-      :environment_filters, :environment_name, :host, :http_open_timeout,
-        :http_read_timeout, :ignore, :ignore_by_filters, :ignore_user_agent,
-        :notifier_name, :notifier_url, :notifier_version, :params_filters,
-        :project_root, :port, :protocol, :proxy_host, :proxy_pass, :proxy_port,
-        :proxy_user, :secure, :development_lookup].each do |option|
+     :environment_name, :host, :http_open_timeout,
+     :http_read_timeout, :ignore, :ignore_by_filters, :ignore_user_agent,
+     :notifier_name, :notifier_url, :notifier_version, :params_filters,
+     :project_root, :port, :protocol, :proxy_host, :proxy_pass, :proxy_port,
+     :proxy_user, :secure, :development_lookup].each do |option|
       assert_equal config[option], hash[option], "Wrong value for #{option}"
     end
   end
@@ -97,8 +96,12 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_appends_value :params_filters
   end
 
-  should "allow environment filters to be appended" do
-    assert_appends_value :environment_filters
+  should "warn when attempting to read environment filters" do
+    config = HoptoadNotifier::Configuration.new
+    config.
+      expects(:warn).
+      with(regexp_matches(/deprecated/i))
+    assert_equal [], config.environment_filters
   end
 
   should "allow ignored user agents to be appended" do
