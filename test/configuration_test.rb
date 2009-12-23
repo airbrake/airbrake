@@ -142,7 +142,7 @@ class ConfigurationTest < Test::Unit::TestCase
 
   should "use development and test as development environments by default" do
     config = HoptoadNotifier::Configuration.new
-    assert_same_elements %w(development test), config.development_environments
+    assert_same_elements %w(development test cucumber), config.development_environments
   end
 
   should "be public in a public environment" do

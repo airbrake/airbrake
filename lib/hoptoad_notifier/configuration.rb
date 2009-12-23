@@ -120,7 +120,7 @@ module HoptoadNotifier
       @ignore_by_filters        = []
       @ignore                   = IGNORE_DEFAULT.dup
       @ignore_user_agent        = []
-      @development_environments = %w(development test)
+      @development_environments = %w(development test cucumber)
       @development_lookup       = true
       @notifier_name            = 'Hoptoad Notifier'
       @notifier_version         = VERSION
