@@ -297,6 +297,12 @@ class NoticeTest < Test::Unit::TestCase
     assert_equal params, notice[:request][:params]
   end
 
+  should "ensure #to_hash is called on objects that support it" do
+    assert_nothing_raised do
+      build_notice(:session => { :object => stub(:to_hash => {}) })
+    end
+  end
+
   def assert_accepts_exception_attribute(attribute, args = {}, &block)
     exception = build_exception
     block ||= lambda { exception.send(attribute) }

@@ -221,7 +221,7 @@ module HoptoadNotifier
     # TODO: move this onto Hash
     def clean_unserializable_data(data)
       if data.respond_to?(:to_hash)
-        data.inject({}) do |result, (key, value)|
+        data.to_hash.inject({}) do |result, (key, value)|
           result.merge(key => clean_unserializable_data(value))
         end
       elsif data.respond_to?(:to_ary)
