@@ -8,7 +8,7 @@ require 'hoptoad_notifier/sender'
 require 'hoptoad_notifier/catcher'
 require 'hoptoad_notifier/backtrace'
 
-# Plugin for applications to automatically post errors to the Hoptoad of their choice.
+# Gem for applications to automatically post errors to the Hoptoad of their choice.
 module HoptoadNotifier
 
   VERSION = "2.0.21"

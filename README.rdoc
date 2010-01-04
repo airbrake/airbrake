@@ -1,6 +1,6 @@
 = HoptoadNotifier
 
-This is the notifier plugin for integrating apps with Hoptoad.
+This is the notifier gem for integrating apps with Hoptoad.
 
 When an uncaught exception occurs, HoptoadNotifier will POST the relevant data 
 to the Hoptoad server specified in your environment.
@@ -24,9 +24,13 @@ Remove the vendor/plugins/exception_notifier directory.
 
 === Install hoptoad_notifier
 
-from your project's RAILS_ROOT, run:
+Add the hoptoad_notifier gem to your app. In config/environment.rb:
 
-  script/plugin install -f git://github.com/thoughtbot/hoptoad_notifier.git
+  config.gem 'hoptoad_notifier'
+
+Then from your project's RAILS_ROOT, run:
+
+  rake gems:install
 
 === Configuration
 
@@ -47,7 +51,7 @@ server. This will not affect the rake task but it bears stating.
 That should be it! Now all exceptions will be logged to Hoptoad where they can
 be aggregated, filtered, sorted, analyzed, massaged, and searched. In previous
 releases you had to include HoptoadNotifier::Catcher into your
-ApplicationController, but the plugin takes care of that now.
+ApplicationController, but the gem takes care of that now.
 
 You can test that Hoptoad is working in your production environment by using 
 this rake task (from RAILS_ROOT):
@@ -64,9 +68,9 @@ RAILS_ROOT/lib/tasks directory in order for the rake hoptoad:test task to work.
 
 == Usage
 
-for the most part, Hoptoad works for itself.  Once you've included the notifier 
-in your ApplicationController (which is now done automatically by the plugin), 
-all errors will be rescued by the #rescue_action_in_public provided by the plugin.
+For the most part, Hoptoad works for itself.  Once you've included the notifier 
+in your ApplicationController (which is now done automatically by the gem), 
+all errors will be rescued by the #rescue_action_in_public provided by the gem.
 
 If you want to log arbitrary things which you've rescued yourself from a 
 controller, you can do something like this:
@@ -78,9 +82,13 @@ controller, you can do something like this:
   end
   ...
 
-The #notify_hoptoad call will send the notice over to Hoptoad for later analysis. While in your controllers you use the notify_hoptoad method, anywhere else in your code, use HoptoadNotifier.notify.
+The #notify_hoptoad call will send the notice over to Hoptoad for later
+analysis. While in your controllers you use the notify_hoptoad method, anywhere
+else in your code, use HoptoadNotifier.notify.
 
-To perform custom error processing after Hoptoad has been notified, define the instance method #rescue_action_in_public_without_hoptoad(exception) in your controller.
+To perform custom error processing after Hoptoad has been notified, define the
+instance method #rescue_action_in_public_without_hoptoad(exception) in your
+controller.
 
 == Tracking deployments in Hoptoad
 
@@ -90,8 +98,6 @@ so that you'll be notified again about any errors that reoccur after a deploymen
 
 Additionally, it's possible to review the errors in Hoptoad that occurred before and after a deploy.
 
-When Hoptoad is installed as a plugin this functionality is loaded automatically (if you have Capistrano version 2.0.0 or greater).
-
 When Hoptoad is installed as a gem, you need to add
 
   require 'hoptoad_notifier/recipes/hoptoad'
@@ -100,7 +106,9 @@ to your deploy.rb
 
 == Going beyond exceptions
 
-You can also pass a hash to notify_hoptoad method and store whatever you want, not just an exception. And you can also use it anywhere, not just in controllers:
+You can also pass a hash to notify_hoptoad method and store whatever you want,
+not just an exception. And you can also use it anywhere, not just in
+controllers:
 
   begin
     params = {
@@ -115,11 +123,13 @@ You can also pass a hash to notify_hoptoad method and store whatever you want, n
     )
   end
 
-While in your controllers you use the notify_hoptoad method, anywhere else in your code, use HoptoadNotifier.notify. Hoptoad will get all the information about the error itself. As for a hash, these are the keys you should pass:
+While in your controllers you use the notify_hoptoad method, anywhere else in
+your code, use HoptoadNotifier.notify. Hoptoad will get all the information
+about the error itself. As for a hash, these are the keys you should pass:
 
-* :error_class – Use this to group similar errors together. When Hoptoad catches an exception it sends the class name of that exception object.
-* :error_message – This is the title of the error you see in the errors list. For exceptions it is "#{exception.class.name}: #{exception.message}"
-* :parameters – While there are several ways to send additional data to Hoptoad, passing a Hash as :parameters as in the example above is the most common use case. When Hoptoad catches an exception in a controller, the actual HTTP client request parameters are sent using this key.
+* :error_class - Use this to group similar errors together. When Hoptoad catches an exception it sends the class name of that exception object.
+* :error_message - This is the title of the error you see in the errors list. For exceptions it is "#{exception.class.name}: #{exception.message}"
+* :parameters - While there are several ways to send additional data to Hoptoad, passing a Hash as :parameters as in the example above is the most common use case. When Hoptoad catches an exception in a controller, the actual HTTP client request parameters are sent using this key.
 
 Hoptoad merges the hash you pass with these default options:
 
@@ -220,8 +230,11 @@ the notifier currently supports the following versions of Rails:
 * 2.3.3
 * 2.3.4
 
-Please open up a support ticket on Tender ( http://help.hoptoadapp.com ) if you're using a version of Rails that is not listed above and the notifier is not working properly.
+Please open up a support ticket on Tender ( http://help.hoptoadapp.com ) if
+you're using a version of Rails that is not listed above and the notifier is
+not working properly.
 
 == Thanks
 
-Thanks to Eugene Bolshakov for the excellent write-up on GOING BEYOND EXCEPTIONS, which we have included above.
+Thanks to Eugene Bolshakov for the excellent write-up on GOING BEYOND
+EXCEPTIONS, which we have included above.

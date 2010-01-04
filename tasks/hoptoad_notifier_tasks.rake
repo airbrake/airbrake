@@ -14,7 +14,7 @@ namespace :hoptoad do
     RAILS_DEFAULT_LOGGER = Logger.new(STDOUT)
   end
 
-  desc "Verify your plugin installation by sending a test exception to the hoptoad service"
+  desc "Verify your gem installation by sending a test exception to the hoptoad service"
   task :test => ['hoptoad:log_stdout', :environment] do
     RAILS_DEFAULT_LOGGER.level = Logger::DEBUG
 

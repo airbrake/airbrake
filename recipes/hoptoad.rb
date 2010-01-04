@@ -1,6 +1,6 @@
 # When Hoptoad is installed as a plugin this is loaded automatically.
 #
-# When Hoptoad installed as a gem, you need to add 
+# When Hoptoad installed as a gem, you need to add
 #  require 'hoptoad_notifier/recipes/hoptoad'
 # to your deploy.rb
 #
