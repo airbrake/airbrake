@@ -31,6 +31,7 @@ Add the hoptoad_notifier gem to your app. In config/environment.rb:
 Then from your project's RAILS_ROOT, run:
 
   rake gems:install
+  script/generate hoptoad
 
 === Configuration
 
@@ -51,7 +52,7 @@ server. This will not affect the rake task but it bears stating.
 That should be it! Now all exceptions will be logged to Hoptoad where they can
 be aggregated, filtered, sorted, analyzed, massaged, and searched. In previous
 releases you had to include HoptoadNotifier::Catcher into your
-ApplicationController, but the gem takes care of that now.
+ApplicationController, but the generator takes care of that now.
 
 You can test that Hoptoad is working in your production environment by using 
 this rake task (from RAILS_ROOT):
