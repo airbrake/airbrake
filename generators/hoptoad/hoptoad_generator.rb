@@ -7,16 +7,15 @@ class HoptoadGenerator < Rails::Generator::Base
   end
 
   def manifest
+    unless File.exists?('config/initializers/hoptoad.rb') || options[:api_key]
+      puts "Must pass --api-key or create config/initializers/hoptoad.rb"
+      exit
+    end
     record do |m|
       m.directory 'lib/tasks'
       m.file 'hoptoad_notifier_tasks.rake', 'lib/tasks/hoptoad_notifier_tasks.rake'
       if File.exists?('config/deploy.rb')
         m.insert_into 'config/deploy.rb', "require 'hoptoad_notifier/recipes/hoptoad'"
-      end
-      if File.exists?('app/controllers/application_controller.rb')
-        m.insert_into 'app/controllers/application_controller.rb', 'include HoptoadNotifier::Catcher'
-      elsif File.exists?('app/controllers/application.rb')
-        m.insert_into 'app/controllers/application.rb', 'include HoptoadNotifier::Catcher'
       end
       unless options[:api_key].nil?
         m.template 'initializer.rb', 'config/initializers/hoptoad.rb',
