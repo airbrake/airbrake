@@ -77,6 +77,9 @@ module HoptoadNotifier
     # The url of the notifier library being used to send notifications
     attr_accessor :notifier_url
 
+    # The logger used by HoptoadNotifier
+    attr_accessor :logger
+
     DEFAULT_PARAMS_FILTERS = %w(password password_confirmation).freeze
 
     DEFAULT_BACKTRACE_FILTERS = [

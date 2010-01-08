@@ -11,6 +11,7 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_default :proxy_pass,          nil
     assert_config_default :project_root,        nil
     assert_config_default :environment_name,    nil
+    assert_config_default :logger,              nil
     assert_config_default :notifier_version,    HoptoadNotifier::VERSION
     assert_config_default :notifier_name,       'Hoptoad Notifier'
     assert_config_default :notifier_url,        'http://hoptoadapp.com'
@@ -67,6 +68,7 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_overridable :notifier_url
     assert_config_overridable :environment_name
     assert_config_overridable :development_lookup
+    assert_config_overridable :logger
   end
 
   should "have an api key" do
@@ -162,6 +164,12 @@ class ConfigurationTest < Test::Unit::TestCase
   should "be public without an environment name" do
     config = HoptoadNotifier::Configuration.new
     assert config.public?
+  end
+
+  should "use the assigned logger if set" do
+    config = HoptoadNotifier::Configuration.new
+    config.logger = "CUSTOM LOGGER"
+    assert_equal "CUSTOM LOGGER", config.logger
   end
 
   def assert_config_default(option, default_value, config = nil)
