@@ -201,8 +201,8 @@ notices generated using #notify when you don't expect it to.  You can
 use code like this in your test_helper.rb to redefine that method so those 
 errors are not reported while running tests.
 
-  module HoptoadNotifier::Catcher
-    def notify(thing)
+  module HoptoadNotifier
+    def self.notify(thing)
       # do nothing.
     end
   end
