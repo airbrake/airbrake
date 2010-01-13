@@ -21,7 +21,7 @@ class HoptoadGenerator < Rails::Generator::Base
         m.template 'initializer.rb', 'config/initializers/hoptoad.rb',
           :assigns => {:api_key => options[:api_key]}
       end
-      # m.rake "hoptoad:test", :generate_only => true
+      m.rake "hoptoad:test", :generate_only => true
     end
   end
 end
