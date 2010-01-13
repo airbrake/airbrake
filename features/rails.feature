@@ -10,6 +10,15 @@ Feature: Install the Gem in a Rails application
     And I run "script/generate hoptoad -k myapikey"
     Then I should receive a Hoptoad notification
 
+  Scenario: vendor the gem and uninstall
+    When I generate a new Rails application
+    And I configure the Hoptoad shim
+    And I configure my application to require the "hoptoad_notifier" gem
+    And I run "rake gems:unpack"
+    And I uninstall the "hoptoad_notifier" gem
+    And I run "script/generate hoptoad -k myapikey"
+    Then I should receive a Hoptoad notification
+
   Scenario: Configure the notifier by hand
     When I generate a new Rails application
     And I configure the Hoptoad shim

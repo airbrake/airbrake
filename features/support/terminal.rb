@@ -3,13 +3,13 @@ Before do
 end
 
 class Terminal
-
   attr_reader :output, :status
 
   def initialize
     @cwd = FileUtils.pwd
     @output = ""
     @status = 0
+    @logger = Logger.new(File.join(TEMP_DIR, 'terminal.log'))
   end
 
   def cd(directory)
@@ -19,7 +19,9 @@ class Terminal
   def run(command)
     output << "#{command}\n"
     FileUtils.cd(@cwd) do
+      logger.debug(command)
       result = `#{environment_settings} #{command} 2>&1`
+      logger.debug(result)
       output << result
     end
     @status = $?
@@ -39,6 +41,10 @@ class Terminal
     install_gem_to(LOCAL_GEM_ROOT, gem)
   end
 
+  def uninstall_gem(gem)
+    `gem uninstall -i #{BUILT_GEM_ROOT} #{gem}`
+  end
+
   private
 
   def install_gem_to(root, gem)
@@ -48,4 +54,6 @@ class Terminal
   def environment_settings
     "GEM_HOME=#{LOCAL_GEM_ROOT} GEM_PATH=#{LOCAL_GEM_ROOT}:#{BUILT_GEM_ROOT}"
   end
+
+  attr_reader :logger
 end

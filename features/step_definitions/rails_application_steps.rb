@@ -52,3 +52,7 @@ end
 Then /^I should see "([^\"]*)"$/ do |expected_text|
   @terminal.output.should include(expected_text)
 end
+
+When /^I uninstall the "([^\"]*)" gem$/ do |gem_name|
+  @terminal.uninstall_gem(gem_name)
+end
