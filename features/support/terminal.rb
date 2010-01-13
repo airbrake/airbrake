@@ -30,8 +30,11 @@ class Terminal
   def build_and_install_gem(gemspec)
     pkg_dir = File.join(TEMP_DIR, 'pkg')
     FileUtils.mkdir_p(pkg_dir)
-    `gem build #{gemspec} 2>&1`
+    output = `gem build #{gemspec} 2>&1`
     gem_file = Dir.glob("*.gem").first
+    unless gem_file
+      raise "Gem didn't build:\n#{output}"
+    end
     target = File.join(pkg_dir, gem_file)
     FileUtils.mv(gem_file, target)
     install_gem_to(BUILT_GEM_ROOT, target)

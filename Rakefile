@@ -41,8 +41,7 @@ gemspec = Gem::Specification.new do |s|
   s.summary     = %q{Send your application errors to our hosted service and reclaim your inbox.}
 
   s.files        = FileList['[A-Z]*', 'generators/**/*.*', 'lib/**/*.rb',
-                            'test/**/*.rb', 'rails/**/*.rb', 'recipes/**/*.rb',
-                            'tasks/**/*.rake']
+                            'test/**/*.rb', 'rails/**/*.rb', 'tasks/**/*.rake']
   s.require_path = 'lib'
   s.test_files   = Dir[*['test/**/*_test.rb']]
 
@@ -73,7 +72,7 @@ task :gemspec do
 end
 
 LOCAL_GEM_ROOT = File.join(GEM_ROOT, 'tmp', 'local_gems').freeze
-LOCAL_GEMS = %w(rails sham_rack)
+LOCAL_GEMS = %w(rails sham_rack capistrano)
 
 task :vendor_test_gems do
   LOCAL_GEMS.each do |gem_name|

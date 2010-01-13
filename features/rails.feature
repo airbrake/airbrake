@@ -32,3 +32,12 @@ Feature: Install the Gem in a Rails application
     And I configure my application to require the "hoptoad_notifier" gem
     And I run "script/generate hoptoad"
     Then I should see "Must pass --api-key or create config/initializers/hoptoad.rb"
+
+  Scenario: Configure and deploy
+    When I generate a new Rails application
+    And I run "capify ."
+    And I configure the Hoptoad shim
+    And I configure my application to require the "hoptoad_notifier" gem
+    And I run "script/generate hoptoad -k myapikey"
+    And I run "cap -T"
+    Then I should see "deploy:notify_hoptoad"
