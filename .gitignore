@@ -11,3 +11,4 @@ tags
 .yardoc
 doc
 pkg
+*.gemspec

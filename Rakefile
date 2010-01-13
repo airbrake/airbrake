@@ -2,9 +2,10 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
+require 'cucumber/rake/task'
 
 desc 'Default: run unit tests.'
-task :default => :test
+task :default => [:test, :cucumber]
 
 desc 'Test the hoptoad_notifier gem.'
 Rake::TestTask.new(:test) do |t|
@@ -29,8 +30,8 @@ begin
 rescue LoadError
 end
 
-PLUGIN_ROOT  = File.dirname(__FILE__).freeze
-VERSION_FILE = File.join(PLUGIN_ROOT, 'lib', 'hoptoad_notifier', 'version')
+GEM_ROOT     = File.dirname(__FILE__).freeze
+VERSION_FILE = File.join(GEM_ROOT, 'lib', 'hoptoad_notifier', 'version')
 
 require VERSION_FILE
 
@@ -40,7 +41,7 @@ gemspec = Gem::Specification.new do |s|
   s.summary     = %q{Send your application errors to our hosted service and reclaim your inbox.}
 
   s.files        = FileList['[A-Z]*', 'generators/**/*.*', 'lib/**/*.rb',
-                            'test/**/*.rb', 'rails/**.*.rb', 'recipes/**/*.rb',
+                            'test/**/*.rb', 'rails/**/*.rb', 'recipes/**/*.rb',
                             'tasks/**/*.rake']
   s.require_path = 'lib'
   s.test_files   = Dir[*['test/**/*_test.rb']]
@@ -71,3 +72,26 @@ task :gemspec do
   end
 end
 
+LOCAL_GEM_ROOT = File.join(GEM_ROOT, 'tmp', 'local_gems').freeze
+LOCAL_GEMS = %w(rails sham_rack)
+
+task :vendor_test_gems do
+  LOCAL_GEMS.each do |gem_name|
+    pattern = File.join(LOCAL_GEM_ROOT, 'gems', "#{gem_name}-*")
+    existing = Dir.glob(pattern).first
+    unless existing
+      command = "gem install -i #{LOCAL_GEM_ROOT} --no-ri --no-rdoc #{gem_name}"
+      puts "Vendoring #{gem_name}..."
+      unless system(command)
+        $stderr.puts "Command failed: #{command}"
+      end
+    end
+  end
+end
+
+Cucumber::Rake::Task.new(:cucumber) do |t|
+  t.fork = true
+  t.cucumber_opts = ['--format', (ENV['CUCUMBER_FORMAT'] || 'progress')]
+end
+
+task :cucumber => [:gemspec, :vendor_test_gems]

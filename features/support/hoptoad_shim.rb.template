@@ -1,0 +1,5 @@
+require 'sham_rack'
+
+ShamRack.at("hoptoadapp.com") do |env|
+  ["200 OK", { "Content-type" => "text/xml" }, "<notice/>"]
+end

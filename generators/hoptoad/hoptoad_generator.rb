@@ -14,14 +14,14 @@ class HoptoadGenerator < Rails::Generator::Base
     record do |m|
       m.directory 'lib/tasks'
       m.file 'hoptoad_notifier_tasks.rake', 'lib/tasks/hoptoad_notifier_tasks.rake'
-      if File.exists?('config/deploy.rb')
-        m.insert_into 'config/deploy.rb', "require 'hoptoad_notifier/recipes/hoptoad'"
-      end
+      # if File.exists?('config/deploy.rb')
+      #   m.insert_into 'config/deploy.rb', "require 'hoptoad_notifier/recipes/hoptoad'"
+      # end
       unless options[:api_key].nil?
         m.template 'initializer.rb', 'config/initializers/hoptoad.rb',
           :assigns => {:api_key => options[:api_key]}
       end
-      m.rake "hoptoad:test", :generate_only => true
+      # m.rake "hoptoad:test", :generate_only => true
     end
   end
 end
