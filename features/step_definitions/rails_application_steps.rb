@@ -37,3 +37,18 @@ When /^I configure the Hoptoad shim$/ do
   target = File.join(RAILS_ROOT, 'config', 'initializers', 'hoptoad_shim.rb')
   FileUtils.cp(shim_file, target)
 end
+
+When /^I configure the notifier to use "([^\"]*)" as an API key$/ do |api_key|
+  config_file = File.join(RAILS_ROOT, 'config', 'initializers', 'hoptoad.rb')
+  File.open(config_file, 'w') do |file|
+    file.write(<<-EOF)
+      HoptoadNotifier.configure do |config|
+        config.api_key = #{api_key.inspect}
+      end
+    EOF
+  end
+end
+
+Then /^I should see "([^\"]*)"$/ do |expected_text|
+  @terminal.output.should include(expected_text)
+end
