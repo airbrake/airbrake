@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/helper'
+require File.join(File.dirname(__FILE__), '..', 'lib', 'hoptoad_notifier', 'rails_init')
 
-class RailsTest < Test::Unit::TestCase
+class RailsInitTest < Test::Unit::TestCase
   include DefinesConstants
 
   should "trigger use of Rails' logger if logger isn't set and Rails' logger exists" do
@@ -19,5 +20,16 @@ class RailsTest < Test::Unit::TestCase
 
     HoptoadNotifier::RailsInit.new
     assert_equal "RAILS DEFAULT LOGGER", HoptoadNotifier.logger
+  end
+
+  should "allow overriding of the logger if already assigned" do
+    define_constant("RAILS_DEFAULT_LOGGER", "RAILS DEFAULT LOGGER")
+    HoptoadNotifier::RailsInit.new
+
+    HoptoadNotifier.configure(true) do |config|
+      config.logger = "OVERRIDDEN LOGGER"
+    end
+
+    assert_equal "OVERRIDDEN LOGGER", HoptoadNotifier.logger
   end
 end
