@@ -1,7 +1,7 @@
 module HoptoadNotifier
   # used to initialize Rails-specific code
-  class RailsInit
-    def initialize
+  class RailsInitializer
+    def self.initialize
       rails_logger = if defined?(Rails.logger)
                        Rails.logger
                      elsif defined?(RAILS_DEFAULT_LOGGER)

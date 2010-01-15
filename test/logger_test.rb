@@ -42,7 +42,7 @@ class LoggerTest < Test::Unit::TestCase
 
   should "not report that notifier is ready when internally configured" do
     stub_verbose_log
-    HoptoadNotifier.configure(true) { |config | }
+    HoptoadNotifier.configure(true) { |config| }
     assert_not_logged /.*/
   end
 
