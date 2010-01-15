@@ -28,4 +28,5 @@ Ginger.configure do |config|
   # Rails 2.3.3 has broken params filtering
   # config.scenarios << create_scenario("2.3.3")
   config.scenarios << create_scenario("2.3.4")
+  config.scenarios << create_scenario("2.3.5")
 end
