@@ -58,11 +58,7 @@ module HoptoadNotifier
 
     # Look for the Rails logger currently defined
     def logger
-      if defined?(Rails.logger)
-        Rails.logger
-      elsif defined?(RAILS_DEFAULT_LOGGER)
-        RAILS_DEFAULT_LOGGER
-      end
+      self.configuration.logger
     end
 
     # Call this method to modify defaults in your initializers.

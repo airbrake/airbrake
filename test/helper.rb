@@ -235,4 +235,3 @@ class FakeLogger
 end
 
 RAILS_DEFAULT_LOGGER = FakeLogger.new
-
