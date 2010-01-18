@@ -286,6 +286,31 @@ class NoticeTest < Test::Unit::TestCase
     end
   end
 
+  should "ignore RecordNotFound error by default" do
+    notice = build_notice(:error_class => 'ActiveRecord::RecordNotFound')
+    assert notice.ignore?
+  end
+
+  should "ignore RoutingError error by default" do
+    notice = build_notice(:error_class => 'ActionController::RoutingError')
+    assert notice.ignore?
+  end
+
+  should "ignore InvalidAuthenticityToken error by default" do
+    notice = build_notice(:error_class => 'ActionController::InvalidAuthenticityToken')
+    assert notice.ignore?
+  end
+
+  should "ignore TamperedWithCookie error by default" do
+    notice = build_notice(:error_class => 'CGI::Session::CookieStore::TamperedWithCookie')
+    assert notice.ignore?
+  end
+
+  should "ignore UnknownAction error by default" do
+    notice = build_notice(:error_class => 'ActionController::UnknownAction')
+    assert notice.ignore?
+  end
+
   should "act like a hash" do
     notice = build_notice(:error_message => 'some message')
     assert_equal notice.error_message, notice[:error_message]

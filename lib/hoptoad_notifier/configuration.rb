@@ -107,10 +107,6 @@ module HoptoadNotifier
                       'CGI::Session::CookieStore::TamperedWithCookie',
                       'ActionController::UnknownAction']
 
-    # Some of these don't exist for Rails 1.2.*, so we have to consider that.
-    IGNORE_DEFAULT.map!{|e| eval(e) rescue nil }.compact!
-    IGNORE_DEFAULT.freeze
-
     alias_method :secure?, :secure
 
     def initialize
