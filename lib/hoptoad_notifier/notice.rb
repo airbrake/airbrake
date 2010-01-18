@@ -84,7 +84,7 @@ module HoptoadNotifier
 
       self.environment_name = args[:environment_name]
       self.cgi_data         = args[:cgi_data]
-      self.backtrace        = Backtrace.parse(exception_attribute(:backtrace, caller))
+      self.backtrace        = Backtrace.parse(exception_attribute(:backtrace, caller), :filters => self.backtrace_filters)
       self.error_class      = exception_attribute(:error_class) {|exception| exception.class.name }
       self.error_message    = exception_attribute(:error_message, 'Notification') do |exception|
         "#{exception.class.name}: #{exception.message}"

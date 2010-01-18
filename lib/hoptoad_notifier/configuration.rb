@@ -84,7 +84,7 @@ module HoptoadNotifier
 
     DEFAULT_BACKTRACE_FILTERS = [
       lambda { |line|
-        if defined?(HoptoadNotifier.configuration.project_root)
+        if defined?(HoptoadNotifier.configuration.project_root) && HoptoadNotifier.configuration.project_root.to_s != '' 
           line.gsub(/#{HoptoadNotifier.configuration.project_root}/, "[PROJECT_ROOT]")
         else
           line

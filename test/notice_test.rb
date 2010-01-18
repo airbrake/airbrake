@@ -63,14 +63,23 @@ class NoticeTest < Test::Unit::TestCase
     notice_from_exception = build_notice(:exception => exception)
 
 
-    assert_equal notice_from_exception.backtrace,
-                 backtrace,
+    assert_equal backtrace,
+                 notice_from_exception.backtrace,
                  "backtrace was not correctly set from an exception"
 
     notice_from_hash = build_notice(:backtrace => array)
-    assert_equal notice_from_hash.backtrace,
-                 backtrace,
+    assert_equal backtrace,
+                 notice_from_hash.backtrace,
                  "backtrace was not correctly set from a hash"
+  end
+
+  should "pass its backtrace filters for parsing" do
+    backtrace_array = ['my/file/backtrace:3']
+    exception = build_exception
+    exception.set_backtrace(backtrace_array)
+    HoptoadNotifier::Backtrace.expects(:parse).with(backtrace_array, {:filters => 'foo'})
+
+    notice = HoptoadNotifier::Notice.new({:exception => exception, :backtrace_filters => 'foo'})
   end
 
   should "set the error class from an exception or hash" do
@@ -124,8 +133,8 @@ class NoticeTest < Test::Unit::TestCase
   end
 
   should "set sensible defaults without an exception" do
-    backtrace = HoptoadNotifier::Backtrace.parse(caller)
-    notice = build_notice
+    backtrace = HoptoadNotifier::Backtrace.parse(build_backtrace_array)
+    notice = build_notice(:backtrace => build_backtrace_array)
 
     assert_equal 'Notification', notice.error_message
     assert_array_starts_with backtrace.lines, notice.backtrace.lines
@@ -134,7 +143,8 @@ class NoticeTest < Test::Unit::TestCase
   end
 
   should "use the caller as the backtrace for an exception without a backtrace" do
-    backtrace = HoptoadNotifier::Backtrace.parse(caller)
+    filters = HoptoadNotifier.configuration.backtrace_filters
+    backtrace = HoptoadNotifier::Backtrace.parse(caller, :filters => filters)
     notice = build_notice(:exception => StandardError.new('error'), :backtrace => nil)
 
     assert_array_starts_with backtrace.lines, notice.backtrace.lines
@@ -385,4 +395,8 @@ class NoticeTest < Test::Unit::TestCase
                  notice.send(attribute))
   end
 
+  def build_backtrace_array
+    ["app/models/user.rb:13:in `magic'",
+      "app/controllers/users_controller.rb:8:in `index'"]
+  end
 end

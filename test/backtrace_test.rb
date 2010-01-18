@@ -63,6 +63,30 @@ class BacktraceTest < Test::Unit::TestCase
     end
   end
 
+  context "with a blank project root" do
+    setup do
+      HoptoadNotifier.configure {|config| config.project_root = '' }
+    end
+
+    teardown do
+      reset_config
+    end
+
+    should "not filter line numbers with respect to any project root" do
+      backtrace = ["/app/models/user.rb:7:in `latest'",
+                   "/app/controllers/users_controller.rb:13:in `index'",
+                   "/lib/something.rb:41:in `open'"]
+
+      backtrace_with_root =
+        HoptoadNotifier::Backtrace.parse(backtrace, :filters => default_filters)
+
+      backtrace_without_root =
+        HoptoadNotifier::Backtrace.parse(backtrace)
+
+      assert_equal backtrace_without_root, backtrace_with_root
+    end
+  end
+
   should "remove notifier trace" do
     inside_notifier  = ['lib/hoptoad_notifier.rb:13:in `voodoo`']
     outside_notifier = ['users_controller:8:in `index`']
