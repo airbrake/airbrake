@@ -22,7 +22,7 @@ In your config/environment* files, remove all references to ExceptionNotifier
 
 Remove the vendor/plugins/exception_notifier directory.
 
-=== Install hoptoad_notifier
+=== Rails 2.x
 
 Add the hoptoad_notifier gem to your app. In config/environment.rb:
 
@@ -31,28 +31,21 @@ Add the hoptoad_notifier gem to your app. In config/environment.rb:
 Then from your project's RAILS_ROOT, run:
 
   rake gems:install
-  script/generate hoptoad
+  script/generate hoptoad --api-key your_key_here
 
-=== Configuration
+=== Rails 1.2.6
 
-You should have something like this in config/initializers/hoptoad.rb.
+Install the hoptoad_notifier Gem, and then add something like this at the
+bottom of your config/environment.rb:
 
   HoptoadNotifier.configure do |config|
-    config.api_key = '1234567890abcdef'
+    config.api_key = 'your_key_here'
   end
 
-(Please note that this configuration should be in a global configuration, and
-is *not* environment-specific. Hoptoad is smart enough to know what errors are
-caused by what environments, so your staging errors don't get mixed in with
-your production errors.)
+You will need to copy the hoptoad_notifier_tasks.rake file into your
+RAILS_ROOT/lib/tasks directory in order for the rake hoptoad:test task to work.
 
-After adding to your config/initializers like this you must restart your
-server. This will not affect the rake task but it bears stating.
-
-That should be it! Now all exceptions will be logged to Hoptoad where they can
-be aggregated, filtered, sorted, analyzed, massaged, and searched. In previous
-releases you had to include HoptoadNotifier::Catcher into your
-ApplicationController, but the generator takes care of that now.
+=== Testing it out
 
 You can test that Hoptoad is working in your production environment by using 
 this rake task (from RAILS_ROOT):
@@ -61,11 +54,6 @@ this rake task (from RAILS_ROOT):
 
 If everything is configured properly, that task will send a notice to Hoptoad 
 which will be visible immediately.
-
-=== NOTE FOR RAILS 1.2.* USERS:
-
-You will need to copy the hoptoad_notifier_tasks.rake file into your
-RAILS_ROOT/lib/tasks directory in order for the rake hoptoad:test task to work.
 
 == Usage
 
