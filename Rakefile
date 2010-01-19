@@ -72,15 +72,19 @@ task :gemspec do
 end
 
 LOCAL_GEM_ROOT = File.join(GEM_ROOT, 'tmp', 'local_gems').freeze
-LOCAL_GEMS = %w(rails sham_rack capistrano)
+RAILS_VERSIONS = IO.read('SUPPORTED_RAILS_VERSIONS').strip.split("\n")
+LOCAL_GEMS = [['sham_rack', nil], ['capistrano', nil], ['sqlite3-ruby', nil]] +
+  RAILS_VERSIONS.collect { |version| ['rails', version] }
 
 task :vendor_test_gems do
-  LOCAL_GEMS.each do |gem_name|
-    pattern = File.join(LOCAL_GEM_ROOT, 'gems', "#{gem_name}-*")
+  LOCAL_GEMS.each do |gem_name, version|
+    gem_file_pattern = [gem_name, version || '*'].compact.join('-')
+    version_option = version ? "-v #{version}" : ''
+    pattern = File.join(LOCAL_GEM_ROOT, 'gems', "#{gem_file_pattern}")
     existing = Dir.glob(pattern).first
     unless existing
-      command = "gem install -i #{LOCAL_GEM_ROOT} --no-ri --no-rdoc #{gem_name}"
-      puts "Vendoring #{gem_name}..."
+      command = "gem install -i #{LOCAL_GEM_ROOT} --no-ri --no-rdoc #{version_option} #{gem_name}"
+      puts "Vendoring #{gem_file_pattern}..."
       unless system(command)
         $stderr.puts "Command failed: #{command}"
       end
@@ -94,3 +98,20 @@ Cucumber::Rake::Task.new(:cucumber) do |t|
 end
 
 task :cucumber => [:gemspec, :vendor_test_gems]
+
+OLD_RAILS_VERSIONS = RAILS_VERSIONS[0...-1]
+
+namespace :cucumber do
+  namespace :rails do
+    OLD_RAILS_VERSIONS.each do |version|
+      desc "Test integration of the gem with Rails #{version}"
+      task version do
+        ENV['RAILS_VERSION'] = version
+        system("cucumber --format progress features/rails.feature")
+      end
+    end
+
+    desc "Test integration of the gem with all Rails versions"
+    task :all => [:cucumber, *OLD_RAILS_VERSIONS]
+  end
+end
