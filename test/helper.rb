@@ -3,10 +3,12 @@ require 'rubygems'
 
 gem 'jferris-mocha', '>= 0.9.5.0.1241126838'
 
+$LOAD_PATH << File.join(File.dirname(__FILE__), *%w[.. vendor ginger lib])
+$LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
+
 require 'shoulda'
 require 'mocha'
 
-$LOAD_PATH << File.join(File.dirname(__FILE__), *%w[.. vendor ginger lib])
 require 'ginger'
 
 require 'action_controller'
@@ -16,7 +18,7 @@ require 'active_record/base'
 require 'active_support'
 require 'nokogiri'
 
-require File.join(File.dirname(__FILE__), "..", "lib", "hoptoad_notifier")
+require "hoptoad_notifier"
 
 begin require 'redgreen'; rescue LoadError; end
 
@@ -234,4 +236,3 @@ class FakeLogger
   def fatal(*args); end
 end
 
-RAILS_DEFAULT_LOGGER = FakeLogger.new

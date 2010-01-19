@@ -1,11 +1,31 @@
-if defined?(ActionController::Base) && !ActionController::Base.include?(HoptoadNotifier::Catcher)
-  ActionController::Base.send(:include, HoptoadNotifier::Catcher)
+require 'hoptoad_notifier'
+require 'hoptoad_notifier/rails/controller_methods'
+require 'hoptoad_notifier/rails/action_controller_catcher'
+require 'hoptoad_notifier/rails/error_lookup'
+
+module HoptoadNotifier
+  module Rails
+    def self.initialize
+      if defined?(ActionController::Base)
+        ActionController::Base.send(:include, HoptoadNotifier::Rails::ActionControllerCatcher)
+        ActionController::Base.send(:include, HoptoadNotifier::Rails::ErrorLookup)
+        ActionController::Base.send(:include, HoptoadNotifier::Rails::ControllerMethods)
+      end
+
+      rails_logger = if defined?(::Rails.logger)
+                       ::Rails.logger
+                     elsif defined?(RAILS_DEFAULT_LOGGER)
+                       RAILS_DEFAULT_LOGGER
+                     end
+
+      HoptoadNotifier.configure(true) do |config|
+        config.logger = rails_logger
+        config.environment_name = RAILS_ENV  if defined?(RAILS_ENV)
+        config.project_root     = RAILS_ROOT if defined?(RAILS_ROOT)
+      end
+    end
+  end
 end
 
-require 'hoptoad_notifier/rails_initializer'
-HoptoadNotifier::RailsInitializer.initialize
+HoptoadNotifier::Rails.initialize
 
-HoptoadNotifier.configure(true) do |config|
-  config.environment_name = RAILS_ENV
-  config.project_root     = RAILS_ROOT
-end

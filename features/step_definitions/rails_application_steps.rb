@@ -89,7 +89,7 @@ end
 
 Then /^I should see "([^\"]*)"$/ do |expected_text|
   unless @terminal.output.include?(expected_text)
-    raise "Got terminal output:\n#{@terminal.output}\nExpected output:\n#{expected_text}"
+    raise("Got terminal output:\n#{@terminal.output}\n\nExpected output:\n#{expected_text}")
   end
 end
 

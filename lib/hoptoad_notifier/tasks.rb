@@ -35,10 +35,11 @@ namespace :hoptoad do
 
     HoptoadNotifier.configuration.development_environments = []
 
-    in_controller = ApplicationController.included_modules.include? HoptoadNotifier::Catcher
-    in_base = ActionController::Base.included_modules.include? HoptoadNotifier::Catcher
+    catcher = HoptoadNotifier::Rails::ActionControllerCatcher
+    in_controller = ApplicationController.included_modules.include?(catcher)
+    in_base = ActionController::Base.included_modules.include?(catcher)
     if !in_controller || !in_base
-      puts "HoptoadNotifier::Catcher must be included inside your ApplicationController class."
+      puts "Rails initialization did not occur"
       exit
     end
 

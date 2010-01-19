@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/helper'
 
-class CatcherTest < Test::Unit::TestCase
+class ActionControllerCatcherTest < Test::Unit::TestCase
 
   include DefinesConstants
 
@@ -17,7 +17,7 @@ class CatcherTest < Test::Unit::TestCase
 
   def build_controller_class(&definition)
     returning Class.new(ActionController::Base) do |klass|
-      klass.__send__(:include, HoptoadNotifier::Catcher)
+      klass.__send__(:include, HoptoadNotifier::Rails::ActionControllerCatcher)
       klass.class_eval(&definition) if definition
       define_constant('HoptoadTestController', klass)
     end
@@ -172,7 +172,7 @@ class CatcherTest < Test::Unit::TestCase
 
   should "not create actions from Hoptoad methods" do
     controller = build_controller_class.new
-    assert_equal [], HoptoadNotifier::Catcher.instance_methods
+    assert_equal [], HoptoadNotifier::Rails::ActionControllerCatcher.instance_methods
   end
 
   should "ignore exceptions when user agent is being ignored by regular expression" do
