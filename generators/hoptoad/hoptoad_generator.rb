@@ -15,7 +15,7 @@ class HoptoadGenerator < Rails::Generator::Base
       m.directory 'lib/tasks'
       m.file 'hoptoad_notifier_tasks.rake', 'lib/tasks/hoptoad_notifier_tasks.rake'
       if File.exists?('config/deploy.rb')
-        m.append_to 'config/deploy.rb', "require 'hoptoad_notifier/capistrano'"
+        m.append_to 'config/deploy.rb', capistrano_hook
       end
       if options[:api_key]
         if use_initializer?
@@ -38,5 +38,9 @@ class HoptoadGenerator < Rails::Generator::Base
   def api_key_configured?
     File.exists?('config/initializers/hoptoad.rb') ||
       system("grep HoptoadNotifier config/environment.rb")
+  end
+
+  def capistrano_hook
+    IO.read(source_path('capistrano_hook.rb'))
   end
 end

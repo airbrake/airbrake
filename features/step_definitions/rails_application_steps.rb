@@ -88,7 +88,9 @@ When /^I configure the notifier to use "([^\"]*)" as an API key$/ do |api_key|
 end
 
 Then /^I should see "([^\"]*)"$/ do |expected_text|
-  @terminal.output.should include(expected_text)
+  unless @terminal.output.include?(expected_text)
+    raise "Got terminal output:\n#{@terminal.output}\nExpected output:\n#{expected_text}"
+  end
 end
 
 When /^I uninstall the "([^\"]*)" gem$/ do |gem_name|
