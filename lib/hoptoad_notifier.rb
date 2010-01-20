@@ -7,6 +7,7 @@ require 'hoptoad_notifier/configuration'
 require 'hoptoad_notifier/notice'
 require 'hoptoad_notifier/sender'
 require 'hoptoad_notifier/backtrace'
+require 'hoptoad_notifier/rack'
 
 # Gem for applications to automatically post errors to the Hoptoad of their choice.
 module HoptoadNotifier
