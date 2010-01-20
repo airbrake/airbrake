@@ -68,7 +68,7 @@ module HoptoadNotifier
       self.exception    = args[:exception]
       self.api_key      = args[:api_key]
       self.project_root = args[:project_root]
-      self.url          = args[:url]
+      self.url          = args[:url] || rack_env(:url)
 
       self.notifier_name    = args[:notifier_name]
       self.notifier_version = args[:notifier_version]
@@ -78,12 +78,12 @@ module HoptoadNotifier
       self.ignore_by_filters   = args[:ignore_by_filters]   || []
       self.backtrace_filters   = args[:backtrace_filters]   || []
       self.params_filters      = args[:params_filters]      || []
-      self.parameters          = args[:parameters]          || {}
+      self.parameters          = args[:parameters]          || rack_env(:params) || {}
       self.component           = args[:component] || args[:controller]
       self.action              = args[:action]
 
       self.environment_name = args[:environment_name]
-      self.cgi_data         = args[:cgi_data]
+      self.cgi_data         = args[:cgi_data] || args[:rack_env]
       self.backtrace        = Backtrace.parse(exception_attribute(:backtrace, caller), :filters => self.backtrace_filters)
       self.error_class      = exception_attribute(:error_class) {|exception| exception.class.name }
       self.error_message    = exception_attribute(:error_message, 'Notification') do |exception|
@@ -289,6 +289,16 @@ module HoptoadNotifier
         else
           builder.var(value.to_s, :key => key)
         end
+      end
+    end
+
+    def rack_env(method)
+      rack_request.send(method) if rack_request
+    end
+
+    def rack_request
+      @rack_request ||= if args[:rack_env]
+        ::Rack::Request.new(args[:rack_env])
       end
     end
   end
