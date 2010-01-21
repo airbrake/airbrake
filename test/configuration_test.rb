@@ -28,6 +28,7 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_default :ignore,
                           HoptoadNotifier::Configuration::IGNORE_DEFAULT
     assert_config_default :development_lookup, true
+    assert_config_default :framework, 'Standalone'
   end
 
   should "provide default values for secure connections" do

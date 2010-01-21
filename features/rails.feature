@@ -9,6 +9,7 @@ Feature: Install the Gem in a Rails application
     And I configure my application to require the "hoptoad_notifier" gem
     And I run "script/generate hoptoad -k myapikey"
     Then I should receive a Hoptoad notification
+    And I should see the Rails version
 
   Scenario: vendor the gem and uninstall
     When I generate a new Rails application

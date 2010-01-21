@@ -7,7 +7,7 @@ module HoptoadNotifier
         :http_open_timeout, :http_read_timeout, :ignore, :ignore_by_filters,
         :ignore_user_agent, :notifier_name, :notifier_url, :notifier_version,
         :params_filters, :project_root, :port, :protocol, :proxy_host,
-        :proxy_pass, :proxy_port, :proxy_user, :secure].freeze
+        :proxy_pass, :proxy_port, :proxy_user, :secure, :framework].freeze
 
     # The API key for your project, found on the project edit form.
     attr_accessor :api_key
@@ -80,6 +80,9 @@ module HoptoadNotifier
     # The logger used by HoptoadNotifier
     attr_accessor :logger
 
+    # The framework HoptoadNotifier is configured to use
+    attr_accessor :framework
+
     DEFAULT_PARAMS_FILTERS = %w(password password_confirmation).freeze
 
     DEFAULT_BACKTRACE_FILTERS = [
@@ -124,6 +127,7 @@ module HoptoadNotifier
       @notifier_name            = 'Hoptoad Notifier'
       @notifier_version         = VERSION
       @notifier_url             = 'http://hoptoadapp.com'
+      @framework                = 'Standalone'
     end
 
     # Takes a block and adds it to the list of backtrace filters. When the filters

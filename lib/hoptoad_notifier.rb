@@ -47,7 +47,7 @@ module HoptoadNotifier
     # Returns the Ruby version, Rails version, and current Rails environment
     def environment_info
       info = "[Ruby: #{RUBY_VERSION}]"
-      # info << " [Rails: #{::Rails::VERSION::STRING}]" if defined?(Rails)
+      info << " [#{configuration.framework}]"
       info << " [Env: #{configuration.environment_name}]"
     end
 

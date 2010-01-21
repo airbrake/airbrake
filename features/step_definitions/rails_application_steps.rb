@@ -187,3 +187,7 @@ Then /^I should receive the following Hoptoad notification:$/ do |table|
   doc.should have_content('//request/params/var',       param_value)
 end
 
+Then /^I should see the Rails version$/ do
+  Then %{I should see "[Rails: #{rails_version}]"}
+end
+
