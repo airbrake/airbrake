@@ -1,5 +1,7 @@
 require 'sham_rack'
 
 ShamRack.at("hoptoadapp.com") do |env|
+  xml = env['rack.input'].read
+  puts "Recieved the following exception:\n#{xml}"
   ["200 OK", { "Content-type" => "text/xml" }, "<notice/>"]
 end

@@ -107,19 +107,18 @@ end
 
 task :cucumber => [:gemspec, :vendor_test_gems]
 
-OLD_RAILS_VERSIONS = RAILS_VERSIONS[0...-1]
-
 namespace :cucumber do
   namespace :rails do
-    OLD_RAILS_VERSIONS.each do |version|
+    RAILS_VERSIONS.each do |version|
       desc "Test integration of the gem with Rails #{version}"
       task version do
+        puts "Testing Rails #{version}"
         ENV['RAILS_VERSION'] = version
         system("cucumber --format progress features/rails.feature")
       end
     end
 
     desc "Test integration of the gem with all Rails versions"
-    task :all => [:cucumber, *OLD_RAILS_VERSIONS]
+    task :all => RAILS_VERSIONS
   end
 end

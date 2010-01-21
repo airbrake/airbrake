@@ -62,3 +62,23 @@ Feature: Install the Gem in a Rails application
     And I configure my application to require the "hoptoad_notifier" gem
     And I run "script/generate hoptoad"
     Then I should see "You must first remove the hoptoad_notifier plugin. Please run: script/plugin remove hoptoad_notifier"
+
+  Scenario: Rescue an exception in a controller
+    When I generate a new Rails application
+    And I configure the Hoptoad shim
+    And I configure my application to require the "hoptoad_notifier" gem
+    And I run "script/generate hoptoad -k myapikey"
+    And I define a response for "TestController#index":
+      """
+      session[:value] = "test"
+      raise RuntimeError, "some message"
+      """
+    And I perform a request to "http://example.com:123/test/index?param=value"
+    Then I should receive the following Hoptoad notification:
+      | component     | test                                          |
+      | action        | index                                         |
+      | error message | RuntimeError: some message                    |
+      | error class   | RuntimeError                                  |
+      | session       | value: test                                   |
+      | parameters    | param: value                                  |
+      | url           | http://example.com:123/test/index?param=value |

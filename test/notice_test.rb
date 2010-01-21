@@ -339,15 +339,6 @@ class NoticeTest < Test::Unit::TestCase
   end
 
   should "extract data from a rack environment hash" do
-    # def hoptoad_request_data
-    #   { :parameters       => hoptoad_filter_if_filtering(params.to_hash),
-    #     :session_data     => hoptoad_session_data,
-    #     :controller       => params[:controller],
-    #     :action           => params[:action],
-    #     :url              => hoptoad_request_url,
-    #     :cgi_data         => hoptoad_filter_if_filtering(request.env),
-    #     :environment_vars => hoptoad_filter_if_filtering(ENV) }
-    # end
     # TODO: extract session data
     # TODO: extract controller
     # TODO: extract action

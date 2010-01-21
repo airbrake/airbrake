@@ -118,3 +118,72 @@ end
 When /^I install the "([^\"]*)" plugin$/ do |plugin_name|
   FileUtils.mkdir_p("#{RAILS_ROOT}/vendor/plugins/#{plugin_name}")
 end
+
+When /^I define a response for "([^\"]*)":$/ do |controller_and_action, definition|
+  controller_class_name, action = controller_and_action.split('#')
+  controller_name = controller_class_name.underscore
+  controller_file_name = File.join(RAILS_ROOT, 'app', 'controllers', "#{controller_name}.rb")
+  File.open(controller_file_name, "w") do |file|
+    file.puts "class #{controller_class_name} < ApplicationController"
+    file.puts "def consider_all_requests_local; false; end"
+    file.puts "def local_request?; false; end"
+    file.puts "def #{action}"
+    file.puts definition
+    file.puts "end"
+    file.puts "end"
+  end
+end
+
+When /^I perform a request to "([^\"]*)"$/ do |uri|
+  uri = URI.parse(uri)
+  request_script = <<-SCRIPT
+    require 'cgi'
+    class CGIWrapper < CGI
+      def initialize(*args)
+        @env_table = {}
+        @stdinput = StringIO.new("")
+        super(*args)
+      end
+      attr_reader :env_table, :stdinput
+    end
+    cgi = CGIWrapper.new
+    cgi.env_table.update({
+      'HTTPS'          => 'off',
+      'REQUEST_METHOD' => "GET",
+      'SERVER_ADDR'    => #{uri.host.inspect},
+      'SERVER_PORT'    => #{uri.port.inspect},
+      'REQUEST_URI'    => #{uri.request_uri.inspect},
+      'QUERY_STRING'   => #{uri.query.inspect}
+    })
+    require 'dispatcher' unless defined?(ActionController::Dispatcher)
+    Dispatcher.dispatch(cgi)
+  SCRIPT
+  File.open(File.join(RAILS_ROOT, 'request.rb'), 'w') { |file| file.write(request_script) }
+  @terminal.cd(RAILS_ROOT)
+  @terminal.run("./script/runner -e production request.rb")
+end
+
+Then /^I should receive the following Hoptoad notification:$/ do |table|
+  exceptions = @terminal.output.scan(%r{Recieved the following exception:\n([^\n]*)\n}m)
+  exceptions.should_not be_empty
+
+  xml = exceptions.last[0]
+  doc = Nokogiri::XML.parse(xml)
+
+  hash = table.transpose.hashes.first
+
+  session_key, session_value = hash['session'].split(': ')
+  param_key, param_value     = hash['parameters'].split(': ')
+
+  doc.should have_content('//component',     hash['component'])
+  doc.should have_content('//action',        hash['action'])
+  doc.should have_content('//error/message', hash['error message'])
+  doc.should have_content('//error/class',   hash['error class'])
+  doc.should have_content('//request/url',   hash['url'])
+
+  doc.should have_content('//request/session/var/@key', session_key)
+  doc.should have_content('//request/session/var',      session_value)
+  doc.should have_content('//request/params/var/@key',  param_key)
+  doc.should have_content('//request/params/var',       param_value)
+end
+
