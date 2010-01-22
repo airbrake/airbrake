@@ -33,6 +33,13 @@ Then from your project's RAILS_ROOT, run:
   rake gems:install
   script/generate hoptoad --api-key your_key_here
 
+Once installed, you should vendor the hoptoad_notifier gem.
+
+  rake gems:unpack GEM=hoptoad_notifier
+
+As always, if you choose not to vendor the hoptoad_notifier gem, make sure
+every server you deploy to has the gem installed or your application won't start.
+
 === Rails 1.2.6
 
 Install the hoptoad_notifier Gem, and then add something like this at the
