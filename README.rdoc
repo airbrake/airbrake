@@ -22,6 +22,10 @@ In your config/environment* files, remove all references to ExceptionNotifier
 
 Remove the vendor/plugins/exception_notifier directory.
 
+=== Remove hoptoad_notifier plugin
+
+Remove the vendor/plugins/hoptoad_notifier directory before installing the gem.
+
 === Rails 2.x
 
 Add the hoptoad_notifier gem to your app. In config/environment.rb:
