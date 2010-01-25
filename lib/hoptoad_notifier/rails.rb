@@ -18,6 +18,11 @@ module HoptoadNotifier
                        RAILS_DEFAULT_LOGGER
                      end
 
+      if defined?(::Rails.configuration) && ::Rails.configuration.respond_to?(:middleware)
+        ::Rails.configuration.middleware.insert_after 'ActionController::Failsafe',
+                                                      HoptoadNotifier::Rack
+      end
+
       HoptoadNotifier.configure(true) do |config|
         config.logger = rails_logger
         config.environment_name = RAILS_ENV  if defined?(RAILS_ENV)

@@ -141,18 +141,20 @@ When /^I perform a request to "([^\"]*)"$/ do |uri|
     class CGIWrapper < CGI
       def initialize(*args)
         @env_table = {}
-        @stdinput = StringIO.new("")
+        @stdinput = $stdin
         super(*args)
       end
-      attr_reader :env_table, :stdinput
+      attr_reader :env_table
     end
+    $stdin = StringIO.new("")
     cgi = CGIWrapper.new
     cgi.env_table.update({
       'HTTPS'          => 'off',
       'REQUEST_METHOD' => "GET",
-      'SERVER_ADDR'    => #{uri.host.inspect},
+      'HTTP_HOST'      => #{[uri.host, uri.port].join(':').inspect},
       'SERVER_PORT'    => #{uri.port.inspect},
       'REQUEST_URI'    => #{uri.request_uri.inspect},
+      'PATH_INFO'      => #{uri.path.inspect},
       'QUERY_STRING'   => #{uri.query.inspect}
     })
     require 'dispatcher' unless defined?(ActionController::Dispatcher)
@@ -172,19 +174,24 @@ Then /^I should receive the following Hoptoad notification:$/ do |table|
 
   hash = table.transpose.hashes.first
 
-  session_key, session_value = hash['session'].split(': ')
-  param_key, param_value     = hash['parameters'].split(': ')
-
-  doc.should have_content('//component',     hash['component'])
-  doc.should have_content('//action',        hash['action'])
   doc.should have_content('//error/message', hash['error message'])
   doc.should have_content('//error/class',   hash['error class'])
   doc.should have_content('//request/url',   hash['url'])
 
-  doc.should have_content('//request/session/var/@key', session_key)
-  doc.should have_content('//request/session/var',      session_value)
-  doc.should have_content('//request/params/var/@key',  param_key)
-  doc.should have_content('//request/params/var',       param_value)
+  doc.should have_content('//component', hash['component']) if hash['component']
+  doc.should have_content('//action', hash['action']) if hash['action']
+
+  if hash['session']
+    session_key, session_value = hash['session'].split(': ')
+    doc.should have_content('//request/session/var/@key', session_key)
+    doc.should have_content('//request/session/var',      session_value)
+  end
+
+  if hash['parameters']
+    param_key, param_value     = hash['parameters'].split(': ')
+    doc.should have_content('//request/params/var/@key',  param_key)
+    doc.should have_content('//request/params/var',       param_value)
+  end
 end
 
 Then /^I should see the Rails version$/ do
