@@ -21,10 +21,8 @@ namespace :hoptoad do
     RAILS_DEFAULT_LOGGER.level = Logger::DEBUG
 
     require 'action_controller/test_process'
-    require 'app/controllers/application' if File.exists?('app/controllers/application.rb')
 
-    request = ActionController::TestRequest.new
-    response = ActionController::TestResponse.new
+    Dir["app/controllers/application*.rb"].each { |file| require(file) }
 
     class HoptoadTestingException < RuntimeError; end
 
@@ -48,6 +46,11 @@ namespace :hoptoad do
       puts sprintf("%25s: %s", key.to_s, value.inspect.slice(0, 55))
     end
 
+    unless defined?(ApplicationController)
+      puts "No ApplicationController found"
+      exit
+    end
+
     puts 'Setting up the Controller.'
     class ApplicationController
       # This is to bypass any filters that may prevent access to the action.
@@ -57,7 +60,7 @@ namespace :hoptoad do
         raise exception_class.new, 'Testing hoptoad via "rake hoptoad:test". If you can see this, it works.'
       end
 
-      def rescue_action exception
+      def rescue_action(exception)
         rescue_action_in_public exception
       end
 
@@ -83,9 +86,11 @@ namespace :hoptoad do
         nil
       end
     end
+    class HoptoadVerificationController < ApplicationController; end
 
     puts 'Processing request.'
-    class HoptoadVerificationController < ApplicationController; end
+    request = ActionController::TestRequest.new
+    response = ActionController::TestResponse.new
     HoptoadVerificationController.new.process(request, response)
   end
 end

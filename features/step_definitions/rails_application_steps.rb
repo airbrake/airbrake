@@ -42,7 +42,7 @@ When /^I run "([^\"]*)"$/ do |command|
 end
 
 Then /^I should receive a Hoptoad notification$/ do
-  @terminal.output.should include("[Hoptoad] Success: Net::HTTPOK")
+  Then %{I should see "[Hoptoad] Success: Net::HTTPOK"}
 end
 
 Then /^I should receive two Hoptoad notifications$/ do
