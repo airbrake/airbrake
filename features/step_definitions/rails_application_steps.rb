@@ -114,3 +114,7 @@ When /^I unpack the "([^\"]*)" gem$/ do |gem_name|
     end
   end
 end
+
+When /^I install the "([^\"]*)" plugin$/ do |plugin_name|
+  FileUtils.mkdir_p("#{RAILS_ROOT}/vendor/plugins/#{plugin_name}")
+end

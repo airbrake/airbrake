@@ -11,6 +11,10 @@ class HoptoadGenerator < Rails::Generator::Base
       puts "Must pass --api-key or create config/initializers/hoptoad.rb"
       exit
     end
+    if plugin_is_present?
+      puts "You must first remove the hoptoad_notifier plugin from the vendor/plugins directory"
+      exit
+    end
     record do |m|
       m.directory 'lib/tasks'
       m.file 'hoptoad_notifier_tasks.rake', 'lib/tasks/hoptoad_notifier_tasks.rake'
@@ -42,5 +46,9 @@ class HoptoadGenerator < Rails::Generator::Base
 
   def capistrano_hook
     IO.read(source_path('capistrano_hook.rb'))
+  end
+  
+  def plugin_is_present?
+    File.exists?('vendor/plugins/hoptoad_notifier')
   end
 end
