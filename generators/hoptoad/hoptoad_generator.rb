@@ -12,7 +12,7 @@ class HoptoadGenerator < Rails::Generator::Base
       exit
     end
     if plugin_is_present?
-      puts "You must first remove the hoptoad_notifier plugin from the vendor/plugins directory"
+      puts "You must first remove the hoptoad_notifier plugin. Please run: script/plugin remove hoptoad_notifier"
       exit
     end
     record do |m|

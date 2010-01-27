@@ -54,12 +54,11 @@ Feature: Install the Gem in a Rails application
     And I run "cap -T"
     Then I should see "deploy:notify_hoptoad"
 
-	Scenario: Try to install when the hoptoad_notifier plugin still exists
-		When I generate a new Rails application
-		And I install the "hoptoad_notifier" plugin
-		And I configure the Hoptoad shim
-		And I configure the notifier to use "myapikey" as an API key
-		And I configure my application to require the "hoptoad_notifier" gem
-		And I run "script/generate hoptoad"
-		Then I should see "You must first remove the hoptoad_notifier plugin from the vendor/plugins directory"
-		
+  Scenario: Try to install when the hoptoad_notifier plugin still exists
+    When I generate a new Rails application
+    And I install the "hoptoad_notifier" plugin
+    And I configure the Hoptoad shim
+    And I configure the notifier to use "myapikey" as an API key
+    And I configure my application to require the "hoptoad_notifier" gem
+    And I run "script/generate hoptoad"
+    Then I should see "You must first remove the hoptoad_notifier plugin. Please run: script/plugin remove hoptoad_notifier"

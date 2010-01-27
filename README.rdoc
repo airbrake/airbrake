@@ -24,7 +24,9 @@ Remove the vendor/plugins/exception_notifier directory.
 
 === Remove hoptoad_notifier plugin
 
-Remove the vendor/plugins/hoptoad_notifier directory before installing the gem.
+Remove the vendor/plugins/hoptoad_notifier directory before installing the gem, or run:
+
+  script/plugin remove hoptoad_notifier
 
 === Rails 2.x
 
