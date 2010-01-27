@@ -50,6 +50,13 @@ gemspec = Gem::Specification.new do |s|
   s.extra_rdoc_files = ["README.rdoc"]
   s.rdoc_options = ['--line-numbers', "--main", "README.rdoc"]
 
+  s.add_runtime_dependency("activesupport")
+  s.add_development_dependency("activerecord")
+  s.add_development_dependency("actionpack")
+  s.add_development_dependency("jferris-mocha")
+  s.add_development_dependency("nokogiri")
+  s.add_development_dependency("shoulda")
+
   s.authors = ["thoughtbot, inc"]
   s.email   = %q{support@hoptoadapp.com}
   s.homepage = "http://www.hoptoadapp.com"
