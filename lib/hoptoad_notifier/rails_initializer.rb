@@ -9,7 +9,7 @@ module HoptoadNotifier
                      end
 
       HoptoadNotifier.configure(true) do |config|
-        config.logger = rails_logger
+        config.logger = rails_logger if config.respond_to? :logger
       end
     end
   end
