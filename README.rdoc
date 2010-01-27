@@ -10,7 +10,7 @@ to the Hoptoad server specified in your environment.
 * {IRC}[irc://irc.freenode.net/thoughtbot]
 * {mailing list}[http://groups.google.com/group/hoptoad-notifier-dev]
 
-== Installation
+== Rails Installation
 
 === Remove exception_notifier
 
@@ -67,6 +67,24 @@ this rake task (from RAILS_ROOT):
 
 If everything is configured properly, that task will send a notice to Hoptoad 
 which will be visible immediately.
+
+== Rack
+
+In order to use hoptoad_notifier in a non-Rails rack app, just load the
+hoptoad_notifier, configure your API key, and use the HoptoadNotifier::Rack
+middleware:
+
+  require 'rack'
+  require 'hoptoad_notifier'
+
+  HoptoadNotifier.configure do |config|
+    config.api_key = 'my_api_key'
+  end
+
+  app = Rack::Builder.app do
+    use HoptoadNotifier::Rack
+    run lambda { |env| raise "Rack down" }
+  end
 
 == Usage
 
