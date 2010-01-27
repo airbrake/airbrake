@@ -86,6 +86,27 @@ middleware:
     run lambda { |env| raise "Rack down" }
   end
 
+== Sinatra
+
+Using hoptoad_notifier in a Sinatra app is just like a Rack app, but you have
+to disable Sinatra's error rescuing functionality:
+
+  require 'sinatra/base'
+  require 'hoptoad_notifier'
+
+  HoptoadNotifier.configure do |config|
+    config.api_key = 'my_api_key'
+  end
+
+  class MyApp < Sinatra::Default
+    use HoptoadNotifier::Rack
+    enable :raise_errors
+
+    get "/" do
+      raise "Sinatra has left the building"
+    end
+  end
+
 == Usage
 
 For the most part, Hoptoad works for itself.  Once you've included the notifier 
