@@ -1,4 +1,4 @@
-require 'activesupport'
+require 'active_support'
 require 'nokogiri'
 
 PROJECT_ROOT   = File.expand_path(File.join(File.dirname(__FILE__), '..', '..')).freeze

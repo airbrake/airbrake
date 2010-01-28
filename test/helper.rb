@@ -17,6 +17,7 @@ require 'active_record'
 require 'active_record/base'
 require 'active_support'
 require 'nokogiri'
+require 'rack'
 
 require "hoptoad_notifier"
 
