@@ -141,7 +141,7 @@ Additionally, it's possible to review the errors in Hoptoad that occurred before
 
 When Hoptoad is installed as a gem, you need to add
 
-  require 'hoptoad_notifier/recipes/hoptoad'
+  require 'hoptoad_notifier/capistrano'
 
 to your deploy.rb
 
