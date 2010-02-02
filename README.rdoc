@@ -51,7 +51,8 @@ every server you deploy to has the gem installed or your application won't start
 Install the hoptoad_notifier Gem. Once installed, you should 
 vendor the hoptoad_notifier gem.
 
-  rake gems:unpack GEM=hoptoad_notifier
+  cd vendor/gems
+  gems unpack hoptoad_notifier
 
 And then add the following to the 
 Rails::Initializer.run do |config| block in environment.rb
