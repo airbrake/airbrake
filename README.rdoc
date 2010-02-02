@@ -48,15 +48,28 @@ every server you deploy to has the gem installed or your application won't start
 
 === Rails 1.2.6
 
-Install the hoptoad_notifier Gem, and then add something like this at the
-bottom of your config/environment.rb:
+Install the hoptoad_notifier Gem. Once installed, you should 
+vendor the hoptoad_notifier gem.
+
+  rake gems:unpack GEM=hoptoad_notifier
+
+And then add the following to the 
+Rails::Initializer.run do |config| block in environment.rb
+
+  # Add the vendor/gems/*/lib directories to the LOAD_PATH
+  config.load_paths += Dir.glob(File.join(RAILS_ROOT, 'vendor', 'gems', '*', 'lib'))
+
+Next add something like this at the bottom of your config/environment.rb:
 
   HoptoadNotifier.configure do |config|
     config.api_key = 'your_key_here'
   end
 
-You will need to copy the hoptoad_notifier_tasks.rake file into your
+You will also need to copy the hoptoad_notifier_tasks.rake file into your
 RAILS_ROOT/lib/tasks directory in order for the rake hoptoad:test task to work.
+
+As always, if you choose not to vendor the hoptoad_notifier gem, make sure
+every server you deploy to has the gem installed or your application won't start.
 
 === Testing it out
 
