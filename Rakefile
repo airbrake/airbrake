@@ -22,6 +22,77 @@ task :ginger do
   load File.join(*%w[vendor ginger bin ginger])
 end
 
+namespace :changeling do
+  desc "Bumps the version by a minor or patch version, depending on what was passed in."
+  task :bump, :part do |t, args|
+    # Thanks, Jeweler!
+    if HoptoadNotifier::VERSION  =~ /^(\d+)\.(\d+)\.(\d+)(?:\.(.*?))?$/
+      major = $1.to_i
+      minor = $2.to_i
+      patch = $3.to_i
+      build = $4
+    else
+      abort
+    end
+
+    case args[:part]
+    when /minor/
+      minor += 1
+      patch = 0
+    when /patch/
+      patch += 1
+    else
+      abort
+    end
+
+    version = [major, minor, patch, build].compact.join('.')
+
+    File.open(File.join("lib", "hoptoad_notifier", "version.rb"), "w") do |f|
+      f.write <<EOF
+module HoptoadNotifier
+  VERSION = "#{version}".freeze
+end
+EOF
+    end
+  end
+
+  desc "Writes out the new CHANGELOG and prepares the release"
+  task :change do
+    load 'lib/hoptoad_notifier/version.rb'
+    file    = "CHANGELOG"
+    old     = File.read(file)
+    version = HoptoadNotifier::VERSION
+    message = "Bumping to version #{version}"
+
+    File.open(file, "w") do |f|
+      f.write <<EOF
+Version #{version} - #{Date.today}
+===============================================================================
+
+#{`git log $(git tag | tail -1)..HEAD | git shortlog`}
+#{old}
+EOF
+    end
+
+    exec ["#{ENV["EDITOR"]} #{file}",
+          "git commit -aqm '#{message}'",
+          "git tag -a -m '#{message}' v#{version}",
+          "echo '\n\n\033[32mMarked v#{version} /' `git show-ref -s refs/heads/master` 'for release.\033[0m\n\n'"].join(' && ')
+  end
+
+  desc "Bump by a minor version (1.2.3 => 1.3.0)"
+  task :minor do |t|
+    Rake::Task['changeling:bump'].invoke(t.name)
+    Rake::Task['changeling:change'].invoke
+  end
+
+  desc "Bump by a patch version, (1.2.3 => 1.2.4)"
+  task :patch do |t|
+    Rake::Task['changeling:bump'].invoke(t.name)
+    Rake::Task['changeling:change'].invoke
+  end
+end
+
 begin
   require 'yard'
   YARD::Rake::YardocTask.new do |t|
