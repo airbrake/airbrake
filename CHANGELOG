@@ -1,0 +1,31 @@
+Version 2.1.4 - 2010-02-12
+===============================================================================
+
+Chad Pytel (2):
+      add more info to README for 1.2.6
+      fix gem unpack line for 1.2.6
+
+Jason Morrison (2):
+      Adding additional instructions for Rails 1.2.6
+      Typesetting in README.rdoc
+
+Joe Ferris (11):
+      Separating Rails functionality out more
+      Initial Rack middleware
+      Extract request info from rack env
+      Added integration tests for rescuing
+      Fixed reporting of Rails version
+      Small refactoring
+      Automatically add Rack middleware for Rails apps that support it (catches exceptions from Metal)
+      Added an integration test and docs for rack apps
+      Added integration/readme coverage of Sinatra apps
+      Added docs to HoptoadNotifier::Rack
+      Require rack in tests for older versions of Rails; use active_support instead of activesupport
+
+Nick Quaranto (3):
+      Fixing the capistrano hook bit in the readme
+      Adding changeling:minor and changeling:patch to automate notifier releases
+      Adding rake changeling:push
+
+
+
