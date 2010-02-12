@@ -77,7 +77,7 @@ EOF
     exec ["#{ENV["EDITOR"]} #{file}",
           "git commit -aqm '#{message}'",
           "git tag -a -m '#{message}' v#{version}",
-          "echo '\n\n\033[32mMarked v#{version} /' `git show-ref -s refs/heads/master` 'for release.\033[0m\n\n'"].join(' && ')
+          "echo '\n\n\033[32mMarked v#{version} /' `git show-ref -s refs/heads/master` 'for release. Run: rake changeling:push\033[0m\n\n'"].join(' && ')
   end
 
   desc "Bump by a minor version (1.2.3 => 1.3.0)"
@@ -90,6 +90,12 @@ EOF
   task :patch do |t|
     Rake::Task['changeling:bump'].invoke(t.name)
     Rake::Task['changeling:change'].invoke
+  end
+
+  desc "Push the latest version and tags"
+  task :push do |t|
+    system("git push origin master")
+    system("git push origin $(git tag | tail -1)")
   end
 end
 
