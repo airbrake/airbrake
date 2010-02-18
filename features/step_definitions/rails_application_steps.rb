@@ -2,7 +2,11 @@ When /^I generate a new Rails application$/ do
   @terminal.cd(TEMP_DIR)
   version_string = ENV['RAILS_VERSION'] ? "_#{ENV['RAILS_VERSION']}_" : ''
   @terminal.run("rails #{version_string} rails_root")
-  @terminal.echo("Generated a Rails #{rails_version} application")
+  if rails_root_exists?
+    @terminal.echo("Generated a Rails #{rails_version} application")
+  else
+    raise "Unable to generate a Rails application:\n#{@terminal.output}"
+  end
 end
 
 Given /^I have installed the "([^\"]*)" gem$/ do |gem_name|

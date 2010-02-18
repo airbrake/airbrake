@@ -1,4 +1,8 @@
 module RailsHelpers
+  def rails_root_exists?
+    File.exists?(environment_path)
+  end
+
   def rails_version
     environment_file = File.join(RAILS_ROOT, 'config', 'environment.rb')
     @rails_version ||= `grep RAILS_GEM_VERSION #{environment_file}`.match(/[\d.]+/)[0]
