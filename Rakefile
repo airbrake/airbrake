@@ -162,8 +162,10 @@ LOCAL_GEMS = [['sham_rack', nil], ['capistrano', nil], ['sqlite3-ruby', nil], ['
   RAILS_VERSIONS.collect { |version| ['rails', version] }
 
 task :vendor_test_gems do
-  ENV['GEM_PATH']  = LOCAL_GEM_ROOT
-  ENV['GEM_HOME']  = LOCAL_GEM_ROOT
+  old_gem_path = ENV['GEM_PATH']
+  old_gem_home = ENV['GEM_HOME']
+  ENV['GEM_PATH'] = LOCAL_GEM_ROOT
+  ENV['GEM_HOME'] = LOCAL_GEM_ROOT
   LOCAL_GEMS.each do |gem_name, version|
     gem_file_pattern = [gem_name, version || '*'].compact.join('-')
     version_option = version ? "-v #{version}" : ''
@@ -178,6 +180,8 @@ task :vendor_test_gems do
       end
     end
   end
+  ENV['GEM_PATH'] = old_gem_path
+  ENV['GEM_HOME'] = old_gem_home
 end
 
 Cucumber::Rake::Task.new(:cucumber) do |t|
