@@ -170,8 +170,9 @@ task :vendor_test_gems do
     unless existing
       command = "gem install -i #{LOCAL_GEM_ROOT} --no-ri --no-rdoc #{version_option} #{gem_name}"
       puts "Vendoring #{gem_file_pattern}..."
-      unless system(command)
-        $stderr.puts "Command failed: #{command}"
+      unless system("#{command} 2>&1")
+        puts "Command failed: #{command}"
+        exit(1)
       end
     end
   end
