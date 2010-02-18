@@ -170,7 +170,7 @@ task :vendor_test_gems do
     pattern = File.join(LOCAL_GEM_ROOT, 'gems', "#{gem_file_pattern}")
     existing = Dir.glob(pattern).first
     unless existing
-      command = "gem install -i #{LOCAL_GEM_ROOT} --no-ri --no-rdoc --debug --backtrace #{version_option} #{gem_name}"
+      command = "gem install -i #{LOCAL_GEM_ROOT} --no-ri --no-rdoc --backtrace #{version_option} #{gem_name}"
       puts "Vendoring #{gem_file_pattern}..."
       unless system("#{command} 2>&1")
         puts "Command failed: #{command}"
