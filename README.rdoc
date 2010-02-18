@@ -90,7 +90,7 @@ Add the hoptoad_notifier gem to your app. In config/environment.rb:
 
     config.gem 'hoptoad_notifier'
 
-Remove teh plugin:
+Remove the plugin:
 
     rm -rf vendor/plugins/hoptoad_notifier
 
