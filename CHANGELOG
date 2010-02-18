@@ -1,3 +1,12 @@
+Version 2.2.0 - 2010-02-18
+===============================================================================
+
+Bumping the version from 2.1.4 to 2.2.0 since adding Rack support warrants a minor version.
+
+Jason Morrison (1):
+      Stringify array elements when making assertions about Notice XML for 1.9 compatibility
+
+
 Version 2.1.4 - 2010-02-12
 ===============================================================================
 
@@ -26,6 +35,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
