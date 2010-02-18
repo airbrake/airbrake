@@ -162,6 +162,8 @@ LOCAL_GEMS = [['sham_rack', nil], ['capistrano', nil], ['sqlite3-ruby', nil], ['
   RAILS_VERSIONS.collect { |version| ['rails', version] }
 
 task :vendor_test_gems do
+  ENV['GEM_PATH']  = LOCAL_GEM_ROOT
+  ENV['GEM_HOME']  = LOCAL_GEM_ROOT
   LOCAL_GEMS.each do |gem_name, version|
     gem_file_pattern = [gem_name, version || '*'].compact.join('-')
     version_option = version ? "-v #{version}" : ''
