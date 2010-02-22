@@ -114,6 +114,23 @@ As always, if you choose not to vendor the hoptoad_notifier gem, make sure
 every server you deploy to has the gem installed or your application won't
 start.
 
+== Upgrading from Earlier Versions of the Hoptoad Gem (with config.gem)
+
+If you're currently using the gem version of the hoptoad_notifier and have
+a version of Rails that uses config.gem (in the 2.x series), there is
+a step or two that you need to do to upgrade. First, you need to remove
+the old version of the gem from vendor/gems:
+
+    rm -rf vendor/gems/hoptoad_notifier-X.X.X
+
+Then you must remove the hoptoad_notifier_tasks.rake file from lib:
+
+    rm lib/tasks/hoptoad_notifier_tasks.rake
+
+You can them continue to install normally. If you don't remove the rake file,
+you will be unable to unpack this gem (Rails will think it's part of the
+framework).
+
 === Testing it out
 
 You can test that Hoptoad is working in your production environment by using
