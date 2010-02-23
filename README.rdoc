@@ -331,6 +331,16 @@ errors are not reported while running tests.
     end
   end
 
+== Proxy Support
+
+The notifier supports using a proxy, if your server is not able to directly reach the Hoptoad servers.  To configure the proxy settings, added the following information to your Hoptoad configuration block.
+
+  HoptoadNotifier.configure do |config|
+    config.proxy_host = ...
+    config.proxy_port = ...
+    config.proxy_user = ...
+    config.proxy_pass = ...
+
 == Supported Rails versions
 
 See SUPPORTED_RAILS_VERSIONS for a list of official supported versions of
