@@ -97,6 +97,12 @@ Then /^I should see "([^\"]*)"$/ do |expected_text|
   end
 end
 
+Then /^I should not see "([^\"]*)"$/ do |unexpected_text|
+  if @terminal.output.include?(unexpected_text)
+    raise("Got terminal output:\n#{@terminal.output}\n\nDid not expect the following output:\n#{unexpected_text}")
+  end
+end
+
 When /^I uninstall the "([^\"]*)" gem$/ do |gem_name|
   @terminal.uninstall_gem(gem_name)
 end
@@ -202,3 +208,6 @@ Then /^I should see the Rails version$/ do
   Then %{I should see "[Rails: #{rails_version}]"}
 end
 
+Then /^I should see that "([^\"]*)" is not considered a framework gem$/ do |gem_name|
+  Then %{I should not see "[R] #{gem_name}"}
+end
