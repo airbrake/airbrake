@@ -83,3 +83,11 @@ Feature: Install the Gem in a Rails application
       | session       | value: test                                   |
       | parameters    | param: value                                  |
       | url           | http://example.com:123/test/index?param=value |
+
+  Scenario: The gem should not be considered a framework gem
+    When I generate a new Rails application
+    And I configure the Hoptoad shim
+    And I configure my application to require the "hoptoad_notifier" gem
+    And I run "script/generate hoptoad -k myapikey"
+    And I run "rake gems"
+    Then I should see that "hoptoad_notifier" is not considered a framework gem
