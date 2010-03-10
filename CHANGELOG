@@ -1,3 +1,12 @@
+Version 2.2.1 - 2010-03-10
+===============================================================================
+
+Jason Morrison (3):
+      LH-629 Ensure notifier is not considered a framework gem
+      Removing things-the-generator-must-do file
+      Add rake cucumber:wip:rails* tasks for work-in-progress features
+
+
 Version 2.2.0 - 2010-02-18
 ===============================================================================
 
@@ -35,6 +44,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
