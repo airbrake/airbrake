@@ -9,6 +9,9 @@ require 'hoptoad_notifier/sender'
 require 'hoptoad_notifier/backtrace'
 require 'hoptoad_notifier/rack'
 
+#TODO: Not sure if this needs to be removed to support 2.x or not
+require 'hoptoad_notifier/railtie' if defined?(Rails)
+
 # Gem for applications to automatically post errors to the Hoptoad of their choice.
 module HoptoadNotifier
 
