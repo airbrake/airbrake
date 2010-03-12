@@ -195,7 +195,7 @@ def define_rails_cucumber_tasks(additional_cucumber_args = '')
   namespace :rails do
     RAILS_VERSIONS.each do |version|
       desc "Test integration of the gem with Rails #{version}"
-      task version do
+      task version => [:gemspec, :vendor_test_gems] do
         puts "Testing Rails #{version}"
         ENV['RAILS_VERSION'] = version
         system("cucumber --format progress #{additional_cucumber_args} features/rails.feature")
