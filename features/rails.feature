@@ -91,3 +91,12 @@ Feature: Install the Gem in a Rails application
     And I run "script/generate hoptoad -k myapikey"
     And I run "rake gems"
     Then I should see that "hoptoad_notifier" is not considered a framework gem
+
+  Scenario: The app uses Vlad instead of Capistrano
+    When I generate a new Rails application
+    And I configure the Hoptoad shim
+    And I configure my application to require the "hoptoad_notifier" gem
+    And I run "touch config/deploy.rb"
+    And I run "rm Capfile"
+    And I run "script/generate hoptoad -k myapikey"
+    Then "config/deploy.rb" should not contain text of "generators/hoptoad/templates/capistrano_hook.rb"

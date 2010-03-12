@@ -18,7 +18,7 @@ class HoptoadGenerator < Rails::Generator::Base
     record do |m|
       m.directory 'lib/tasks'
       m.file 'hoptoad_notifier_tasks.rake', 'lib/tasks/hoptoad_notifier_tasks.rake'
-      if File.exists?('config/deploy.rb')
+      if ['config/deploy.rb', 'Capfile'].all? { |file| File.exists?(file) }
         m.append_to 'config/deploy.rb', capistrano_hook
       end
       if options[:api_key]
@@ -47,7 +47,7 @@ class HoptoadGenerator < Rails::Generator::Base
   def capistrano_hook
     IO.read(source_path('capistrano_hook.rb'))
   end
-  
+
   def plugin_is_present?
     File.exists?('vendor/plugins/hoptoad_notifier')
   end
