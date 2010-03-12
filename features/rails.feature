@@ -3,11 +3,12 @@ Feature: Install the Gem in a Rails application
   Background:
     Given I have built and installed the "hoptoad_notifier" gem
 
+  @wip
   Scenario: Use the gem without vendoring the gem in a Rails application
     When I generate a new Rails application
     And I configure the Hoptoad shim
     And I configure my application to require the "hoptoad_notifier" gem
-    And I run "script/generate hoptoad -k myapikey"
+    And I run the hoptoad generator with "-k myapikey"
     Then I should receive a Hoptoad notification
     And I should see the Rails version
 
@@ -16,7 +17,7 @@ Feature: Install the Gem in a Rails application
     And I configure the Hoptoad shim
     And I configure my application to require the "hoptoad_notifier" gem
     And I unpack the "hoptoad_notifier" gem
-    And I run "script/generate hoptoad -k myapikey"
+    And I run the hoptoad generator with "-k myapikey"
     And I uninstall the "hoptoad_notifier" gem
     And I run "rake hoptoad:test"
     Then I should receive two Hoptoad notifications
@@ -26,13 +27,13 @@ Feature: Install the Gem in a Rails application
     And I configure the Hoptoad shim
     And I configure the notifier to use "myapikey" as an API key
     And I configure my application to require the "hoptoad_notifier" gem
-    And I run "script/generate hoptoad"
+    And I run the hoptoad generator with ""
     Then I should receive a Hoptoad notification
 
   Scenario: Try to install without an api key
     When I generate a new Rails application
     And I configure my application to require the "hoptoad_notifier" gem
-    And I run "script/generate hoptoad"
+    And I run the hoptoad generator with ""
     Then I should see "Must pass --api-key or create config/initializers/hoptoad.rb"
 
   Scenario: Configure and deploy using only installed gem
@@ -40,7 +41,7 @@ Feature: Install the Gem in a Rails application
     And I run "capify ."
     And I configure the Hoptoad shim
     And I configure my application to require the "hoptoad_notifier" gem
-    And I run "script/generate hoptoad -k myapikey"
+    And I run the hoptoad generator with "-k myapikey"
     And I run "cap -T"
     Then I should see "deploy:notify_hoptoad"
 
@@ -50,7 +51,7 @@ Feature: Install the Gem in a Rails application
     And I configure the Hoptoad shim
     And I configure my application to require the "hoptoad_notifier" gem
     And I unpack the "hoptoad_notifier" gem
-    And I run "script/generate hoptoad -k myapikey"
+    And I run the hoptoad generator with "-k myapikey"
     And I uninstall the "hoptoad_notifier" gem
     And I run "cap -T"
     Then I should see "deploy:notify_hoptoad"
@@ -61,14 +62,14 @@ Feature: Install the Gem in a Rails application
     And I configure the Hoptoad shim
     And I configure the notifier to use "myapikey" as an API key
     And I configure my application to require the "hoptoad_notifier" gem
-    And I run "script/generate hoptoad"
+    And I run the hoptoad generator with ""
     Then I should see "You must first remove the hoptoad_notifier plugin. Please run: script/plugin remove hoptoad_notifier"
 
   Scenario: Rescue an exception in a controller
     When I generate a new Rails application
     And I configure the Hoptoad shim
     And I configure my application to require the "hoptoad_notifier" gem
-    And I run "script/generate hoptoad -k myapikey"
+    And I run the hoptoad generator with "-k myapikey"
     And I define a response for "TestController#index":
       """
       session[:value] = "test"
@@ -88,7 +89,7 @@ Feature: Install the Gem in a Rails application
     When I generate a new Rails application
     And I configure the Hoptoad shim
     And I configure my application to require the "hoptoad_notifier" gem
-    And I run "script/generate hoptoad -k myapikey"
+    And I run the hoptoad generator with "-k myapikey"
     And I run "rake gems"
     Then I should see that "hoptoad_notifier" is not considered a framework gem
 

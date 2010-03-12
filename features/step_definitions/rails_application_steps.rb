@@ -1,11 +1,33 @@
 When /^I generate a new Rails application$/ do
   @terminal.cd(TEMP_DIR)
-  version_string = ENV['RAILS_VERSION'] ? "_#{ENV['RAILS_VERSION']}_" : ''
-  @terminal.run("rails #{version_string} rails_root")
+  version_string = ENV['RAILS_VERSION']
+
+  rails3 = version_string =~ /^3/
+
+  if rails3
+    rails_binary_gem = 'railties'
+  else
+    rails_binary_gem = 'rails'
+  end
+
+  load_rails = <<-RUBY
+    gem '#{rails_binary_gem}', '#{version_string}'; \
+    load Gem.bin_path('#{rails_binary_gem}', 'rails', '#{version_string}')
+  RUBY
+
+  @terminal.run(%{ruby -rubygems -e "#{load_rails.strip!}" rails_root})
   if rails_root_exists?
     @terminal.echo("Generated a Rails #{rails_version} application")
   else
     raise "Unable to generate a Rails application:\n#{@terminal.output}"
+  end
+end
+
+When /^I run the hoptoad generator with "([^\"]*)"$/ do |generator_args|
+  if rails3?
+    When %{I run "script/rails generate hoptoad #{generator_args}"}
+  else
+    When %{I run "script/generate hoptoad #{generator_args}"}
   end
 end
 
@@ -19,14 +41,9 @@ end
 
 When /^I configure my application to require the "([^\"]*)" gem$/ do |gem_name|
   if rails_manages_gems?
-    run = "Rails::Initializer.run do |config|"
-    insert = "  config.gem '#{gem_name}'"
-    content = File.read(environment_path)
-    if content.sub!(run, "#{run}\n#{insert}")
-      File.open(environment_path, 'wb') { |file| file.write(content) }
-    else
-      raise "Couldn't find #{run.inspect} in #{environment_path}"
-    end
+    config_gem(gem_name)
+  elsif bundler_manages_gems?
+    bundle_gem(gem_name)
   else
     File.open(environment_path, 'a') do |file|
       file.puts
@@ -54,6 +71,10 @@ Then /^I should receive two Hoptoad notifications$/ do
 end
 
 When /^I configure the Hoptoad shim$/ do
+  if bundler_manages_gems?
+    bundle_gem("sham_rack")
+  end
+
   shim_file = File.join(PROJECT_ROOT, 'features', 'support', 'hoptoad_shim.rb.template')
   if rails_supports_initializers?
     target = File.join(RAILS_ROOT, 'config', 'initializers', 'hoptoad_shim.rb')
