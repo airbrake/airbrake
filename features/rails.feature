@@ -3,13 +3,13 @@ Feature: Install the Gem in a Rails application
   Background:
     Given I have built and installed the "hoptoad_notifier" gem
 
-  @wip
   Scenario: Use the gem without vendoring the gem in a Rails application
     When I generate a new Rails application
     And I configure the Hoptoad shim
     And I configure my application to require the "hoptoad_notifier" gem
     And I run the hoptoad generator with "-k myapikey"
-    Then I should receive a Hoptoad notification
+    Then the command should have run successfully
+    And I should receive a Hoptoad notification
     And I should see the Rails version
 
   Scenario: vendor the gem and uninstall
@@ -18,9 +18,11 @@ Feature: Install the Gem in a Rails application
     And I configure my application to require the "hoptoad_notifier" gem
     And I unpack the "hoptoad_notifier" gem
     And I run the hoptoad generator with "-k myapikey"
-    And I uninstall the "hoptoad_notifier" gem
+    Then the command should have run successfully
+    When I uninstall the "hoptoad_notifier" gem
     And I run "rake hoptoad:test"
-    Then I should receive two Hoptoad notifications
+    Then the command should have run successfully
+    And I should receive two Hoptoad notifications
 
   Scenario: Configure the notifier by hand
     When I generate a new Rails application

@@ -232,3 +232,7 @@ end
 Then /^I should see that "([^\"]*)" is not considered a framework gem$/ do |gem_name|
   Then %{I should not see "[R] #{gem_name}"}
 end
+
+Then /^the command should have run successfully$/ do
+  @terminal.status.should == 0
+end

@@ -8,5 +8,7 @@ module HoptoadNotifier
     rake_tasks do
       require "hoptoad_notifier/rails3_tasks"
     end
+
+    config.middleware.insert_after ActionDispatch::ShowExceptions, HoptoadNotifier::Rack
   end
 end

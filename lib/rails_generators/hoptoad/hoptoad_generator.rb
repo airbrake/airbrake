@@ -23,12 +23,12 @@ class HoptoadGenerator < Rails::Generators::Base
     end
   end
 
-  # def api_key
-  #   options[:api_key]
-  # end
+  def api_key
+    options[:api_key]
+  end
 
   def generate_initializer
-    api_key = options[:api_key]
+    # api_key = options[:api_key]
     template 'initializer.rb', 'config/initializers/hoptoad.rb'
   end
 
@@ -41,6 +41,6 @@ class HoptoadGenerator < Rails::Generators::Base
   # end
 
   def test_hoptoad
-    run "rake hoptoad:test --trace"
+    puts run("rake hoptoad:test --trace")
   end
 end
