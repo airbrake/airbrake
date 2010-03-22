@@ -10,14 +10,14 @@ class HoptoadGenerator < Rails::Generators::Base
 
   def install
     ensure_api_key_was_configured
-    generate_initializer
+    generate_initializer unless api_key_configured?
     test_hoptoad
   end
 
   private
 
   def ensure_api_key_was_configured
-    if !options[:api_key] # && !api_key_configured?
+    if !options[:api_key] && !api_key_configured?
       puts "Must pass --api-key or create config/initializers/hoptoad.rb"
       exit
     end
@@ -28,17 +28,12 @@ class HoptoadGenerator < Rails::Generators::Base
   end
 
   def generate_initializer
-    # api_key = options[:api_key]
     template 'initializer.rb', 'config/initializers/hoptoad.rb'
   end
 
-  # Justified by scenario:
-  #
-  # Scenario: Configure the notifier by hand
-  #
-  # def api_key_configured?
-  #   File.exists?('config/initializers/hoptoad.rb') || system("grep HoptoadNotifier config/environment.rb")
-  # end
+  def api_key_configured?
+    File.exists?('config/initializers/hoptoad.rb')
+  end
 
   def test_hoptoad
     puts run("rake hoptoad:test --trace")
