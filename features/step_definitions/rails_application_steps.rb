@@ -129,7 +129,10 @@ When /^I uninstall the "([^\"]*)" gem$/ do |gem_name|
 end
 
 When /^I unpack the "([^\"]*)" gem$/ do |gem_name|
-  if rails_manages_gems?
+  if bundler_manages_gems?
+    @terminal.cd(RAILS_ROOT)
+    @terminal.run("bundle pack")
+  elsif rails_manages_gems?
     @terminal.cd(RAILS_ROOT)
     @terminal.run("rake gems:unpack GEM=#{gem_name}")
   else
@@ -143,6 +146,12 @@ When /^I unpack the "([^\"]*)" gem$/ do |gem_name|
       file.puts
       file.puts("$: << #{gem_path.inspect}")
     end
+  end
+end
+
+When /^I install cached gems$/ do
+  if bundler_manages_gems?
+    When %{I run "bundle install"}
   end
 end
 
