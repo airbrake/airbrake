@@ -13,7 +13,11 @@ namespace :hoptoad do
 
   desc "Verify your gem installation by sending a test exception to the hoptoad service"
   task :test => [:environment] do
-    RAILS_DEFAULT_LOGGER.level = Logger::DEBUG
+    Rails.logger = Logger.new(STDOUT)
+    Rails.logger.level = Logger::DEBUG
+    HoptoadNotifier.configure(true) do |config|
+      config.logger = Rails.logger
+    end
 
     require 'app/controllers/application_controller'
 
@@ -79,7 +83,6 @@ namespace :hoptoad do
     end
 
     puts 'Processing request.'
-    RailsRoot::Application.configuration.logger = Logger.new(STDOUT)
     env = Rack::MockRequest.env_for("/verify")
     RailsRoot::Application.call(env)
   end
