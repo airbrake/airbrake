@@ -1,3 +1,5 @@
+require 'uri'
+
 When /^I generate a new Rails application$/ do
   @terminal.cd(TEMP_DIR)
   version_string = ENV['RAILS_VERSION']
@@ -175,34 +177,45 @@ When /^I define a response for "([^\"]*)":$/ do |controller_and_action, definiti
 end
 
 When /^I perform a request to "([^\"]*)"$/ do |uri|
-  uri = URI.parse(uri)
-  request_script = <<-SCRIPT
-    require 'cgi'
-    class CGIWrapper < CGI
-      def initialize(*args)
-        @env_table = {}
-        @stdinput = $stdin
-        super(*args)
+  if rails_uses_rack?
+    request_script = <<-SCRIPT
+      require 'config/environment'
+      env = Rack::MockRequest.env_for(#{uri.inspect})
+      RailsRoot::Application.call(env)
+    SCRIPT
+    File.open(File.join(RAILS_ROOT, 'request.rb'), 'w') { |file| file.write(request_script) }
+    @terminal.cd(RAILS_ROOT)
+    @terminal.run("./script/rails runner -e production request.rb")
+  else
+    uri = URI.parse(uri)
+    request_script = <<-SCRIPT
+      require 'cgi'
+      class CGIWrapper < CGI
+        def initialize(*args)
+          @env_table = {}
+          @stdinput = $stdin
+          super(*args)
+        end
+        attr_reader :env_table
       end
-      attr_reader :env_table
-    end
-    $stdin = StringIO.new("")
-    cgi = CGIWrapper.new
-    cgi.env_table.update({
-      'HTTPS'          => 'off',
-      'REQUEST_METHOD' => "GET",
-      'HTTP_HOST'      => #{[uri.host, uri.port].join(':').inspect},
-      'SERVER_PORT'    => #{uri.port.inspect},
-      'REQUEST_URI'    => #{uri.request_uri.inspect},
-      'PATH_INFO'      => #{uri.path.inspect},
-      'QUERY_STRING'   => #{uri.query.inspect}
-    })
-    require 'dispatcher' unless defined?(ActionController::Dispatcher)
-    Dispatcher.dispatch(cgi)
-  SCRIPT
-  File.open(File.join(RAILS_ROOT, 'request.rb'), 'w') { |file| file.write(request_script) }
-  @terminal.cd(RAILS_ROOT)
-  @terminal.run("./script/runner -e production request.rb")
+      $stdin = StringIO.new("")
+      cgi = CGIWrapper.new
+      cgi.env_table.update({
+        'HTTPS'          => 'off',
+        'REQUEST_METHOD' => "GET",
+        'HTTP_HOST'      => #{[uri.host, uri.port].join(':').inspect},
+        'SERVER_PORT'    => #{uri.port.inspect},
+        'REQUEST_URI'    => #{uri.request_uri.inspect},
+        'PATH_INFO'      => #{uri.path.inspect},
+        'QUERY_STRING'   => #{uri.query.inspect}
+      })
+      require 'dispatcher' unless defined?(ActionController::Dispatcher)
+      Dispatcher.dispatch(cgi)
+    SCRIPT
+    File.open(File.join(RAILS_ROOT, 'request.rb'), 'w') { |file| file.write(request_script) }
+    @terminal.cd(RAILS_ROOT)
+    @terminal.run("./script/runner -e production request.rb")
+  end
 end
 
 Then /^I should receive the following Hoptoad notification:$/ do |table|
@@ -244,4 +257,20 @@ end
 
 Then /^the command should have run successfully$/ do
   @terminal.status.should == 0
+end
+
+When /^I route "([^\"]*)" to "([^\"]*)"$/ do |path, controller_action_pair|
+  route = if rails3?
+            %(match "#{path}", :to => "#{controller_action_pair}")
+          else
+            controller, action = controller_aciton_pair.split('#')
+            %(map.connect "#{path}", :controller => "#{controller}", :action => "#{action}")
+          end
+  routes_file = File.join(RAILS_ROOT, "config", "routes.rb")
+  File.open(routes_file, "r+") do |file|
+    content = file.read
+    content.gsub!(/^end$/, "  #{route}\nend")
+    file.rewind
+    file.write(content)
+  end
 end

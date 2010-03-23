@@ -7,6 +7,10 @@ module RailsHelpers
     rails_version =~ /^3/
   end
 
+  def rails_uses_rack?
+    rails3?
+  end
+
   def rails_version
     @rails_version ||= begin
       if bundler_manages_gems?
