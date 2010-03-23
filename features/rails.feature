@@ -56,6 +56,7 @@ Feature: Install the Gem in a Rails application
     And I unpack the "hoptoad_notifier" gem
     And I run the hoptoad generator with "-k myapikey"
     And I uninstall the "hoptoad_notifier" gem
+    And I install cached gems
     And I run "cap -T"
     Then I should see "deploy:notify_hoptoad"
 

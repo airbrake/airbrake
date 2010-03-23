@@ -11,6 +11,7 @@ class HoptoadGenerator < Rails::Generators::Base
   def install
     ensure_api_key_was_configured
     ensure_plugin_is_not_present
+    append_capistrano_hook
     generate_initializer unless api_key_configured?
     test_hoptoad
   end
@@ -28,6 +29,16 @@ class HoptoadGenerator < Rails::Generators::Base
     if plugin_is_present?
       puts "You must first remove the hoptoad_notifier plugin. Please run: script/plugin remove hoptoad_notifier"
       exit
+    end
+  end
+
+  def append_capistrano_hook
+    if File.exists?('config/deploy.rb')
+      append_file('config/deploy.rb', <<-HOOK)
+
+        require 'config/boot'
+        require 'hoptoad_notifier/capistrano'
+      HOOK
     end
   end
 
