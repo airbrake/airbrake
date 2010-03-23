@@ -10,6 +10,7 @@ class HoptoadGenerator < Rails::Generators::Base
 
   def install
     ensure_api_key_was_configured
+    ensure_plugin_is_not_present
     generate_initializer unless api_key_configured?
     test_hoptoad
   end
@@ -19,6 +20,13 @@ class HoptoadGenerator < Rails::Generators::Base
   def ensure_api_key_was_configured
     if !options[:api_key] && !api_key_configured?
       puts "Must pass --api-key or create config/initializers/hoptoad.rb"
+      exit
+    end
+  end
+
+  def ensure_plugin_is_not_present
+    if plugin_is_present?
+      puts "You must first remove the hoptoad_notifier plugin. Please run: script/plugin remove hoptoad_notifier"
       exit
     end
   end
@@ -37,5 +45,9 @@ class HoptoadGenerator < Rails::Generators::Base
 
   def test_hoptoad
     puts run("rake hoptoad:test --trace")
+  end
+
+  def plugin_is_present?
+    File.exists?('vendor/plugins/hoptoad_notifier')
   end
 end
