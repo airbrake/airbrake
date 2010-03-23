@@ -263,7 +263,7 @@ When /^I route "([^\"]*)" to "([^\"]*)"$/ do |path, controller_action_pair|
   route = if rails3?
             %(match "#{path}", :to => "#{controller_action_pair}")
           else
-            controller, action = controller_aciton_pair.split('#')
+            controller, action = controller_action_pair.split('#')
             %(map.connect "#{path}", :controller => "#{controller}", :action => "#{action}")
           end
   routes_file = File.join(RAILS_ROOT, "config", "routes.rb")
