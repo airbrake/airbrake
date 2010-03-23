@@ -104,5 +104,5 @@ Feature: Install the Gem in a Rails application
     And I configure my application to require the "hoptoad_notifier" gem
     And I run "touch config/deploy.rb"
     And I run "rm Capfile"
-    And I run "script/generate hoptoad -k myapikey"
-    Then "config/deploy.rb" should not contain text of "generators/hoptoad/templates/capistrano_hook.rb"
+    And I run the hoptoad generator with "-k myapikey"
+    Then "config/deploy.rb" should not contain "capistrano"

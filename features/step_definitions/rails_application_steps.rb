@@ -274,3 +274,10 @@ When /^I route "([^\"]*)" to "([^\"]*)"$/ do |path, controller_action_pair|
     file.write(content)
   end
 end
+
+Then /^"([^\"]*)" should not contain "([^\"]*)"$/ do |file_path, text|
+  actual_text = IO.read(File.join(RAILS_ROOT, file_path))
+  if actual_text.include?(text)
+    raise "Didn't expect text:\n#{actual_text}\nTo include:\n#{text}"
+  end
+end
