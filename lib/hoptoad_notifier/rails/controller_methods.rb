@@ -23,8 +23,7 @@ module HoptoadNotifier
           :controller       => params[:controller],
           :action           => params[:action],
           :url              => hoptoad_request_url,
-          :cgi_data         => hoptoad_filter_if_filtering(request.env),
-          :environment_vars => hoptoad_filter_if_filtering(ENV) }
+          :cgi_data         => hoptoad_filter_if_filtering(request.env) }
       end
 
       def hoptoad_filter_if_filtering(hash)

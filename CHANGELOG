@@ -1,3 +1,35 @@
+Version 2.2.2 - 2010-03-10
+===============================================================================
+
+Chad Pytel (1):
+      document proxy support
+
+Joe Ferris (8):
+      Added upgrade instructions to the README
+      Give a clearer error message when generating a Rails app fails
+      Fail loudly when a gem can't be vendored
+      Debugging rubygems issues
+      Explicitly specify the gem paths
+      Less noisy
+      Restore gem path after vendoring
+      Fixed a typo
+
+Jon Yurek (1):
+      Added notice about removing hoptoad rake tasks to upgrade gem
+
+Mike Burns (1):
+      Remove stray file with notes in it
+
+
+Version 2.2.1 - 2010-03-10
+===============================================================================
+
+Jason Morrison (3):
+      LH-629 Ensure notifier is not considered a framework gem
+      Removing things-the-generator-must-do file
+      Add rake cucumber:wip:rails* tasks for work-in-progress features
+
+
 Version 2.2.0 - 2010-02-18
 ===============================================================================
 
@@ -35,6 +67,8 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
+
 
 
 

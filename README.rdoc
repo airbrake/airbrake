@@ -254,6 +254,15 @@ Hoptoad merges the hash you pass with these default options:
 
 You can override any of those parameters.
 
+=== Sending shell environment variables when "Going beyond exceptions"
+
+One common request we see is to send shell environment variables along with
+manual exception notification.  We recommend sending them along with CGI data
+or Rack environment (:cgi_data or :rack_env keys, respectively.)
+
+See HoptoadNotifier::Notice#initialize in lib/hoptoad_notifier/notice.rb for
+more details.
+
 == Filtering
 
 You can specify a whitelist of errors, that Hoptoad will not report on.  Use

@@ -1,3 +1,5 @@
+require 'builder'
+
 module HoptoadNotifier
   class Notice
 
@@ -78,9 +80,12 @@ module HoptoadNotifier
       self.ignore_by_filters   = args[:ignore_by_filters]   || []
       self.backtrace_filters   = args[:backtrace_filters]   || []
       self.params_filters      = args[:params_filters]      || []
-      self.parameters          = args[:parameters]          || rack_env(:params) || {}
-      self.component           = args[:component] || args[:controller]
-      self.action              = args[:action]
+      self.parameters          = args[:parameters] ||
+                                   action_dispatch_params ||
+                                   rack_env(:params) ||
+                                   {}
+      self.component           = args[:component] || args[:controller] || parameters['controller']
+      self.action              = args[:action] || parameters['action']
 
       self.environment_name = args[:environment_name]
       self.cgi_data         = args[:cgi_data] || args[:rack_env]
@@ -126,17 +131,17 @@ module HoptoadNotifier
             request.url(url)
             request.component(controller)
             request.action(action)
-            unless parameters.blank?
+            unless parameters.nil? || parameters.empty?
               request.params do |params|
                 xml_vars_for(params, parameters)
               end
             end
-            unless session_data.blank?
+            unless session_data.nil? || session_data.empty?
               request.session do |session|
                 xml_vars_for(session, session_data)
               end
             end
-            unless cgi_data.blank?
+            unless cgi_data.nil? || cgi_data.empty?
               request.tag!("cgi-data") do |cgi_datum|
                 xml_vars_for(cgi_datum, cgi_data)
               end
@@ -266,7 +271,7 @@ module HoptoadNotifier
     end
 
     def find_session_data
-      self.session_data = args[:session_data] || args[:session] || {}
+      self.session_data = args[:session_data] || args[:session] || rack_session || {}
       self.session_data = session_data[:data] if session_data[:data]
     end
 
@@ -300,6 +305,14 @@ module HoptoadNotifier
       @rack_request ||= if args[:rack_env]
         ::Rack::Request.new(args[:rack_env])
       end
+    end
+
+    def action_dispatch_params
+      args[:rack_env]['action_dispatch.request.parameters'] if args[:rack_env]
+    end
+
+    def rack_session
+      args[:rack_env]['rack.session'] if args[:rack_env]
     end
   end
 end

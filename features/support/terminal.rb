@@ -1,3 +1,5 @@
+require 'fileutils'
+
 Before do
   @terminal = Terminal.new
 end
@@ -59,7 +61,13 @@ class Terminal
   end
 
   def environment_settings
-    "GEM_HOME=#{LOCAL_GEM_ROOT} GEM_PATH=#{LOCAL_GEM_ROOT}:#{BUILT_GEM_ROOT}"
+    ["GEM_HOME=#{LOCAL_GEM_ROOT}",
+      "GEM_PATH=#{LOCAL_GEM_ROOT}:#{BUILT_GEM_ROOT}",
+      "PATH=#{gem_bin_path}:#{ENV['PATH']}"].join(' ')
+  end
+
+  def gem_bin_path
+    File.join(LOCAL_GEM_ROOT, "bin")
   end
 
   attr_reader :logger
