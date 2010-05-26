@@ -5,7 +5,7 @@ class HoptoadGenerator < Rails::Generators::Base
   class_option :api_key, :aliases => "-k", :type => :string, :desc => "Your Hoptoad API key"
 
   def self.source_root
-    @_hoptoad_source_root ||= File.expand_path("../../../../generators/hoptoad/templates", __FILE__)
+    @_hoptoad_source_root ||= File.expand_path("../../../../../generators/hoptoad/templates", __FILE__)
   end
 
   def install
