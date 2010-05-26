@@ -7,7 +7,7 @@ module HoptoadNotifier
       require "hoptoad_notifier/rails3_tasks"
     end
 
-    config.app_middleware.insert_after ActionDispatch::ShowExceptions, HoptoadNotifier::Rack
+    config.app_middleware.insert_after "::ActionDispatch::ShowExceptions", "HoptoadNotifier::Rack"
 
     config.after_initialize do
       HoptoadNotifier.configure(true) do |config|
