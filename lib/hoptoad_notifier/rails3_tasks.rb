@@ -4,7 +4,7 @@ namespace :hoptoad do
   desc "Notify Hoptoad of a new deploy."
   task :deploy => :environment do
     require 'hoptoad_tasks'
-    HoptoadTasks.deploy(:rails_env      => ENV['TO'], 
+    HoptoadTasks.deploy(:rails_env      => ENV['TO'],
                         :scm_revision   => ENV['REVISION'],
                         :scm_repository => ENV['REPO'],
                         :local_username => ENV['USER'],
@@ -77,14 +77,14 @@ namespace :hoptoad do
     end
     class HoptoadVerificationController < ApplicationController; end
 
-    RailsRoot::Application.routes_reloader.reload_if_changed
-    RailsRoot::Application.routes.draw do |map|
-      match 'verify' => 'application#verify', :as => 'verify' 
+    Rails::Application.routes_reloader.reload_if_changed
+    Rails::Application.routes.draw do |map|
+      match 'verify' => 'application#verify', :as => 'verify'
     end
 
     puts 'Processing request.'
     env = Rack::MockRequest.env_for("/verify")
-    RailsRoot::Application.call(env)
+    Rails::Application.call(env)
   end
 end
 
