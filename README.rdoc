@@ -91,6 +91,13 @@ Remove the plugin:
 
     rm -rf vendor/plugins/hoptoad_notifier
 
+Make sure the following line DOES NOT appear in your ApplicationController file:
+
+    include HoptoadNotifier::Catcher
+
+If it does, remove it.  The new catcher is automatically included by the gem
+version of Hoptoad.
+
 Before running the hoptoad generator, you need to find your project's API key.
 Log in to your account at hoptoadapp.com, and click on the "Projects" button.
 Then, find your project in the list, and click on its name. In the left-hand
