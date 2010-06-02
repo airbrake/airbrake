@@ -28,6 +28,19 @@ Remove the vendor/plugins/hoptoad_notifier directory before installing the gem, 
 
   script/plugin remove hoptoad_notifier
 
+=== Rails 3.x
+
+Add the hoptoad_notifier gem to your Gemfile.  In Gemfile:
+
+  gem 'hoptoad_notifier'
+
+Then from your project's RAILS_ROOT, run:
+
+  bundle install
+  script/rails generate hoptoad --api-key your_key_here
+
+That's it!
+
 === Rails 2.x
 
 Add the hoptoad_notifier gem to your app. In config/environment.rb:
