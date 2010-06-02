@@ -1,3 +1,10 @@
+Version 2.2.6 - 2010-06-02
+===============================================================================
+
+Jason Morrison (1):
+      For Rails 3, just use the Rack middleware instead of specifying a location to insert_after
+
+
 Version 2.2.5 - 2010-06-02
 ===============================================================================
 
@@ -130,6 +137,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
