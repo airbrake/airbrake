@@ -8,7 +8,7 @@ module HoptoadNotifier
     end
 
     initializer "hoptoad.use_rack_middleware" do |app|
-      app.config.middleware.insert_after "::ActionDispatch::ShowExceptions", "HoptoadNotifier::Rack"
+      app.config.middleware.use "HoptoadNotifier::Rack"
     end
 
     config.after_initialize do
