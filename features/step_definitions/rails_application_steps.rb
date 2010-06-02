@@ -4,22 +4,14 @@ When /^I generate a new Rails application$/ do
   @terminal.cd(TEMP_DIR)
   version_string = ENV['RAILS_VERSION']
 
-  rails3 = version_string =~ /^3/
-
-  if rails3
-    rails_binary_gem = 'railties'
-  else
-    rails_binary_gem = 'rails'
-  end
-
   load_rails = <<-RUBY
-    gem '#{rails_binary_gem}', '#{version_string}'; \
-    load Gem.bin_path('#{rails_binary_gem}', 'rails', '#{version_string}')
+    gem 'rails', '#{version_string}'; \
+    load Gem.bin_path('rails', 'rails', '#{version_string}')
   RUBY
 
   @terminal.run(%{ruby -rubygems -e "#{load_rails.strip!}" rails_root})
   if rails_root_exists?
-    @terminal.echo("Generated a Rails #{rails_version} application")
+    @terminal.echo("Generated a Rails #{version_string} application")
   else
     raise "Unable to generate a Rails application:\n#{@terminal.output}"
   end

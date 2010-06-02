@@ -14,7 +14,7 @@ module RailsHelpers
   def rails_version
     @rails_version ||= begin
       if bundler_manages_gems?
-        rails_version = open(gemfile_path).read.match(/gem.*rails".*"(.+)"/)[1]
+        rails_version = open(gemfile_path).read.match(/gem.*rails["'].*["'](.+)["']/)[1]
       else
         environment_file = File.join(RAILS_ROOT, 'config', 'environment.rb')
         rails_version = `grep RAILS_GEM_VERSION #{environment_file}`.match(/[\d.]+/)[0]
