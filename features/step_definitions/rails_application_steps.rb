@@ -90,7 +90,6 @@ When /^I configure the Hoptoad shim$/ do
 end
 
 When /^I configure the notifier to use "([^\"]*)" as an API key$/ do |api_key|
-  config_file = File.join(RAILS_ROOT, 'config', 'initializers', 'hoptoad.rb')
   if rails_manages_gems?
     requires = ''
   else
@@ -105,12 +104,24 @@ When /^I configure the notifier to use "([^\"]*)" as an API key$/ do |api_key|
   EOF
 
   if rails_supports_initializers?
-    File.open(config_file, 'w') { |file| file.write(initializer_code) }
+    File.open(rails_initializer_file, 'w') { |file| file.write(initializer_code) }
   else
     File.open(environment_path, 'a') do |file|
       file.puts
       file.puts initializer_code
     end
+  end
+end
+
+def rails_initializer_file
+  File.join(RAILS_ROOT, 'config', 'initializers', 'hoptoad.rb')
+end
+
+def configuration_file
+  if rails_supports_initializers?
+    rails_initializer_file
+  else
+    environment_path
   end
 end
 
@@ -256,7 +267,7 @@ Then /^I should see that "([^\"]*)" is not considered a framework gem$/ do |gem_
 end
 
 Then /^the command should have run successfully$/ do
-  @terminal.status.should == 0
+  @terminal.status.exitstatus.should == 0
 end
 
 When /^I route "([^\"]*)" to "([^\"]*)"$/ do |path, controller_action_pair|
@@ -280,4 +291,19 @@ Then /^"([^\"]*)" should not contain "([^\"]*)"$/ do |file_path, text|
   if actual_text.include?(text)
     raise "Didn't expect text:\n#{actual_text}\nTo include:\n#{text}"
   end
+end
+
+Then /^my Hoptoad configuration should contain the following line:$/ do |line|
+  configuration = File.read(configuration_file)
+  if ! configuration.include?(line.strip)
+    raise "Expected text:\n#{configuration}\nTo include:\n#{line}\nBut it didn't."
+  end
+end
+
+When /^I set the environment variable "([^\"]*)" to "([^\"]*)"$/ do |environment_variable, value|
+  @terminal.environment_variables[environment_variable] = value
+end
+
+When /^I configure the Heroku rake shim$/ do
+  @terminal.invoke_heroku_rake_tasks_locally = true
 end

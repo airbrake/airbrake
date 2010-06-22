@@ -3,6 +3,7 @@ require 'rails/generators'
 class HoptoadGenerator < Rails::Generators::Base
 
   class_option :api_key, :aliases => "-k", :type => :string, :desc => "Your Hoptoad API key"
+  class_option :heroku, :type => :boolean, :desc => "Use the Heroku addon to provide your Hoptoad API key"
 
   def self.source_root
     @_hoptoad_source_root ||= File.expand_path("../../../../../generators/hoptoad/templates", __FILE__)
@@ -19,8 +20,8 @@ class HoptoadGenerator < Rails::Generators::Base
   private
 
   def ensure_api_key_was_configured
-    if !options[:api_key] && !api_key_configured?
-      puts "Must pass --api-key or create config/initializers/hoptoad.rb"
+    if !options[:api_key] && !options[:heroku] && !api_key_configured?
+      puts "Must pass --api-key or --heroku or create config/initializers/hoptoad.rb"
       exit
     end
   end
@@ -42,8 +43,12 @@ class HoptoadGenerator < Rails::Generators::Base
     end
   end
 
-  def api_key
-    options[:api_key]
+  def api_key_expression
+    s = if options[:api_key]
+      "'#{options[:api_key]}'"
+    elsif options[:heroku]
+      "ENV['HOPTOAD_API_KEY']"
+    end
   end
 
   def generate_initializer

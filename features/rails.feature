@@ -107,30 +107,17 @@ Feature: Install the Gem in a Rails application
     And I run the hoptoad generator with "-k myapikey"
     Then "config/deploy.rb" should not contain "capistrano"
 
-  @wip
   Scenario: Support the Heroku addon in the generator
     When I generate a new Rails application
     And I configure the Hoptoad shim
+    And I configure the Heroku rake shim
     And I configure my application to require the "hoptoad_notifier" gem
+    And I set the environment variable "HOPTOAD_API_KEY" to "myapikey"
     And I run the hoptoad generator with "--heroku"
-    Then my initializer should contain the following line:
+    Then the command should have run successfully
+    And I should receive a Hoptoad notification
+    And I should see the Rails version
+    And my Hoptoad configuration should contain the following line:
       """
       config.api_key = ENV['HOPTOAD_API_KEY']
       """
-    When I export the environment variable HOPTOAD_API_KEY" to be "myapikey"
-    And I define a response for "TestController#index":
-      """
-      session[:value] = "test"
-      raise RuntimeError, "some message"
-      """
-    And I route "/test/index" to "test#index"
-    And I perform a request to "http://example.com:123/test/index?param=value"
-    Then I should receive the following Hoptoad notification:
-      | component     | test                                          |
-      | action        | index                                         |
-      | error message | RuntimeError: some message                    |
-      | error class   | RuntimeError                                  |
-      | session       | value: test                                   |
-      | parameters    | param: value                                  |
-      | url           | http://example.com:123/test/index?param=value |
-
