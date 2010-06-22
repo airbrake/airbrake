@@ -37,7 +37,7 @@ Feature: Install the Gem in a Rails application
     When I generate a new Rails application
     And I configure my application to require the "hoptoad_notifier" gem
     And I run the hoptoad generator with ""
-    Then I should see "Must pass --api-key or create config/initializers/hoptoad.rb"
+    Then I should see "Must pass --api-key or --heroku or create config/initializers/hoptoad.rb"
 
   Scenario: Configure and deploy using only installed gem
     When I generate a new Rails application
