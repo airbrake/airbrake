@@ -37,25 +37,39 @@ class HoptoadTasksTest < Test::Unit::TestCase
         end
       end
 
-      context "given valid options" do
-        setup { @options = {:rails_env => "staging"} }
+      context "given an optional HTTP proxy and valid options" do
+        setup do
+          @response   = stub("response", :body => "stub body")
+          @http_proxy = stub("proxy", :post_form => @response)
+
+          Net::HTTP.expects(:Proxy).
+            with(HoptoadNotifier.configuration.proxy_host,
+                 HoptoadNotifier.configuration.proxy_port,
+                 HoptoadNotifier.configuration.proxy_user,
+                 HoptoadNotifier.configuration.proxy_pass).
+            returns(@http_proxy)
+
+          @options    = { :rails_env => "staging" }
+        end
 
         context "on deploy(options)" do
-          setup { @output = HoptoadTasks.deploy(@options) }
+          setup do
+            @output = HoptoadTasks.deploy(@options)
+          end
 
           before_should "post to http://hoptoadapp.com/deploys.txt" do
             URI.stubs(:parse).with('http://hoptoadapp.com/deploys.txt').returns(:uri)
-            Net::HTTP.expects(:post_form).with(:uri, kind_of(Hash)).returns(successful_response)
+            @http_proxy.expects(:post_form).with(:uri, kind_of(Hash)).returns(successful_response)
           end
 
           before_should "use the project api key" do
-            Net::HTTP.expects(:post_form).
+            @http_proxy.expects(:post_form).
               with(kind_of(URI), has_entries('api_key' => "1234123412341234")).
               returns(successful_response)
           end
 
           before_should "use send the rails_env param" do
-            Net::HTTP.expects(:post_form).
+            @http_proxy.expects(:post_form).
               with(kind_of(URI), has_entries("deploy[rails_env]" => "staging")).
               returns(successful_response)
           end
@@ -63,7 +77,7 @@ class HoptoadTasksTest < Test::Unit::TestCase
           [:local_username, :scm_repository, :scm_revision].each do |key|
             before_should "use send the #{key} param if it's passed in." do
               @options[key] = "value"
-              Net::HTTP.expects(:post_form).
+              @http_proxy.expects(:post_form).
                 with(kind_of(URI), has_entries("deploy[#{key}]" => "value")).
                 returns(successful_response)
             end
@@ -71,29 +85,29 @@ class HoptoadTasksTest < Test::Unit::TestCase
 
           before_should "use the :api_key param if it's passed in." do
             @options[:api_key] = "value"
-            Net::HTTP.expects(:post_form).
+            @http_proxy.expects(:post_form).
               with(kind_of(URI), has_entries("api_key" => "value")).
               returns(successful_response)
           end
 
           before_should "puts the response body on success" do
             HoptoadTasks.expects(:puts).with("body")
-            Net::HTTP.expects(:post_form).with(any_parameters).returns(successful_response('body'))
+            @http_proxy.expects(:post_form).with(any_parameters).returns(successful_response('body'))
           end
 
           before_should "puts the response body on failure" do
             HoptoadTasks.expects(:puts).with("body")
-            Net::HTTP.expects(:post_form).with(any_parameters).returns(unsuccessful_response('body'))
+            @http_proxy.expects(:post_form).with(any_parameters).returns(unsuccessful_response('body'))
           end
 
           should "return false on failure", :before => lambda {
-            Net::HTTP.expects(:post_form).with(any_parameters).returns(unsuccessful_response('body'))
+            @http_proxy.expects(:post_form).with(any_parameters).returns(unsuccessful_response('body'))
           } do
             assert !@output
           end
 
           should "return true on success", :before => lambda {
-            Net::HTTP.expects(:post_form).with(any_parameters).returns(successful_response('body'))
+            @http_proxy.expects(:post_form).with(any_parameters).returns(successful_response('body'))
           } do
             assert @output
           end
