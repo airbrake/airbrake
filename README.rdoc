@@ -342,7 +342,7 @@ To replace sensitive information sent to the Hoptoad service with [FILTERED] use
   end
 
 Note that, when rescuing exceptions within an ActionController method,
-hoptoad_notifier will reuse filters specified by #filter_params_logging.
+hoptoad_notifier will reuse filters specified by #filter_parameter_logging.
 
 == Testing
 

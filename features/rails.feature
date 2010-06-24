@@ -121,3 +121,77 @@ Feature: Install the Gem in a Rails application
       """
       config.api_key = ENV['HOPTOAD_API_KEY']
       """
+
+  Scenario: Filtering parameters in a controller
+    When I generate a new Rails application
+    And I configure the Hoptoad shim
+    And I configure my application to require the "hoptoad_notifier" gem
+    And I run the hoptoad generator with "-k myapikey"
+    When I configure the notifier to use the following configuration lines:
+      """
+      config.api_key = "myapikey"
+      config.params_filters << "credit_card_number"
+      """
+    And I define a response for "TestController#index":
+      """
+      params[:credit_card_number] = "red23"
+      raise RuntimeError, "some message"
+      """
+    And I route "/test/index" to "test#index"
+    And I perform a request to "http://example.com:123/test/index?param=value"
+    Then I should receive the following Hoptoad notification:
+      | component     | test                                          |
+      | action        | index                                         |
+      | error message | RuntimeError: some message                    |
+      | error class   | RuntimeError                                  |
+      | parameters    | credit_card_number: [FILTERED]                |
+      | url           | http://example.com:123/test/index?param=value |
+
+  Scenario: Filtering session in a controller
+    When I generate a new Rails application
+    And I configure the Hoptoad shim
+    And I configure my application to require the "hoptoad_notifier" gem
+    And I run the hoptoad generator with "-k myapikey"
+    When I configure the notifier to use the following configuration lines:
+      """
+      config.api_key = "myapikey"
+      config.params_filters << "secret"
+      """
+    And I define a response for "TestController#index":
+      """
+      session["secret"] = "blue42"
+      raise RuntimeError, "some message"
+      """
+    And I route "/test/index" to "test#index"
+    And I perform a request to "http://example.com:123/test/index?param=value"
+    Then I should receive the following Hoptoad notification:
+      | component     | test                                          |
+      | action        | index                                         |
+      | error message | RuntimeError: some message                    |
+      | error class   | RuntimeError                                  |
+      | session       | secret: [FILTERED]                            |
+      | url           | http://example.com:123/test/index?param=value |
+
+  @wip
+  Scenario: Filtering session and params based on Rails parameter filters
+    When I generate a new Rails application
+    And I configure the Hoptoad shim
+    And I configure my application to require the "hoptoad_notifier" gem
+    And I run the hoptoad generator with "-k myapikey"
+    And I configure the application to filter parameter "secret"
+    And I define a response for "TestController#index":
+      """
+      params["secret"] = "red23"
+      session["secret"] = "blue42"
+      raise RuntimeError, "some message"
+      """
+    And I route "/test/index" to "test#index"
+    And I perform a request to "http://example.com:123/test/index?param=value"
+    Then I should receive the following Hoptoad notification:
+      | component     | test                                          |
+      | action        | index                                         |
+      | error message | RuntimeError: some message                    |
+      | error class   | RuntimeError                                  |
+      | params        | secret: [FILTERED]                            |
+      | session       | secret: [FILTERED]                            |
+      | url           | http://example.com:123/test/index?param=value |

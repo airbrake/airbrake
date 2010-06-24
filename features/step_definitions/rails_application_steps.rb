@@ -1,4 +1,5 @@
 require 'uri'
+require 'active_support/core_ext/string/inflections'
 
 When /^I generate a new Rails application$/ do
   @terminal.cd(TEMP_DIR)
@@ -90,6 +91,38 @@ When /^I configure the Hoptoad shim$/ do
 end
 
 When /^I configure the notifier to use "([^\"]*)" as an API key$/ do |api_key|
+  # if rails_manages_gems?
+  #   requires = ''
+  # else
+  #   requires = "require 'hoptoad_notifier'"
+  # end
+
+  # initializer_code = <<-EOF
+  #   #{requires}
+  #   HoptoadNotifier.configure do |config|
+  #     config.api_key = #{api_key.inspect}
+  #   end
+  # EOF
+
+  # if rails_supports_initializers?
+  #   File.open(rails_initializer_file, 'w') { |file| file.write(initializer_code) }
+  # else
+  #   File.open(environment_path, 'a') do |file|
+  #     file.puts
+  #     file.puts initializer_code
+  #   end
+  # end
+
+  steps %{
+    When I configure the notifier to use the following configuration lines:
+      """
+      config.api_key = #{api_key.inspect}
+      """
+  }
+    config.params_filters << "credit_card_number"
+end
+
+When /^I configure the notifier to use the following configuration lines:$/ do |configuration_lines|
   if rails_manages_gems?
     requires = ''
   else
@@ -99,7 +132,7 @@ When /^I configure the notifier to use "([^\"]*)" as an API key$/ do |api_key|
   initializer_code = <<-EOF
     #{requires}
     HoptoadNotifier.configure do |config|
-      config.api_key = #{api_key.inspect}
+      #{configuration_lines}
     end
   EOF
 
@@ -111,6 +144,7 @@ When /^I configure the notifier to use "([^\"]*)" as an API key$/ do |api_key|
       file.puts initializer_code
     end
   end
+
 end
 
 def rails_initializer_file
@@ -306,4 +340,41 @@ end
 
 When /^I configure the Heroku rake shim$/ do
   @terminal.invoke_heroku_rake_tasks_locally = true
+end
+
+When /^I configure the application to filter parameter "([^\"]*)"$/ do |parameter|
+  if rails3?
+    # insert_line_in_file(:filename => application_filename,
+    #                     :after => /Application/,
+    #                     :line => "    config.filter_parameters += [#{parameter.inspect}]")
+
+    application_filename = File.join(RAILS_ROOT, 'config', 'application.rb')
+    application_lines = File.open(application_filename).readlines
+
+    application_definition_line       = application_lines.detect { |line| line =~ /Application/ }
+    application_definition_line_index = application_lines.index(application_definition_line)
+
+    application_lines.insert(application_definition_line_index + 1,
+                             "    config.filter_parameters += [#{parameter.inspect}]")
+
+   File.open(application_filename, "w") do |file|
+     file.puts application_lines.join("\n")
+   end
+
+# 114:        ActiveSupport::Deprecation.warn("Setting filter_parameter_logging in ActionController is deprecated and has no longer effect, please set 'config.filter_parameters' in config/application.rb instead", caller)
+    
+  else
+   controller_filename = File.join(RAILS_ROOT, 'app', 'controllers', "application_controller.rb")
+   controller_lines = File.open(controller_filename).readlines
+
+   controller_definition_line       = controller_lines.detect { |line| line =~ /ApplicationController/ }
+   controller_definition_line_index = controller_lines.index(controller_definition_line)
+
+   controller_lines.insert(controller_definition_line_index + 1,
+                           "    filter_parameter_logging #{parameter.inspect}")
+
+   File.open(controller_filename, "w") do |file|
+     file.puts controller_lines.join("\n")
+   end
+  end
 end

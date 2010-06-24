@@ -164,6 +164,10 @@ class NoticeTest < Test::Unit::TestCase
     assert_filters_hash(:cgi_data)
   end
 
+  should "filter session" do
+    assert_filters_hash(:session_data)
+  end
+
   context "a Notice turned into XML" do
     setup do
       HoptoadNotifier.configure do |config|
@@ -423,7 +427,7 @@ class NoticeTest < Test::Unit::TestCase
   end
 
   def assert_filters_hash(attribute)
-    filters  = %w(abc def)
+    filters  = ["abc", :def]
     original = { 'abc' => "123", 'def' => "456", 'ghi' => "789", 'nested' => { 'abc' => '100' } }
     filtered = { 'abc'    => "[FILTERED]",
                  'def'    => "[FILTERED]",
