@@ -172,7 +172,6 @@ Feature: Install the Gem in a Rails application
       | session       | secret: [FILTERED]                            |
       | url           | http://example.com:123/test/index?param=value |
 
-  @wip
   Scenario: Filtering session and params based on Rails parameter filters
     When I generate a new Rails application
     And I configure the Hoptoad shim

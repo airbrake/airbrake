@@ -1,16 +1,4 @@
 module HoptoadNotifier
-
-  if defined? ActionDispatch::Http::FilterParameters
-    class FilterableHash < Hash
-      include ActionDispatch::Http::FilterParameters
-
-      def filter_for_request(request)
-        @env = request.env
-        process_parameter_filter(self)
-      end
-    end
-  end
-
   module Rails
     module ControllerMethods
       private
@@ -39,40 +27,13 @@ module HoptoadNotifier
       end
 
       def hoptoad_filter_if_filtering(hash)
-        puts "*"*80
-        puts "Filtering:"
-        p hash
-        puts "*"*80
-
         return hash if ! hash.is_a?(Hash)
-
-        # if respond_to?(:filter_parameters)
-        #   puts "*"*80
-        #   puts "Filtering hash:"
-        #   p hash
-        #   retval = filter_parameters(hash) rescue hash
-        #   puts "Got result:"
-        #   p retval
-        #   puts "*"*80
-
-        #   filter_parameters(hash) rescue hash
-        # else
-        #   hash
-        # end
 
         if respond_to?(:filter_parameters)
           retval = filter_parameters(hash) rescue hash
-        elsif defined? ActionDispatch::Http::FilterParameters
-          puts "And filtering it"
-          retval = FilterableHash[hash].filter_for_request(request) rescue hash
-          puts "And returning:"
-          p retval
-          retval
         else
-          puts "Not filtering it"
           hash
         end
-
       end
 
       def hoptoad_session_data
