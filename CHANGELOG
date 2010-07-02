@@ -1,3 +1,11 @@
+Version 2.3.1 - 2010-07-02
+===============================================================================
+
+Jason Morrison (2):
+      Use the Rails 3 params filters when available
+      Filter session hash using Hoptoad config.params_filters, in addition to params
+
+
 Version 2.3.0 - 2010-06-24
 ===============================================================================
 
@@ -148,6 +156,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
