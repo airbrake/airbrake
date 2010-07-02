@@ -128,12 +128,8 @@ def rails_initializer_file
   File.join(RAILS_ROOT, 'config', 'initializers', 'hoptoad.rb')
 end
 
-def configuration_file
-  if rails_supports_initializers?
-    rails_initializer_file
-  else
-    environment_path
-  end
+def rails_non_initializer_hoptoad_config_file
+  File.join(RAILS_ROOT, 'config', 'hoptoad.rb')
 end
 
 Then /^I should see "([^\"]*)"$/ do |expected_text|
@@ -305,6 +301,13 @@ Then /^"([^\"]*)" should not contain "([^\"]*)"$/ do |file_path, text|
 end
 
 Then /^my Hoptoad configuration should contain the following line:$/ do |line|
+  configuration_file = if rails_supports_initializers?
+    rails_initializer_file
+  else
+    rails_non_initializer_hoptoad_config_file
+    # environment_path
+  end
+
   configuration = File.read(configuration_file)
   if ! configuration.include?(line.strip)
     raise "Expected text:\n#{configuration}\nTo include:\n#{line}\nBut it didn't."
@@ -334,7 +337,7 @@ When /^I configure the application to filter parameter "([^\"]*)"$/ do |paramete
      file.puts application_lines.join("\n")
    end
   else
-   controller_filename = File.join(RAILS_ROOT, 'app', 'controllers', "application_controller.rb")
+   controller_filename = application_controller_filename
    controller_lines = File.open(controller_filename).readlines
 
    controller_definition_line       = controller_lines.detect { |line| line =~ /ApplicationController/ }

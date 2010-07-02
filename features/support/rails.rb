@@ -3,6 +3,16 @@ module RailsHelpers
     File.exists?(environment_path)
   end
 
+  def application_controller_filename
+    rails_version_is_2_2_or_less = rails_version =~ /^1\./ || rails_version =~ /^2.[012]/
+
+    if rails_version_is_2_2_or_less
+      controller_filename = File.join(RAILS_ROOT, 'app', 'controllers', "application.rb")
+    else
+      controller_filename = File.join(RAILS_ROOT, 'app', 'controllers', "application_controller.rb")
+    end
+  end
+
   def rails3?
     rails_version =~ /^3/
   end
