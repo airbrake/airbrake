@@ -30,7 +30,7 @@ module HoptoadNotifier
         return hash if ! hash.is_a?(Hash)
 
         if respond_to?(:filter_parameters)
-          retval = filter_parameters(hash) rescue hash
+          filter_parameters(hash) rescue hash
         else
           hash
         end
