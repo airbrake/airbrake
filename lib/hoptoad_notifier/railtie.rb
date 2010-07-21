@@ -18,6 +18,12 @@ module HoptoadNotifier
         config.project_root     = Rails.root
         config.framework        = "Rails: #{::Rails::VERSION::STRING}"
       end
+
+      if defined?(::ActionController::Base)
+        require 'hoptoad_notifier/rails/javascript_notifier'
+
+        ::ActionController::Base.send(:include, HoptoadNotifier::Rails::JavascriptNotifier)
+      end
     end
   end
 end

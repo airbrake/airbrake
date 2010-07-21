@@ -376,6 +376,18 @@ Please open up a support ticket on Tender ( http://help.hoptoadapp.com ) if
 you're using a version of Rails that is not listed above and the notifier is
 not working properly.
 
+== Javascript Notifer
+
+To automatically include the Javascript node on every page, set the
+:js_notifier to true:
+
+  HoptoadNotifier.configure do |config|
+    config.js_notifier = true
+  end
+
+It automatically uses the API key, host, and port specified in the
+configuration.
+
 == Thanks
 
 Thanks to Eugene Bolshakov for the excellent write-up on GOING BEYOND

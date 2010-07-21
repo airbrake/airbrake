@@ -18,7 +18,7 @@ module RailsHelpers
   end
 
   def rails_uses_rack?
-    rails3?
+    rails3? || rails_version =~ /^2\.3/
   end
 
   def rails_version

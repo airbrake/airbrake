@@ -77,14 +77,15 @@ namespace :hoptoad do
     end
     class HoptoadVerificationController < ApplicationController; end
 
-    Rails::Application.routes_reloader.reload_if_changed
-    Rails::Application.routes.draw do |map|
+    Rails.application.routes_reloader.execute_if_updated
+    Rails.application.routes.draw do
       match 'verify' => 'application#verify', :as => 'verify'
     end
 
     puts 'Processing request.'
     env = Rack::MockRequest.env_for("/verify")
-    Rails::Application.call(env)
+
+    Rails.application.call(env)
   end
 end
 

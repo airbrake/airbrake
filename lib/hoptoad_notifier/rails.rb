@@ -2,6 +2,7 @@ require 'hoptoad_notifier'
 require 'hoptoad_notifier/rails/controller_methods'
 require 'hoptoad_notifier/rails/action_controller_catcher'
 require 'hoptoad_notifier/rails/error_lookup'
+require 'hoptoad_notifier/rails/javascript_notifier'
 
 module HoptoadNotifier
   module Rails
@@ -10,6 +11,7 @@ module HoptoadNotifier
         ActionController::Base.send(:include, HoptoadNotifier::Rails::ActionControllerCatcher)
         ActionController::Base.send(:include, HoptoadNotifier::Rails::ErrorLookup)
         ActionController::Base.send(:include, HoptoadNotifier::Rails::ControllerMethods)
+        ActionController::Base.send(:include, HoptoadNotifier::Rails::JavascriptNotifier)
       end
 
       rails_logger = if defined?(::Rails.logger)
