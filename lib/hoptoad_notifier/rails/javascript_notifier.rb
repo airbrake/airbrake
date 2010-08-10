@@ -8,6 +8,7 @@ module HoptoadNotifier
       private
 
       def insert_hoptoad_javascript_notifier
+        return unless HoptoadNotifier.configuration.public?
         return unless HoptoadNotifier.configuration.js_notifier
 
         path = File.join(File.dirname(__FILE__), '..', '..', 'templates', 'javascript_notifier.erb')
