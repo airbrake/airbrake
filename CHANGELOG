@@ -1,3 +1,10 @@
+Version 2.3.4 - 2010-08-10
+===============================================================================
+
+Tristan Dunn (1):
+      Only include the JS notifier in public environments.
+
+
 Version 2.3.3 - 2010-08-04
 ===============================================================================
 
@@ -170,6 +177,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
