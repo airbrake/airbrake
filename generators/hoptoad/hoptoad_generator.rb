@@ -32,7 +32,7 @@ class HoptoadGenerator < Rails::Generator::Base
           m.append_to 'config/environment.rb', "require 'config/hoptoad'"
         end
       end
-      m.rake "hoptoad:test", :generate_only => true
+      m.rake "hoptoad:test --trace", :generate_only => true
     end
   end
 
