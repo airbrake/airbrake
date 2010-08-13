@@ -1,3 +1,13 @@
+Version 2.3.5 - 2010-08-13
+===============================================================================
+
+Alexey Palazhchenko (1):
+      Actually call #to_hash.
+
+Joshua Clayton (1):
+      Trace hoptoad:test task when running generator for anything before Rails3
+
+
 Version 2.3.4 - 2010-08-10
 ===============================================================================
 
@@ -177,6 +187,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
