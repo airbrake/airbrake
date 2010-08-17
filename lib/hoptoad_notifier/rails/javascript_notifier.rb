@@ -14,7 +14,7 @@ module HoptoadNotifier
         path = File.join(File.dirname(__FILE__), '..', '..', 'templates', 'javascript_notifier.erb')
         host = HoptoadNotifier.configuration.host.dup
         port = HoptoadNotifier.configuration.port
-        host << ":#{port}" unless port == 80
+        host << ":#{port}" unless [80, 443].include?(port)
 
         options = {
           :file          => path,
@@ -22,6 +22,7 @@ module HoptoadNotifier
           :use_full_path => false,
           :locals        => {
             :host        => host,
+            :secure      => HoptoadNotifier.configuration.secure,
             :api_key     => HoptoadNotifier.configuration.api_key,
             :environment => HoptoadNotifier.configuration.environment_name
           }

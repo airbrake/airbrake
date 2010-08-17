@@ -198,7 +198,7 @@ def define_rails_cucumber_tasks(additional_cucumber_args = '')
       task version => [:gemspec, :vendor_test_gems] do
         puts "Testing Rails #{version}"
         ENV['RAILS_VERSION'] = version
-        system("cucumber --format #{ENV['CUCUMBER_FORMAT'] || 'progress'} #{additional_cucumber_args} features/rails.feature")
+        system("cucumber --format #{ENV['CUCUMBER_FORMAT'] || 'progress'} #{additional_cucumber_args} features/rails.feature features/rails_with_js_notifier.feature")
       end
     end
 
