@@ -33,6 +33,27 @@ Feature: Install the Gem in a Rails application
     And I run the hoptoad generator with ""
     Then I should receive a Hoptoad notification
 
+  Scenario: Configuration within initializer isn't overridden by Railtie
+    When I generate a new Rails application
+    And I configure the Hoptoad shim
+    And I configure my application to require the "hoptoad_notifier" gem
+    And I run the hoptoad generator with "-k myapikey"
+    Then the command should have run successfully
+    When I configure the notifier to use the following configuration lines:
+      """
+      config.api_key = "myapikey"
+      config.project_root = "argle/bargle"
+      """
+    And I define a response for "TestController#index":
+      """
+      session[:value] = "test"
+      raise RuntimeError, "some message"
+      """
+    And I route "/test/index" to "test#index"
+    And I perform a request to "http://example.com:123/test/index?param=value"
+    Then I should receive the following Hoptoad notification:
+      | project-root | argle/bargle |
+
   Scenario: Try to install without an api key
     When I generate a new Rails application
     And I configure my application to require the "hoptoad_notifier" gem

@@ -217,6 +217,7 @@ Then /^I should receive the following Hoptoad notification:$/ do |table|
 
   doc.should have_content('//component', hash['component']) if hash['component']
   doc.should have_content('//action', hash['action']) if hash['action']
+  doc.should have_content('//server-environment/project-root', hash['project-root']) if hash['project-root']
 
   if hash['session']
     session_key, session_value = hash['session'].split(': ')
