@@ -168,6 +168,16 @@ class NoticeTest < Test::Unit::TestCase
     assert_filters_hash(:session_data)
   end
 
+  should "remove rack.request.form_vars" do
+    original = {
+      "rack.request.form_vars" => "story%5Btitle%5D=The+TODO+label",
+      "abc" => "123"
+    }
+
+    notice = build_notice(:cgi_data => original)
+    assert_equal({"abc" => "123"}, notice.cgi_data)
+  end
+
   context "a Notice turned into XML" do
     setup do
       HoptoadNotifier.configure do |config|

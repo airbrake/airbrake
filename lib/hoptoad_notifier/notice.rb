@@ -98,6 +98,7 @@ module HoptoadNotifier
       also_use_rack_params_filters
       find_session_data
       clean_params
+      clean_rack_request_data
     end
 
     # Converts the given notice to XML
@@ -251,6 +252,12 @@ module HoptoadNotifier
       if session_data
         clean_unserializable_data_from(:session_data)
         filter(session_data)
+      end
+    end
+
+    def clean_rack_request_data
+      if cgi_data
+        cgi_data.delete("rack.request.form_vars")
       end
     end
 
