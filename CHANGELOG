@@ -1,3 +1,16 @@
+Version 2.3.6 - 2010-08-30
+===============================================================================
+
+Daniel Barron (1):
+      Initializer configuration overrides Railtie configuration if set
+
+Joshua Clayton (1):
+      Remove rack.request.form_vars
+
+Tristan Dunn (1):
+      Move Rails JS scenarios into separate feature and correctly support HTTPS when secure is enabled on the notifier.
+
+
 Version 2.3.5 - 2010-08-13
 ===============================================================================
 
@@ -187,6 +200,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
