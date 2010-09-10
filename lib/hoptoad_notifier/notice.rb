@@ -326,7 +326,8 @@ module HoptoadNotifier
 
     def also_use_rack_params_filters
       if args[:rack_env]
-        self.params_filters += rack_request.env["action_dispatch.parameter_filter"] || []
+        params_filters ||= []
+        params_filters += rack_request.env["action_dispatch.parameter_filter"] || []
       end
     end
 
