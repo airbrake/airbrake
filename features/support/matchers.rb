@@ -1,4 +1,4 @@
-RSpec::Matchers.define :have_content do |xpath, content|
+Spec::Matchers.define :have_content do |xpath, content|
   match do |document|
     @elements = document.search(xpath)
 
