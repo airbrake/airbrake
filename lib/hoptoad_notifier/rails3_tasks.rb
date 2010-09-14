@@ -19,7 +19,7 @@ namespace :hoptoad do
       config.logger = Rails.logger
     end
 
-    require 'app/controllers/application_controller'
+    require './app/controllers/application_controller'
 
     class HoptoadTestingException < RuntimeError; end
 
