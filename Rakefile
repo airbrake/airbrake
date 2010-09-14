@@ -197,6 +197,9 @@ def define_rails_cucumber_tasks(additional_cucumber_args = '')
       desc "Test integration of the gem with Rails #{version}"
       task version => [:gemspec, :vendor_test_gems] do
         puts "Testing Rails #{version}"
+        if version.empty?
+          raise "No Rails version specified - make sure ENV['RAILS_VERSION'] is set, e.g. with `rake cucumber:rails:all`"
+        end
         ENV['RAILS_VERSION'] = version
         system("cucumber --format #{ENV['CUCUMBER_FORMAT'] || 'progress'} #{additional_cucumber_args} features/rails.feature features/rails_with_js_notifier.feature")
       end
