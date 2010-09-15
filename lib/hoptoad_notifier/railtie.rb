@@ -21,7 +21,9 @@ module HoptoadNotifier
 
       if defined?(::ActionController::Base)
         require 'hoptoad_notifier/rails/javascript_notifier'
-
+        require 'hoptoad_notifier/rails/controller_methods'
+        
+        ::ActionController::Base.send(:include, HoptoadNotifier::Rails::ControllerMethods)
         ::ActionController::Base.send(:include, HoptoadNotifier::Rails::JavascriptNotifier)
       end
     end
