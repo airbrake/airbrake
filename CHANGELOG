@@ -1,3 +1,21 @@
+Version 2.3.7 - 2010-09-15
+===============================================================================
+
+Jason Morrison (5):
+      Add ./ prefix to require for 1.9.2
+      More helpful message for testing without ENV['RAILS_VERSION']
+      Support Rails 3.0.0, not 3.0.0.rc
+      This wasn't actually a fix (it regressed tests): Revert "Fix modifying params_filters"
+      Correct the #also_use_rack_params_filters method
+
+Joshua Clayton (1):
+      Fix modifying params_filters
+
+Nick Quaranto (2):
+      s/RSpec/Spec for matchers
+      use Sinatra::Default instead of Sinatra::Base
+
+
 Version 2.3.6 - 2010-08-30
 ===============================================================================
 
@@ -200,6 +218,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
