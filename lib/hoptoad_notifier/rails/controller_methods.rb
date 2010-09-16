@@ -12,7 +12,7 @@ module HoptoadNotifier
       end
       
       def hoptoad_local_request?
-        if defined?(::Rails::Railtie) #test for Rails 3
+        if defined?(::Rails.application.config)
           ::Rails.application.config.consider_all_requests_local || request.local?
         else
           consider_all_requests_local || local_request?
