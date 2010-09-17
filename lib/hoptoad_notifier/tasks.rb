@@ -89,7 +89,7 @@ namespace :hoptoad do
     class HoptoadVerificationController < ApplicationController; end
 
     puts 'Processing request.'
-    request = ActionController::TestRequest.new
+    request = ActionController::TestRequest.new("REQUEST_URI" => "/hoptoad_verification_controller")
     response = ActionController::TestResponse.new
     HoptoadVerificationController.new.process(request, response)
   end
