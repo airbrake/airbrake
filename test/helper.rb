@@ -1,6 +1,11 @@
 require 'test/unit'
 require 'rubygems'
 
+gem "activesupport", "= 2.3.8"
+gem "activerecord",  "= 2.3.8"
+gem "actionpack",    "= 2.3.8"
+gem "nokogiri",      "= 1.4.3.1"
+gem "shoulda",       "= 2.11.3"
 gem 'jferris-mocha', '>= 0.9.5.0.1241126838'
 
 $LOAD_PATH << File.join(File.dirname(__FILE__), *%w[.. vendor ginger lib])
@@ -10,6 +15,7 @@ require 'shoulda'
 require 'mocha'
 
 require 'ginger'
+
 
 require 'action_controller'
 require 'action_controller/test_process'
