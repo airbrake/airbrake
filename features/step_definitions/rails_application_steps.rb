@@ -326,8 +326,10 @@ Then /^I should see the notifier JavaScript for the following:$/ do |table|
   api_key     = hash['api_key']
   environment = hash['environment'] || 'production'
 
-  response = Nokogiri::HTML.parse('<html>' + @terminal.output.split('<html>').last)
-  response.at_css("script[type='text/javascript'][src='http#{'s' if secure}://#{host}/javascripts/notifier.js']").should_not be_nil
+  document_body = '<html>' + @terminal.output.split('<html>').last
+  document_body.should include("#{host}/javascripts/notifier.js")
+
+  response = Nokogiri::HTML.parse(document_body)
   response.css("script[type='text/javascript']:last-child").each do |element|
     content = element.content
     content.should include("Hoptoad.setKey('#{api_key}');")

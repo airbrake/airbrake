@@ -22,7 +22,6 @@ module HoptoadNotifier
           :use_full_path => false,
           :locals        => {
             :host        => host,
-            :secure      => HoptoadNotifier.configuration.secure,
             :api_key     => HoptoadNotifier.configuration.api_key,
             :environment => HoptoadNotifier.configuration.environment_name
           }
