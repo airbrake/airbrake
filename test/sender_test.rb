@@ -58,6 +58,32 @@ class SenderTest < Test::Unit::TestCase
     end
   end
 
+  should "not fail when posting and a timeout exception occurs" do
+    http = stub_http
+    http.stubs(:post).raises(TimeoutError)
+    assert_nothing_thrown do
+      send_exception(:secure => false)
+    end
+  end
+
+  should "not fail when posting and a connection refused exception occurs" do
+    http = stub_http
+    http.stubs(:post).raises(Errno::ECONNREFUSED)
+    assert_nothing_thrown do
+      send_exception(:secure => false)
+    end
+  end
+
+  should "not fail when posting any http exception occurs" do
+    http = stub_http
+    HoptoadNotifier::Sender::HTTP_ERRORS.each do |error|
+      http.stubs(:post).raises(error)
+      assert_nothing_thrown do
+        send_exception(:secure => false)
+      end
+    end
+  end
+
   should "post to the right url for non-ssl" do
     http = stub_http
     url = "http://hoptoadapp.com:80#{HoptoadNotifier::Sender::NOTICES_URI}"
