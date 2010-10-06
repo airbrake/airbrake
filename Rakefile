@@ -127,6 +127,7 @@ gemspec = Gem::Specification.new do |s|
   s.extra_rdoc_files = ["README.rdoc"]
   s.rdoc_options = ['--line-numbers', "--main", "README.rdoc"]
 
+  s.add_runtime_dependency("builder")
   s.add_runtime_dependency("activesupport")
   s.add_development_dependency("activerecord")
   s.add_development_dependency("actionpack")
