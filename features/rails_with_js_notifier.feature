@@ -21,6 +21,9 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
     Then I should see the notifier JavaScript for the following:
       | api_key  | environment | host           |
       | myapikey | production  | hoptoadapp.com |
+    And the notifier JavaScript should provide the following errorDefaults:
+      | url                           | component | action |
+      | http://example.com/test/index | test      | index  |
 
   Scenario: Include the Javascript notifier when enabled using custom configuration settings
     When I generate a new Rails application
