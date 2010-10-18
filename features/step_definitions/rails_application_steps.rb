@@ -342,14 +342,13 @@ Then "the notifier JavaScript should provide the following errorDefaults:" do |t
   hash = table.hashes.first
 
   document_body = '<html>' + @terminal.output.split('<html>').last
-  document_body.should include("#{host}/javascripts/notifier.js")
 
   response = Nokogiri::HTML.parse(document_body)
   response.css("script[type='text/javascript']:last-child").each do |element|
     content = element.content
 
     hash.each do |key, value|
-      content.should =~ %r{Hoptoad\.setErrorDefaults.*#{key}:'#{value}'}
+      content.should =~ %r{Hoptoad\.setErrorDefaults.*#{key}: "#{value}}m
     end
   end
 end
