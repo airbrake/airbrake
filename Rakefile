@@ -66,7 +66,7 @@ EOF
 
     File.open(file, "w") do |f|
       f.write <<EOF
-Version #{version} - #{Date.today}
+Version #{version} - #{Time.now}
 ===============================================================================
 
 #{`git log $(git tag | tail -1)..HEAD | git shortlog`}

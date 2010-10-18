@@ -1,3 +1,29 @@
+Version 2.3.9 - 2010-10-18
+===============================================================================
+
+This patch release contains a handful of bugfixes, and ensures:
+      If hoptoadapp.com is completely unreachable by HTTP, your app is not affected.
+      Controller method #notify_hoptoad is available in Rails 3.  Thanks contributor Kyle Crum!
+
+Chad Pytel (1):
+      also handle Errno::ECONNREFUSED and other http errors
+
+Jason Morrison (4):
+      Add gem versions to test suite
+      Revert "Revert "attempt to debug mail sending on staging""
+      Adding Heroku notifier readme
+      gracefully fall back to require 'activesupport' if require 'active_support' fails
+
+Jon Yurek (2):
+      Bumping version to 2.3.8
+      Adds builder to the gemspec
+
+Kyle Crum (3):
+      notify_hoptoad now works in rails 3 controllers
+      more sane way of testing for rails 3 controller methods
+      added a scenario for using the notify_hoptoad method within a controller
+
+
 Version 2.3.7 - 2010-09-15
 ===============================================================================
 
@@ -218,6 +244,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
