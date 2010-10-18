@@ -338,6 +338,21 @@ Then /^I should see the notifier JavaScript for the following:$/ do |table|
   end
 end
 
+Then "the notifier JavaScript should provide the following errorDefaults:" do |table|
+  hash = table.hashes.first
+
+  document_body = '<html>' + @terminal.output.split('<html>').last
+
+  response = Nokogiri::HTML.parse(document_body)
+  response.css("script[type='text/javascript']:last-child").each do |element|
+    content = element.content
+
+    hash.each do |key, value|
+      content.should =~ %r{Hoptoad\.setErrorDefaults.*#{key}: "#{value}}m
+    end
+  end
+end
+
 Then /^I should not see notifier JavaScript$/ do
   response = Nokogiri::HTML.parse('<html>' + @terminal.output.split('<html>').last)
   response.at_css("script[type='text/javascript'][src$='/javascripts/notifier.js']").should be_nil
