@@ -1,3 +1,15 @@
+Version 2.3.10 - Mon Oct 18 17:07:56 -0400 2010
+===============================================================================
+
+Emma Lindsay (2):
+      Sends more javascript information back to hoptaod
+      Merge branch 'js_notifier_default_fields'
+
+Jason Morrison (2):
+      wip: Supply default url, component, action for JS notifier
+      gracefully fall back to require 'activesupport' if require 'active_support' fails
+
+
 Version 2.3.9 - 2010-10-18
 ===============================================================================
 
@@ -244,6 +256,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
