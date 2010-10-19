@@ -6,7 +6,7 @@ gem "activerecord",  "= 2.3.8"
 gem "actionpack",    "= 2.3.8"
 gem "nokogiri",      "= 1.4.3.1"
 gem "shoulda",       "= 2.11.3"
-gem 'jferris-mocha', '>= 0.9.5.0.1241126838'
+gem 'bourne', '>= 1.0'
 
 $LOAD_PATH << File.join(File.dirname(__FILE__), *%w[.. vendor ginger lib])
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
