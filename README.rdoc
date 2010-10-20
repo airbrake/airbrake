@@ -235,6 +235,11 @@ When Hoptoad is installed as a gem, you need to add
 
 to your deploy.rb
 
+If you don't use Capistrano, then you can use the following rake task from your
+deployment process to notify Hoptoad:
+
+    rake hoptoad:deploy TO=#{rails_env} REVISION=#{current_revision} REPO=#{repository} USER=#{local_user}
+
 == Going beyond exceptions
 
 You can also pass a hash to notify_hoptoad method and store whatever you want,
