@@ -5,7 +5,7 @@ require 'rake/gempackagetask'
 require 'cucumber/rake/task'
 
 desc 'Default: run unit tests.'
-task :default => [:test, :cucumber]
+task :default => [:test, "cucumber:rails:all"]
 
 desc 'Test the hoptoad_notifier gem.'
 Rake::TestTask.new(:test) do |t|

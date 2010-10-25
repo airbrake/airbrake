@@ -24,6 +24,7 @@ require 'active_record/base'
 require 'active_support'
 require 'nokogiri'
 require 'rack'
+require 'bourne'
 
 require "hoptoad_notifier"
 
