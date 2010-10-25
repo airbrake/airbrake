@@ -34,6 +34,10 @@ When /^I run the hoptoad generator with "([^\"]*)"$/ do |generator_args|
   end
 end
 
+When /^I print the console output$/ do
+  puts @terminal.output
+end
+
 Given /^I have installed the "([^\"]*)" gem$/ do |gem_name|
   @terminal.install_gem(gem_name)
 end
@@ -287,6 +291,10 @@ end
 
 When /^I configure the Heroku rake shim$/ do
   @terminal.invoke_heroku_rake_tasks_locally = true
+end
+
+When /^I configure the Heroku gem shim with "([^\"]*)"$/ do |api_key|
+  HoptoadGenerator.any_instance.stubs(:heroku_api_key).with(api_key)
 end
 
 When /^I configure the application to filter parameter "([^\"]*)"$/ do |parameter|

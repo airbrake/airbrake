@@ -132,8 +132,8 @@ Feature: Install the Gem in a Rails application
     When I generate a new Rails application
     And I configure the Hoptoad shim
     And I configure the Heroku rake shim
+    And I configure the Heroku gem shim with "myapikey"
     And I configure my application to require the "hoptoad_notifier" gem
-    And I set the environment variable "HOPTOAD_API_KEY" to "myapikey"
     And I run the hoptoad generator with "--heroku"
     Then the command should have run successfully
     And I should receive a Hoptoad notification

@@ -47,7 +47,7 @@ class HoptoadGenerator < Rails::Generator::Base
 
   def determine_api_key
     puts "Attempting to determine your API Key from Heroku..."
-    ENV['HOPTOAD_API_KEY'] = `heroku console 'puts ENV[%{HOPTOAD_API_KEY}]'`.split("\n").first
+    ENV['HOPTOAD_API_KEY'] = heroku_api_key
     if ENV['HOPTOAD_API_KEY'].blank?
       puts "... Failed."
       puts "WARNING: We were unable to detect the Hoptoad API Key from your Heroku environment."
@@ -57,6 +57,10 @@ class HoptoadGenerator < Rails::Generator::Base
       puts "... Done."
       puts "Heroku's Hoptoad API Key is '#{ENV['HOPTOAD_API_KEY']}'"
     end
+  end
+
+  def heroku_api_key
+    `heroku console 'puts ENV[%{HOPTOAD_API_KEY}]'`.split("\n").first
   end
 
   def heroku?
