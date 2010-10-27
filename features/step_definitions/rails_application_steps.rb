@@ -294,7 +294,17 @@ When /^I configure the Heroku rake shim$/ do
 end
 
 When /^I configure the Heroku gem shim with "([^\"]*)"$/ do |api_key|
-  HoptoadGenerator.any_instance.stubs(:heroku_api_key).with(api_key)
+  heroku_script_bin = File.join(TEMP_DIR, "bin")
+  FileUtils.mkdir_p(heroku_script_bin)
+  heroku_script     = File.join(heroku_script_bin, "heroku")
+  File.open(heroku_script, "w") do |f|
+    f.puts "#!/bin/sh"
+    f.puts "if [[ $1 == 'console' && $2 == 'puts ENV[%{HOPTOAD_API_KEY}]' ]]; then"
+    f.puts "  echo #{api_key}"
+    f.puts "fi"
+  end
+  FileUtils.chmod(0755, heroku_script)
+  @terminal.prepend_path(heroku_script_bin)
 end
 
 When /^I configure the application to filter parameter "([^\"]*)"$/ do |parameter|

@@ -32,7 +32,8 @@ class Terminal
 
     output << "#{command}\n"
     FileUtils.cd(@cwd) do
-      cmdline = "#{environment_settings} #{command} 2>&1"
+      # The ; forces ruby to shell out so the env settings work right
+      cmdline = "#{environment_settings} #{command} 2>&1 ; "
       logger.debug(cmdline)
       result = `#{cmdline}`
       logger.debug(result)
@@ -72,6 +73,10 @@ class Terminal
 
   def uninstall_gem(gem)
     `gem uninstall -i #{BUILT_GEM_ROOT} #{gem}`
+  end
+
+  def prepend_path(path)
+    @environment_variables['PATH'] = path + ":" + @environment_variables['PATH']
   end
 
   private
