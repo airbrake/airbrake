@@ -12,7 +12,7 @@ end
 When /^the metal endpoint "([^\"]*)" is mounted in the Rails 3 routes.rb$/ do |class_name|
   routesrb = File.join(RAILS_ROOT, "config", "routes.rb")
   routes = IO.readlines(routesrb)
-  rack_route = "match '/test(/*other)' => #{class_name}"
+  rack_route = "match '/metal(/*other)' => #{class_name}"
   routes = routes[0..-2] + [rack_route, routes[-1]]
   File.open(routesrb, "w") do |f|
     f.puts "require 'app/metal/#{class_name.underscore}'"
