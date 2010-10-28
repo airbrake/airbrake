@@ -18,9 +18,10 @@ application in `ENV['HOPTOAD_API_KEY']`, so installation should be a snap!
 
 ### Rails 3.x
 
-Add the hoptoad_notifier gem to your Gemfile.  In Gemfile:
+Add the hoptoad_notifier and heroku gems to your Gemfile.  In Gemfile:
 
     gem 'hoptoad_notifier'
+    gem 'heroku'
 
 Then from your project's RAILS_ROOT, run:
 
@@ -28,6 +29,10 @@ Then from your project's RAILS_ROOT, run:
     $ script/rails generate hoptoad --heroku
 
 ### Rails 2.x
+
+Install the heroku gem if you haven't already:
+
+    gem install heroku
 
 Add the hoptoad_notifier gem to your app. In config/environment.rb:
 
