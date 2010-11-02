@@ -111,7 +111,8 @@ module HoptoadNotifier
                       'ActionController::RoutingError',
                       'ActionController::InvalidAuthenticityToken',
                       'CGI::Session::CookieStore::TamperedWithCookie',
-                      'ActionController::UnknownAction']
+                      'ActionController::UnknownAction',
+                      'AbstractController::ActionNotFound']
 
     alias_method :secure?, :secure
 
