@@ -1,3 +1,34 @@
+Version 2.3.12 - Wed Nov 03 13:53:18 -0400 2010
+===============================================================================
+
+In general: Update gems, improve testing, improve documentation, improve
+javascript notifier.
+
+Emma Lindsay (4):
+      Sends more javascript information back to hoptaod
+      Merge branch 'js_notifier_default_fields'
+      Bumping to version 2.3.10
+      Updated jferris-mocha to bourne
+
+Jason Morrison (5):
+      wip: Supply default url, component, action for JS notifier
+      gracefully fall back to require 'activesupport' if require 'active_support' fails
+      Add non-capistrano deploy instructions
+      Add instructions for heroku gem to Heroku addon README
+      Add AbstractController::ActionNotFound to default ignore list
+
+Jon Yurek (9):
+      Require bourne, run right cucumber task
+      Get the API key from Heroku
+      Bumped version: 2.3.11
+      Getting green cucumber stories
+      Fakes out the heroku command for cucumber.
+      Mount the metal endpoint in Rails 3 tests.
+      Metal test mounts at /metal
+      Supported versions: 2.3.9, 2.3.10, and 3.0.1
+      Return non-zero on cucumber failure.
+
+
 Version 2.3.10 - Mon Oct 18 17:07:56 -0400 2010
 ===============================================================================
 
@@ -256,6 +287,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
