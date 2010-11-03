@@ -310,7 +310,7 @@ configuration block.
 
   HoptoadNotifier.configure do |config|
     config.api_key      = '1234567890abcdef'
-    config.ignore       << ActiveRecord::IgnoreThisError
+    config.ignore       << "ActiveRecord::IgnoreThisError"
   end
 
 To ignore *only* certain errors (and override the defaults), use the
@@ -318,7 +318,7 @@ To ignore *only* certain errors (and override the defaults), use the
 
   HoptoadNotifier.configure do |config|
     config.api_key      = '1234567890abcdef'
-    config.ignore_only  = [ActiveRecord::IgnoreThisError]
+    config.ignore_only  = ["ActiveRecord::IgnoreThisError"]
   end
 
 To ignore certain user agents, add in the #ignore_user_agent attribute as a
