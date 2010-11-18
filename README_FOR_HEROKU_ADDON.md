@@ -69,14 +69,25 @@ In order to use hoptoad_notifier in a non-Rails rack app, just load the hoptoad_
 For Rails 1.x, visit the [Hoptoad notifier's README on GitHub](http://github.com/thoughtbot/hoptoad_notifier),
 and be sure to use `ENV['HOPTOAD_API_KEY']` where your API key is required in configuration code.
 
-3. Configure your notification settings
--------------------------------------------
+3. Configure your notification settings (important!)
+---------------------------------------------------
 
 Once you have included and configured the notifier in your application,
 you will want to configure your notification settings.
+
+This is important - without setting your email address, you won't receive notification emails.
 
 Hoptoad can deliver exception notifications to your email inbox.  To configure these delivery settings:
 
 1. Visit your application's Hoptoad Add-on page, like [ http://api.heroku.com/myapps/my-great-app/addons/hoptoad:basic ](http://api.heroku.com/myapps/my-great-app/addons/hoptoad:basic) 
 2. Click "Go to Hoptoad admin" to configure the Hoptoad Add-on on the Hoptoadapp.com website
 3. Click the "Profile" button in the header to edit your email address and notification settings.
+
+4. Optionally: Set up deploy notification
+-----------------------------------------
+
+If your Hoptoad plan supports deploy notification, set it up for your Heroku application like this:
+
+    rake hoptoad:heroku:add_deploy_notification
+
+This will install a Heroku [HTTP Deploy Hook](http://docs.heroku.com/deploy-hooks) to notify Hoptoad of the deploy.
