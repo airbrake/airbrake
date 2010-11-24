@@ -34,7 +34,7 @@ module HoptoadNotifier
         end
 
         if response.body.respond_to?(:gsub)
-          response.body = response.body.gsub(/<(head)>/i, "<\\1>\n" + javascript)
+          response.body = response.body.gsub(/<(head.*?)>/i, "<\1>\n" + javascript)
         end
       end
     end

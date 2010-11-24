@@ -14,7 +14,7 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
       """
     And I define a response for "TestController#index":
       """
-        render :text => "<html><head></head><body></body></html>"
+        render :text => '<html><head profile="http://example.com"></head><body></body></html>'
       """
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index"
