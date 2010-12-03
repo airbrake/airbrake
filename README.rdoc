@@ -299,6 +299,7 @@ notifications (when #notify is called directly).
 
 Hoptoad ignores the following exceptions by default:
 
+  AbstractController::ActionNotFound
   ActiveRecord::RecordNotFound
   ActionController::RoutingError
   ActionController::InvalidAuthenticityToken
