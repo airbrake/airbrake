@@ -5,7 +5,8 @@ module HoptoadNotifier
     # Handles backtrace parsing line by line
     class Line
 
-      INPUT_FORMAT = %r{^([^:]+):(\d+)(?::in `([^']+)')?$}.freeze
+      # regexp (optionnally allowing leading X: for windows support)
+      INPUT_FORMAT = %r{^([a-zA-Z]?:?[^:]+):(\d+)(?::in `([^']+)')?$}.freeze
 
       # The file portion of the line (such as app/models/user.rb)
       attr_reader :file

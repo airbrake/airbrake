@@ -20,6 +20,25 @@ class BacktraceTest < Test::Unit::TestCase
     assert_equal 'app/controllers/users_controller.rb', line.file
     assert_equal 'index', line.method
   end
+  
+  should "parse a windows backtrace into lines" do
+    array = [
+      "C:/Program Files/Server/app/models/user.rb:13:in `magic'",
+      "C:/Program Files/Server/app/controllers/users_controller.rb:8:in `index'"
+    ]
+
+    backtrace = HoptoadNotifier::Backtrace.parse(array)
+
+    line = backtrace.lines.first
+    assert_equal '13', line.number
+    assert_equal 'C:/Program Files/Server/app/models/user.rb', line.file
+    assert_equal 'magic', line.method
+
+    line = backtrace.lines.last
+    assert_equal '8', line.number
+    assert_equal 'C:/Program Files/Server/app/controllers/users_controller.rb', line.file
+    assert_equal 'index', line.method
+  end
 
   should "be equal with equal lines" do
     one = build_backtrace_array
