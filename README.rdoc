@@ -32,7 +32,7 @@ Remove the vendor/plugins/hoptoad_notifier directory before installing the gem, 
 
 Add the hoptoad_notifier gem to your Gemfile.  In Gemfile:
 
-  gem 'hoptoad_notifier'
+  gem "hoptoad_notifier", "~> 2.3"
 
 Then from your project's RAILS_ROOT, run:
 
