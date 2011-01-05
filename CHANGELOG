@@ -1,3 +1,9 @@
+Version 2.3.14 - Wed Jan 05 14:06:12 -0500 2011
+===============================================================================
+
+Jason Morrison (1):
+      Fix 'require' path
+
 Version 2.3.13 - Mon Jan 03 15:56:20 -0500 2011
 ===============================================================================
 
@@ -327,6 +333,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
