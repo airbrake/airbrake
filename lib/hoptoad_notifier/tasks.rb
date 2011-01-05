@@ -1,5 +1,5 @@
 require 'hoptoad_notifier'
-require 'shared_tasks'
+require File.join(File.dirname(__FILE__), 'shared_tasks')
 
 namespace :hoptoad do
   desc "Verify your gem installation by sending a test exception to the hoptoad service"
