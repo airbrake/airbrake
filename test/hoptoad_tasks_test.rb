@@ -51,6 +51,14 @@ class HoptoadTasksTest < Test::Unit::TestCase
 
           @options    = { :rails_env => "staging" }
         end
+        
+        context "performing a dry run" do
+          setup { @output = HoptoadTasks.deploy(@options.merge(:dry_run => true)) }
+          
+          should "return true without performing any actual request" do
+            assert @output
+          end
+        end
 
         context "on deploy(options)" do
           setup do

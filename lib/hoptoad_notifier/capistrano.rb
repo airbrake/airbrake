@@ -11,6 +11,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       local_user = ENV['USER'] || ENV['USERNAME']
       executable = RUBY_PLATFORM.downcase.include?('mswin') ? 'rake.bat' : 'rake'
       notify_command = "#{executable} hoptoad:deploy TO=#{rails_env} REVISION=#{current_revision} REPO=#{repository} USER=#{local_user}"
+      notify_command << " DRY_RUN=true" if dry_run
       notify_command << " API_KEY=#{ENV['API_KEY']}" if ENV['API_KEY']
       puts "Notifying Hoptoad of Deploy (#{notify_command})"
       `#{notify_command}`

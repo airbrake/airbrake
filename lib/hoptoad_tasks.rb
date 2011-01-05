@@ -34,11 +34,16 @@ module HoptoadTasks
                             HoptoadNotifier.configuration.proxy_port,
                             HoptoadNotifier.configuration.proxy_user,
                             HoptoadNotifier.configuration.proxy_pass)
+    
+    if opts[:dry_run]
+      puts url, params.inspect
+      return true
+    else
+      response = proxy.post_form(url, params)
 
-    response = proxy.post_form(url, params)
-
-    puts response.body
-    return Net::HTTPSuccess === response
+      puts response.body
+      return Net::HTTPSuccess === response
+    end
   end
 end
 
