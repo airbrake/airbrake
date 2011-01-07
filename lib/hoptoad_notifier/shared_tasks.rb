@@ -9,6 +9,11 @@ namespace :hoptoad do
                         :api_key        => ENV['API_KEY'])
   end
 
+  task :log_stdout do
+    require 'logger'
+    RAILS_DEFAULT_LOGGER = Logger.new(STDOUT)
+  end
+
   namespace :heroku do
     desc "Install Heroku deploy notifications addon"
     task :add_deploy_notification => [:environment] do
