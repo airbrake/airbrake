@@ -1,3 +1,10 @@
+Version 2.4.1 - Sat Jan 08 12:17:15 -0500 2011
+===============================================================================
+
+Matt Jankowski (1):
+      restore method which may have been accidentally removed?
+
+
 Version 2.4.0 - Thu Jan 06 15:03:58 -0500 2011
 ===============================================================================
 
@@ -339,6 +346,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
