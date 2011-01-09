@@ -24,6 +24,10 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
     And the notifier JavaScript should provide the following errorDefaults:
       | url                           | component | action |
       | http://example.com:123/test/index | test      | index  |
+    And I should see the following value as the html head:
+      """
+        <head profile="http://example.com">
+      """
 
   Scenario: Include the Javascript notifier when enabled using custom configuration settings
     When I generate a new Rails application
@@ -45,6 +49,10 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
     Then I should see the notifier JavaScript for the following:
       | api_key   | environment | host               |
       | myapikey! | production  | myhoptoad.com:3001 |
+      And I should see the following value as the html head:
+        """
+          <head>
+        """
 
   Scenario: Don't include the Javascript notifier by default
     When I generate a new Rails application
