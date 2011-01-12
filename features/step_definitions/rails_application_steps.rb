@@ -298,7 +298,7 @@ When /^I configure the Heroku gem shim with "([^\"]*)"$/ do |api_key|
   FileUtils.mkdir_p(heroku_script_bin)
   heroku_script     = File.join(heroku_script_bin, "heroku")
   File.open(heroku_script, "w") do |f|
-    f.puts "#!/bin/sh"
+    f.puts "#!/bin/bash"
     f.puts "if [[ $1 == 'console' && $2 == 'puts ENV[%{HOPTOAD_API_KEY}]' ]]; then"
     f.puts "  echo #{api_key}"
     f.puts "fi"
