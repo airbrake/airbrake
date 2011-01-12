@@ -358,7 +358,7 @@ end
 
 Given /^I should see the following value as the html head:$/ do |value|
   document_body = '<html>' + @terminal.output.split('<html>').last
-  document_body.should include(value)
+  document_body.should include(value.strip)
 end
 
 Then "the notifier JavaScript should provide the following errorDefaults:" do |table|
