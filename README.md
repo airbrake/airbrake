@@ -415,8 +415,7 @@ Credits
 
 HoptoadNotifier is maintained and funded by [thoughtbot, inc](http://thoughtbot.com/community)
 
-Thanks to Eugene Bolshakov for the excellent write-up on GOING BEYOND
-EXCEPTIONS, which we have included above.
+Thank you to all [the contributors](https://github.com/thoughtbot/hoptoad_notifier/contributors)!
 
 The names and logos for thoughtbot are trademarks of thoughtbot, inc.
 
