@@ -123,10 +123,6 @@ gemspec = Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.test_files   = Dir[*['test/**/*_test.rb']]
 
-  s.has_rdoc         = true
-  s.extra_rdoc_files = ["README.rdoc"]
-  s.rdoc_options = ['--line-numbers', "--main", "README.rdoc"]
-
   s.add_runtime_dependency("activesupport")
   s.add_development_dependency("activerecord")
   s.add_development_dependency("actionpack")
