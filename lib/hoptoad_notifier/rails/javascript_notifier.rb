@@ -34,9 +34,14 @@ module HoptoadNotifier
         end
 
         if response.body.respond_to?(:gsub)
-          response.body = response.body.gsub(/<(head)>/i, "<\\1>\n" + javascript)
+          response.body = insert_javascript_after_head response.body, javascript
         end
       end
+
+      def insert_javascript_after_head(body, javascript)
+        body.gsub /<(head.*?)>/i, "<\\1>\n#{javascript}\n"
+      end
+
     end
   end
 end

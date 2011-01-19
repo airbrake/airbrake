@@ -14,13 +14,20 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
       """
     And I define a response for "TestController#index":
       """
-        render :text => "<html><head></head><body></body></html>"
+        render :text => '<html><head profile="http://example.com"></head><body></body></html>'
       """
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index"
     Then I should see the notifier JavaScript for the following:
       | api_key  | environment | host           |
       | myapikey | production  | hoptoadapp.com |
+    And the notifier JavaScript should provide the following errorDefaults:
+      | url                           | component | action |
+      | http://example.com:123/test/index | test      | index  |
+    And I should see the following value as the html head:
+      """
+        <head profile="http://example.com">
+      """
 
   Scenario: Include the Javascript notifier when enabled using custom configuration settings
     When I generate a new Rails application
@@ -42,6 +49,10 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
     Then I should see the notifier JavaScript for the following:
       | api_key   | environment | host               |
       | myapikey! | production  | myhoptoad.com:3001 |
+      And I should see the following value as the html head:
+        """
+          <head>
+        """
 
   Scenario: Don't include the Javascript notifier by default
     When I generate a new Rails application

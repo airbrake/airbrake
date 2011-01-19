@@ -1,16 +1,7 @@
 require 'hoptoad_notifier'
+require File.join(File.dirname(__FILE__), 'shared_tasks')
 
 namespace :hoptoad do
-  desc "Notify Hoptoad of a new deploy."
-  task :deploy => :environment do
-    require 'hoptoad_tasks'
-    HoptoadTasks.deploy(:rails_env      => ENV['TO'],
-                        :scm_revision   => ENV['REVISION'],
-                        :scm_repository => ENV['REPO'],
-                        :local_username => ENV['USER'],
-                        :api_key        => ENV['API_KEY'])
-  end
-
   desc "Verify your gem installation by sending a test exception to the hoptoad service"
   task :test => [:environment] do
     Rails.logger = Logger.new(STDOUT)

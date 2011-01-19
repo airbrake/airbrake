@@ -34,6 +34,10 @@ When /^I run the hoptoad generator with "([^\"]*)"$/ do |generator_args|
   end
 end
 
+When /^I print the console output$/ do
+  puts @terminal.output
+end
+
 Given /^I have installed the "([^\"]*)" gem$/ do |gem_name|
   @terminal.install_gem(gem_name)
 end
@@ -289,6 +293,20 @@ When /^I configure the Heroku rake shim$/ do
   @terminal.invoke_heroku_rake_tasks_locally = true
 end
 
+When /^I configure the Heroku gem shim with "([^\"]*)"$/ do |api_key|
+  heroku_script_bin = File.join(TEMP_DIR, "bin")
+  FileUtils.mkdir_p(heroku_script_bin)
+  heroku_script     = File.join(heroku_script_bin, "heroku")
+  File.open(heroku_script, "w") do |f|
+    f.puts "#!/bin/bash"
+    f.puts "if [[ $1 == 'console' && $2 == 'puts ENV[%{HOPTOAD_API_KEY}]' ]]; then"
+    f.puts "  echo #{api_key}"
+    f.puts "fi"
+  end
+  FileUtils.chmod(0755, heroku_script)
+  @terminal.prepend_path(heroku_script_bin)
+end
+
 When /^I configure the application to filter parameter "([^\"]*)"$/ do |parameter|
   if rails3?
     application_filename = File.join(RAILS_ROOT, 'config', 'application.rb')
@@ -335,6 +353,26 @@ Then /^I should see the notifier JavaScript for the following:$/ do |table|
     content.should include("Hoptoad.setKey('#{api_key}');")
     content.should include("Hoptoad.setHost('#{host}');")
     content.should include("Hoptoad.setEnvironment('#{environment}');")
+  end
+end
+
+Given /^I should see the following value as the html head:$/ do |value|
+  document_body = '<html>' + @terminal.output.split('<html>').last
+  document_body.should include(value.strip)
+end
+
+Then "the notifier JavaScript should provide the following errorDefaults:" do |table|
+  hash = table.hashes.first
+
+  document_body = '<html>' + @terminal.output.split('<html>').last
+
+  response = Nokogiri::HTML.parse(document_body)
+  response.css("script[type='text/javascript']:last-child").each do |element|
+    content = element.content
+
+    hash.each do |key, value|
+      content.should =~ %r{Hoptoad\.setErrorDefaults.*#{key}: "#{value}}m
+    end
   end
 end
 

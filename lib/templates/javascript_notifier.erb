@@ -9,4 +9,9 @@ document.write(unescape("%3Cscript src='" + notifierJsScheme + "<%= host %>/java
   Hoptoad.setKey('<%= api_key %>');
   Hoptoad.setHost('<%= host %>');
   Hoptoad.setEnvironment('<%= environment %>');
+    Hoptoad.setErrorDefaults({
+      url: "<%= a = "#{controller.request.protocol}#{controller.request.host_with_port}#{controller.request.request_uri}"; p a; a %>",
+      component: "<%= controller.controller_name %>",
+      action: "<%= controller.action_name %>"
+  });
 </script>

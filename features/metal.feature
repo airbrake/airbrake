@@ -14,10 +14,10 @@ Feature: Rescue errors in Rails middleware
         raise "Explode"
       end
       """
-    When I perform a request to "http://example.com:123/test/index?param=value"
+    When I perform a request to "http://example.com:123/metal/index?param=value"
     Then I should receive the following Hoptoad notification:
       | error message | RuntimeError: Explode                         |
       | error class   | RuntimeError                                  |
       | parameters    | param: value                                  |
-      | url           | http://example.com:123/test/index?param=value |
+      | url           | http://example.com:123/metal/index?param=value |
 

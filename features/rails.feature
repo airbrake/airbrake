@@ -132,8 +132,8 @@ Feature: Install the Gem in a Rails application
     When I generate a new Rails application
     And I configure the Hoptoad shim
     And I configure the Heroku rake shim
+    And I configure the Heroku gem shim with "myapikey"
     And I configure my application to require the "hoptoad_notifier" gem
-    And I set the environment variable "HOPTOAD_API_KEY" to "myapikey"
     And I run the hoptoad generator with "--heroku"
     Then the command should have run successfully
     And I should receive a Hoptoad notification
@@ -214,4 +214,26 @@ Feature: Install the Gem in a Rails application
       | error class   | RuntimeError                                  |
       | params        | secret: [FILTERED]                            |
       | session       | secret: [FILTERED]                            |
+      | url           | http://example.com:123/test/index?param=value |
+
+  Scenario: Notify hoptoad within the controller
+    When I generate a new Rails application
+    And I configure the Hoptoad shim
+    And I configure my application to require the "hoptoad_notifier" gem
+    And I run the hoptoad generator with "-k myapikey"
+    And I define a response for "TestController#index":
+      """
+      session[:value] = "test"
+      notify_hoptoad(RuntimeError.new("some message"))
+      render :nothing => true
+      """
+    And I route "/test/index" to "test#index"
+    And I perform a request to "http://example.com:123/test/index?param=value"
+    Then I should receive the following Hoptoad notification:
+      | component     | test                                          |
+      | action        | index                                         |
+      | error message | RuntimeError: some message                    |
+      | error class   | RuntimeError                                  |
+      | session       | value: test                                   |
+      | parameters    | param: value                                  |
       | url           | http://example.com:123/test/index?param=value |

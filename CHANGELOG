@@ -1,3 +1,138 @@
+Version 2.4.2 - Sun Jan 09 09:37:31 -0500 2011
+===============================================================================
+
+Matt Jankowski (1):
+      fix issue where the gsub to replace the html head with javascript was removing the head element entirely
+
+
+Version 2.4.1 - Sat Jan 08 12:17:15 -0500 2011
+===============================================================================
+
+Matt Jankowski (1):
+      restore method which may have been accidentally removed?
+
+
+Version 2.4.0 - Thu Jan 06 15:03:58 -0500 2011
+===============================================================================
+
+Jason Morrison (1):
+      Remove official support for very old Rails version going forward
+
+Version 2.3.14 - Wed Jan 05 14:06:12 -0500 2011
+===============================================================================
+
+Jason Morrison (1):
+      Fix 'require' path
+
+Version 2.3.13 - Mon Jan 03 15:56:20 -0500 2011
+===============================================================================
+
+Dan Croak (1):
+      including twiddle wakka in install instructions
+
+Emma Lindsay (5):
+      Sends more javascript information back to hoptaod
+      Merge branch 'js_notifier_default_fields'
+      Bumping to version 2.3.10
+      Updated jferris-mocha to bourne
+      Update readme to show quotes around error names in ignores
+
+Jason Morrison (8):
+      wip: Supply default url, component, action for JS notifier
+      gracefully fall back to require 'activesupport' if require 'active_support' fails
+      Add non-capistrano deploy instructions
+      Add instructions for heroku gem to Heroku addon README
+      Add AbstractController::ActionNotFound to default ignore list
+      Bumping to version 2.3.12
+      Bugfix: JS Notifier will now insert itself even when <head> tag has attributes
+      Add Heroku deploy notification
+
+Jon Yurek (11):
+      Require bourne, run right cucumber task
+      Get the API key from Heroku
+      Bumped version: 2.3.11
+      Getting green cucumber stories
+      Fakes out the heroku command for cucumber.
+      Mount the metal endpoint in Rails 3 tests.
+      Metal test mounts at /metal
+      Supported versions: 2.3.9, 2.3.10, and 3.0.1
+      Return non-zero on cucumber failure.
+      Controller info for older Rails-es is different.
+      Remove Rails 2.0.2 from official support. Added 3.0.2+3
+
+Trevor Turk (1):
+      Fix default ignores in the README
+
+
+Version 2.3.12 - Wed Nov 03 13:53:18 -0400 2010
+===============================================================================
+
+In general: Update gems, improve testing, improve documentation, improve
+javascript notifier.
+
+Emma Lindsay (4):
+      Sends more javascript information back to hoptaod
+      Merge branch 'js_notifier_default_fields'
+      Bumping to version 2.3.10
+      Updated jferris-mocha to bourne
+
+Jason Morrison (5):
+      wip: Supply default url, component, action for JS notifier
+      gracefully fall back to require 'activesupport' if require 'active_support' fails
+      Add non-capistrano deploy instructions
+      Add instructions for heroku gem to Heroku addon README
+      Add AbstractController::ActionNotFound to default ignore list
+
+Jon Yurek (9):
+      Require bourne, run right cucumber task
+      Get the API key from Heroku
+      Bumped version: 2.3.11
+      Getting green cucumber stories
+      Fakes out the heroku command for cucumber.
+      Mount the metal endpoint in Rails 3 tests.
+      Metal test mounts at /metal
+      Supported versions: 2.3.9, 2.3.10, and 3.0.1
+      Return non-zero on cucumber failure.
+
+
+Version 2.3.10 - Mon Oct 18 17:07:56 -0400 2010
+===============================================================================
+
+Emma Lindsay (2):
+      Sends more javascript information back to hoptaod
+      Merge branch 'js_notifier_default_fields'
+
+Jason Morrison (2):
+      wip: Supply default url, component, action for JS notifier
+      gracefully fall back to require 'activesupport' if require 'active_support' fails
+
+
+Version 2.3.9 - 2010-10-18
+===============================================================================
+
+This patch release contains a handful of bugfixes, and ensures:
+      If hoptoadapp.com is completely unreachable by HTTP, your app is not affected.
+      Controller method #notify_hoptoad is available in Rails 3.  Thanks contributor Kyle Crum!
+
+Chad Pytel (1):
+      also handle Errno::ECONNREFUSED and other http errors
+
+Jason Morrison (4):
+      Add gem versions to test suite
+      Revert "Revert "attempt to debug mail sending on staging""
+      Adding Heroku notifier readme
+      gracefully fall back to require 'activesupport' if require 'active_support' fails
+
+Jon Yurek (2):
+      Bumping version to 2.3.8
+      Adds builder to the gemspec
+
+Kyle Crum (3):
+      notify_hoptoad now works in rails 3 controllers
+      more sane way of testing for rails 3 controller methods
+      added a scenario for using the notify_hoptoad method within a controller
+
+
 Version 2.3.7 - 2010-09-15
 ===============================================================================
 
@@ -218,6 +353,14 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
+
+
+
+
+
+
+
 
 
 

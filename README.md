@@ -36,7 +36,7 @@ Remove the vendor/plugins/hoptoad_notifier directory before installing the gem, 
 
 Add the hoptoad_notifier gem to your Gemfile.  In Gemfile:
 
-    gem 'hoptoad_notifier'
+    gem "hoptoad_notifier", "~> 2.3"
 
 Then from your project's RAILS_ROOT, run:
 
@@ -243,6 +243,11 @@ When Hoptoad is installed as a gem, you need to add
 
 to your deploy.rb
 
+If you don't use Capistrano, then you can use the following rake task from your
+deployment process to notify Hoptoad:
+
+    rake hoptoad:deploy TO=#{rails_env} REVISION=#{current_revision} REPO=#{repository} USER=#{local_user}
+
 Going beyond exceptions
 -----------------------
 
@@ -304,6 +309,7 @@ notifications (when #notify is called directly).
 
 Hoptoad ignores the following exceptions by default:
 
+    AbstractController::ActionNotFound
     ActiveRecord::RecordNotFound
     ActionController::RoutingError
     ActionController::InvalidAuthenticityToken
@@ -315,7 +321,7 @@ configuration block.
 
     HoptoadNotifier.configure do |config|
       config.api_key      = '1234567890abcdef'
-      config.ignore       << ActiveRecord::IgnoreThisError
+      config.ignore       << "ActiveRecord::IgnoreThisError"
     end
 
 To ignore *only* certain errors (and override the defaults), use the
@@ -323,7 +329,7 @@ To ignore *only* certain errors (and override the defaults), use the
 
     HoptoadNotifier.configure do |config|
       config.api_key      = '1234567890abcdef'
-      config.ignore_only  = [ActiveRecord::IgnoreThisError]
+      config.ignore_only  = ["ActiveRecord::IgnoreThisError"]
     end
 
 To ignore certain user agents, add in the #ignore_user_agent attribute as a

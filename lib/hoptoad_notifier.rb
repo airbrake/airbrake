@@ -1,7 +1,11 @@
 require 'net/http'
 require 'net/https'
 require 'rubygems'
-require 'active_support'
+begin
+  require 'active_support'
+rescue LoadError
+  require 'activesupport'
+end
 require 'hoptoad_notifier/version'
 require 'hoptoad_notifier/configuration'
 require 'hoptoad_notifier/notice'

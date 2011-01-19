@@ -6,5 +6,18 @@ When /^I define a Metal endpoint called "([^\"]*)":$/ do |class_name, definition
     file.puts definition
     file.puts "end"
   end
+  When %{the metal endpoint "#{class_name}" is mounted in the Rails 3 routes.rb} if rails3?
 end
 
+When /^the metal endpoint "([^\"]*)" is mounted in the Rails 3 routes.rb$/ do |class_name|
+  routesrb = File.join(RAILS_ROOT, "config", "routes.rb")
+  routes = IO.readlines(routesrb)
+  rack_route = "match '/metal(/*other)' => #{class_name}"
+  routes = routes[0..-2] + [rack_route, routes[-1]]
+  File.open(routesrb, "w") do |f|
+    f.puts "require 'app/metal/#{class_name.underscore}'"
+    routes.each do |route_line|
+      f.puts route_line
+    end
+  end
+end
