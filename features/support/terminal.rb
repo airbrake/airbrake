@@ -4,6 +4,12 @@ Before do
   @terminal = Terminal.new
 end
 
+After do |story|
+  if story.failed?
+    # puts @terminal.output
+  end
+end
+
 class Terminal
   attr_reader :output, :status
   attr_accessor :environment_variables, :invoke_heroku_rake_tasks_locally

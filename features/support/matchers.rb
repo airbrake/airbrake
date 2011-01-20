@@ -31,3 +31,5 @@ Spec::Matchers.define :have_content do |xpath, content|
     end
   end
 end
+
+World(Spec::Matchers)
