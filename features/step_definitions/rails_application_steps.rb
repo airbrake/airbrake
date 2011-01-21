@@ -206,6 +206,12 @@ When /^I perform a request to "([^\"]*)" in the "([^\"]*)" environment$/ do |uri
   perform_request(uri, environment)
 end
 
+Given /^the response page for a "([^\"]*)" error is$/ do |error, html|
+  File.open(File.join(RAILS_ROOT, "public", "#{error}.html"), "w") do |file|
+    file.write(html)
+  end
+end
+
 Then /^I should receive the following Hoptoad notification:$/ do |table|
   exceptions = @terminal.output.scan(%r{Recieved the following exception:\n([^\n]*)\n}m)
   exceptions.should_not be_empty

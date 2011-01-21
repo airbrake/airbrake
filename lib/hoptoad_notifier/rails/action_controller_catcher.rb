@@ -14,7 +14,8 @@ module HoptoadNotifier
       # any custom processing that is defined with Rails 2's exception helpers.
       def rescue_action_in_public_with_hoptoad(exception)
         unless hoptoad_ignore_user_agent?
-          HoptoadNotifier.notify_or_ignore(exception, hoptoad_request_data)
+          error_id = HoptoadNotifier.notify_or_ignore(exception, hoptoad_request_data)
+          request.env['hoptoad.error_id'] = error_id
         end
         rescue_action_in_public_without_hoptoad(exception)
       end

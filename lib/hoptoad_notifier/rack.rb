@@ -26,12 +26,14 @@ module HoptoadNotifier
       begin
         response = @app.call(env)
       rescue Exception => raised
-        HoptoadNotifier.notify_or_ignore(raised, :rack_env => env)
+        error_id = HoptoadNotifier.notify_or_ignore(raised, :rack_env => env)
+        env['hoptoad.error_id'] = error_id
         raise
       end
 
       if env['rack.exception']
-        HoptoadNotifier.notify_or_ignore(env['rack.exception'], :rack_env => env)
+        error_id = HoptoadNotifier.notify_or_ignore(env['rack.exception'], :rack_env => env)
+        env['hoptoad.error_id'] = error_id
       end
 
       response

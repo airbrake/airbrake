@@ -63,6 +63,7 @@ class Terminal
   def build_and_install_gem(gemspec)
     pkg_dir = File.join(TEMP_DIR, 'pkg')
     FileUtils.mkdir_p(pkg_dir)
+    `rake gemspec`
     output = `gem build #{gemspec} 2>&1`
     gem_file = Dir.glob("*.gem").first
     unless gem_file

@@ -16,11 +16,10 @@ class SenderTest < Test::Unit::TestCase
     notice = args.delete(:notice) || build_notice_data
     sender = args.delete(:sender) || build_sender(args)
     sender.send_to_hoptoad(notice)
-    sender
   end
 
-  def stub_http
-    response = stub(:body => 'body')
+  def stub_http(options = {})
+    response = stub(:body => options[:body] || 'body')
     http = stub(:post          => response,
                 :read_timeout= => nil,
                 :open_timeout= => nil,
@@ -56,6 +55,17 @@ class SenderTest < Test::Unit::TestCase
     assert_received(Net::HTTP, :Proxy) do |expect|
       expect.with(proxy_host, proxy_port, proxy_user, proxy_pass)
     end
+  end
+
+  should "return the created group's id on successful posting" do
+    http = stub_http(:body => '<error-id type="integer">3799307</error-id>')
+    assert_equal "3799307", send_exception(:secure => false)
+  end
+
+  should "return nil on failed posting" do
+    http = stub_http
+    http.stubs(:post).raises(Errno::ECONNREFUSED)
+    assert_equal nil, send_exception(:secure => false)
   end
 
   should "not fail when posting and a timeout exception occurs" do

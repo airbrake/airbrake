@@ -9,6 +9,7 @@ module HoptoadNotifier
 
     initializer "hoptoad.use_rack_middleware" do |app|
       app.config.middleware.use "HoptoadNotifier::Rack"
+      app.config.middleware.insert_after "Rack::Lock", "HoptoadNotifier::UserInformer"
     end
 
     config.after_initialize do

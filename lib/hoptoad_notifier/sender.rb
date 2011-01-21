@@ -46,6 +46,11 @@ module HoptoadNotifier
       else
         log :error, "Failure: #{response.class}", response
       end
+
+      if response && response.respond_to?(:body)
+        error_id = response.body.match(%r{<error-id[^>]*>(.*?)</error-id>})
+        error_id[1] if error_id
+      end
     end
 
     private

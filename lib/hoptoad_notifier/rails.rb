@@ -23,6 +23,8 @@ module HoptoadNotifier
       if defined?(::Rails.configuration) && ::Rails.configuration.respond_to?(:middleware)
         ::Rails.configuration.middleware.insert_after 'ActionController::Failsafe',
                                                       HoptoadNotifier::Rack
+        ::Rails.configuration.middleware.insert_after 'Rack::Lock',
+                                                      HoptoadNotifier::UserInformer
       end
 
       HoptoadNotifier.configure(true) do |config|

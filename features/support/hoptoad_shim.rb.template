@@ -3,5 +3,13 @@ require 'sham_rack'
 ShamRack.at("hoptoadapp.com") do |env|
   xml = env['rack.input'].read
   puts "Recieved the following exception:\n#{xml}"
-  ["200 OK", { "Content-type" => "text/xml" }, "<notice/>"]
+  response = <<-end_xml
+<?xml version="1.0" encoding="UTF-8"?>
+<notice>
+  <error-id type="integer">3799307</error-id>
+  <url>http://sample.hoptoadapp.com/errors/3799307/notices/643732254</url>
+  <id type="integer">643732254</id>
+</notice>
+  end_xml
+  ["200 OK", { "Content-type" => "text/xml" }, response]
 end

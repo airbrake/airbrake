@@ -25,6 +25,8 @@ class ActionControllerCatcherTest < Test::Unit::TestCase
 
   def assert_sent_hash(hash, xpath)
     hash.each do |key, value|
+      next if key.match(/^hoptoad\./) # We added this key.
+
       element_xpath = "#{xpath}/var[@key = '#{key}']"
       if value.respond_to?(:to_hash)
         assert_sent_hash value.to_hash, element_xpath
