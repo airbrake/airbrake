@@ -398,15 +398,25 @@ not working properly.
 Javascript Notifer
 ------------------
 
-To automatically include the Javascript node on every page, set the
-:js_notifier to true:
+To automatically include the Javascript node on every page, use this helper method from your layouts:
 
-  HoptoadNotifier.configure do |config|
-    config.js_notifier = true
-  end
+    <%= hoptoad_javascript_notifier %>
 
-It automatically uses the API key, host, and port specified in the
-configuration.
+It's important to insert this very high in the markup, above all other javascript.  Example:
+
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf8">
+        <%= hoptoad_javascript_notifier %>
+        <!-- more javascript -->
+      </head>
+      <body>
+        ...
+      </body>
+    </html>
+
+This helper will automatically use the API key, host, and port specified in the configuration.
 
 Credits
 -------

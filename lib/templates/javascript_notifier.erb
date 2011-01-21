@@ -1,17 +1,13 @@
-<script type="text/javascript"> 
-//<![CDATA[
-var notifierJsScheme = (("https:" == document.location.protocol) ? "https://" : "http://");
-document.write(unescape("%3Cscript src='" + notifierJsScheme + "<%= host %>/javascripts/notifier.js' type='text/javascript'%3E%3C/script%3E"));
-//]]>
-</script> 
+<%= javascript_tag %Q{
+    var notifierJsScheme = (("https:" == document.location.protocol) ? "https://" : "http://");
+    document.write(unescape("%3Cscript src='" + notifierJsScheme + "#{host}/javascripts/notifier.js' type='text/javascript'%3E%3C/script%3E"));
+  }
+-%>
 
-<script type="text/javascript">
-  Hoptoad.setKey('<%= api_key %>');
-  Hoptoad.setHost('<%= host %>');
-  Hoptoad.setEnvironment('<%= environment %>');
-    Hoptoad.setErrorDefaults({
-      url: "<%= a = "#{controller.request.protocol}#{controller.request.host_with_port}#{controller.request.request_uri}"; p a; a %>",
-      component: "<%= controller.controller_name %>",
-      action: "<%= controller.action_name %>"
-  });
-</script>
+<%= javascript_tag %Q{
+    Hoptoad.setKey('#{api_key}');
+    Hoptoad.setHost('#{host}');
+    Hoptoad.setEnvironment('#{environment}');
+    Hoptoad.setErrorDefaults({ url: "#{escape_javascript url}", component: "#{controller_name}", action: "#{action_name}" });
+  } 
+-%>

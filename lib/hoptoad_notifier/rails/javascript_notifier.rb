@@ -2,44 +2,39 @@ module HoptoadNotifier
   module Rails
     module JavascriptNotifier
       def self.included(base) #:nodoc:
-        base.send(:after_filter, :insert_hoptoad_javascript_notifier)
+        base.send :helper_method, :hoptoad_javascript_notifier
       end
 
       private
 
-      def insert_hoptoad_javascript_notifier
+      def hoptoad_javascript_notifier
         return unless HoptoadNotifier.configuration.public?
-        return unless HoptoadNotifier.configuration.js_notifier
 
-        path = File.join(File.dirname(__FILE__), '..', '..', 'templates', 'javascript_notifier.erb')
+        path = File.join File.dirname(__FILE__), '..', '..', 'templates', 'javascript_notifier.erb'
         host = HoptoadNotifier.configuration.host.dup
         port = HoptoadNotifier.configuration.port
         host << ":#{port}" unless [80, 443].include?(port)
 
-        options = {
-          :file          => path,
-          :layout        => false,
-          :use_full_path => false,
-          :locals        => {
-            :host        => host,
-            :api_key     => HoptoadNotifier.configuration.api_key,
-            :environment => HoptoadNotifier.configuration.environment_name
+        options              = {
+          :file              => path,
+          :layout            => false,
+          :use_full_path     => false,
+          :locals            => {
+            :host            => host,
+            :api_key         => HoptoadNotifier.configuration.api_key,
+            :environment     => HoptoadNotifier.configuration.environment_name,
+            :action_name     => action_name,
+            :controller_name => controller_name,
+            :url             => request.url
           }
         }
 
         if @template
-          javascript = @template.render(options)
+          @template.render(options)
         else
-          javascript = render_to_string(options)
+          render_to_string(options)
         end
 
-        if response.body.respond_to?(:gsub)
-          response.body = insert_javascript_after_head response.body, javascript
-        end
-      end
-
-      def insert_javascript_after_head(body, javascript)
-        body.gsub /<(head.*?)>/i, "<\\1>\n#{javascript}\n"
       end
 
     end

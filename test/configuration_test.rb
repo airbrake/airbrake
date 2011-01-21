@@ -29,7 +29,6 @@ class ConfigurationTest < Test::Unit::TestCase
                           HoptoadNotifier::Configuration::IGNORE_DEFAULT
     assert_config_default :development_lookup, true
     assert_config_default :framework, 'Standalone'
-    assert_config_default :js_notifier, false
   end
 
   should "provide default values for secure connections" do
@@ -85,7 +84,7 @@ class ConfigurationTest < Test::Unit::TestCase
      :http_read_timeout, :ignore, :ignore_by_filters, :ignore_user_agent,
      :notifier_name, :notifier_url, :notifier_version, :params_filters,
      :project_root, :port, :protocol, :proxy_host, :proxy_pass, :proxy_port,
-     :proxy_user, :secure, :development_lookup, :js_notifier].each do |option|
+     :proxy_user, :secure, :development_lookup].each do |option|
       assert_equal config[option], hash[option], "Wrong value for #{option}"
     end
   end
@@ -106,6 +105,14 @@ class ConfigurationTest < Test::Unit::TestCase
       expects(:warn).
       with(regexp_matches(/deprecated/i))
     assert_equal [], config.environment_filters
+  end
+
+  should "warn when attempting to write js_notifier" do
+    config = HoptoadNotifier::Configuration.new
+    config.
+      expects(:warn).
+      with(regexp_matches(/deprecated/i))
+    config.js_notifier = true
   end
 
   should "allow ignored user agents to be appended" do

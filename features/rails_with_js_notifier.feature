@@ -10,11 +10,10 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
     When I configure the notifier to use the following configuration lines:
       """
       config.api_key     = "myapikey"
-      config.js_notifier = true
       """
     And I define a response for "TestController#index":
       """
-        render :text => '<html><head profile="http://example.com"></head><body></body></html>'
+        render :inline => '<html><head profile="http://example.com"><%= hoptoad_javascript_notifier %></head><body></body></html>'
       """
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index"
@@ -24,10 +23,6 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
     And the notifier JavaScript should provide the following errorDefaults:
       | url                           | component | action |
       | http://example.com:123/test/index | test      | index  |
-    And I should see the following value as the html head:
-      """
-        <head profile="http://example.com">
-      """
 
   Scenario: Include the Javascript notifier when enabled using custom configuration settings
     When I generate a new Rails application
@@ -38,23 +33,18 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
       config.api_key     = "myapikey!"
       config.host        = "myhoptoad.com"
       config.port        = 3001
-      config.js_notifier = true
       """
     And I define a response for "TestController#index":
       """
-        render :text => "<html><head></head><body></body></html>"
+        render :inline => '<html><head><%= hoptoad_javascript_notifier %></head><body></body></html>'
       """
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index"
     Then I should see the notifier JavaScript for the following:
       | api_key   | environment | host               |
       | myapikey! | production  | myhoptoad.com:3001 |
-      And I should see the following value as the html head:
-        """
-          <head>
-        """
 
-  Scenario: Don't include the Javascript notifier by default
+  Scenario: Dont include the Javascript notifier by default
     When I generate a new Rails application
     And I configure the Hoptoad shim
     And I configure my application to require the "hoptoad_notifier" gem
@@ -64,25 +54,24 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
       """
     And I define a response for "TestController#index":
       """
-        render :text => "<html><head></head><body></body></html>"
+        render :inline => "<html><head></head><body></body></html>"
       """
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index"
     Then I should not see notifier JavaScript
 
-  Scenario: Don't include the Javascript notifier when enabled in non-public environments
+  Scenario: Dont include the Javascript notifier when enabled in non-public environments
     When I generate a new Rails application
     And I configure the Hoptoad shim
     And I configure my application to require the "hoptoad_notifier" gem
     When I configure the notifier to use the following configuration lines:
       """
       config.api_key          = "myapikey!"
-      config.js_notifier      = true
       config.environment_name = 'test'
       """
     And I define a response for "TestController#index":
       """
-        render :text => "<html><head></head><body></body></html>"
+        render :inline => '<html><head><%= hoptoad_javascript_notifier %></head><body></body></html>'
       """
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index" in the "test" environment
