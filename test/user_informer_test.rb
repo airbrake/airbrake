@@ -11,8 +11,8 @@ class UserInformerTest < Test::Unit::TestCase
     ShamRack.mount(informer_app, "example.com")
 
     response = Net::HTTP.get_response(URI.parse("http://example.com/"))
-    assert_equal "Error #1", response.body
-    assert_equal 8, response["Content-Length"].to_i
+    assert_equal "Hoptoad Error 1", response.body
+    assert_equal 15, response["Content-Length"].to_i
   end
 
   should "not modify output if there is no hoptoad id" do
