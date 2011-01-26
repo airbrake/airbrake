@@ -1,3 +1,10 @@
+Version 2.4.3 - Wed Jan 26 11:35:15 -0500 2011
+===============================================================================
+
+Jon Yurek (1):
+      Allow the application to present the Hoptoad error number to the user
+
+
 Version 2.4.2 - Sun Jan 09 09:37:31 -0500 2011
 ===============================================================================
 
@@ -353,6 +360,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
