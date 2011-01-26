@@ -44,7 +44,7 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
       | api_key   | environment | host               |
       | myapikey! | production  | myhoptoad.com:3001 |
 
-  Scenario: Dont include the Javascript notifier by default
+  Scenario: Don't include the Javascript notifier by default
     When I generate a new Rails application
     And I configure the Hoptoad shim
     And I configure my application to require the "hoptoad_notifier" gem
@@ -60,7 +60,7 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
     And I perform a request to "http://example.com:123/test/index"
     Then I should not see notifier JavaScript
 
-  Scenario: Dont include the Javascript notifier when enabled in non-public environments
+  Scenario: Don't include the Javascript notifier when enabled in non-public environments
     When I generate a new Rails application
     And I configure the Hoptoad shim
     And I configure my application to require the "hoptoad_notifier" gem
