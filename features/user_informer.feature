@@ -26,7 +26,7 @@ Feature: Inform the user of the hoptoad notice that was just created
     And I configure my application to require the "hoptoad_notifier" gem
     And I configure the notifier to use the following configuration lines:
     """
-    config.user_information = "Error #{{ error_id }}"
+    config.user_information = 'Error #{{ error_id }}'
     """
     And I run the hoptoad generator with "-k myapikey"
     And I define a response for "TestController#index":
