@@ -4,7 +4,7 @@ class UserInformerTest < Test::Unit::TestCase
   should "modify output if there is a hoptoad id" do
     main_app = lambda do |env|
       env['hoptoad.error_id'] = 1
-      [200, {}, "<!-- HOPTOAD ERROR -->"]
+      [200, {}, ["<!-- HOPTOAD ERROR -->"]]
     end
     informer_app = HoptoadNotifier::UserInformer.new(main_app)
 
@@ -17,7 +17,7 @@ class UserInformerTest < Test::Unit::TestCase
 
   should "not modify output if there is no hoptoad id" do
     main_app = lambda do |env|
-      [200, {}, "<!-- HOPTOAD ERROR -->"]
+      [200, {}, ["<!-- HOPTOAD ERROR -->"]]
     end
     informer_app = HoptoadNotifier::UserInformer.new(main_app)
 
