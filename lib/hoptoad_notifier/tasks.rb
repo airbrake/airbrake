@@ -8,7 +8,7 @@ namespace :hoptoad do
 
     require 'action_controller/test_process'
 
-    Dir["app/controllers/application*.rb"].each { |file| require(file) }
+    Dir["app/controllers/application*.rb"].each { |file| require(File.expand_path(file)) } 
 
     class HoptoadTestingException < RuntimeError; end
 
