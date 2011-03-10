@@ -38,7 +38,7 @@ class HoptoadGenerator < Rails::Generators::Base
     if File.exists?('config/deploy.rb') && File.exists?('Capfile')
       append_file('config/deploy.rb', <<-HOOK)
 
-        require 'config/boot'
+        require './config/boot'
         require 'hoptoad_notifier/capistrano'
       HOOK
     end
