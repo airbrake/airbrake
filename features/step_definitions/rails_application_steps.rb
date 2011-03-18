@@ -18,12 +18,13 @@ When /^I generate a new Rails application$/ do
     load Gem.bin_path('rails', 'rails', '#{version_string}')
   RUBY
 
-  @terminal.run(%{ruby -rubygems -e "#{load_rails.strip!}" #{rails_create_command} rails_root})
+  @terminal.run(%{ruby -rrubygems -rthread -e "#{load_rails.strip!}" #{rails_create_command} rails_root})
   if rails_root_exists?
     @terminal.echo("Generated a Rails #{version_string} application")
   else
     raise "Unable to generate a Rails application:\n#{@terminal.output}"
   end
+  require_thread
 end
 
 When /^I run the hoptoad generator with "([^\"]*)"$/ do |generator_args|

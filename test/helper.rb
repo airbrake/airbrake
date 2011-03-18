@@ -12,6 +12,7 @@ gem "sham_rack",     "~> 1.3.0"
 $LOAD_PATH << File.join(File.dirname(__FILE__), *%w[.. vendor ginger lib])
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
 
+require 'thread'
 require 'shoulda'
 require 'mocha'
 

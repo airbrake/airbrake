@@ -56,6 +56,10 @@ module RailsHelpers
     File.join(RAILS_ROOT, 'config', 'environment.rb')
   end
 
+  def rakefile_path
+    File.join(RAILS_ROOT, 'Rakefile')
+  end
+
   def bundle_gem(gem_name)
     File.open(gemfile_path, 'a') do |file|
       file.puts("gem '#{gem_name}'")
@@ -63,14 +67,21 @@ module RailsHelpers
   end
 
   def config_gem(gem_name)
-    run = "Rails::Initializer.run do |config|"
-    insert = "  config.gem '#{gem_name}'"
+    run     = "Rails::Initializer.run do |config|"
+    insert  = "  config.gem '#{gem_name}'"
     content = File.read(environment_path)
+    content = "require 'thread'\n#{content}"
     if content.sub!(run, "#{run}\n#{insert}")
       File.open(environment_path, 'wb') { |file| file.write(content) }
     else
       raise "Couldn't find #{run.inspect} in #{environment_path}"
     end
+  end
+
+  def require_thread
+    content = File.read(rakefile_path)
+    content = "require 'thread'\n#{content}"
+    File.open(rakefile_path, 'wb') { |file| file.write(content) }
   end
 
   def perform_request(uri, environment = 'production')
@@ -89,7 +100,8 @@ module RailsHelpers
       SCRIPT
       File.open(File.join(RAILS_ROOT, 'request.rb'), 'w') { |file| file.write(request_script) }
       @terminal.cd(RAILS_ROOT)
-      @terminal.run("./script/rails runner -e #{environment} request.rb")
+      debugger
+      @terminal.run("ruby -rthread ./script/rails runner -e #{environment} request.rb")
     elsif rails_uses_rack?
       request_script = <<-SCRIPT
         require 'config/environment'
@@ -110,7 +122,7 @@ module RailsHelpers
       SCRIPT
       File.open(File.join(RAILS_ROOT, 'request.rb'), 'w') { |file| file.write(request_script) }
       @terminal.cd(RAILS_ROOT)
-      @terminal.run("./script/runner -e #{environment} request.rb")
+      @terminal.run("ruby -rthread ./script/runner -e #{environment} request.rb")
     else
       uri = URI.parse(uri)
       request_script = <<-SCRIPT
@@ -139,7 +151,7 @@ module RailsHelpers
       SCRIPT
       File.open(File.join(RAILS_ROOT, 'request.rb'), 'w') { |file| file.write(request_script) }
       @terminal.cd(RAILS_ROOT)
-      @terminal.run("./script/runner -e #{environment} request.rb")
+      @terminal.run("ruby -rthread ./script/runner -e #{environment} request.rb")
     end
   end
 end
