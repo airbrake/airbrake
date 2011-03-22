@@ -228,6 +228,26 @@ To perform custom error processing after Hoptoad has been notified, define the
 instance method #rescue_action_in_public_without_hoptoad(exception) in your
 controller.
 
+Informing the User
+------------------
+
+The Notifier gem is capable of telling the user information about the error that just happened
+via the user_informer option. They can give this error number in bug resports, for example.
+By default, if your 500.html contains the text
+
+    <!-- HOPTOAD ERROR -->
+
+then that comment will be replaced with the text "Hoptoad Error [errnum]". You can modify the text
+of the informer by setting config.user_informer. The Notifier will replace "{{ error_id }}" with the
+ID of the error that is returned from Hoptoad.
+
+  HoptoadNotifier.configure do |config|
+    ...
+    config.user_informer = "<p>Tell the devs that it was <strong>{{ error_id }}</strong>'s fault.</p>"
+  end
+
+You can also turn the middleware completely off by setting config.user_informer to false.
+
 Tracking deployments in Hoptoad
 -------------------------------
 
