@@ -232,21 +232,21 @@ Informing the User
 ------------------
 
 The Notifier gem is capable of telling the user information about the error that just happened
-via the user_informer option. They can give this error number in bug resports, for example.
+via the user_information option. They can give this error number in bug resports, for example.
 By default, if your 500.html contains the text
 
     <!-- HOPTOAD ERROR -->
 
 then that comment will be replaced with the text "Hoptoad Error [errnum]". You can modify the text
-of the informer by setting config.user_informer. The Notifier will replace "{{ error_id }}" with the
+of the informer by setting config.user_information. The Notifier will replace "{{ error_id }}" with the
 ID of the error that is returned from Hoptoad.
 
   HoptoadNotifier.configure do |config|
     ...
-    config.user_informer = "<p>Tell the devs that it was <strong>{{ error_id }}</strong>'s fault.</p>"
+    config.user_information = "<p>Tell the devs that it was <strong>{{ error_id }}</strong>'s fault.</p>"
   end
 
-You can also turn the middleware completely off by setting config.user_informer to false.
+You can also turn the middleware completely off by setting config.user_information to false.
 
 Tracking deployments in Hoptoad
 -------------------------------
