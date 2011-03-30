@@ -24,6 +24,7 @@ module HoptoadTasks
       return false
     end
 
+    dry_run = opts.delete(:dry_run)
     params = {'api_key' => opts.delete(:api_key) ||
                              HoptoadNotifier.configuration.api_key}
     opts.each {|k,v| params["deploy[#{k}]"] = v }
@@ -34,8 +35,8 @@ module HoptoadTasks
                             HoptoadNotifier.configuration.proxy_port,
                             HoptoadNotifier.configuration.proxy_user,
                             HoptoadNotifier.configuration.proxy_pass)
-    
-    if opts[:dry_run]
+
+    if dry_run
       puts url, params.inspect
       return true
     else
