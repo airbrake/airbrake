@@ -158,6 +158,7 @@ RAILS_VERSIONS = IO.read('SUPPORTED_RAILS_VERSIONS').strip.split("\n")
 LOCAL_GEMS = [['sham_rack', nil], ['capistrano', nil], ['sqlite3-ruby', nil], ['sinatra', nil]] +
   RAILS_VERSIONS.collect { |version| ['rails', version] }
 
+desc "Vendor test gems: Run this once to prepare your test environment"
 task :vendor_test_gems do
   old_gem_path = ENV['GEM_PATH']
   old_gem_home = ENV['GEM_HOME']
