@@ -63,11 +63,9 @@ namespace :hoptoad do
 
       def exception_class
         exception_name = ENV['EXCEPTION'] || "HoptoadTestingException"
-        klass = Object
-        exception_name.split("::").each{|o| klass = klass.const_get(o)}
-        klass
+        exception_name.split("::").inject(Object){|klass, name| klass.const_get(name)}
       rescue
-        Object.const_set(exception_name, Class.new(Exception))
+        Object.const_set(exception_name.gsub(/:+/, "_"), Class.new(Exception))
       end
 
       def logger
