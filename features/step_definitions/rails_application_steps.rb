@@ -25,6 +25,7 @@ When /^I generate a new Rails application$/ do
     raise "Unable to generate a Rails application:\n#{@terminal.output}"
   end
   require_thread
+  config_gem_dependencies unless rails3
 end
 
 When /^I run the hoptoad generator with "([^\"]*)"$/ do |generator_args|

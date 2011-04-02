@@ -78,6 +78,28 @@ module RailsHelpers
     end
   end
 
+  def config_gem_dependencies
+    insert = <<-END
+    if Gem::VERSION >= "1.3.6"
+      module Rails
+        class GemDependency
+          def requirement
+            r = super
+            (r == Gem::Requirement.default) ? nil : r
+          end
+        end
+      end
+    end
+    END
+    run     = "Rails::Initializer.run do |config|"
+    content = File.read(environment_path)
+    if content.sub!(run, "#{insert}\n#{run}")
+      File.open(environment_path, 'wb') { |file| file.write(content) }
+    else
+      raise "Couldn't find #{run.inspect} in #{environment_path}"
+    end
+  end
+
   def require_thread
     content = File.read(rakefile_path)
     content = "require 'thread'\n#{content}"
@@ -100,7 +122,6 @@ module RailsHelpers
       SCRIPT
       File.open(File.join(RAILS_ROOT, 'request.rb'), 'w') { |file| file.write(request_script) }
       @terminal.cd(RAILS_ROOT)
-      debugger
       @terminal.run("ruby -rthread ./script/rails runner -e #{environment} request.rb")
     elsif rails_uses_rack?
       request_script = <<-SCRIPT
