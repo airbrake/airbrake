@@ -23,6 +23,8 @@ class SenderTest < Test::Unit::TestCase
     http = stub(:post          => response,
                 :read_timeout= => nil,
                 :open_timeout= => nil,
+                :ca_file=      => nil,
+                :verify_mode=  => nil,
                 :use_ssl=      => nil)
     Net::HTTP.stubs(:new => http)
     http
@@ -106,6 +108,21 @@ class SenderTest < Test::Unit::TestCase
     http = stub_http
     send_exception(:secure => true)
     assert_received(http, :post) {|expect| expect.with(HoptoadNotifier::Sender::NOTICES_URI, anything, HoptoadNotifier::HEADERS) }
+  end
+
+  should "verify the SSL peer when the use_ssl option is set to true" do
+    url = "https://hoptoadapp.com#{HoptoadNotifier::Sender::NOTICES_URI}"
+    uri = URI.parse(url)
+
+    real_http = Net::HTTP.new(uri.host, uri.port)
+    real_http.stubs(:post => nil)
+    proxy = stub(:new => real_http)
+    Net::HTTP.stubs(:Proxy => proxy)
+
+    send_exception(:secure => true)
+    assert(real_http.use_ssl)
+    assert_equal(OpenSSL::SSL::VERIFY_PEER,        real_http.verify_mode)
+    assert_equal(OpenSSL::X509::DEFAULT_CERT_FILE, real_http.ca_file)
   end
 
   should "default the open timeout to 2 seconds" do
