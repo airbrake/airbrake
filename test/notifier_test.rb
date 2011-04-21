@@ -82,6 +82,19 @@ class NotifierTest < Test::Unit::TestCase
     assert_sent(notice, notice_args)
   end
 
+  should "create and send a notice for an exception that responds to to_hash" do
+    set_public_env
+    exception = build_exception
+    notice = stub_notice!
+    notice_args = { :error_message => 'uh oh' }
+    exception.stubs(:to_hash).returns(notice_args)
+    stub_sender!
+
+    HoptoadNotifier.notify(exception)
+
+    assert_sent(notice, notice_args.merge(:exception => exception))
+  end
+
   should "create and sent a notice for an exception and hash" do
     set_public_env
     exception = build_exception
