@@ -57,7 +57,7 @@ class NoticeTest < Test::Unit::TestCase
 
   should "set the host name" do
     notice = build_notice
-    assert_equal `hostname`.chomp, notice.host_name
+    assert_equal hostname, notice.host_name
   end
 
   should "accept a backtrace from an exception or hash" do
@@ -246,7 +246,7 @@ class NoticeTest < Test::Unit::TestCase
 
       assert_valid_node(@document, "//server-environment/project-root",     "RAILS_ROOT")
       assert_valid_node(@document, "//server-environment/environment-name", "RAILS_ENV")
-      assert_valid_node(@document, "//server-environment/host-name", `hostname`.chomp)
+      assert_valid_node(@document, "//server-environment/host-name", hostname)
     end
   end
 
@@ -450,6 +450,10 @@ class NoticeTest < Test::Unit::TestCase
   def build_backtrace_array
     ["app/models/user.rb:13:in `magic'",
       "app/controllers/users_controller.rb:8:in `index'"]
+  end
+
+  def hostname
+    `hostname`.chomp
   end
 
 end
