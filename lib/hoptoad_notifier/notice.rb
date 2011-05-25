@@ -1,4 +1,5 @@
 require 'builder'
+require 'socket'
 
 module HoptoadNotifier
   class Notice
@@ -65,6 +66,9 @@ module HoptoadNotifier
     # A URL for more information about the notifier library sending this notice
     attr_reader :notifier_url
 
+    # The host name where this error occurred (if any)
+    attr_reader :host_name
+
     def initialize(args)
       self.args         = args
       self.exception    = args[:exception]
@@ -94,6 +98,8 @@ module HoptoadNotifier
       self.error_message    = exception_attribute(:error_message, 'Notification') do |exception|
         "#{exception.class.name}: #{exception.message}"
       end
+
+      self.host_name        = local_host_name
 
       also_use_rack_params_filters
       find_session_data
@@ -153,6 +159,7 @@ module HoptoadNotifier
         notice.tag!("server-environment") do |env|
           env.tag!("project-root", project_root)
           env.tag!("environment-name", environment_name)
+          env.tag!("host-name", host_name)
         end
       end
       xml.to_s
@@ -185,7 +192,7 @@ module HoptoadNotifier
       :backtrace_filters, :parameters, :params_filters,
       :environment_filters, :session_data, :project_root, :url, :ignore,
       :ignore_by_filters, :notifier_name, :notifier_url, :notifier_version,
-      :component, :action, :cgi_data, :environment_name
+      :component, :action, :cgi_data, :environment_name, :host_name
 
     # Arguments given in the initializer
     attr_accessor :args
@@ -331,6 +338,10 @@ module HoptoadNotifier
         @params_filters ||= []
         @params_filters += rack_request.env["action_dispatch.parameter_filter"] || []
       end
+    end
+
+    def local_host_name
+      Socket.gethostname
     end
 
   end
