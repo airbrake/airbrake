@@ -25,6 +25,7 @@ When /^I generate a new Rails application$/ do
     raise "Unable to generate a Rails application:\n#{@terminal.output}"
   end
   require_thread
+  When %{I configure my application to require the "rake" gem with version "0.8.7"}
   config_gem_dependencies unless rails3
 end
 
@@ -48,11 +49,11 @@ Given /^I have built and installed the "([^\"]*)" gem$/ do |gem_name|
   @terminal.build_and_install_gem(File.join(PROJECT_ROOT, "#{gem_name}.gemspec"))
 end
 
-When /^I configure my application to require the "([^\"]*)" gem$/ do |gem_name|
+When /^I configure my application to require the "([^\"]*)" gem(?: with version "(.+)")?$/ do |gem_name, version|
   if rails_manages_gems?
-    config_gem(gem_name)
+    config_gem(gem_name, version)
   elsif bundler_manages_gems?
-    bundle_gem(gem_name)
+    bundle_gem(gem_name, version)
   else
     File.open(environment_path, 'a') do |file|
       file.puts

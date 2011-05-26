@@ -60,15 +60,18 @@ module RailsHelpers
     File.join(RAILS_ROOT, 'Rakefile')
   end
 
-  def bundle_gem(gem_name)
+  def bundle_gem(gem_name, version = nil)
     File.open(gemfile_path, 'a') do |file|
-      file.puts("gem '#{gem_name}'")
+      gem = "gem '#{gem_name}'"
+      gem += ", '#{version}'" if version
+      file.puts(gem)
     end
   end
 
-  def config_gem(gem_name)
+  def config_gem(gem_name, version = nil)
     run     = "Rails::Initializer.run do |config|"
     insert  = "  config.gem '#{gem_name}'"
+    insert += ", :version => '#{version}'" if version
     content = File.read(environment_path)
     content = "require 'thread'\n#{content}"
     if content.sub!(run, "#{run}\n#{insert}")
