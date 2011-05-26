@@ -12,3 +12,5 @@ tags
 doc
 pkg
 *.gemspec
+
+*.rbc
