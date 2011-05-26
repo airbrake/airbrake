@@ -71,7 +71,7 @@
       <xs:element name="project-root" type="xs:string" minOccurs="0"/>
       <xs:element name="environment-name" type="xs:string"/>
       <xs:element name="app-version" type="xs:string" minOccurs="0"/>
-      <xs:element name="host-name" type="xs:string" minOccurs="0"/>
+      <xs:element name="hostname" type="xs:string" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 

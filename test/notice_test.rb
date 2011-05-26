@@ -57,7 +57,7 @@ class NoticeTest < Test::Unit::TestCase
 
   should "set the host name" do
     notice = build_notice
-    assert_equal hostname, notice.host_name
+    assert_equal hostname, notice.hostname
   end
 
   should "accept a backtrace from an exception or hash" do
@@ -246,7 +246,7 @@ class NoticeTest < Test::Unit::TestCase
 
       assert_valid_node(@document, "//server-environment/project-root",     "RAILS_ROOT")
       assert_valid_node(@document, "//server-environment/environment-name", "RAILS_ENV")
-      assert_valid_node(@document, "//server-environment/host-name", hostname)
+      assert_valid_node(@document, "//server-environment/hostname", hostname)
     end
   end
 
@@ -427,7 +427,7 @@ class NoticeTest < Test::Unit::TestCase
   end
 
   def assert_valid_notice_document(document)
-    xsd_path = File.join(File.dirname(__FILE__), "hoptoad_2_1.xsd")
+    xsd_path = File.join(File.dirname(__FILE__), "hoptoad_2_2.xsd")
     schema = Nokogiri::XML::Schema.new(IO.read(xsd_path))
     errors = schema.validate(document)
     assert errors.empty?, errors.collect{|e| e.message }.join

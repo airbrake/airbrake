@@ -67,7 +67,7 @@ module HoptoadNotifier
     attr_reader :notifier_url
 
     # The host name where this error occurred (if any)
-    attr_reader :host_name
+    attr_reader :hostname
 
     def initialize(args)
       self.args         = args
@@ -99,7 +99,7 @@ module HoptoadNotifier
         "#{exception.class.name}: #{exception.message}"
       end
 
-      self.host_name        = local_host_name
+      self.hostname        = local_hostname
 
       also_use_rack_params_filters
       find_session_data
@@ -159,7 +159,7 @@ module HoptoadNotifier
         notice.tag!("server-environment") do |env|
           env.tag!("project-root", project_root)
           env.tag!("environment-name", environment_name)
-          env.tag!("host-name", host_name)
+          env.tag!("hostname", hostname)
         end
       end
       xml.to_s
@@ -192,7 +192,7 @@ module HoptoadNotifier
       :backtrace_filters, :parameters, :params_filters,
       :environment_filters, :session_data, :project_root, :url, :ignore,
       :ignore_by_filters, :notifier_name, :notifier_url, :notifier_version,
-      :component, :action, :cgi_data, :environment_name, :host_name
+      :component, :action, :cgi_data, :environment_name, :hostname
 
     # Arguments given in the initializer
     attr_accessor :args
@@ -340,7 +340,7 @@ module HoptoadNotifier
       end
     end
 
-    def local_host_name
+    def local_hostname
       Socket.gethostname
     end
 
