@@ -21,7 +21,7 @@ Feature: Install the Gem in a Rails application
     Then the command should have run successfully
     When I uninstall the "hoptoad_notifier" gem
     And I install cached gems
-    And I run "bundle exec rake hoptoad:test"
+    And I run "rake hoptoad:test"
     Then I should see "** [Hoptoad] Success: Net::HTTPOK"
     And I should receive two Hoptoad notifications
 
