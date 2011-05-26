@@ -112,6 +112,8 @@ class ActionControllerCatcherTest < Test::Unit::TestCase
     controller.stubs(:rescue_action_in_public_without_hoptoad)
     opts[:request].query_parameters = opts[:request].query_parameters.merge(opts[:params] || {})
     opts[:request].session = ActionController::TestSession.new(opts[:session] || {})
+    # Prevents request.fullpath from crashing Rails in tests
+    opts[:request].env['REQUEST_URI'] = opts[:request].request_uri
     controller.process(opts[:request], opts[:response])
     controller
   end

@@ -59,7 +59,7 @@ module HoptoadNotifier
           url << ":#{request.port}"
         end
 
-        url << request.request_uri
+        url << request.fullpath
         url
       end
     end
