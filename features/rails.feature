@@ -143,6 +143,21 @@ Feature: Install the Gem in a Rails application
       config.api_key = ENV['HOPTOAD_API_KEY']
       """
 
+  Scenario: Support the --app option for the Heroku addon in the generator
+    When I generate a new Rails application
+    And I configure the Hoptoad shim
+    And I configure the Heroku rake shim
+    And I configure the Heroku gem shim with "myapikey" and multiple app support
+    And I configure my application to require the "hoptoad_notifier" gem
+    And I run the hoptoad generator with "--heroku -a myapp"
+    Then the command should have run successfully
+    And I should receive a Hoptoad notification
+    And I should see the Rails version
+    And my Hoptoad configuration should contain the following line:
+      """
+      config.api_key = ENV['HOPTOAD_API_KEY']
+      """
+
   Scenario: Filtering parameters in a controller
     When I generate a new Rails application
     And I configure the Hoptoad shim

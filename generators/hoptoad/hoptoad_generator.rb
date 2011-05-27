@@ -3,8 +3,9 @@ require File.expand_path(File.dirname(__FILE__) + "/lib/rake_commands.rb")
 
 class HoptoadGenerator < Rails::Generator::Base
   def add_options!(opt)
-    opt.on('-k', '--api-key=key', String, "Your Hoptoad API key")                                 {|v| options[:api_key] = v}
-    opt.on('-h', '--heroku',              "Use the Heroku addon to provide your Hoptoad API key") {|v| options[:heroku]  = v}
+    opt.on('-k', '--api-key=key', String, "Your Hoptoad API key")                                               { |v| options[:api_key] = v}
+    opt.on('-h', '--heroku',              "Use the Heroku addon to provide your Hoptoad API key")               { |v| options[:heroku]  = v}
+    opt.on('-a', '--app=myapp', String,   "Your Heroku app name (only required if deploying to >1 Heroku app)") { |v| options[:app]     = v}
   end
 
   def manifest
@@ -60,7 +61,8 @@ class HoptoadGenerator < Rails::Generator::Base
   end
 
   def heroku_api_key
-    `heroku console 'puts ENV[%{HOPTOAD_API_KEY}]'`.split("\n").first
+    app = options[:app] ? " --app #{options[:app]}" : ''
+    `heroku console#{app} 'puts ENV[%{HOPTOAD_API_KEY}]'`.split("\n").first
   end
 
   def heroku?
