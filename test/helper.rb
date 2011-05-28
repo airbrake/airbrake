@@ -9,14 +9,12 @@ gem "shoulda",       "= 2.11.3"
 gem 'bourne', '>= 1.0'
 gem "sham_rack",     "~> 1.3.0"
 
-$LOAD_PATH << File.join(File.dirname(__FILE__), *%w[.. vendor ginger lib])
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
 
 require 'thread'
 require 'shoulda'
 require 'mocha'
 
-require 'ginger'
 
 
 require 'action_controller'

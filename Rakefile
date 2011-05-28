@@ -14,14 +14,6 @@ Rake::TestTask.new(:test) do |t|
   t.verbose = true
 end
 
-desc 'Run ginger tests'
-task :ginger do
-  $LOAD_PATH << File.join(*%w[vendor ginger lib])
-  ARGV.clear
-  ARGV << 'test'
-  load File.join(*%w[vendor ginger bin ginger])
-end
-
 namespace :changeling do
   desc "Bumps the version by a minor or patch version, depending on what was passed in."
   task :bump, :part do |t, args|
