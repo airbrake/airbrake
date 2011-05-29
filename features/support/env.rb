@@ -1,6 +1,6 @@
 require 'active_support'
 require 'nokogiri'
-require 'spec'
+require 'rspec'
 
 PROJECT_ROOT   = File.expand_path(File.join(File.dirname(__FILE__), '..', '..')).freeze
 TEMP_DIR       = File.join(PROJECT_ROOT, 'tmp').freeze

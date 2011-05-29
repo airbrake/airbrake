@@ -122,6 +122,7 @@ gemspec = Gem::Specification.new do |s|
   s.add_development_dependency("bourne")
   s.add_development_dependency("nokogiri")
   s.add_development_dependency("shoulda")
+  s.add_development_dependency("rspec", '~> 2.6.0')
 
   s.authors = ["thoughtbot, inc"]
   s.email   = %q{support@hoptoadapp.com}
