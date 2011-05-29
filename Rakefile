@@ -125,7 +125,7 @@ gemspec = Gem::Specification.new do |s|
   s.add_development_dependency("activerecord")
   s.add_development_dependency("actionpack")
   s.add_development_dependency("bourne")
-  s.add_development_dependency("nokogiri")
+  s.add_development_dependency("nokogiri", '= 1.4.3.1')
   s.add_development_dependency("shoulda")
   s.add_development_dependency("rspec", '~> 2.6.0')
 
