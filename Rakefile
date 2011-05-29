@@ -2,7 +2,12 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
-require 'cucumber/rake/task'
+begin
+  require 'cucumber/rake/task'
+rescue LoadError
+  $stderr.puts "Please install cucumber: `gem install cucumber`"
+  exit 1
+end
 
 desc 'Default: run unit tests.'
 task :default => [:test, "cucumber:rails:all"]
