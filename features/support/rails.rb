@@ -7,14 +7,18 @@ module RailsHelpers
     rails_version_is_2_2_or_less = rails_version =~ /^1\./ || rails_version =~ /^2.[012]/
 
     if rails_version_is_2_2_or_less
-      controller_filename = File.join(RAILS_ROOT, 'app', 'controllers', "application.rb")
+      controller_filename = File.join(rails_root, 'app', 'controllers', "application.rb")
     else
-      controller_filename = File.join(RAILS_ROOT, 'app', 'controllers', "application_controller.rb")
+      controller_filename = File.join(rails_root, 'app', 'controllers', "application_controller.rb")
     end
   end
 
   def rails3?
     rails_version =~ /^3/
+  end
+
+  def rails_root
+    LOCAL_RAILS_ROOT
   end
 
   def rails_uses_rack?
@@ -26,7 +30,7 @@ module RailsHelpers
       if bundler_manages_gems?
         rails_version = open(gemfile_path).read.match(/gem.*rails["'].*["'](.+)["']/)[1]
       else
-        environment_file = File.join(RAILS_ROOT, 'config', 'environment.rb')
+        environment_file = File.join(rails_root, 'config', 'environment.rb')
         rails_version = `grep RAILS_GEM_VERSION #{environment_file}`.match(/[\d.]+/)[0]
       end
     end
@@ -37,7 +41,7 @@ module RailsHelpers
   end
 
   def gemfile_path
-    gemfile = File.join(RAILS_ROOT, 'Gemfile')
+    gemfile = File.join(rails_root, 'Gemfile')
   end
 
   def rails_manages_gems?
@@ -53,11 +57,11 @@ module RailsHelpers
   end
 
   def environment_path
-    File.join(RAILS_ROOT, 'config', 'environment.rb')
+    File.join(rails_root, 'config', 'environment.rb')
   end
 
   def rakefile_path
-    File.join(RAILS_ROOT, 'Rakefile')
+    File.join(rails_root, 'Rakefile')
   end
 
   def bundle_gem(gem_name, version = nil)
@@ -123,8 +127,8 @@ module RailsHelpers
           puts response.body
         end
       SCRIPT
-      File.open(File.join(RAILS_ROOT, 'request.rb'), 'w') { |file| file.write(request_script) }
-      @terminal.cd(RAILS_ROOT)
+      File.open(File.join(rails_root, 'request.rb'), 'w') { |file| file.write(request_script) }
+      @terminal.cd(rails_root)
       @terminal.run("ruby -rthread ./script/rails runner -e #{environment} request.rb")
     elsif rails_uses_rack?
       request_script = <<-SCRIPT
@@ -144,8 +148,8 @@ module RailsHelpers
 
         puts response
       SCRIPT
-      File.open(File.join(RAILS_ROOT, 'request.rb'), 'w') { |file| file.write(request_script) }
-      @terminal.cd(RAILS_ROOT)
+      File.open(File.join(rails_root, 'request.rb'), 'w') { |file| file.write(request_script) }
+      @terminal.cd(rails_root)
       @terminal.run("ruby -rthread ./script/runner -e #{environment} request.rb")
     else
       uri = URI.parse(uri)
@@ -173,8 +177,8 @@ module RailsHelpers
         require 'dispatcher' unless defined?(ActionController::Dispatcher)
         Dispatcher.dispatch(cgi)
       SCRIPT
-      File.open(File.join(RAILS_ROOT, 'request.rb'), 'w') { |file| file.write(request_script) }
-      @terminal.cd(RAILS_ROOT)
+      File.open(File.join(rails_root, 'request.rb'), 'w') { |file| file.write(request_script) }
+      @terminal.cd(rails_root)
       @terminal.run("ruby -rthread ./script/runner -e #{environment} request.rb")
     end
   end

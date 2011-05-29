@@ -62,13 +62,13 @@ When /^I configure my application to require the "([^\"]*)" gem(?: with version 
     end
 
     unless rails_finds_generators_in_gems?
-      FileUtils.cp_r(File.join(PROJECT_ROOT, 'generators'), File.join(RAILS_ROOT, 'lib'))
+      FileUtils.cp_r(File.join(PROJECT_ROOT, 'generators'), File.join(rails_root, 'lib'))
     end
   end
 end
 
 When /^I run "([^\"]*)"$/ do |command|
-  @terminal.cd(RAILS_ROOT)
+  @terminal.cd(rails_root)
   @terminal.run(command)
 end
 
@@ -87,7 +87,7 @@ When /^I configure the Hoptoad shim$/ do
 
   shim_file = File.join(PROJECT_ROOT, 'features', 'support', 'hoptoad_shim.rb.template')
   if rails_supports_initializers?
-    target = File.join(RAILS_ROOT, 'config', 'initializers', 'hoptoad_shim.rb')
+    target = File.join(rails_root, 'config', 'initializers', 'hoptoad_shim.rb')
     FileUtils.cp(shim_file, target)
   else
     File.open(environment_path, 'a') do |file|
@@ -132,11 +132,11 @@ When /^I configure the notifier to use the following configuration lines:$/ do |
 end
 
 def rails_initializer_file
-  File.join(RAILS_ROOT, 'config', 'initializers', 'hoptoad.rb')
+  File.join(rails_root, 'config', 'initializers', 'hoptoad.rb')
 end
 
 def rails_non_initializer_hoptoad_config_file
-  File.join(RAILS_ROOT, 'config', 'hoptoad.rb')
+  File.join(rails_root, 'config', 'hoptoad.rb')
 end
 
 Then /^I should see "([^\"]*)"$/ do |expected_text|
@@ -157,18 +157,18 @@ end
 
 When /^I unpack the "([^\"]*)" gem$/ do |gem_name|
   if bundler_manages_gems?
-    @terminal.cd(RAILS_ROOT)
+    @terminal.cd(rails_root)
     @terminal.run("bundle pack")
   elsif rails_manages_gems?
-    @terminal.cd(RAILS_ROOT)
+    @terminal.cd(rails_root)
     @terminal.run("rake gems:unpack GEM=#{gem_name}")
   else
-    vendor_dir = File.join(RAILS_ROOT, 'vendor', 'gems')
+    vendor_dir = File.join(rails_root, 'vendor', 'gems')
     FileUtils.mkdir_p(vendor_dir)
     @terminal.cd(vendor_dir)
     @terminal.run("gem unpack #{gem_name}")
     gem_path =
-      Dir.glob(File.join(RAILS_ROOT, 'vendor', 'gems', "#{gem_name}-*", 'lib')).first
+      Dir.glob(File.join(rails_root, 'vendor', 'gems', "#{gem_name}-*", 'lib')).first
     File.open(environment_path, 'a') do |file|
       file.puts
       file.puts("$: << #{gem_path.inspect}")
@@ -183,13 +183,13 @@ When /^I install cached gems$/ do
 end
 
 When /^I install the "([^\"]*)" plugin$/ do |plugin_name|
-  FileUtils.mkdir_p("#{RAILS_ROOT}/vendor/plugins/#{plugin_name}")
+  FileUtils.mkdir_p("#{rails_root}/vendor/plugins/#{plugin_name}")
 end
 
 When /^I define a response for "([^\"]*)":$/ do |controller_and_action, definition|
   controller_class_name, action = controller_and_action.split('#')
   controller_name = controller_class_name.underscore
-  controller_file_name = File.join(RAILS_ROOT, 'app', 'controllers', "#{controller_name}.rb")
+  controller_file_name = File.join(rails_root, 'app', 'controllers', "#{controller_name}.rb")
   File.open(controller_file_name, "w") do |file|
     file.puts "class #{controller_class_name} < ApplicationController"
     file.puts "def consider_all_requests_local; false; end"
@@ -210,7 +210,7 @@ When /^I perform a request to "([^\"]*)" in the "([^\"]*)" environment$/ do |uri
 end
 
 Given /^the response page for a "([^\"]*)" error is$/ do |error, html|
-  File.open(File.join(RAILS_ROOT, "public", "#{error}.html"), "w") do |file|
+  File.open(File.join(rails_root, "public", "#{error}.html"), "w") do |file|
     file.write(html)
   end
 end
@@ -264,7 +264,7 @@ When /^I route "([^\"]*)" to "([^\"]*)"$/ do |path, controller_action_pair|
             controller, action = controller_action_pair.split('#')
             %(map.connect "#{path}", :controller => "#{controller}", :action => "#{action}")
           end
-  routes_file = File.join(RAILS_ROOT, "config", "routes.rb")
+  routes_file = File.join(rails_root, "config", "routes.rb")
   File.open(routes_file, "r+") do |file|
     content = file.read
     content.gsub!(/^end$/, "  #{route}\nend")
@@ -274,7 +274,7 @@ When /^I route "([^\"]*)" to "([^\"]*)"$/ do |path, controller_action_pair|
 end
 
 Then /^"([^\"]*)" should not contain "([^\"]*)"$/ do |file_path, text|
-  actual_text = IO.read(File.join(RAILS_ROOT, file_path))
+  actual_text = IO.read(File.join(rails_root, file_path))
   if actual_text.include?(text)
     raise "Didn't expect text:\n#{actual_text}\nTo include:\n#{text}"
   end
@@ -333,7 +333,7 @@ end
 
 When /^I configure the application to filter parameter "([^\"]*)"$/ do |parameter|
   if rails3?
-    application_filename = File.join(RAILS_ROOT, 'config', 'application.rb')
+    application_filename = File.join(rails_root, 'config', 'application.rb')
     application_lines = File.open(application_filename).readlines
 
     application_definition_line       = application_lines.detect { |line| line =~ /Application/ }
