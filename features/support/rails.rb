@@ -4,13 +4,7 @@ module RailsHelpers
   end
 
   def application_controller_filename
-    rails_version_is_2_2_or_less = rails_version =~ /^1\./ || rails_version =~ /^2.[012]/
-
-    if rails_version_is_2_2_or_less
-      controller_filename = File.join(rails_root, 'app', 'controllers', "application.rb")
-    else
-      controller_filename = File.join(rails_root, 'app', 'controllers', "application_controller.rb")
-    end
+    controller_filename = File.join(rails_root, 'app', 'controllers', "application_controller.rb")
   end
 
   def rails3?
