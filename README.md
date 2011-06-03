@@ -38,12 +38,14 @@ Add the hoptoad_notifier gem to your Gemfile.  In Gemfile:
 
     gem "hoptoad_notifier", "~> 2.3"
 
-Then from your project's RAILS_ROOT, run:
+Then from your project's RAILS_ROOT, and in your development environment, run:
 
     bundle install
     script/rails generate hoptoad --api-key your_key_here
 
 That's it!
+
+The generator creates a file under `config/initializers/hoptoad.rb` configuring Hoptoad with your API key. This file should be checked into your version control system so that it is deployed to your staging and production environments
 
 ### Rails 2.x
 
@@ -51,7 +53,7 @@ Add the hoptoad_notifier gem to your app. In config/environment.rb:
 
     config.gem 'hoptoad_notifier'
 
-Then from your project's RAILS_ROOT, run:
+Then from your project's RAILS_ROOT, and in your development environment, run:
 
     rake gems:install
     rake gems:unpack GEM=hoptoad_notifier
@@ -59,6 +61,8 @@ Then from your project's RAILS_ROOT, run:
 
 As always, if you choose not to vendor the hoptoad_notifier gem, make sure
 every server you deploy to has the gem installed or your application won't start.
+
+The generator creates a file under `config/initializers/hoptoad.rb` configuring Hoptoad with your API key. This file should be checked into your version control system so that it is deployed to your staging and production environments
 
 ### Rails 1.2.6
 
