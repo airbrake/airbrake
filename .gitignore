@@ -11,6 +11,6 @@ tags
 .yardoc
 doc
 pkg
-*.gemspec
+Gemfile.lock
 
 *.rbc
