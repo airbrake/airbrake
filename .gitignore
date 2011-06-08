@@ -11,6 +11,8 @@ tags
 .yardoc
 doc
 pkg
+
 Gemfile.lock
+.bundle
 
 *.rbc

@@ -4,15 +4,15 @@ require 'rubygems'
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
 
 require 'thread'
+
+require "bundler/setup"
+
 require 'shoulda'
 require 'mocha'
-
-
 
 require 'action_controller'
 require 'action_controller/test_process'
 require 'active_record'
-require 'active_record/base'
 require 'active_support'
 require 'nokogiri'
 require 'rack'
