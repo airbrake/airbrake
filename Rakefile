@@ -19,9 +19,6 @@ Rake::TestTask.new(:test) do |t|
   t.verbose = true
 end
 
-task :gemspec do
-end
-
 namespace :changeling do
   desc "Bumps the version by a minor or patch version, depending on what was passed in."
   task :bump, :part do |t, args|

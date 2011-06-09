@@ -70,7 +70,7 @@ class Terminal
     end
     target = File.join(pkg_dir, gem_file)
     FileUtils.mv(gem_file, target)
-    install_gem_to(BUILT_GEM_ROOT, target)
+    install_gem_to(LOCAL_GEM_ROOT, target)
   end
 
   def install_gem(gem)
@@ -78,7 +78,7 @@ class Terminal
   end
 
   def uninstall_gem(gem)
-    `gem uninstall -i #{BUILT_GEM_ROOT} #{gem}`
+    `gem uninstall -i #{LOCAL_GEM_ROOT} #{gem}`
   end
 
   def prepend_path(path)
