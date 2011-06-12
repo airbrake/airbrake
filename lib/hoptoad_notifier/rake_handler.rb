@@ -12,19 +12,23 @@ module HoptoadNotifier::RakeHandler
       exit(false)
     rescue Exception => ex
       if tty_output?
-        # Exit with error message
-        $stderr.puts "#{name} aborted!"
-        $stderr.puts ex.message
-        if options.trace
-          $stderr.puts ex.backtrace.join("\n")
-        else
-          $stderr.puts ex.backtrace.find {|str| str =~ /#{@rakefile}/ } || ""
-          $stderr.puts "(See full trace by running task with --trace)"
-        end
+        handle_exception_without_hoptoad(ex)
       else
         HoptoadNotifier.notify(ex, :component => reconstruct_command_line, :cgi_data => ENV)
       end
       exit(false)
+    end
+  end
+        
+  def handle_exception_without_hoptoad(ex)
+    # Exit with error message
+    $stderr.puts "#{name} aborted!"
+    $stderr.puts ex.message
+    if options.trace
+      $stderr.puts ex.backtrace.join("\n")
+    else
+      $stderr.puts ex.backtrace.find {|str| str =~ /#{@rakefile}/ } || ""
+      $stderr.puts "(See full trace by running task with --trace)"
     end
   end
   
