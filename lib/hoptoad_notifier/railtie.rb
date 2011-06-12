@@ -4,6 +4,7 @@ require 'rails'
 module HoptoadNotifier
   class Railtie < Rails::Railtie
     rake_tasks do
+      require 'hoptoad_notifier/rake_handler'
       require "hoptoad_notifier/rails3_tasks"
     end
 
