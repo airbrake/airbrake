@@ -8,7 +8,7 @@ module HoptoadNotifier
         :ignore_user_agent, :notifier_name, :notifier_url, :notifier_version,
         :params_filters, :project_root, :port, :protocol, :proxy_host,
         :proxy_pass, :proxy_port, :proxy_user, :secure, :framework,
-        :user_information].freeze
+        :user_information, :rescue_rake_exceptions].freeze
 
     # The API key for your project, found on the project edit form.
     attr_accessor :api_key
@@ -87,6 +87,10 @@ module HoptoadNotifier
     # The framework HoptoadNotifier is configured to use
     attr_accessor :framework
 
+    # Should HoptoadNotifier catch exceptions from Rake tasks?
+    # (boolean or nil; set to nil to catch exceptions when rake isn't running from a terminal; default is nil)
+    attr_accessor :rescue_rake_exceptions
+
     DEFAULT_PARAMS_FILTERS = %w(password password_confirmation).freeze
 
     DEFAULT_BACKTRACE_FILTERS = [
@@ -134,6 +138,7 @@ module HoptoadNotifier
       @notifier_url             = 'http://hoptoadapp.com'
       @framework                = 'Standalone'
       @user_information         = 'Hoptoad Error {{error_id}}'
+      @rescue_rake_exceptions   = nil
     end
 
     # Takes a block and adds it to the list of backtrace filters. When the filters

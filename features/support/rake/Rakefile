@@ -1,0 +1,57 @@
+# A test harness for RakeHandler
+#
+require 'rake'
+require 'rubygems'
+require 'hoptoad_notifier'
+require 'hoptoad_notifier/rake_handler'
+
+HoptoadNotifier.configure do |c|
+end
+
+# Should catch exception
+task :hoptoad do
+  HoptoadNotifier.configuration.rescue_rake_exceptions = true
+  stub_tty_output(true)
+  raise_exception 
+end
+
+# Should not catch exception
+task :hoptoad_disabled do
+  HoptoadNotifier.configuration.rescue_rake_exceptions = false
+  stub_tty_output(true)
+  raise_exception 
+end
+
+# Should not catch exception as tty_output is true
+task :hoptoad_autodetect_from_terminal do
+  HoptoadNotifier.configuration.rescue_rake_exceptions = nil
+  stub_tty_output(true) 
+  raise_exception 
+end
+
+# Should catch exception as tty_output is false
+task :hoptoad_autodetect_not_from_terminal do
+  HoptoadNotifier.configuration.rescue_rake_exceptions = nil
+  stub_tty_output(false) 
+  raise_exception 
+end
+
+module HoptoadNotifier
+  def self.notify(*args)
+    # TODO if you need to check more params, you'll have to use json.dump or something
+    $stderr.puts "hoptoad #{args[1][:component]}"
+  end
+end
+
+def stub_tty_output(value)
+  Rake.application.instance_eval do
+    @tty_output_stub = value
+    def tty_output?
+      @tty_output_stub
+    end
+  end
+end
+
+def raise_exception
+  raise 'TEST'
+end
