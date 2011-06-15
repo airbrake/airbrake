@@ -3,8 +3,10 @@ require 'net/https'
 require 'rubygems'
 begin
   require 'active_support'
+  require 'active_support/core_ext'
 rescue LoadError
   require 'activesupport'
+  require 'activesupport/core_ext'
 end
 require 'hoptoad_notifier/version'
 require 'hoptoad_notifier/configuration'
