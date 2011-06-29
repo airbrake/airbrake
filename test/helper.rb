@@ -108,7 +108,7 @@ class Test::Unit::TestCase
   end
 
   def stub_notice!
-    returning stub_notice do |notice|
+     stub_notice.tap do |notice|
       HoptoadNotifier::Notice.stubs(:new => notice)
     end
   end
@@ -128,10 +128,22 @@ class Test::Unit::TestCase
     HoptoadNotifier.configuration.backtrace_filters.clear
   end
 
-  def build_exception
-    raise
-  rescue => caught_exception
-    caught_exception
+  def build_exception(opts = {})
+    backtrace = ["hoptoad_notifier/test/helper.rb:132:in `build_exception'",
+                 "hoptoad_notifier/test/backtrace.rb:4:in `build_notice_data'",
+                 "/var/lib/gems/1.8/gems/hoptoad_notifier-2.4.5/rails/init.rb:2:in `send_exception'"]
+    opts = {:backtrace => backtrace}.merge(opts)
+    BacktracedException.new(opts)
+  end
+
+  class BacktracedException < Exception
+    attr_accessor :backtrace
+    def initialize(opts)
+      @backtrace = opts[:backtrace]
+    end
+    def set_backtrace(bt)
+      @backtrace = bt
+    end
   end
 
   def build_notice_data(exception = nil)

@@ -183,7 +183,7 @@ class NotifierTest < Test::Unit::TestCase
     end
 
     should "set error class" do
-      assert_equal 'RuntimeError', @hash[:error_class]
+      assert_equal @exception.class.to_s, @hash[:error_class]
     end
 
     should "not set file or line number with no backtrace" do

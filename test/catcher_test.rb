@@ -16,7 +16,7 @@ class ActionControllerCatcherTest < Test::Unit::TestCase
   end
 
   def build_controller_class(&definition)
-    returning Class.new(ActionController::Base) do |klass|
+     Class.new(ActionController::Base).tap do |klass|
       klass.__send__(:include, HoptoadNotifier::Rails::ActionControllerCatcher)
       klass.class_eval(&definition) if definition
       define_constant('HoptoadTestController', klass)
