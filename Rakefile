@@ -1,7 +1,6 @@
 require 'rake'
 require 'rake/testtask'
-require 'rake/rdoctask'
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 begin
   require 'cucumber/rake/task'
 rescue LoadError
