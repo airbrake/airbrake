@@ -353,7 +353,7 @@ To ignore *only* certain errors (and override the defaults), use the
 
     HoptoadNotifier.configure do |config|
       config.api_key      = '1234567890abcdef'
-      config.ignore_only  = ["ActiveRecord::IgnoreThisError"]
+      config.ignore_only  = ["ActiveRecord::IgnoreThisError"] # or [] to ignore no exceptions.
     end
 
 To ignore certain user agents, add in the #ignore_user_agent attribute as a
