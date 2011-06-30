@@ -1,3 +1,11 @@
+= Running the suite
+
+Cannot run @bundle exec rake@ . Must use the non-bundled rake. If you have an
+alias run it like this:
+
+% \rake vendor_test_gems
+% \rake
+
 = For Maintainers:
 
 When developing the Hoptoad Notifier, be sure to use the integration test
