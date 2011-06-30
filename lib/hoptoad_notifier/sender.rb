@@ -31,7 +31,14 @@ module HoptoadNotifier
 
       http.read_timeout = http_read_timeout
       http.open_timeout = http_open_timeout
-      http.use_ssl      = secure
+
+      if secure
+        http.use_ssl     = true
+        http.ca_file     = OpenSSL::X509::DEFAULT_CERT_FILE
+        http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+      else
+        http.use_ssl     = false
+      end
 
       response = begin
                    http.post(url.path, data, HEADERS)
