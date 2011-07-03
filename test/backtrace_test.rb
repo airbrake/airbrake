@@ -82,6 +82,32 @@ class BacktraceTest < Test::Unit::TestCase
     end
   end
 
+  context "with a project root equals to a part of file name" do
+    setup do
+      # Heroku-like
+      @project_root = '/app'
+      HoptoadNotifier.configure {|config| config.project_root = @project_root }
+    end
+
+    teardown do
+      reset_config
+    end
+
+    should "filter out the project root" do
+      backtrace_with_root = HoptoadNotifier::Backtrace.parse(
+        ["#{@project_root}/app/models/user.rb:7:in `latest'",
+         "#{@project_root}/app/controllers/users_controller.rb:13:in `index'",
+         "/lib/something.rb:41:in `open'"],
+        :filters => default_filters)
+      backtrace_without_root = HoptoadNotifier::Backtrace.parse(
+        ["[PROJECT_ROOT]/app/models/user.rb:7:in `latest'",
+         "[PROJECT_ROOT]/app/controllers/users_controller.rb:13:in `index'",
+         "/lib/something.rb:41:in `open'"])
+
+      assert_equal backtrace_without_root, backtrace_with_root
+    end
+  end
+
   context "with a blank project root" do
     setup do
       HoptoadNotifier.configure {|config| config.project_root = '' }
