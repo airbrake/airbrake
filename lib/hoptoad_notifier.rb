@@ -92,9 +92,9 @@ module HoptoadNotifier
     # @option opts [String] :api_key The API key for this project. The API key is a unique identifier that Hoptoad uses for identification.
     # @option opts [String] :error_message The error returned by the exception (or the message you want to log).
     # @option opts [String] :backtrace A backtrace, usually obtained with +caller+.
-    # @option opts [String] :request The controller's request object.
+    # @option opts [String] :rack_env The Rack environment.
     # @option opts [String] :session The contents of the user's session.
-    # @option opts [String] :environment ENV merged with the contents of the request's environment.
+    # @option opts [String] :environment_name The application environment name.
     def notify(exception, opts = {})
       send_notice(build_notice_for(exception, opts))
     end
