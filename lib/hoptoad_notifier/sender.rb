@@ -34,7 +34,6 @@ module HoptoadNotifier
 
       if secure
         http.use_ssl     = true
-        http.ca_file     = OpenSSL::X509::DEFAULT_CERT_FILE
         http.verify_mode = OpenSSL::SSL::VERIFY_PEER
       else
         http.use_ssl     = false
