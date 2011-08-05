@@ -442,6 +442,11 @@ It's important to insert this very high in the markup, above all other javascrip
 
 This helper will automatically use the API key, host, and port specified in the configuration.
 
+Development
+-----------
+
+See TESTING.md for instructions on how to run the tests.
+
 Credits
 -------
 
