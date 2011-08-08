@@ -118,6 +118,23 @@ class SenderTest < Test::Unit::TestCase
     real_http.stubs(:post => nil)
     proxy = stub(:new => real_http)
     Net::HTTP.stubs(:Proxy => proxy)
+    File.stubs(:exist?).with(OpenSSL::X509::DEFAULT_CERT_FILE).returns(false)
+
+    send_exception(:secure => true)
+    assert(real_http.use_ssl)
+    assert_equal(OpenSSL::SSL::VERIFY_PEER,        real_http.verify_mode)
+    assert_nil real_http.ca_file
+  end
+
+  should "verify the SSL peer when the use_ssl option is set to true and the default cert exists" do
+    url = "https://hoptoadapp.com#{HoptoadNotifier::Sender::NOTICES_URI}"
+    uri = URI.parse(url)
+
+    real_http = Net::HTTP.new(uri.host, uri.port)
+    real_http.stubs(:post => nil)
+    proxy = stub(:new => real_http)
+    Net::HTTP.stubs(:Proxy => proxy)
+    File.stubs(:exist?).with(OpenSSL::X509::DEFAULT_CERT_FILE).returns(true)
 
     send_exception(:secure => true)
     assert(real_http.use_ssl)
