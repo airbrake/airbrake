@@ -11,6 +11,11 @@ end
 desc 'Default: run unit tests.'
 task :default => [:test, "cucumber:rails:all"]
 
+desc "Clean out the tmp directory"
+task :clean do
+  exec "rm -rf tmp"
+end
+
 desc 'Test the hoptoad_notifier gem.'
 Rake::TestTask.new(:test) do |t|
   t.libs << 'lib'
