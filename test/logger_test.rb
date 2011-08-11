@@ -11,27 +11,27 @@ class LoggerTest < Test::Unit::TestCase
   end
 
   def send_notice
-    HoptoadNotifier.sender.send_to_hoptoad('data')
+    Airbrake.sender.send_to_airbrake('data')
   end
 
   def stub_verbose_log
-    HoptoadNotifier.stubs(:write_verbose_log)
+    Airbrake.stubs(:write_verbose_log)
   end
 
   def assert_logged(expected)
-    assert_received(HoptoadNotifier, :write_verbose_log) do |expect|
+    assert_received(Airbrake, :write_verbose_log) do |expect|
       expect.with {|actual| actual =~ expected }
     end
   end
 
   def assert_not_logged(expected)
-    assert_received(HoptoadNotifier, :write_verbose_log) do |expect|
+    assert_received(Airbrake, :write_verbose_log) do |expect|
       expect.with {|actual| actual =~ expected }.never
     end
   end
 
   def configure
-    HoptoadNotifier.configure { |config| }
+    Airbrake.configure { |config| }
   end
 
   should "report that notifier is ready when configured" do
@@ -42,7 +42,7 @@ class LoggerTest < Test::Unit::TestCase
 
   should "not report that notifier is ready when internally configured" do
     stub_verbose_log
-    HoptoadNotifier.configure(true) { |config| }
+    Airbrake.configure(true) { |config| }
     assert_not_logged /.*/
   end
 
@@ -52,7 +52,7 @@ class LoggerTest < Test::Unit::TestCase
     stub_http(Net::HTTPSuccess)
     send_notice
     assert_logged /Environment Info:/
-    assert_not_logged /Response from Hoptoad:/
+    assert_not_logged /Response from Airbrake:/
   end
 
   should "print environment info on a failed notification without a body" do
@@ -61,7 +61,7 @@ class LoggerTest < Test::Unit::TestCase
     stub_http(Net::HTTPError)
     send_notice
     assert_logged /Environment Info:/
-    assert_not_logged /Response from Hoptoad:/
+    assert_not_logged /Response from Airbrake:/
   end
 
   should "print environment info and response on a success with a body" do
@@ -70,7 +70,7 @@ class LoggerTest < Test::Unit::TestCase
     stub_http(Net::HTTPSuccess, 'test')
     send_notice
     assert_logged /Environment Info:/
-    assert_logged /Response from Hoptoad:/
+    assert_logged /Response from Airbrake:/
   end
 
   should "print environment info and response on a failure with a body" do
@@ -79,7 +79,7 @@ class LoggerTest < Test::Unit::TestCase
     stub_http(Net::HTTPError, 'test')
     send_notice
     assert_logged /Environment Info:/
-    assert_logged /Response from Hoptoad:/
+    assert_logged /Response from Airbrake:/
   end
 
 end

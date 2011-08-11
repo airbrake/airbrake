@@ -29,11 +29,11 @@ When /^I generate a new Rails application$/ do
   config_gem_dependencies unless rails3
 end
 
-When /^I run the hoptoad generator with "([^\"]*)"$/ do |generator_args|
+When /^I run the airbrake generator with "([^\"]*)"$/ do |generator_args|
   if rails3?
-    When %{I run "script/rails generate hoptoad #{generator_args}"}
+    When %{I run "script/rails generate airbrake #{generator_args}"}
   else
-    When %{I run "script/generate hoptoad #{generator_args}"}
+    When %{I run "script/generate airbrake #{generator_args}"}
   end
 end
 
@@ -57,8 +57,8 @@ When /^I configure my application to require the "([^\"]*)" gem(?: with version 
   else
     File.open(environment_path, 'a') do |file|
       file.puts
-      file.puts("require 'hoptoad_notifier'")
-      file.puts("require 'hoptoad_notifier/rails'")
+      file.puts("require 'airbrake'")
+      file.puts("require 'airbrake/rails'")
     end
 
     unless rails_finds_generators_in_gems?
@@ -72,22 +72,22 @@ When /^I run "([^\"]*)"$/ do |command|
   @terminal.run(command)
 end
 
-Then /^I should receive a Hoptoad notification$/ do
-  Then %{I should see "[Hoptoad] Success: Net::HTTPOK"}
+Then /^I should receive a Airbrake notification$/ do
+  Then %{I should see "[Airbrake] Success: Net::HTTPOK"}
 end
 
-Then /^I should receive two Hoptoad notifications$/ do
-  @terminal.output.scan(/\[Hoptoad\] Success: Net::HTTPOK/).size.should == 2
+Then /^I should receive two Airbrake notifications$/ do
+  @terminal.output.scan(/\[Airbrake\] Success: Net::HTTPOK/).size.should == 2
 end
 
-When /^I configure the Hoptoad shim$/ do
+When /^I configure the Airbrake shim$/ do
   if bundler_manages_gems?
     bundle_gem("sham_rack")
   end
 
-  shim_file = File.join(PROJECT_ROOT, 'features', 'support', 'hoptoad_shim.rb.template')
+  shim_file = File.join(PROJECT_ROOT, 'features', 'support', 'airbrake_shim.rb.template')
   if rails_supports_initializers?
-    target = File.join(rails_root, 'config', 'initializers', 'hoptoad_shim.rb')
+    target = File.join(rails_root, 'config', 'initializers', 'airbrake_shim.rb')
     FileUtils.cp(shim_file, target)
   else
     File.open(environment_path, 'a') do |file|
@@ -110,12 +110,12 @@ When /^I configure the notifier to use the following configuration lines:$/ do |
   if rails_manages_gems?
     requires = ''
   else
-    requires = "require 'hoptoad_notifier'"
+    requires = "require 'airbrake'"
   end
 
   initializer_code = <<-EOF
     #{requires}
-    HoptoadNotifier.configure do |config|
+    Airbrake.configure do |config|
       #{configuration_lines}
     end
   EOF
@@ -132,11 +132,11 @@ When /^I configure the notifier to use the following configuration lines:$/ do |
 end
 
 def rails_initializer_file
-  File.join(rails_root, 'config', 'initializers', 'hoptoad.rb')
+  File.join(rails_root, 'config', 'initializers', 'airbrake.rb')
 end
 
-def rails_non_initializer_hoptoad_config_file
-  File.join(rails_root, 'config', 'hoptoad.rb')
+def rails_non_initializer_airbrake_config_file
+  File.join(rails_root, 'config', 'airbrake.rb')
 end
 
 Then /^I should see "([^\"]*)"$/ do |expected_text|
@@ -215,7 +215,7 @@ Given /^the response page for a "([^\"]*)" error is$/ do |error, html|
   end
 end
 
-Then /^I should receive the following Hoptoad notification:$/ do |table|
+Then /^I should receive the following Airbrake notification:$/ do |table|
   exceptions = @terminal.output.scan(%r{Recieved the following exception:\n([^\n]*)\n}m)
   exceptions.should_not be_empty
 
@@ -280,11 +280,11 @@ Then /^"([^\"]*)" should not contain "([^\"]*)"$/ do |file_path, text|
   end
 end
 
-Then /^my Hoptoad configuration should contain the following line:$/ do |line|
+Then /^my Airbrake configuration should contain the following line:$/ do |line|
   configuration_file = if rails_supports_initializers?
     rails_initializer_file
   else
-    rails_non_initializer_hoptoad_config_file
+    rails_non_initializer_airbrake_config_file
     # environment_path
   end
 
@@ -308,14 +308,14 @@ When /^I configure the Heroku gem shim with "([^\"]*)"( and multiple app support
   heroku_script     = File.join(heroku_script_bin, "heroku")
   single_app_script = <<-SINGLE
     #!/bin/bash
-    if [[ $1 == 'console' && $2 == 'puts ENV[%{HOPTOAD_API_KEY}]' ]]; then
+    if [[ $1 == 'console' && $2 == 'puts ENV[%{AIRBRAKE_API_KEY}]' ]]; then
       echo #{api_key}
     fi
   SINGLE
 
   multi_app_script = <<-MULTI
     #!/bin/bash
-    if [[ $1 == 'console' && $2 == '--app' && $4 == 'puts ENV[%{HOPTOAD_API_KEY}]' ]]; then
+    if [[ $1 == 'console' && $2 == '--app' && $4 == 'puts ENV[%{AIRBRAKE_API_KEY}]' ]]; then
       echo #{api_key}
     fi
   MULTI
@@ -363,7 +363,7 @@ end
 
 Then /^I should see the notifier JavaScript for the following:$/ do |table|
   hash = table.hashes.first
-  host        = hash['host']        || 'hoptoadapp.com'
+  host        = hash['host']        || 'airbrakeapp.com'
   secure      = hash['secure']      || false
   api_key     = hash['api_key']
   environment = hash['environment'] || 'production'
@@ -374,9 +374,9 @@ Then /^I should see the notifier JavaScript for the following:$/ do |table|
   response = Nokogiri::HTML.parse(document_body)
   response.css("script[type='text/javascript']:last-child").each do |element|
     content = element.content
-    content.should include("Hoptoad.setKey('#{api_key}');")
-    content.should include("Hoptoad.setHost('#{host}');")
-    content.should include("Hoptoad.setEnvironment('#{environment}');")
+    content.should include("Airbrake.setKey('#{api_key}');")
+    content.should include("Airbrake.setHost('#{host}');")
+    content.should include("Airbrake.setEnvironment('#{environment}');")
   end
 end
 
@@ -390,7 +390,7 @@ Then "the notifier JavaScript should provide the following errorDefaults:" do |t
     content = element.content
 
     hash.each do |key, value|
-      content.should =~ %r{Hoptoad\.setErrorDefaults.*#{key}: "#{value}}m
+      content.should =~ %r{Airbrake\.setErrorDefaults.*#{key}: "#{value}}m
     end
   end
 end

@@ -1,5 +1,5 @@
 require File.dirname(__FILE__) + '/helper'
-require 'hoptoad_notifier/rails/javascript_notifier'
+require 'airbrake/rails/javascript_notifier'
 require 'ostruct'
 
 class JavascriptNotifierTest < Test::Unit::TestCase
@@ -16,7 +16,7 @@ class JavascriptNotifierTest < Test::Unit::TestCase
     def self.helper_method(*args)
     end
 
-    include HoptoadNotifier::Rails::JavascriptNotifier
+    include Airbrake::Rails::JavascriptNotifier
 
     def action_name
       "action"
@@ -41,12 +41,12 @@ class JavascriptNotifierTest < Test::Unit::TestCase
   end
 
   should "make sure escape_javacript is called on the request.url" do
-    HoptoadNotifier.configure do
+    Airbrake.configure do
     end
     controller = FakeController.new
     controller.request.url = "bad_javascript"
-    assert controller.send(:hoptoad_javascript_notifier)['"ESCbad_javascriptESC"']
-    assert ! controller.send(:hoptoad_javascript_notifier)['"bad_javascript"']
+    assert controller.send(:airbrake_javascript_notifier)['"ESCbad_javascriptESC"']
+    assert ! controller.send(:airbrake_javascript_notifier)['"bad_javascript"']
   end
 end
 

@@ -1,1 +1,1 @@
-require 'hoptoad_notifier/rails'
+require 'airbrake/rails'

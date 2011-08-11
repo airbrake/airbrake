@@ -1,5 +1,5 @@
 <script type="text/javascript">
-var Hoptoad = {
+var Airbrake = {
   host    : <%= host.to_json %>,
   api_key : <%= api_key.to_json %>,
   notice  : <%= notice.to_json %>,
@@ -19,7 +19,7 @@ var Hoptoad = {
     }
 
     data[data.length] = 'notice[api_key]=' + this.api_key;
-    data[data.length] = 'callback=Hoptoad.onSuccess';
+    data[data.length] = 'callback=Airbrake.onSuccess';
     data[data.length] = '_=' + (new Date()).getTime();
 
     var head = document.getElementsByTagName('head')[0];
@@ -50,7 +50,7 @@ var Hoptoad = {
     var text    = document.createTextNode(this.message);
     var element = document.createElement('a');
 
-    element.id   = 'hoptoad';
+    element.id   = 'airbrake';
     element.href = 'http://' + error.subdomain + '.' + this.host +
                    '/projects/' + error.project_id + '/errors/' + error.id;
     element.appendChild(text);
@@ -70,13 +70,13 @@ var Hoptoad = {
 };
 
 window.onload = function() {
-  Hoptoad.initialize.apply(Hoptoad);
+  Airbrake.initialize.apply(Hoptoad);
 };
 </script>
 
 <style type="text/css">
-#hoptoad {
-  background: #FFF url(http://hoptoadapp.com/images/fell-off-the-toad.gif) no-repeat top right;
+#airbrake {
+  background: #FFF url(http://airbrakeapp.com/images/fell-off-the-toad.gif) no-repeat top right;
   color: #F00;
   padding: 45px 101px 45px 12px;
   font-size: 14px;

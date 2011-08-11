@@ -16,7 +16,7 @@ task :clean do
   exec "rm -rf tmp"
 end
 
-desc 'Test the hoptoad_notifier gem.'
+desc 'Test the airbrake gem.'
 Rake::TestTask.new(:test) do |t|
   t.libs << 'lib'
   t.pattern = 'test/**/*_test.rb'
@@ -27,7 +27,7 @@ namespace :changeling do
   desc "Bumps the version by a minor or patch version, depending on what was passed in."
   task :bump, :part do |t, args|
     # Thanks, Jeweler!
-    if HoptoadNotifier::VERSION  =~ /^(\d+)\.(\d+)\.(\d+)(?:\.(.*?))?$/
+    if Airbrake::VERSION  =~ /^(\d+)\.(\d+)\.(\d+)(?:\.(.*?))?$/
       major = $1.to_i
       minor = $2.to_i
       patch = $3.to_i
@@ -48,9 +48,9 @@ namespace :changeling do
 
     version = [major, minor, patch, build].compact.join('.')
 
-    File.open(File.join("lib", "hoptoad_notifier", "version.rb"), "w") do |f|
+    File.open(File.join("lib", "airbrake", "notifier", "version.rb"), "w") do |f|
       f.write <<EOF
-module HoptoadNotifier
+module Airbrake
   VERSION = "#{version}".freeze
 end
 EOF
@@ -59,10 +59,10 @@ EOF
 
   desc "Writes out the new CHANGELOG and prepares the release"
   task :change do
-    load 'lib/hoptoad_notifier/version.rb'
+    load 'lib/airbrake/version.rb'
     file    = "CHANGELOG"
     old     = File.read(file)
-    version = HoptoadNotifier::VERSION
+    version = Airbrake::VERSION
     message = "Bumping to version #{version}"
 
     File.open(file, "w") do |f|

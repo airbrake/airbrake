@@ -3,7 +3,7 @@ Given /^the following Rack app:$/ do |definition|
 end
 
 When /^I perform a Rack request to "([^\"]*)"$/ do |url|
-  shim_file = File.join(PROJECT_ROOT, 'features', 'support', 'hoptoad_shim.rb.template')
+  shim_file = File.join(PROJECT_ROOT, 'features', 'support', 'airbrake_shim.rb.template')
   request_file = File.join(TEMP_DIR, 'rack_request.rb')
   File.open(request_file, 'w') do |file|
     file.puts "require 'rubygems'"

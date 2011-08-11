@@ -5,14 +5,14 @@ class NoticeTest < Test::Unit::TestCase
   include DefinesConstants
 
   def configure
-    HoptoadNotifier::Configuration.new.tap do |config|
+    Airbrake::Configuration.new.tap do |config|
       config.api_key = 'abc123def456'
     end
   end
 
   def build_notice(args = {})
     configuration = args.delete(:configuration) || configure
-    HoptoadNotifier::Notice.new(configuration.merge(args))
+    Airbrake::Notice.new(configuration.merge(args))
   end
 
   def stub_request(attrs = {})
@@ -64,7 +64,7 @@ class NoticeTest < Test::Unit::TestCase
     array = ["user.rb:34:in `crazy'"]
     exception = build_exception
     exception.set_backtrace array
-    backtrace = HoptoadNotifier::Backtrace.parse(array)
+    backtrace = Airbrake::Backtrace.parse(array)
     notice_from_exception = build_notice(:exception => exception)
 
 
@@ -82,9 +82,9 @@ class NoticeTest < Test::Unit::TestCase
     backtrace_array = ['my/file/backtrace:3']
     exception = build_exception
     exception.set_backtrace(backtrace_array)
-    HoptoadNotifier::Backtrace.expects(:parse).with(backtrace_array, {:filters => 'foo'})
+    Airbrake::Backtrace.expects(:parse).with(backtrace_array, {:filters => 'foo'})
 
-    notice = HoptoadNotifier::Notice.new({:exception => exception, :backtrace_filters => 'foo'})
+    notice = Airbrake::Notice.new({:exception => exception, :backtrace_filters => 'foo'})
   end
 
   should "set the error class from an exception or hash" do
@@ -138,7 +138,7 @@ class NoticeTest < Test::Unit::TestCase
   end
 
   should "set sensible defaults without an exception" do
-    backtrace = HoptoadNotifier::Backtrace.parse(build_backtrace_array)
+    backtrace = Airbrake::Backtrace.parse(build_backtrace_array)
     notice = build_notice(:backtrace => build_backtrace_array)
 
     assert_equal 'Notification', notice.error_message
@@ -148,8 +148,8 @@ class NoticeTest < Test::Unit::TestCase
   end
 
   should "use the caller as the backtrace for an exception without a backtrace" do
-    filters = HoptoadNotifier::Configuration.new.backtrace_filters
-    backtrace = HoptoadNotifier::Backtrace.parse(caller, :filters => filters)
+    filters = Airbrake::Configuration.new.backtrace_filters
+    backtrace = Airbrake::Backtrace.parse(caller, :filters => filters)
     notice = build_notice(:exception => StandardError.new('error'), :backtrace => nil)
 
     assert_array_starts_with backtrace.lines, notice.backtrace.lines
@@ -185,7 +185,7 @@ class NoticeTest < Test::Unit::TestCase
 
   context "a Notice turned into XML" do
     setup do
-      HoptoadNotifier.configure do |config|
+      Airbrake.configure do |config|
         config.api_key = "1234567890"
       end
 
@@ -427,7 +427,7 @@ class NoticeTest < Test::Unit::TestCase
   end
 
   def assert_valid_notice_document(document)
-    xsd_path = File.join(File.dirname(__FILE__), "hoptoad_2_2.xsd")
+    xsd_path = File.join(File.dirname(__FILE__), "airbrake_2_2.xsd")
     schema = Nokogiri::XML::Schema.new(IO.read(xsd_path))
     errors = schema.validate(document)
     assert errors.empty?, errors.collect{|e| e.message }.join

@@ -16,48 +16,48 @@ class NotifierTest < Test::Unit::TestCase
   end
 
   def assert_sent(notice, notice_args)
-    assert_received(HoptoadNotifier::Notice, :new) {|expect| expect.with(has_entries(notice_args)) }
+    assert_received(Airbrake::Notice, :new) {|expect| expect.with(has_entries(notice_args)) }
     assert_received(notice, :to_xml)
-    assert_received(HoptoadNotifier.sender, :send_to_hoptoad) {|expect| expect.with(notice.to_xml) }
+    assert_received(Airbrake.sender, :send_to_airbrake) {|expect| expect.with(notice.to_xml) }
   end
 
   def set_public_env
-    HoptoadNotifier.configure { |config| config.environment_name = 'production' }
+    Airbrake.configure { |config| config.environment_name = 'production' }
   end
 
   def set_development_env
-    HoptoadNotifier.configure { |config| config.environment_name = 'development' }
+    Airbrake.configure { |config| config.environment_name = 'development' }
   end
 
   should "yield and save a configuration when configuring" do
     yielded_configuration = nil
-    HoptoadNotifier.configure do |config|
+    Airbrake.configure do |config|
       yielded_configuration = config
     end
 
-    assert_kind_of HoptoadNotifier::Configuration, yielded_configuration
-    assert_equal yielded_configuration, HoptoadNotifier.configuration
+    assert_kind_of Airbrake::Configuration, yielded_configuration
+    assert_equal yielded_configuration, Airbrake.configuration
   end
 
   should "not remove existing config options when configuring twice" do
     first_config = nil
-    HoptoadNotifier.configure do |config|
+    Airbrake.configure do |config|
       first_config = config
     end
-    HoptoadNotifier.configure do |config|
+    Airbrake.configure do |config|
       assert_equal first_config, config
     end
   end
 
   should "configure the sender" do
     sender = stub_sender
-    HoptoadNotifier::Sender.stubs(:new => sender)
+    Airbrake::Sender.stubs(:new => sender)
     configuration = nil
 
-    HoptoadNotifier.configure { |yielded_config| configuration = yielded_config }
+    Airbrake.configure { |yielded_config| configuration = yielded_config }
 
-    assert_received(HoptoadNotifier::Sender, :new) { |expect| expect.with(configuration) }
-    assert_equal sender, HoptoadNotifier.sender
+    assert_received(Airbrake::Sender, :new) { |expect| expect.with(configuration) }
+    assert_equal sender, Airbrake.sender
   end
 
   should "create and send a notice for an exception" do
@@ -66,7 +66,7 @@ class NotifierTest < Test::Unit::TestCase
     stub_sender!
     notice = stub_notice!
 
-    HoptoadNotifier.notify(exception)
+    Airbrake.notify(exception)
 
     assert_sent notice, :exception => exception
   end
@@ -77,7 +77,7 @@ class NotifierTest < Test::Unit::TestCase
     notice_args = { :error_message => 'uh oh' }
     stub_sender!
 
-    HoptoadNotifier.notify(notice_args)
+    Airbrake.notify(notice_args)
 
     assert_sent(notice, notice_args)
   end
@@ -90,7 +90,7 @@ class NotifierTest < Test::Unit::TestCase
     exception.stubs(:to_hash).returns(notice_args)
     stub_sender!
 
-    HoptoadNotifier.notify(exception)
+    Airbrake.notify(exception)
 
     assert_sent(notice, notice_args.merge(:exception => exception))
   end
@@ -102,7 +102,7 @@ class NotifierTest < Test::Unit::TestCase
     notice_args = { :error_message => 'uh oh' }
     stub_sender!
 
-    HoptoadNotifier.notify(exception, notice_args)
+    Airbrake.notify(exception, notice_args)
 
     assert_sent(notice, notice_args.merge(:exception => exception))
   end
@@ -111,10 +111,10 @@ class NotifierTest < Test::Unit::TestCase
     set_development_env
     sender = stub_sender!
 
-    HoptoadNotifier.notify(build_exception)
-    HoptoadNotifier.notify_or_ignore(build_exception)
+    Airbrake.notify(build_exception)
+    Airbrake.notify_or_ignore(build_exception)
 
-    assert_received(sender, :send_to_hoptoad) {|expect| expect.never }
+    assert_received(sender, :send_to_airbrake) {|expect| expect.never }
   end
 
   should "not deliver an ignored exception when notifying implicitly" do
@@ -124,9 +124,9 @@ class NotifierTest < Test::Unit::TestCase
     notice = stub_notice!
     notice.stubs(:ignore? => true)
 
-    HoptoadNotifier.notify_or_ignore(exception)
+    Airbrake.notify_or_ignore(exception)
 
-    assert_received(sender, :send_to_hoptoad) {|expect| expect.never }
+    assert_received(sender, :send_to_airbrake) {|expect| expect.never }
   end
 
   should "deliver an ignored exception when notifying manually" do
@@ -136,7 +136,7 @@ class NotifierTest < Test::Unit::TestCase
     notice = stub_notice!
     notice.stubs(:ignore? => true)
 
-    HoptoadNotifier.notify(exception)
+    Airbrake.notify(exception)
 
     assert_sent(notice, :exception => exception)
   end
@@ -146,11 +146,11 @@ class NotifierTest < Test::Unit::TestCase
     config_opts = { 'one' => 'two', 'three' => 'four' }
     notice = stub_notice!
     stub_sender!
-    HoptoadNotifier.configuration = stub('config', :merge => config_opts, :public? => true)
+    Airbrake.configuration = stub('config', :merge => config_opts, :public? => true)
 
-    HoptoadNotifier.notify(exception)
+    Airbrake.notify(exception)
 
-    assert_received(HoptoadNotifier::Notice, :new) do |expect|
+    assert_received(Airbrake::Notice, :new) do |expect|
       expect.with(has_entries(config_opts))
     end
   end
@@ -159,7 +159,7 @@ class NotifierTest < Test::Unit::TestCase
     setup do
       @params    = { :controller => "users", :action => "create" }
       @exception = build_exception
-      @hash      = HoptoadNotifier.build_lookup_hash_for(@exception, @params)
+      @hash      = Airbrake.build_lookup_hash_for(@exception, @params)
     end
 
     should "set action" do
@@ -189,14 +189,14 @@ class NotifierTest < Test::Unit::TestCase
     should "not set file or line number with no backtrace" do
       @exception.stubs(:backtrace).returns([])
 
-      @hash = HoptoadNotifier.build_lookup_hash_for(@exception)
+      @hash = Airbrake.build_lookup_hash_for(@exception)
 
       assert_nil @hash[:line_number]
       assert_nil @hash[:file]
     end
 
     should "not set action or controller when not provided" do
-      @hash = HoptoadNotifier.build_lookup_hash_for(@exception)
+      @hash = Airbrake.build_lookup_hash_for(@exception)
 
       assert_nil @hash[:action]
       assert_nil @hash[:controller]
@@ -212,7 +212,7 @@ class NotifierTest < Test::Unit::TestCase
       end
 
       should "unwrap exceptions that provide #original_exception" do
-        @hash = HoptoadNotifier.build_lookup_hash_for(@exception)
+        @hash = Airbrake.build_lookup_hash_for(@exception)
         assert_equal "NotifierTest::OriginalException", @hash[:error_class]
       end
     end
@@ -227,7 +227,7 @@ class NotifierTest < Test::Unit::TestCase
       end
 
       should "unwrap exceptions that provide #continued_exception" do
-        @hash = HoptoadNotifier.build_lookup_hash_for(@exception)
+        @hash = Airbrake.build_lookup_hash_for(@exception)
         assert_equal "NotifierTest::ContinuedException", @hash[:error_class]
       end
     end

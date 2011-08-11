@@ -19,7 +19,7 @@ require 'rack'
 require 'bourne'
 require 'sham_rack'
 
-require "hoptoad_notifier"
+require "airbrake"
 
 begin require 'redgreen'; rescue LoadError; end
 
@@ -29,7 +29,7 @@ module TestMethods
   end
 
   def do_raise
-    raise "Hoptoad"
+    raise "Airbrake"
   end
 
   def do_not_raise
@@ -45,17 +45,17 @@ module TestMethods
   end
 
   def manual_notify
-    notify_hoptoad(Exception.new)
+    notify_airbrake(Exception.new)
     render :text => "Success"
   end
 
   def manual_notify_ignored
-    notify_hoptoad(ActiveRecord::RecordNotFound.new("404"))
+    notify_airbrake(ActiveRecord::RecordNotFound.new("404"))
     render :text => "Success"
   end
 end
 
-class HoptoadController < ActionController::Base
+class AirbrakeController < ActionController::Base
   include TestMethods
 end
 
@@ -96,11 +96,11 @@ class Test::Unit::TestCase
   end
 
   def stub_sender
-    stub('sender', :send_to_hoptoad => nil)
+    stub('sender', :send_to_airbrake => nil)
   end
 
   def stub_sender!
-    HoptoadNotifier.sender = stub_sender
+    Airbrake.sender = stub_sender
   end
 
   def stub_notice
@@ -109,29 +109,29 @@ class Test::Unit::TestCase
 
   def stub_notice!
      stub_notice.tap do |notice|
-      HoptoadNotifier::Notice.stubs(:new => notice)
+      Airbrake::Notice.stubs(:new => notice)
     end
   end
 
   def create_dummy
-    HoptoadNotifier::DummySender.new
+    Airbrake::DummySender.new
   end
 
   def reset_config
-    HoptoadNotifier.configuration = nil
-    HoptoadNotifier.configure do |config|
+    Airbrake.configuration = nil
+    Airbrake.configure do |config|
       config.api_key = 'abc123'
     end
   end
 
   def clear_backtrace_filters
-    HoptoadNotifier.configuration.backtrace_filters.clear
+    Airbrake.configuration.backtrace_filters.clear
   end
 
   def build_exception(opts = {})
-    backtrace = ["hoptoad_notifier/test/helper.rb:132:in `build_exception'",
-                 "hoptoad_notifier/test/backtrace.rb:4:in `build_notice_data'",
-                 "/var/lib/gems/1.8/gems/hoptoad_notifier-2.4.5/rails/init.rb:2:in `send_exception'"]
+    backtrace = ["airbrake/test/helper.rb:132:in `build_exception'",
+                 "airbrake/test/backtrace.rb:4:in `build_notice_data'",
+                 "/var/lib/gems/1.8/gems/airbrake-2.4.5/rails/init.rb:2:in `send_exception'"]
     opts = {:backtrace => backtrace}.merge(opts)
     BacktracedException.new(opts)
   end
@@ -167,11 +167,11 @@ class Test::Unit::TestCase
   end
 
   def assert_caught_and_sent
-    assert !HoptoadNotifier.sender.collected.empty?
+    assert !Airbrake.sender.collected.empty?
   end
 
   def assert_caught_and_not_sent
-    assert HoptoadNotifier.sender.collected.empty?
+    assert Airbrake.sender.collected.empty?
   end
 
   def assert_array_starts_with(expected, actual)
@@ -236,7 +236,7 @@ class CollectingSender
     @collected = []
   end
 
-  def send_to_hoptoad(data)
+  def send_to_airbrake(data)
     @collected << data
   end
 end

@@ -7,15 +7,15 @@ class SenderTest < Test::Unit::TestCase
   end
 
   def build_sender(opts = {})
-    config = HoptoadNotifier::Configuration.new
+    config = Airbrake::Configuration.new
     opts.each {|opt, value| config.send(:"#{opt}=", value) }
-    HoptoadNotifier::Sender.new(config)
+    Airbrake::Sender.new(config)
   end
 
   def send_exception(args = {})
     notice = args.delete(:notice) || build_notice_data
     sender = args.delete(:sender) || build_sender(args)
-    sender.send_to_hoptoad(notice)
+    sender.send_to_airbrake(notice)
   end
 
   def stub_http(options = {})
@@ -30,7 +30,7 @@ class SenderTest < Test::Unit::TestCase
     http
   end
 
-  should "post to Hoptoad when using an HTTP proxy" do
+  should "post to Airbrake when using an HTTP proxy" do
     response = stub(:body => 'body')
     http     = stub(:post          => response,
                     :read_timeout= => nil,
@@ -39,7 +39,7 @@ class SenderTest < Test::Unit::TestCase
     proxy    = stub(:new => http)
     Net::HTTP.stubs(:Proxy => proxy)
 
-    url = "http://hoptoadapp.com:80#{HoptoadNotifier::Sender::NOTICES_URI}"
+    url = "http://airbrakeapp.com:80#{Airbrake::Sender::NOTICES_URI}"
     uri = URI.parse(url)
 
     proxy_host = 'some.host'
@@ -52,7 +52,7 @@ class SenderTest < Test::Unit::TestCase
                    :proxy_user => proxy_user,
                    :proxy_pass => proxy_pass)
     assert_received(http, :post) do |expect| 
-      expect.with(uri.path, anything, HoptoadNotifier::HEADERS)
+      expect.with(uri.path, anything, Airbrake::HEADERS)
     end
     assert_received(Net::HTTP, :Proxy) do |expect|
       expect.with(proxy_host, proxy_port, proxy_user, proxy_pass)
@@ -88,7 +88,7 @@ class SenderTest < Test::Unit::TestCase
 
   should "not fail when posting any http exception occurs" do
     http = stub_http
-    HoptoadNotifier::Sender::HTTP_ERRORS.each do |error|
+    Airbrake::Sender::HTTP_ERRORS.each do |error|
       http.stubs(:post).raises(error)
       assert_nothing_thrown do
         send_exception(:secure => false)
@@ -98,20 +98,20 @@ class SenderTest < Test::Unit::TestCase
 
   should "post to the right url for non-ssl" do
     http = stub_http
-    url = "http://hoptoadapp.com:80#{HoptoadNotifier::Sender::NOTICES_URI}"
+    url = "http://airbrakeapp.com:80#{Airbrake::Sender::NOTICES_URI}"
     uri = URI.parse(url)
     send_exception(:secure => false)
-    assert_received(http, :post) {|expect| expect.with(uri.path, anything, HoptoadNotifier::HEADERS) }
+    assert_received(http, :post) {|expect| expect.with(uri.path, anything, Airbrake::HEADERS) }
   end
 
   should "post to the right path for ssl" do
     http = stub_http
     send_exception(:secure => true)
-    assert_received(http, :post) {|expect| expect.with(HoptoadNotifier::Sender::NOTICES_URI, anything, HoptoadNotifier::HEADERS) }
+    assert_received(http, :post) {|expect| expect.with(Airbrake::Sender::NOTICES_URI, anything, Airbrake::HEADERS) }
   end
 
   should "verify the SSL peer when the use_ssl option is set to true" do
-    url = "https://hoptoadapp.com#{HoptoadNotifier::Sender::NOTICES_URI}"
+    url = "https://airbrakeapp.com#{Airbrake::Sender::NOTICES_URI}"
     uri = URI.parse(url)
 
     real_http = Net::HTTP.new(uri.host, uri.port)
@@ -127,7 +127,7 @@ class SenderTest < Test::Unit::TestCase
   end
 
   should "verify the SSL peer when the use_ssl option is set to true and the default cert exists" do
-    url = "https://hoptoadapp.com#{HoptoadNotifier::Sender::NOTICES_URI}"
+    url = "https://airbrakeapp.com#{Airbrake::Sender::NOTICES_URI}"
     uri = URI.parse(url)
 
     real_http = Net::HTTP.new(uri.host, uri.port)
@@ -169,13 +169,13 @@ class SenderTest < Test::Unit::TestCase
   should "connect to the right port for ssl" do
     stub_http
     send_exception(:secure => true)
-    assert_received(Net::HTTP, :new) {|expect| expect.with("hoptoadapp.com", 443) }
+    assert_received(Net::HTTP, :new) {|expect| expect.with("airbrakeapp.com", 443) }
   end
 
   should "connect to the right port for non-ssl" do
     stub_http
     send_exception(:secure => false)
-    assert_received(Net::HTTP, :new) {|expect| expect.with("hoptoadapp.com", 80) }
+    assert_received(Net::HTTP, :new) {|expect| expect.with("airbrakeapp.com", 80) }
   end
 
   should "use ssl if secure" do

@@ -5,7 +5,7 @@ class RackTest < Test::Unit::TestCase
   should "call the upstream app with the environment" do
     environment = { 'key' => 'value' }
     app = lambda { |env| ['response', {}, env] }
-    stack = HoptoadNotifier::Rack.new(app)
+    stack = Airbrake::Rack.new(app)
 
     response = stack.call(environment)
 
@@ -13,7 +13,7 @@ class RackTest < Test::Unit::TestCase
   end
 
   should "deliver an exception raised while calling an upstream app" do
-    HoptoadNotifier.stubs(:notify_or_ignore)
+    Airbrake.stubs(:notify_or_ignore)
 
     exception = build_exception
     environment = { 'key' => 'value' }
@@ -22,7 +22,7 @@ class RackTest < Test::Unit::TestCase
     end
 
     begin
-      stack = HoptoadNotifier::Rack.new(app)
+      stack = Airbrake::Rack.new(app)
       stack.call(environment)
     rescue Exception => raised
       assert_equal exception, raised
@@ -30,13 +30,13 @@ class RackTest < Test::Unit::TestCase
       flunk "Didn't raise an exception"
     end
 
-    assert_received(HoptoadNotifier, :notify_or_ignore) do |expect|
+    assert_received(Airbrake, :notify_or_ignore) do |expect|
       expect.with(exception, :rack_env => environment)
     end
   end
 
   should "deliver an exception in rack.exception" do
-    HoptoadNotifier.stubs(:notify_or_ignore)
+    Airbrake.stubs(:notify_or_ignore)
     exception = build_exception
     environment = { 'key' => 'value' }
 
@@ -45,12 +45,12 @@ class RackTest < Test::Unit::TestCase
       env['rack.exception'] = exception
       response
     end
-    stack = HoptoadNotifier::Rack.new(app)
+    stack = Airbrake::Rack.new(app)
 
     actual_response = stack.call(environment)
 
     assert_equal response, actual_response
-    assert_received(HoptoadNotifier, :notify_or_ignore) do |expect|
+    assert_received(Airbrake, :notify_or_ignore) do |expect|
       expect.with(exception, :rack_env => environment)
     end
   end

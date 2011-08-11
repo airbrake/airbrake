@@ -7,25 +7,25 @@ class ActionControllerCatcherTest < Test::Unit::TestCase
   def setup
     super
     reset_config
-    HoptoadNotifier.sender = CollectingSender.new
+    Airbrake.sender = CollectingSender.new
     define_constant('RAILS_ROOT', '/path/to/rails/root')
   end
 
   def ignore(exception_class)
-    HoptoadNotifier.configuration.ignore << exception_class
+    Airbrake.configuration.ignore << exception_class
   end
 
   def build_controller_class(&definition)
      Class.new(ActionController::Base).tap do |klass|
-      klass.__send__(:include, HoptoadNotifier::Rails::ActionControllerCatcher)
+      klass.__send__(:include, Airbrake::Rails::ActionControllerCatcher)
       klass.class_eval(&definition) if definition
-      define_constant('HoptoadTestController', klass)
+      define_constant('AirbrakeTestController', klass)
     end
   end
 
   def assert_sent_hash(hash, xpath)
     hash.each do |key, value|
-      next if key.match(/^hoptoad\./) # We added this key.
+      next if key.match(/^airbrake\./) # We added this key.
 
       element_xpath = "#{xpath}/var[@key = '#{key}']"
       if value.respond_to?(:to_hash)
@@ -71,7 +71,7 @@ class ActionControllerCatcherTest < Test::Unit::TestCase
   end
 
   def sender
-    HoptoadNotifier.sender
+    Airbrake.sender
   end
 
   def last_sent_notice_xml
@@ -109,7 +109,7 @@ class ActionControllerCatcherTest < Test::Unit::TestCase
     klass.consider_all_requests_local = opts[:all_local]
     klass.local                       = opts[:local]
     controller = klass.new
-    controller.stubs(:rescue_action_in_public_without_hoptoad)
+    controller.stubs(:rescue_action_in_public_without_airbrake)
     opts[:request].query_parameters = opts[:request].query_parameters.merge(opts[:params] || {})
     opts[:request].session = ActionController::TestSession.new(opts[:session] || {})
     # Prevents request.fullpath from crashing Rails in tests
@@ -120,7 +120,7 @@ class ActionControllerCatcherTest < Test::Unit::TestCase
 
   def process_action_with_manual_notification(args = {})
     process_action(args) do
-      notify_hoptoad(:error_message => 'fail')
+      notify_airbrake(:error_message => 'fail')
       # Rails will raise a template error if we don't render something
       render :nothing => true
     end
@@ -181,28 +181,28 @@ class ActionControllerCatcherTest < Test::Unit::TestCase
   should "continue with default behavior after delivering an exception" do
     controller = process_action_with_automatic_notification(:public => true)
     # TODO: can we test this without stubbing?
-    assert_received(controller, :rescue_action_in_public_without_hoptoad)
+    assert_received(controller, :rescue_action_in_public_without_airbrake)
   end
 
-  should "not create actions from Hoptoad methods" do
+  should "not create actions from Airbrake methods" do
     controller = build_controller_class.new
-    assert_equal [], HoptoadNotifier::Rails::ActionControllerCatcher.instance_methods
+    assert_equal [], Airbrake::Rails::ActionControllerCatcher.instance_methods
   end
 
   should "ignore exceptions when user agent is being ignored by regular expression" do
-    HoptoadNotifier.configuration.ignore_user_agent_only = [/Ignored/]
+    Airbrake.configuration.ignore_user_agent_only = [/Ignored/]
     process_action_with_automatic_notification(:user_agent => 'ShouldBeIgnored')
     assert_caught_and_not_sent
   end
 
   should "ignore exceptions when user agent is being ignored by string" do
-    HoptoadNotifier.configuration.ignore_user_agent_only = ['IgnoredUserAgent']
+    Airbrake.configuration.ignore_user_agent_only = ['IgnoredUserAgent']
     process_action_with_automatic_notification(:user_agent => 'IgnoredUserAgent')
     assert_caught_and_not_sent
   end
 
   should "not ignore exceptions when user agent is not being ignored" do
-    HoptoadNotifier.configuration.ignore_user_agent_only = ['IgnoredUserAgent']
+    Airbrake.configuration.ignore_user_agent_only = ['IgnoredUserAgent']
     process_action_with_automatic_notification(:user_agent => 'NonIgnoredAgent')
     assert_caught_and_sent
   end
@@ -220,25 +220,25 @@ class ActionControllerCatcherTest < Test::Unit::TestCase
   end
 
   should "send request data for manual notification" do
-    params = { 'controller' => "hoptoad_test", 'action' => "index" }
+    params = { 'controller' => "airbrake_test", 'action' => "index" }
     controller = process_action_with_manual_notification(:params => params)
     assert_sent_request_info_for controller.request
   end
 
   should "send request data for manual notification with non-standard port" do
-    params = { 'controller' => "hoptoad_test", 'action' => "index" }
+    params = { 'controller' => "airbrake_test", 'action' => "index" }
     controller = process_action_with_manual_notification(:params => params, :port => 81)
     assert_sent_request_info_for controller.request
   end
 
   should "send request data for automatic notification" do
-    params = { 'controller' => "hoptoad_test", 'action' => "index" }
+    params = { 'controller' => "airbrake_test", 'action' => "index" }
     controller = process_action_with_automatic_notification(:params => params)
     assert_sent_request_info_for controller.request
   end
 
   should "send request data for automatic notification with non-standard port" do
-    params = { 'controller' => "hoptoad_test", 'action' => "index" }
+    params = { 'controller' => "airbrake_test", 'action' => "index" }
     controller = process_action_with_automatic_notification(:params => params, :port => 81)
     assert_sent_request_info_for controller.request
   end
@@ -266,8 +266,8 @@ class ActionControllerCatcherTest < Test::Unit::TestCase
 
   context "for a local error with development lookup enabled" do
     setup do
-      HoptoadNotifier.configuration.development_lookup = true
-      HoptoadNotifier.stubs(:build_lookup_hash_for).returns({ :awesome => 2 })
+      Airbrake.configuration.development_lookup = true
+      Airbrake.stubs(:build_lookup_hash_for).returns({ :awesome => 2 })
 
       @controller = process_action_with_automatic_notification(:local => true)
       @response   = @controller.response
@@ -279,15 +279,15 @@ class ActionControllerCatcherTest < Test::Unit::TestCase
     end
 
     should "contain host, API key and notice JSON" do
-      assert_match HoptoadNotifier.configuration.host.to_json, @response.body
-      assert_match HoptoadNotifier.configuration.api_key.to_json, @response.body
+      assert_match Airbrake.configuration.host.to_json, @response.body
+      assert_match Airbrake.configuration.api_key.to_json, @response.body
       assert_match ({ :awesome => 2 }).to_json, @response.body
     end
   end
 
   context "for a local error with development lookup disabled" do
     setup do
-      HoptoadNotifier.configuration.development_lookup = false
+      Airbrake.configuration.development_lookup = false
 
       @controller = process_action_with_automatic_notification(:local => true)
       @response   = @controller.response
