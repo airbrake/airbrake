@@ -1,17 +1,17 @@
-HoptoadNotifier
-===============
+Airbrake
+========
 
-This is the notifier gem for integrating apps with Hoptoad.
+This is the notifier gem for integrating apps with [Airbrake](http://airbrakeapp.com).
 
-When an uncaught exception occurs, HoptoadNotifier will POST the relevant data
-to the Hoptoad server specified in your environment.
+When an uncaught exception occurs, Airbrake will POST the relevant data
+to the Airbrake server specified in your environment.
 
 Help
 ----
 
-For help with using Hoptoad and the Hoptoad notifier visit [our support site](http://help.hoptoadapp.com)
+For help with using Airbrake and this notifier visit [our support site](http://help.airbrakeapp.com)
 
-For discussion of Hoptoad notifier development check out the [mailing list](http://groups.google.com/group/hoptoad-notifier-dev)
+For discussion of Airbrake development check out the [mailing list](http://groups.google.com/group/hoptoad-notifier-dev)
 
 Rails Installation
 ------------------
@@ -34,79 +34,45 @@ Remove the vendor/plugins/hoptoad_notifier directory before installing the gem, 
 
 ### Rails 3.x
 
-Add the hoptoad_notifier gem to your Gemfile.  In Gemfile:
+Add the airbrake gem to your Gemfile.  In Gemfile:
 
-    gem "hoptoad_notifier", "~> 2.3"
+    gem "airbrake", "~> 2.3"
 
 Then from your project's RAILS_ROOT, and in your development environment, run:
 
     bundle install
-    script/rails generate hoptoad --api-key your_key_here
+    script/rails generate airbrake --api-key your_key_here
 
 That's it!
 
-The generator creates a file under `config/initializers/hoptoad.rb` configuring Hoptoad with your API key. This file should be checked into your version control system so that it is deployed to your staging and production environments
+The generator creates a file under `config/initializers/airbrake.rb` configuring Airbrake with your API key. This file should be checked into your version control system so that it is deployed to your staging and production environments.
 
 ### Rails 2.x
 
-Add the hoptoad_notifier gem to your app. In config/environment.rb:
+Add the airbrake gem to your app. In config/environment.rb:
 
-    config.gem 'hoptoad_notifier'
+    config.gem 'airbrake'
 
 Then from your project's RAILS_ROOT, and in your development environment, run:
 
     rake gems:install
-    rake gems:unpack GEM=hoptoad_notifier
-    script/generate hoptoad --api-key your_key_here
+    rake gems:unpack GEM=airbrake
+    script/generate airbrake --api-key your_key_here
 
-As always, if you choose not to vendor the hoptoad_notifier gem, make sure
+As always, if you choose not to vendor the airbrake gem, make sure
 every server you deploy to has the gem installed or your application won't start.
 
-The generator creates a file under `config/initializers/hoptoad.rb` configuring Hoptoad with your API key. This file should be checked into your version control system so that it is deployed to your staging and production environments
+The generator creates a file under `config/initializers/airbrake.rb` configuring Airbrake with your API key. This file should be checked into your version control system so that it is deployed to your staging and production environments.
 
-### Rails 1.2.6
-
-Install the hoptoad_notifier gem:
-
-    gem install hoptoad_notifier
-
-Once installed, you should vendor the hoptoad_notifier gem:
-
-    mkdir vendor/gems
-    cd vendor/gems
-    gem unpack hoptoad_notifier
-
-And then add the following to the Rails::Initializer.run do |config|
-block in environment.rb so that the vendored gem is loaded.
-
-    # Add the vendor/gems/*/lib directories to the LOAD_PATH
-    config.load_paths += Dir.glob(File.join(RAILS_ROOT, 'vendor', 'gems', '*', 'lib'))
-
-Next add something like this at the bottom of your config/environment.rb:
-
-    require 'hoptoad_notifier'
-    require 'hoptoad_notifier/rails'
-    HoptoadNotifier.configure do |config|
-      config.api_key = 'your_key_here'
-    end
-
-You will also need to copy the hoptoad_notifier_tasks.rake file into your
-RAILS_ROOT/lib/tasks directory in order for the rake hoptoad:test task to work:
-
-    cp vendor/gems/hoptoad_notifier-*/generators/hoptoad/templates/hoptoad_notifier_tasks.rake lib/tasks
-
-As always, if you choose not to vendor the hoptoad_notifier gem, make sure
-every server you deploy to has the gem installed or your application won't start.
-
-### Upgrading From Earlier Versions of Hoptoad
+### Upgrading From Earlier Versions of Airbrake
 
 If you're currently using the plugin version (if you have a
 vendor/plugins/hoptoad_notifier directory, you are), you'll need to perform a
 few extra steps when upgrading to the gem version.
 
-Add the hoptoad_notifier gem to your app. In config/environment.rb:
+Add the airbrake gem to your app. In config/environment.rb:
 
-    config.gem 'hoptoad_notifier'
+    config.gem 'airbrake'
 
 Remove the plugin:
 
@@ -117,25 +83,26 @@ Make sure the following line DOES NOT appear in your ApplicationController file:
     include HoptoadNotifier::Catcher
 
 If it does, remove it.  The new catcher is automatically included by the gem
-version of Hoptoad.
+version of Airbrake.
 
-Before running the hoptoad generator, you need to find your project's API key.
-Log in to your account at hoptoadapp.com, and click on the "Projects" button.
+Before running the airbrake generator, you need to find your project's API key.
+Log in to your account at airbrakeapp.com, and click on the "Projects" button.
 Then, find your project in the list, and click on its name. In the left-hand
 column, you'll see an "Edit this project" button. Click on that to get your
-project's API. (If you accidentally use your personal API auth_token, you won't
-be able to install the gem.)
+project's API key. If you accidentally use your personal API auth_token,
+you will get API key not found errors, and exceptions will not be stored
+by the Airbrake service.
 
 Then from your project's RAILS_ROOT, run:
 
     rake gems:install
-    script/generate hoptoad --api-key your_key_here
+    script/generate airbrake --api-key your_key_here
 
-Once installed, you should vendor the hoptoad_notifier gem.
+Once installed, you should vendor the airbrake gem.
 
-    rake gems:unpack GEM=hoptoad_notifier
+    rake gems:unpack GEM=airbrake
 
-As always, if you choose not to vendor the hoptoad_notifier gem, make sure
+As always, if you choose not to vendor the airbrake gem, make sure
 every server you deploy to has the gem installed or your application won't
 start.
 
@@ -152,16 +119,16 @@ Then you must remove the hoptoad_notifier_tasks.rake file from lib:
 
     rm lib/tasks/hoptoad_notifier_tasks.rake
 
-You can them continue to install normally. If you don't remove the rake file,
+You can then continue to install normally. If you don't remove the rake file,
 you will be unable to unpack this gem (Rails will think it's part of the
 framework).
 
 ### Testing it out
 
-You can test that Hoptoad is working in your production environment by using
+You can test that Airbrake is working in your production environment by using
 this rake task (from RAILS_ROOT):
 
-    rake hoptoad:test
+    rake airbrake:test
 
 If everything is configured properly, that task will send a notice to Hoptoad
 which will be visible immediately.
@@ -169,39 +136,39 @@ which will be visible immediately.
 Rack
 ----
 
-In order to use hoptoad_notifier in a non-Rails rack app, just load the
-hoptoad_notifier, configure your API key, and use the HoptoadNotifier::Rack
+In order to use airbrake in a non-Rails rack app, just load
+airbrake, configure your API key, and use the Airbrake::Rack
 middleware:
 
     require 'rack'
-    require 'hoptoad_notifier'
+    require 'airbrake'
 
-    HoptoadNotifier.configure do |config|
+    Airbrake.configure do |config|
       config.api_key = 'my_api_key'
     end
 
     app = Rack::Builder.app do
-      use HoptoadNotifier::Rack
+      use Airbrake::Rack
       run lambda { |env| raise "Rack down" }
     end
 
 Sinatra
 -------
 
-Using hoptoad_notifier in a Sinatra app is just like a Rack app, but you have
+Using airbrake in a Sinatra app is just like a Rack app, but you have
 to disable Sinatra's error rescuing functionality:
 
     require 'sinatra/base'
-    require 'hoptoad_notifier'
-  
-    HoptoadNotifier.configure do |config|
+    require 'airbrake'
+
+    Airbrake.configure do |config|
       config.api_key = 'my_api_key'
     end
-  
+
     class MyApp < Sinatra::Default
-      use HoptoadNotifier::Rack
+      use Airbrake::Rack
       enable :raise_errors
-  
+
       get "/" do
         raise "Sinatra has left the building"
       end
@@ -210,7 +177,7 @@ to disable Sinatra's error rescuing functionality:
 Usage
 -----
 
-For the most part, Hoptoad works for itself.  Once you've included the notifier
+For the most part, Airbrake works for itself. Once you've included the notifier
 in your ApplicationController (which is now done automatically by the gem),
 all errors will be rescued by the #rescue_action_in_public provided by the gem.
 
@@ -219,63 +186,63 @@ controller, you can do something like this:
 
     ...
     rescue => ex
-      notify_hoptoad(ex)
+      notify_airbrake(ex)
       flash[:failure] = 'Encryptions could not be rerouted, try again.'
     end
     ...
 
-The #notify_hoptoad call will send the notice over to Hoptoad for later
-analysis. While in your controllers you use the notify_hoptoad method, anywhere
-else in your code, use HoptoadNotifier.notify.
+The `#notify_airbrake` call will send the notice over to Airbrake for later
+analysis. While in your controllers you use the `notify_airbrake` method, anywhere
+else in your code, use `Airbrake.notify`.
 
-To perform custom error processing after Hoptoad has been notified, define the
-instance method #rescue_action_in_public_without_hoptoad(exception) in your
+To perform custom error processing after Airbrake has been notified, define the
+instance method `#rescue_action_in_public_without_airbrake(exception)` in your
 controller.
 
 Informing the User
 ------------------
 
-The Notifier gem is capable of telling the user information about the error that just happened
+The airbrake gem is capable of telling the user information about the error that just happened
 via the user_information option. They can give this error number in bug resports, for example.
 By default, if your 500.html contains the text
 
-    <!-- HOPTOAD ERROR -->
+    <!-- AIRBRAKE ERROR -->
 
-then that comment will be replaced with the text "Hoptoad Error [errnum]". You can modify the text
-of the informer by setting config.user_information. The Notifier will replace "{{ error_id }}" with the
-ID of the error that is returned from Hoptoad.
+then that comment will be replaced with the text "Airbrake Error [errnum]". You can modify the text
+of the informer by setting `config.user_information`. Airbrake will replace "{{ error_id }}" with the
+ID of the error that is returned from Airbrake.
 
-  HoptoadNotifier.configure do |config|
+  Airbrake.configure do |config|
     ...
     config.user_information = "<p>Tell the devs that it was <strong>{{ error_id }}</strong>'s fault.</p>"
   end
 
-You can also turn the middleware completely off by setting config.user_information to false.
+You can also turn the middleware that handles this completely off by setting `config.user_information` to false.
 
 Tracking deployments in Hoptoad
 -------------------------------
 
-Paying Hoptoad plans support the ability to track deployments of your application in Hoptoad.
-By notifying Hoptoad of your application deployments, all errors are resolved when a deploy occurs,
+Paying Airbrake plans support the ability to track deployments of your application in Airbrake.
+By notifying Airbrake of your application deployments, all errors are resolved when a deploy occurs,
 so that you'll be notified again about any errors that reoccur after a deployment.
 
-Additionally, it's possible to review the errors in Hoptoad that occurred before and after a deploy.
+Additionally, it's possible to review the errors in Airbrake that occurred before and after a deploy.
 
-When Hoptoad is installed as a gem, you need to add
+When Airbrake is installed as a gem, you need to add
 
-    require 'hoptoad_notifier/capistrano'
+    require 'airbrake/capistrano'
 
 to your deploy.rb
 
 If you don't use Capistrano, then you can use the following rake task from your
-deployment process to notify Hoptoad:
+deployment process to notify Airbrake:
 
-    rake hoptoad:deploy TO=#{rails_env} REVISION=#{current_revision} REPO=#{repository} USER=#{local_user}
+    rake airbrake:deploy TO=#{rails_env} REVISION=#{current_revision} REPO=#{repository} USER=#{local_user}
 
 Going beyond exceptions
 -----------------------
 
-You can also pass a hash to notify_hoptoad method and store whatever you want,
+You can also pass a hash to `Airbrake.notify` method and store whatever you want,
 not just an exception. And you can also use it anywhere, not just in
 controllers:
 
@@ -285,25 +252,25 @@ controllers:
       }
       my_unpredicable_method(params)
     rescue => e
-      HoptoadNotifier.notify(
+      Airbrake.notify(
         :error_class   => "Special Error",
         :error_message => "Special Error: #{e.message}",
         :parameters    => params
       )
     end
 
-While in your controllers you use the notify_hoptoad method, anywhere else in
-your code, use HoptoadNotifier.notify. Hoptoad will get all the information
+While in your controllers you use the `notify_airbrake` method, anywhere else in
+your code, use `Airbrake.notify`. Airbrake will get all the information
 about the error itself. As for a hash, these are the keys you should pass:
 
-* :error_class - Use this to group similar errors together. When Hoptoad catches an exception it sends the class name of that exception object.
-* :error_message - This is the title of the error you see in the errors list. For exceptions it is "#{exception.class.name}: #{exception.message}"
-* :parameters - While there are several ways to send additional data to Hoptoad, passing a Hash as :parameters as in the example above is the most common use case. When Hoptoad catches an exception in a controller, the actual HTTP client request parameters are sent using this key.
+* `:error_class` - Use this to group similar errors together. When Hoptoad catches an exception it sends the class name of that exception object.
+* `:error_message` - This is the title of the error you see in the errors list. For exceptions it is "#{exception.class.name}: #{exception.message}"
+* `:parameters` - While there are several ways to send additional data to Airbrake, passing a Hash as :parameters as in the example above is the most common use case. When Airbrake catches an exception in a controller, the actual HTTP client request parameters are sent using this key.
 
-Hoptoad merges the hash you pass with these default options:
+Airbrake merges the hash you pass with these default options:
 
     {
-      :api_key       => HoptoadNotifier.api_key,
+      :api_key       => Airbrake.api_key,
       :error_message => 'Notification',
       :backtrace     => caller,
       :parameters    => {},
@@ -318,13 +285,13 @@ One common request we see is to send shell environment variables along with
 manual exception notification.  We recommend sending them along with CGI data
 or Rack environment (:cgi_data or :rack_env keys, respectively.)
 
-See HoptoadNotifier::Notice#initialize in lib/hoptoad_notifier/notice.rb for
+See Airbrake::Notice#initialize in lib/airbrake/notice.rb for
 more details.
 
 Filtering
 ---------
 
-You can specify a whitelist of errors, that Hoptoad will not report on.  Use
+You can specify a whitelist of errors that Airbrake will not report on. Use
 this feature when you are so apathetic to certain errors that you don't want
 them even logged.
 
@@ -340,10 +307,10 @@ Hoptoad ignores the following exceptions by default:
     ActionController::UnknownAction
     CGI::Session::CookieStore::TamperedWithCookie
 
-To ignore errors in addition to those, specify their names in your Hoptoad
+To ignore errors in addition to those, specify their names in your Airbrake
 configuration block.
 
-    HoptoadNotifier.configure do |config|
+    Airbrake.configure do |config|
       config.api_key      = '1234567890abcdef'
       config.ignore       << "ActiveRecord::IgnoreThisError"
     end
@@ -351,7 +318,7 @@ configuration block.
 To ignore *only* certain errors (and override the defaults), use the
 #ignore_only attribute.
 
-    HoptoadNotifier.configure do |config|
+    Airbrake.configure do |config|
       config.api_key      = '1234567890abcdef'
       config.ignore_only  = ["ActiveRecord::IgnoreThisError"] # or [] to ignore no exceptions.
     end
@@ -359,7 +326,7 @@ To ignore *only* certain errors (and override the defaults), use the
 To ignore certain user agents, add in the #ignore_user_agent attribute as a
 string or regexp:
 
-    HoptoadNotifier.configure do |config|
+    Airbrake.configure do |config|
       config.api_key      = '1234567890abcdef'
       config.ignore_user_agent  << /Ignored/
       config.ignore_user_agent << 'IgnoredUserAgent'
@@ -367,7 +334,7 @@ string or regexp:
 
 To ignore exceptions based on other conditions, use #ignore_by_filter:
 
-    HoptoadNotifier.configure do |config|
+    Airbrake.configure do |config|
       config.api_key      = '1234567890abcdef'
       config.ignore_by_filter do |exception_data|
         true if exception_data[:error_class] == "RuntimeError"
@@ -376,23 +343,23 @@ To ignore exceptions based on other conditions, use #ignore_by_filter:
 
 To replace sensitive information sent to the Hoptoad service with [FILTERED] use #params_filters:
 
-    HoptoadNotifier.configure do |config|
+    Airbrake.configure do |config|
       config.api_key      = '1234567890abcdef'
       config.params_filters << "credit_card_number"
     end
 
 Note that, when rescuing exceptions within an ActionController method,
-hoptoad_notifier will reuse filters specified by #filter_parameter_logging.
+airbrake will reuse filters specified by #filter_parameter_logging.
 
 Testing
 -------
 
-When you run your tests, you might notice that the Hoptoad service is recording
-notices generated using #notify when you don't expect it to.  You can
-use code like this in your test_helper.rb to redefine that method so those
-errors are not reported while running tests.
+When you run your tests, you might notice that the Airbrake service is recording
+notices generated using #notify when you don't expect it to. You can
+use code like this in your test_helper.rb or spec_helper.rb files to redefine
+that method so those errors are not reported while running tests.
 
-    module HoptoadNotifier
+    module Airbrake
       def self.notify(thing)
         # do nothing.
       end
@@ -401,9 +368,9 @@ errors are not reported while running tests.
 Proxy Support
 -------------
 
-The notifier supports using a proxy, if your server is not able to directly reach the Hoptoad servers.  To configure the proxy settings, added the following information to your Hoptoad configuration block.
+The notifier supports using a proxy, if your server is not able to directly reach the Airbrake servers. To configure the proxy settings, added the following information to your Airbrake configuration block.
 
-    HoptoadNotifier.configure do |config|
+    Airbrake.configure do |config|
       config.proxy_host = ...
       config.proxy_port = ...
       config.proxy_user = ...
@@ -415,8 +382,8 @@ Supported Rails versions
 See SUPPORTED_RAILS_VERSIONS for a list of official supported versions of
 Rails.
 
-Please open up a support ticket on Tender ( http://help.hoptoadapp.com ) if
-you're using a version of Rails that is not listed above and the notifier is
+Please open up a support ticket ( http://help.airbrakeapp.com ) if
+you're using a version of Rails that is listed above and the notifier is
 not working properly.
 
 Javascript Notifer
@@ -424,7 +391,7 @@ Javascript Notifer
 
 To automatically include the Javascript node on every page, use this helper method from your layouts:
 
-    <%= hoptoad_javascript_notifier %>
+    <%= airbrake_javascript_notifier %>
 
 It's important to insert this very high in the markup, above all other javascript.  Example:
 
@@ -432,7 +399,7 @@ It's important to insert this very high in the markup, above all other javascrip
     <html>
       <head>
         <meta charset="utf8">
-        <%= hoptoad_javascript_notifier %>
+        <%= airbrake_javascript_notifier %>
         <!-- more javascript -->
       </head>
       <body>
@@ -452,7 +419,7 @@ Credits
 
 ![thoughtbot](http://thoughtbot.com/images/tm/logo.png)
 
-HoptoadNotifier is maintained and funded by [thoughtbot, inc](http://thoughtbot.com/community)
+Airbrake is maintained and funded by [thoughtbot, inc](http://thoughtbot.com/community)
 
 Thank you to all [the contributors](https://github.com/thoughtbot/hoptoad_notifier/contributors)!
 
@@ -461,4 +428,4 @@ The names and logos for thoughtbot are trademarks of thoughtbot, inc.
 License
 -------
 
-HoptoadNotifier is Copyright © 2008-2011 thoughtbot. It is free software, and may be redistributed under the terms specified in the MIT-LICENSE file.
+Airbrake is Copyright © 2008-2011 thoughtbot. It is free software, and may be redistributed under the terms specified in the MIT-LICENSE file.
