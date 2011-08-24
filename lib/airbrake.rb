@@ -20,7 +20,7 @@ require 'airbrake/railtie' if defined?(Rails::Railtie)
 
 # Gem for applications to automatically post errors to the Airbrake of their choice.
 module Airbrake
-  API_VERSION = "2.0"
+  API_VERSION = "2.2"
   LOG_PREFIX = "** [Airbrake] "
 
   HEADERS = {
