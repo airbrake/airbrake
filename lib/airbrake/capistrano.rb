@@ -13,9 +13,9 @@ Capistrano::Configuration.instance(:must_exist).load do
       notify_command = "#{executable} airbrake:deploy TO=#{rails_env} REVISION=#{current_revision} REPO=#{repository} USER=#{local_user}"
       notify_command << " DRY_RUN=true" if dry_run
       notify_command << " API_KEY=#{ENV['API_KEY']}" if ENV['API_KEY']
-      puts "Notifying Airbrake of Deploy (#{notify_command})"
+      logger.info "Notifying Airbrake of Deploy (#{notify_command})"
       `#{notify_command}`
-      puts "Airbrake Notification Complete."
+      logger.info "Airbrake Notification Complete."
     end
   end
 end
