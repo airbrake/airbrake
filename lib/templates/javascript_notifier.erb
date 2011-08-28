@@ -1,13 +1,15 @@
 <%= javascript_tag %Q{
+  (function(){
     var notifierJsScheme = (("https:" == document.location.protocol) ? "https://" : "http://");
     document.write(unescape("%3Cscript src='" + notifierJsScheme + "#{host}/javascripts/notifier.js' type='text/javascript'%3E%3C/script%3E"));
-  }
-%>
+  })();
+}%>
 
 <%= javascript_tag %Q{
+    window.Airbrake = Airbrake || Hoptoad;
     Airbrake.setKey('#{api_key}');
     Airbrake.setHost('#{host}');
     Airbrake.setEnvironment('#{environment}');
     Airbrake.setErrorDefaults({ url: "#{escape_javascript url}", component: "#{controller_name}", action: "#{action_name}" });
-  } 
+  }
 %>
