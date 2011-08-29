@@ -6,7 +6,7 @@
 }%>
 
 <%= javascript_tag %Q{
-    window.Airbrake = Airbrake || Hoptoad;
+    window.Airbrake = (typeof(Airbrake) == 'undefined' && typeof(Hoptoad) != 'undefined') ? Hoptoad : Airbrake
     Airbrake.setKey('#{api_key}');
     Airbrake.setHost('#{host}');
     Airbrake.setEnvironment('#{environment}');
