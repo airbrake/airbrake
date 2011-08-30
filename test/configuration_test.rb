@@ -181,6 +181,11 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_equal "CUSTOM LOGGER", config.logger
   end
 
+  should 'give a new instance if non defined' do
+    Airbrake.configuration = nil
+    assert_kind_of Airbrake::Configuration, Airbrake.configuration
+  end
+
   def assert_config_default(option, default_value, config = nil)
     config ||= Airbrake::Configuration.new
     assert_equal default_value, config.send(option)

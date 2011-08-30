@@ -35,7 +35,7 @@ module Airbrake
 
     # A Airbrake configuration object. Must act like a hash and return sensible
     # values for all Airbrake configuration options. See Airbrake::Configuration.
-    attr_accessor :configuration
+    attr_writer :configuration
 
     # Tell the log that the Notifier is good to go
     def report_ready
@@ -77,10 +77,15 @@ module Airbrake
     #     config.secure  = false
     #   end
     def configure(silent = false)
-      self.configuration ||= Configuration.new
       yield(configuration)
       self.sender = Sender.new(configuration)
       report_ready unless silent
+    end
+
+    # The configuration object.
+    # @see Airbrake.configure
+    def configuration
+      @configuration ||= Configuration.new
     end
 
     # Sends an exception manually using this method, even when you are not in a controller.
