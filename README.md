@@ -130,7 +130,7 @@ this rake task (from RAILS_ROOT):
 
     rake airbrake:test
 
-If everything is configured properly, that task will send a notice to Hoptoad
+If everything is configured properly, that task will send a notice to Airbrake
 which will be visible immediately.
 
 Rack
@@ -219,8 +219,8 @@ ID of the error that is returned from Airbrake.
 
 You can also turn the middleware that handles this completely off by setting `config.user_information` to false.
 
-Tracking deployments in Hoptoad
--------------------------------
+Tracking deployments in Airbrake
+--------------------------------
 
 Paying Airbrake plans support the ability to track deployments of your application in Airbrake.
 By notifying Airbrake of your application deployments, all errors are resolved when a deploy occurs,
@@ -263,7 +263,7 @@ While in your controllers you use the `notify_airbrake` method, anywhere else in
 your code, use `Airbrake.notify`. Airbrake will get all the information
 about the error itself. As for a hash, these are the keys you should pass:
 
-* `:error_class` - Use this to group similar errors together. When Hoptoad catches an exception it sends the class name of that exception object.
+* `:error_class` - Use this to group similar errors together. When Airbrake catches an exception it sends the class name of that exception object.
 * `:error_message` - This is the title of the error you see in the errors list. For exceptions it is "#{exception.class.name}: #{exception.message}"
 * `:parameters` - While there are several ways to send additional data to Airbrake, passing a Hash as :parameters as in the example above is the most common use case. When Airbrake catches an exception in a controller, the actual HTTP client request parameters are sent using this key.
 
@@ -298,7 +298,7 @@ them even logged.
 This filter will only be applied to automatic notifications, not manual
 notifications (when #notify is called directly).
 
-Hoptoad ignores the following exceptions by default:
+Airbrake ignores the following exceptions by default:
 
     AbstractController::ActionNotFound
     ActiveRecord::RecordNotFound
@@ -341,7 +341,7 @@ To ignore exceptions based on other conditions, use #ignore_by_filter:
       end
     end
 
-To replace sensitive information sent to the Hoptoad service with [FILTERED] use #params_filters:
+To replace sensitive information sent to the Airbrake service with [FILTERED] use #params_filters:
 
     Airbrake.configure do |config|
       config.api_key      = '1234567890abcdef'
