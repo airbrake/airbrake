@@ -421,7 +421,7 @@ Credits
 
 Airbrake is maintained and funded by [thoughtbot, inc](http://thoughtbot.com/community)
 
-Thank you to all [the contributors](https://github.com/thoughtbot/hoptoad_notifier/contributors)!
+Thank you to all [the contributors](https://github.com/thoughtbot/airbrake/contributors)!
 
 The names and logos for thoughtbot are trademarks of thoughtbot, inc.
 
