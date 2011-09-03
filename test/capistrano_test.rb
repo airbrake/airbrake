@@ -13,11 +13,11 @@ class CapistranoTest < Test::Unit::TestCase
     @configuration.dry_run = true
   end
   
-  should "define deploy:notify_airbrake task" do
+  should "define airbrake:notify task" do
     assert_not_nil @configuration.find_task('airbrake:notify')
   end
   
-  should "log when calling deploy:notify_airbrake task" do
+  should "log when calling airbrake:notify task" do
     @configuration.set(:current_revision, '084505b1c0e0bcf1526e673bb6ac99fbcb18aecc')
     @configuration.set(:repository, 'repository')
     io = StringIO.new

@@ -67,7 +67,7 @@ Feature: Install the Gem in a Rails application
     And I configure my application to require the "airbrake" gem
     And I run the airbrake generator with "-k myapikey"
     And I run "cap -T"
-    Then I should see "deploy:notify_airbrake"
+    Then I should see "airbrake:notify"
 
   Scenario: Configure and deploy using only vendored gem
     When I generate a new Rails application
@@ -79,7 +79,7 @@ Feature: Install the Gem in a Rails application
     And I uninstall the "airbrake" gem
     And I install cached gems
     And I run "cap -T"
-    Then I should see "deploy:notify_airbrake"
+    Then I should see "airbrake:notify"
 
   Scenario: Try to install when the airbrake plugin still exists
     When I generate a new Rails application
