@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency("rspec",         "~> 2.6.0")
   s.add_development_dependency("sham_rack",     "~> 1.3.0")
   s.add_development_dependency("shoulda",       "~> 2.11.3")
+  s.add_development_dependency("capistrano",    "~> 2.8.0")
 
   s.authors = ["thoughtbot, inc"]
   s.email   = %q{support@airbrakeapp.com}
