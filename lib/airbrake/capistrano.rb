@@ -5,12 +5,12 @@ module Airbrake
   module Capistrano
     def self.load_into(configuration)
       configuration.load do
-        after "deploy",            "airbrake:notify"
-        after "deploy:migrations", "airbrake:notify"
+        after "deploy",            "airbrake:deploy"
+        after "deploy:migrations", "airbrake:deploy"
 
         namespace :airbrake do
           desc "Notify Airbrake of the deployment"
-          task :notify, :except => { :no_release => true } do
+          task :deploy, :except => { :no_release => true } do
             rails_env = fetch(:airbrake_env, fetch(:rails_env, "production"))
             local_user = ENV['USER'] || ENV['USERNAME']
             executable = RUBY_PLATFORM.downcase.include?('mswin') ? fetch(:rake, 'rake.bat') : fetch(:rake, 'rake')

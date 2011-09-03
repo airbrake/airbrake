@@ -13,11 +13,11 @@ class CapistranoTest < Test::Unit::TestCase
     @configuration.dry_run = true
   end
   
-  should "define airbrake:notify task" do
-    assert_not_nil @configuration.find_task('airbrake:notify')
+  should "define airbrake:deploy task" do
+    assert_not_nil @configuration.find_task('airbrake:deploy')
   end
   
-  should "log when calling airbrake:notify task" do
+  should "log when calling airbrake:deploy task" do
     @configuration.set(:current_revision, '084505b1c0e0bcf1526e673bb6ac99fbcb18aecc')
     @configuration.set(:repository, 'repository')
     io = StringIO.new
@@ -25,7 +25,7 @@ class CapistranoTest < Test::Unit::TestCase
     logger.level = Capistrano::Logger::MAX_LEVEL
     
     @configuration.logger = logger
-    @configuration.find_and_execute_task('airbrake:notify')
+    @configuration.find_and_execute_task('airbrake:deploy')
     
     assert io.string.include?('** Notifying Airbrake of Deploy')
     assert io.string.include?('** Airbrake Notification Complete')
