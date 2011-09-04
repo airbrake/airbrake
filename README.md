@@ -36,7 +36,7 @@ Remove the vendor/plugins/hoptoad_notifier directory before installing the gem, 
 
 Add the airbrake gem to your Gemfile.  In Gemfile:
 
-    gem "airbrake", "~> 2.3"
+    gem "airbrake", "~> 3.0"
 
 Then from your project's RAILS_ROOT, and in your development environment, run:
 
