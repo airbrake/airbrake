@@ -1,3 +1,10 @@
+Version 3.0.4 - Mon Sep 12 08:25:04 -0400 2011
+===============================================================================
+David Czarnecki(1):
+    Change deploy task back to airbrake:deploy
+Harold Gimenez(1):
+    README updates
+
 Version 3.0.3 - Sat Sep 03 13:18:26 -0400 2011
 ===============================================================================
 David Czarnecki(1):
@@ -436,6 +443,8 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
+
 
 
 
