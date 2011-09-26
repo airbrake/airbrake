@@ -22,6 +22,9 @@ module Airbrake
 
     # +true+ for https connections, +false+ for http connections.
     attr_accessor :secure
+    
+    # Use a local copy of notifier.js? (defaults to false)
+    attr_accessor :use_local_notifier_js
 
     # The HTTP open timeout in seconds (defaults to 2).
     attr_accessor :http_open_timeout
@@ -124,6 +127,7 @@ module Airbrake
     def initialize
       @secure                   = false
       @host                     = 'airbrakeapp.com'
+      @use_local_notifier_js    = false
       @http_open_timeout        = 2
       @http_read_timeout        = 5
       @params_filters           = DEFAULT_PARAMS_FILTERS.dup
