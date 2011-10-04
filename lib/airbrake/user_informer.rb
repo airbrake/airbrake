@@ -15,6 +15,7 @@ module Airbrake
         body.each do |chunk|
           new_body << chunk.gsub("<!-- AIRBRAKE ERROR -->", replacement(env['airbrake.error_id']))
         end
+        body.close if body.respond_to?(:close)
         headers['Content-Length'] = new_body.sum(&:length).to_s
         body = new_body
       end
