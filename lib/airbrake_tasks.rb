@@ -29,18 +29,24 @@ module AirbrakeTasks
                              Airbrake.configuration.api_key}
     opts.each {|k,v| params["deploy[#{k}]"] = v }
 
-    url = URI.parse("http://#{Airbrake.configuration.host || 'airbrakeapp.com'}/deploys.txt")
+    host = Airbrake.configuration.host || 'airbrakeapp.com'
+    port = Airbrake.configuration.port || (Airbrake.configuration.secure ? 443 : 80)
 
     proxy = Net::HTTP.Proxy(Airbrake.configuration.proxy_host,
                             Airbrake.configuration.proxy_port,
                             Airbrake.configuration.proxy_user,
                             Airbrake.configuration.proxy_pass)
+    http = proxy.new(host, port)
+    http.use_ssl = Airbrake.configuration.secure
 
+    post = Net::HTTP::Post.new("/deploys.txt")
+    post.set_form_data(params)
+  
     if dry_run
-      puts url, params.inspect
+      puts http.inspect, params.inspect
       return true
     else
-      response = proxy.post_form(url, params)
+      response = http.request(post)
 
       puts response.body
       return Net::HTTPSuccess === response

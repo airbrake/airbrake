@@ -39,15 +39,19 @@ class AirbrakeTasksTest < Test::Unit::TestCase
 
       context "given an optional HTTP proxy and valid options" do
         setup do
-          @response   = stub("response", :body => "stub body")
-          @http_proxy = stub("proxy", :post_form => @response)
+          @response         = stub("response", :body => "stub body")
+          @http_proxy       = stub("proxy",    :request => @response)
+          @http_proxy_class = stub("proxy_class", :new => @http_proxy)
+          @post             = stub("post",     :set_form_data => nil)
 
+          @http_proxy.expects(:use_ssl=).with(Airbrake.configuration.secure)
           Net::HTTP.expects(:Proxy).
             with(Airbrake.configuration.proxy_host,
                  Airbrake.configuration.proxy_port,
                  Airbrake.configuration.proxy_user,
                  Airbrake.configuration.proxy_pass).
-            returns(@http_proxy)
+            returns(@http_proxy_class)
+          Net::HTTP::Post.expects(:new).with("/deploys.txt").returns(@post)
 
           @options    = { :rails_env => "staging", :dry_run => false }
         end
@@ -57,7 +61,7 @@ class AirbrakeTasksTest < Test::Unit::TestCase
 
           should "return true without performing any actual request" do
             assert_equal true, @output
-            assert_received(@http_proxy, :post_form) do|expects|
+            assert_received(@http_proxy, :request) do|expects|
               expects.never
             end
           end
@@ -68,57 +72,54 @@ class AirbrakeTasksTest < Test::Unit::TestCase
             @output = AirbrakeTasks.deploy(@options)
           end
 
-          before_should "post to http://airbrakeapp.com/deploys.txt" do
-            URI.stubs(:parse).with('http://airbrakeapp.com/deploys.txt').returns(:uri)
-            @http_proxy.expects(:post_form).with(:uri, kind_of(Hash)).returns(successful_response)
+          before_should "post to http://airbrakeapp.com:80/deploys.txt" do
+            @http_proxy_class.expects(:new).with("airbrakeapp.com", 80).returns(@http_proxy)
+            @post.expects(:set_form_data).with(kind_of(Hash))
+            @http_proxy.expects(:request).with(any_parameters).returns(successful_response)
           end
 
           before_should "use the project api key" do
-            @http_proxy.expects(:post_form).
-              with(kind_of(URI), has_entries('api_key' => "1234123412341234")).
-              returns(successful_response)
+            @post.expects(:set_form_data).
+              with(has_entries('api_key' => "1234123412341234"))
           end
 
           before_should "use send the rails_env param" do
-            @http_proxy.expects(:post_form).
-              with(kind_of(URI), has_entries("deploy[rails_env]" => "staging")).
-              returns(successful_response)
+            @post.expects(:set_form_data).
+              with(has_entries("deploy[rails_env]" => "staging"))
           end
 
           [:local_username, :scm_repository, :scm_revision].each do |key|
             before_should "use send the #{key} param if it's passed in." do
               @options[key] = "value"
-              @http_proxy.expects(:post_form).
-                with(kind_of(URI), has_entries("deploy[#{key}]" => "value")).
-                returns(successful_response)
+              @post.expects(:set_form_data).
+                with(has_entries("deploy[#{key}]" => "value"))
             end
           end
 
           before_should "use the :api_key param if it's passed in." do
             @options[:api_key] = "value"
-            @http_proxy.expects(:post_form).
-              with(kind_of(URI), has_entries("api_key" => "value")).
-              returns(successful_response)
+            @post.expects(:set_form_data).
+              with(has_entries("api_key" => "value"))
           end
 
           before_should "puts the response body on success" do
             AirbrakeTasks.expects(:puts).with("body")
-            @http_proxy.expects(:post_form).with(any_parameters).returns(successful_response('body'))
+            @http_proxy.expects(:request).with(any_parameters).returns(successful_response('body'))
           end
 
           before_should "puts the response body on failure" do
             AirbrakeTasks.expects(:puts).with("body")
-            @http_proxy.expects(:post_form).with(any_parameters).returns(unsuccessful_response('body'))
+            @http_proxy.expects(:request).with(any_parameters).returns(unsuccessful_response('body'))
           end
 
           should "return false on failure", :before => lambda {
-            @http_proxy.expects(:post_form).with(any_parameters).returns(unsuccessful_response('body'))
+            @http_proxy.expects(:request).with(any_parameters).returns(unsuccessful_response('body'))
           } do
             assert !@output
           end
 
           should "return true on success", :before => lambda {
-            @http_proxy.expects(:post_form).with(any_parameters).returns(successful_response('body'))
+            @http_proxy.expects(:request).with(any_parameters).returns(successful_response('body'))
           } do
             assert @output
           end
@@ -138,8 +139,17 @@ class AirbrakeTasksTest < Test::Unit::TestCase
         setup { @output = AirbrakeTasks.deploy(:rails_env => "staging") }
 
         before_should "post to the custom host" do
-          URI.stubs(:parse).with('http://custom.host/deploys.txt').returns(:uri)
-          Net::HTTP.expects(:post_form).with(:uri, kind_of(Hash)).returns(successful_response)
+          @post             = stub("post",     :set_form_data => nil)
+          @http_proxy       = stub("proxy",    :request => @response)
+          @http_proxy.expects(:use_ssl=).with(Airbrake.configuration.secure)
+          @http_proxy_class = stub("proxy_class", :new => @http_proxy)
+          @http_proxy_class.expects(:new).with("custom.host", 80).returns(@http_proxy)
+          Net::HTTP.expects(:Proxy).with(any_parameters).returns(@http_proxy_class)
+          Net::HTTP::Post.expects(:new).with("/deploys.txt").returns(@post)
+          # URI.stubs(:parse).with('http://custom.host/deploys.txt').returns(:uri)
+          # Net::HTTP.expects(:post_form).with(:uri, kind_of(Hash)).returns(successful_response)
+          @post.expects(:set_form_data).with(kind_of(Hash))
+          @http_proxy.expects(:request).with(any_parameters).returns(successful_response)
         end
       end
     end
