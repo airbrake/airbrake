@@ -203,7 +203,7 @@ Informing the User
 ------------------
 
 The airbrake gem is capable of telling the user information about the error that just happened
-via the user_information option. They can give this error number in bug resports, for example.
+via the user_information option. They can give this error number in bug reports, for example.
 By default, if your 500.html contains the text
 
     <!-- AIRBRAKE ERROR -->
