@@ -19,7 +19,7 @@ Note: do NOT use 'bundle exec rake'.
 For Maintainers
 ================
 
-When developing the Hoptoad Notifier, be sure to use the integration test against an existing project on staging before pushing to master.
+When developing the Airbrake Notifier, be sure to use the integration test against an existing project on staging before pushing to master.
 
     ./script/integration_test.rb <test project's api key> <staging server hostname>
 

@@ -121,7 +121,7 @@ class SenderTest < Test::Unit::TestCase
     File.stubs(:exist?).with(OpenSSL::X509::DEFAULT_CERT_FILE).returns(false)
 
     send_exception(:secure => true)
-    assert(real_http.use_ssl)
+    assert(real_http.use_ssl?)
     assert_equal(OpenSSL::SSL::VERIFY_PEER,        real_http.verify_mode)
     assert_nil real_http.ca_file
   end
@@ -137,7 +137,7 @@ class SenderTest < Test::Unit::TestCase
     File.stubs(:exist?).with(OpenSSL::X509::DEFAULT_CERT_FILE).returns(true)
 
     send_exception(:secure => true)
-    assert(real_http.use_ssl)
+    assert(real_http.use_ssl?)
     assert_equal(OpenSSL::SSL::VERIFY_PEER,        real_http.verify_mode)
     assert_equal(OpenSSL::X509::DEFAULT_CERT_FILE, real_http.ca_file)
   end
