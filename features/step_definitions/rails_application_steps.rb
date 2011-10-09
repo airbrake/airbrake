@@ -31,9 +31,9 @@ end
 
 When /^I run the airbrake generator with "([^\"]*)"$/ do |generator_args|
   if rails3?
-    When %{I run "script/rails generate airbrake #{generator_args}"}
+    When %{I run "./script/rails generate airbrake #{generator_args}"}
   else
-    When %{I run "script/generate airbrake #{generator_args}"}
+    When %{I run "./script/generate airbrake #{generator_args}"}
   end
 end
 
