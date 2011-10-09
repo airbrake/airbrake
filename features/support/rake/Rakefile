@@ -36,11 +36,22 @@ task :airbrake_autodetect_not_from_terminal do
   raise_exception 
 end
 
+task :airbrake_not_yet_configured do
+  Airbrake.configuration.rescue_rake_exceptions = true
+  stub_tty_output(true)
+  stub_empty_sender
+  raise_exception
+end
+
 module Airbrake
   def self.notify(*args)
     # TODO if you need to check more params, you'll have to use json.dump or something
     $stderr.puts "airbrake #{args[1][:component]}"
   end
+end
+
+def stub_empty_sender
+  Airbrake.sender = nil
 end
 
 def stub_tty_output(value)

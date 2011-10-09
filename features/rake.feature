@@ -6,6 +6,10 @@ Feature: Use the Gem to catch errors in a Rake application
     When I run rake with airbrake
     Then Airbrake should catch the exception
 
+  Scenario: Falling back to default handler before Airbrake is configured
+    When I run rake with airbrake not yet configured
+    Then Airbrake should not catch the exception
+
   Scenario: Disabling Rake exception catcher
     When I run rake with airbrake disabled
     Then Airbrake should not catch the exception
