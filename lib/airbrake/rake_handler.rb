@@ -9,7 +9,7 @@ module Airbrake::RakeHandler
   end
 
   def display_error_message_with_airbrake(ex)
-    if Airbrake.configuration &&
+    if Airbrake.sender && Airbrake.configuration &&
         (Airbrake.configuration.rescue_rake_exceptions || 
           (Airbrake.configuration.rescue_rake_exceptions===nil && !self.tty_output?))
 
