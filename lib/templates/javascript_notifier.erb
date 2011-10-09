@@ -1,9 +1,16 @@
-<%= javascript_tag %Q{
+<% js = %Q[
   (function(){
     var notifierJsScheme = (("https:" == document.location.protocol) ? "https://" : "http://");
-    document.write(unescape("%3Cscript src='" + notifierJsScheme + "#{host}/javascripts/notifier.js' type='text/javascript'%3E%3C/script%3E"));
+    document.write(unescape("%3Cscript src='" + notifierJsScheme + ]
+    if use_local_notifier_js
+			js += %Q[document.location.host + ]
+		else
+			js += %Q["#{host}" + ]
+		end
+			js+= %Q["/javascripts/notifier.js' type='text/javascript'%3E%3C/script%3E"));
   })();
-}%>
+]%>
+<%= javascript_tag js %>
 
 <%= javascript_tag %Q{
     window.Airbrake = (typeof(Airbrake) == 'undefined' && typeof(Hoptoad) != 'undefined') ? Hoptoad : Airbrake
