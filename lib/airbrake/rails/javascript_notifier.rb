@@ -29,10 +29,16 @@ module Airbrake
           }
         }
 
-        if @template
+        res = if @template
           @template.render(options)
         else
           render_to_string(options)
+        end
+
+        if res.respond_to?(:html_safe)
+          res.html_safe
+        else
+          res
         end
 
       end
