@@ -349,6 +349,13 @@ class NoticeTest < Test::Unit::TestCase
     end
   end
 
+
+  should "ensure #to_ary is called on objects that support it" do
+    assert_nothing_raised do
+      build_notice(:session => { :object => stub(:to_ary => {}) })
+    end
+  end
+
   should "extract data from a rack environment hash" do
     url = "https://subdomain.happylane.com:100/test/file.rb?var=value&var2=value2"
     parameters = { 'var' => 'value', 'var2' => 'value2' }

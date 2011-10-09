@@ -241,7 +241,7 @@ module Airbrake
           result.merge(key => clean_unserializable_data(value, stack + [data.object_id]))
         end
       elsif data.respond_to?(:to_ary)
-        data.collect do |value|
+        data.to_ary.collect do |value|
           clean_unserializable_data(value, stack + [data.object_id])
         end
       else
