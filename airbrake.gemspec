@@ -27,8 +27,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency("capistrano",    "~> 2.8.0")
 
   s.authors = ["thoughtbot, inc"]
-  s.email   = %q{support@airbrakeapp.com}
-  s.homepage = "http://www.airbrakeapp.com"
+  s.email   = %q{support@airbrake.io}
+  s.homepage = "http://www.airbrake.io"
 
   s.platform = Gem::Platform::RUBY
 end

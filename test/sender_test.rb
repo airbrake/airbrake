@@ -39,7 +39,7 @@ class SenderTest < Test::Unit::TestCase
     proxy    = stub(:new => http)
     Net::HTTP.stubs(:Proxy => proxy)
 
-    url = "http://airbrakeapp.com:80#{Airbrake::Sender::NOTICES_URI}"
+    url = "http://airbrake.io:80#{Airbrake::Sender::NOTICES_URI}"
     uri = URI.parse(url)
 
     proxy_host = 'some.host'
@@ -98,7 +98,7 @@ class SenderTest < Test::Unit::TestCase
 
   should "post to the right url for non-ssl" do
     http = stub_http
-    url = "http://airbrakeapp.com:80#{Airbrake::Sender::NOTICES_URI}"
+    url = "http://airbrake.io:80#{Airbrake::Sender::NOTICES_URI}"
     uri = URI.parse(url)
     send_exception(:secure => false)
     assert_received(http, :post) {|expect| expect.with(uri.path, anything, Airbrake::HEADERS) }
@@ -111,7 +111,7 @@ class SenderTest < Test::Unit::TestCase
   end
 
   should "verify the SSL peer when the use_ssl option is set to true" do
-    url = "https://airbrakeapp.com#{Airbrake::Sender::NOTICES_URI}"
+    url = "https://airbrake.io#{Airbrake::Sender::NOTICES_URI}"
     uri = URI.parse(url)
 
     real_http = Net::HTTP.new(uri.host, uri.port)
@@ -127,7 +127,7 @@ class SenderTest < Test::Unit::TestCase
   end
 
   should "verify the SSL peer when the use_ssl option is set to true and the default cert exists" do
-    url = "https://airbrakeapp.com#{Airbrake::Sender::NOTICES_URI}"
+    url = "https://airbrake.io#{Airbrake::Sender::NOTICES_URI}"
     uri = URI.parse(url)
 
     real_http = Net::HTTP.new(uri.host, uri.port)
@@ -169,13 +169,13 @@ class SenderTest < Test::Unit::TestCase
   should "connect to the right port for ssl" do
     stub_http
     send_exception(:secure => true)
-    assert_received(Net::HTTP, :new) {|expect| expect.with("airbrakeapp.com", 443) }
+    assert_received(Net::HTTP, :new) {|expect| expect.with("airbrake.io", 443) }
   end
 
   should "connect to the right port for non-ssl" do
     stub_http
     send_exception(:secure => false)
-    assert_received(Net::HTTP, :new) {|expect| expect.with("airbrakeapp.com", 80) }
+    assert_received(Net::HTTP, :new) {|expect| expect.with("airbrake.io", 80) }
   end
 
   should "use ssl if secure" do

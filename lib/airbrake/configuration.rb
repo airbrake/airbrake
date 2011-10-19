@@ -13,7 +13,7 @@ module Airbrake
     # The API key for your project, found on the project edit form.
     attr_accessor :api_key
 
-    # The host to connect to (defaults to airbrakeapp.com).
+    # The host to connect to (defaults to airbrake.io).
     attr_accessor :host
 
     # The port on which your Airbrake server runs (defaults to 443 for secure
@@ -123,7 +123,7 @@ module Airbrake
 
     def initialize
       @secure                   = false
-      @host                     = 'airbrakeapp.com'
+      @host                     = 'airbrake.io'
       @http_open_timeout        = 2
       @http_read_timeout        = 5
       @params_filters           = DEFAULT_PARAMS_FILTERS.dup
@@ -135,7 +135,7 @@ module Airbrake
       @development_lookup       = true
       @notifier_name            = 'Airbrake Notifier'
       @notifier_version         = VERSION
-      @notifier_url             = 'http://airbrakeapp.com'
+      @notifier_url             = 'http://airbrake.io'
       @framework                = 'Standalone'
       @user_information         = 'Airbrake Error {{error_id}}'
       @rescue_rake_exceptions   = nil

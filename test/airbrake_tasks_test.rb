@@ -72,8 +72,8 @@ class AirbrakeTasksTest < Test::Unit::TestCase
             @output = AirbrakeTasks.deploy(@options)
           end
 
-          before_should "post to http://airbrakeapp.com:80/deploys.txt" do
-            @http_proxy_class.expects(:new).with("airbrakeapp.com", 80).returns(@http_proxy)
+          before_should "post to http://airbrake.io:80/deploys.txt" do
+            @http_proxy_class.expects(:new).with("airbrake.io", 80).returns(@http_proxy)
             @post.expects(:set_form_data).with(kind_of(Hash))
             @http_proxy.expects(:request).with(any_parameters).returns(successful_response)
           end

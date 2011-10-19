@@ -1,7 +1,7 @@
 Airbrake
 ========
 
-This is the notifier gem for integrating apps with [Airbrake](http://airbrakeapp.com).
+This is the notifier gem for integrating apps with [Airbrake](http://airbrake.io).
 
 When an uncaught exception occurs, Airbrake will POST the relevant data
 to the Airbrake server specified in your environment.
@@ -9,7 +9,7 @@ to the Airbrake server specified in your environment.
 Help
 ----
 
-For help with using Airbrake and this notifier visit [our support site](http://help.airbrakeapp.com)
+For help with using Airbrake and this notifier visit [our support site](http://help.airbrake.io)
 
 For discussion of Airbrake development check out the [mailing list](http://groups.google.com/group/hoptoad-notifier-dev)
 
@@ -86,7 +86,7 @@ If it does, remove it.  The new catcher is automatically included by the gem
 version of Airbrake.
 
 Before running the airbrake generator, you need to find your project's API key.
-Log in to your account at airbrakeapp.com, and click on the "Projects" button.
+Log in to your account at airbrake.io, and click on the "Projects" button.
 Then, find your project in the list, and click on its name. In the left-hand
 column, you'll see an "Edit this project" button. Click on that to get your
 project's API key. If you accidentally use your personal API auth_token,
@@ -382,7 +382,7 @@ Supported Rails versions
 See SUPPORTED_RAILS_VERSIONS for a list of official supported versions of
 Rails.
 
-Please open up a support ticket ( http://help.airbrakeapp.com ) if
+Please open up a support ticket ( http://help.airbrake.io ) if
 you're using a version of Rails that is listed above and the notifier is
 not working properly.
 
