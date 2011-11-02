@@ -1,3 +1,69 @@
+Version 3.0.5 - 2011-11-02 08:41:03 +0800
+===============================================================================
+
+Benjamin Quorning (1):
+      README updated to reflect name change from Hoptoad to Airbrake
+
+David Czarnecki (6):
+      Using the Capistrano logger for great justice
+      Using the Capistrano logger for great justice
+      Re-organized capistrano task to allow for testing
+      Fixing conflict
+      Fixed the name of the capistrano task in the test to be correct. Updated the cucumber feature to look for the right task name.
+      Change airbrake:notify to airbrake:deploy to be more clear that it is a deploy notification
+
+Florent Guilleux (1):
+      Change Hoptoad references to Airbrake.
+
+Gabe Berke-Williams (1):
+      Merge pull request #10 from Florent2/patch-1
+
+Harold Giménez (10):
+      Heroku is still using HOPTOAD_API_KEY, so expect that for now
+      Bumping to version 3.0
+      Bumping to version 3.0.1
+      Fix bug in defining the Airbrake javascript object
+      Bumping to version 3.0.2
+      Ensure a valid configuration object is always available on Airbrake.configuration
+      Merge remote-tracking branch 'agoragames/master'
+      Bumping to version 3.0.3
+      Minor fix to Gemfile instructions on README
+      Bumping to version 3.0.4
+
+Jonathan Siegel (11):
+      Removed class-level caching per jkraemer: Hi,
+      Integrated pulls and updated tests.
+      Integrated: https://github.com/thoughtbot/hoptoad_notifier/pull/37
+      Corrected test.
+      Consistent operation.
+      Consistent callout during test generation.
+      Fixed typo.
+      Refreshed supported.
+      Resolved: http://help.airbrakeapp.com/discussions/questions/587-airbrake_javascript_notifier-is-escaped-rails-31-haml
+      Now running airbrake deploy notifications on the REMOTE machine.
+      Added first rev of PEER cert resolution.
+
+Leonid Shevtsov (1):
+      fixed rake handler failing when exception happens before Airbrake has been configured (for example, when running an unknown Rake task)
+
+Matt Fawcett (1):
+      Call #close on the old body after building the new body to prevent thread joining errors
+
+Roman Shterenzon (1):
+      Use either Airbrake or Hoptoad object.
+
+Stuart Chaney (1):
+      point towards airbrake.io
+
+Thomas Jachmann (1):
+      handles exceptions with #to_hash properly
+
+usiegj00 (3):
+      Merge pull request #21 from mattfawcett/master
+      Merge pull request #12 from leonid-shevtsov/master
+      Merge pull request #14 from thomasjachmann/master
+
+
 Version 3.0.4 - Mon Sep 12 08:25:04 -0400 2011
 ===============================================================================
 David Czarnecki(1):
@@ -443,6 +509,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 

@@ -48,7 +48,7 @@ namespace :changeling do
 
     version = [major, minor, patch, build].compact.join('.')
 
-    File.open(File.join("lib", "airbrake", "notifier", "version.rb"), "w") do |f|
+    File.open(File.join("lib", "airbrake", "version.rb"), "w") do |f|
       f.write <<EOF
 module Airbrake
   VERSION = "#{version}".freeze
