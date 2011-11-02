@@ -17,7 +17,7 @@ module Airbrake
             rails_env = fetch(:airbrake_env, fetch(:rails_env, "production"))
             local_user = ENV['USER'] || ENV['USERNAME']
             executable = RUBY_PLATFORM.downcase.include?('mswin') ? fetch(:rake, 'rake.bat') : fetch(:rake, 'rake')
-            directory = current_release
+            directory = configuration.current_release
             notify_command = "cd #{directory}; #{executable} RAILS_ENV=#{rails_env} airbrake:deploy TO=#{rails_env} REVISION=#{current_revision} REPO=#{repository} USER=#{local_user}"
             notify_command << " DRY_RUN=true" if dry_run
             notify_command << " API_KEY=#{ENV['API_KEY']}" if ENV['API_KEY']
@@ -25,9 +25,11 @@ module Airbrake
             if configuration.dry_run
               logger.info "DRY RUN: Notification not actually run."
             else
-              run(notify_command) 
-              logger.info "Airbrake Notification Complete."
+              result = ""
+              run(notify_command, :once => true) { |ch, stream, data| result << data }
+              # TODO: Check if SSL is active on account via result content.
             end
+            logger.info "Airbrake Notification Complete."
           end
         end
       end
@@ -38,3 +40,4 @@ end
 if Capistrano::Configuration.instance
   Airbrake::Capistrano.load_into(Capistrano::Configuration.instance)
 end
+

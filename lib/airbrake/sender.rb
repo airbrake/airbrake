@@ -38,7 +38,7 @@ module Airbrake
           http.ca_file     = OpenSSL::X509::DEFAULT_CERT_FILE 
         else
           # ca-bundle.crt built from source, see resources/README.md
-          http.ca_file     = File.expand_path(File.join("..", "..", "..", "resources", "ca-bundle.crt"), __FILE__)
+          http.ca_file     = Sender.local_cert_path
         end
         http.verify_mode = OpenSSL::SSL::VERIFY_PEER
       else
@@ -63,6 +63,13 @@ module Airbrake
         error_id = response.body.match(%r{<error-id[^>]*>(.*?)</error-id>})
         error_id[1] if error_id
       end
+    end
+
+
+    # Local certificate path.
+    #
+    def self.local_cert_path
+      File.expand_path(File.join("..", "..", "..", "resources", "ca-bundle.crt"), __FILE__)
     end
 
     private

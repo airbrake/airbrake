@@ -123,7 +123,7 @@ class SenderTest < Test::Unit::TestCase
     send_exception(:secure => true)
     assert(real_http.use_ssl?)
     assert_equal(OpenSSL::SSL::VERIFY_PEER,        real_http.verify_mode)
-    assert_nil real_http.ca_file
+    assert_equal(Airbrake::Sender.local_cert_path, real_http.ca_file)
   end
 
   should "verify the SSL peer when the use_ssl option is set to true and the default cert exists" do
