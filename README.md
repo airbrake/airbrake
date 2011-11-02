@@ -16,15 +16,15 @@ For discussion of Airbrake development check out the [mailing list](http://group
 Rails Installation
 ------------------
 
-### Remove exception_notifier
+### Remove hoptoad_notifier
 
 in your ApplicationController, REMOVE this line:
 
-    include ExceptionNotifiable
+    include HoptoadNotifiable
 
-In your config/environment* files, remove all references to ExceptionNotifier
+In your config/environment* files, remove all references to HoptoadNotifier
 
-Remove the vendor/plugins/exception_notifier directory.
+Remove the vendor/plugins/hoptoad_notifier directory.
 
 ### Remove hoptoad_notifier plugin
 
