@@ -63,6 +63,9 @@ module Airbrake
         error_id = response.body.match(%r{<error-id[^>]*>(.*?)</error-id>})
         error_id[1] if error_id
       end
+    rescue => e
+      log :error, "Unhandled exception #{e.class} while contacting Airbrake with message: #{e.message}"
+      nil
     end
 
 
