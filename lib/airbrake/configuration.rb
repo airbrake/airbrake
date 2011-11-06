@@ -66,7 +66,7 @@ module Airbrake
     # The name of the environment the application is running in
     attr_accessor :environment_name
 
-    # The path to the project in which the error occurred, such as the RAILS_ROOT
+    # The path to the project in which the error occurred, such as the Rails.root
     attr_accessor :project_root
 
     # The name of the notifier library being used to send notifications (such as "Airbrake Notifier")
@@ -147,7 +147,7 @@ module Airbrake
     #
     # @example
     #   config.filter_bracktrace do |line|
-    #     line.gsub(/^#{Rails.root}/, "[RAILS_ROOT]")
+    #     line.gsub(/^#{Rails.root}/, "[Rails.root]")
     #   end
     #
     # @param [Proc] block The new backtrace filter.
