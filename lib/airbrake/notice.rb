@@ -45,7 +45,7 @@ module Airbrake
     # A hash of session data from the request
     attr_reader :session_data
 
-    # The path to the project that caused the error (usually RAILS_ROOT)
+    # The path to the project that caused the error (usually Rails.root)
     attr_reader :project_root
 
     # The URL at which the error occurred (if any)
