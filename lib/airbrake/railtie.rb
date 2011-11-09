@@ -2,7 +2,7 @@ require 'airbrake'
 require 'rails'
 
 module Airbrake
-  class Railtie < Rails::Railtie
+  class Railtie < ::Rails::Railtie
     rake_tasks do
       require 'airbrake/rake_handler'
       require "airbrake/rails3_tasks"
@@ -15,9 +15,9 @@ module Airbrake
 
     config.after_initialize do
       Airbrake.configure(true) do |config|
-        config.logger           ||= Rails.logger
-        config.environment_name ||= Rails.env
-        config.project_root     ||= Rails.root
+        config.logger           ||= ::Rails.logger
+        config.environment_name ||= ::Rails.env
+        config.project_root     ||= ::Rails.root
         config.framework        = "Rails: #{::Rails::VERSION::STRING}"
       end
 
