@@ -1,8 +1,11 @@
-Version 3.0.5 - 2011-11-02 08:41:03 +0800
+Version 3.0.5 - 2011-11-08 23:02:07 -0800
 ===============================================================================
 
 Benjamin Quorning (1):
       README updated to reflect name change from Hoptoad to Airbrake
+
+Darcy Laycock (1):
+      Explicitly scope calls to Rails.env and such to prevent loading issues when manually requiring parts of airbrake.
 
 David Czarnecki (6):
       Using the Capistrano logger for great justice
@@ -30,7 +33,7 @@ Harold Giménez (10):
       Minor fix to Gemfile instructions on README
       Bumping to version 3.0.4
 
-Jonathan Siegel (11):
+Jonathan Siegel (15):
       Removed class-level caching per jkraemer: Hi,
       Integrated pulls and updated tests.
       Integrated: https://github.com/thoughtbot/hoptoad_notifier/pull/37
@@ -42,6 +45,10 @@ Jonathan Siegel (11):
       Resolved: http://help.airbrakeapp.com/discussions/questions/587-airbrake_javascript_notifier-is-escaped-rails-31-haml
       Now running airbrake deploy notifications on the REMOTE machine.
       Added first rev of PEER cert resolution.
+      Bumped 3.0.5
+      Updated README, fixed JS rescue template missed HT reference.
+      Crosslinked docs...
+      Fixes for tests.
 
 Leonid Shevtsov (1):
       fixed rake handler failing when exception happens before Airbrake has been configured (for example, when running an unknown Rake task)
@@ -58,10 +65,12 @@ Stuart Chaney (1):
 Thomas Jachmann (1):
       handles exceptions with #to_hash properly
 
-usiegj00 (3):
+usiegj00 (4):
       Merge pull request #21 from mattfawcett/master
       Merge pull request #12 from leonid-shevtsov/master
       Merge pull request #14 from thomasjachmann/master
+      Merge pull request #28 from Sutto/patch-1
+
 
 
 Version 3.0.4 - Mon Sep 12 08:25:04 -0400 2011
@@ -509,44 +518,5 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
