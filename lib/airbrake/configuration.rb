@@ -12,6 +12,12 @@ module Airbrake
 
     # The API key for your project, found on the project edit form.
     attr_accessor :api_key
+    
+    # If you're using the Javascript notifier and would want to separate
+    # Javascript notifications into another Airbrake project, specify
+    # its APi key here.
+    # Defaults to #api_key (of the base project)
+    attr_accessor :js_api_key
 
     # The host to connect to (defaults to airbrake.io).
     attr_accessor :host
