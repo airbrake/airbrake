@@ -1,6 +1,7 @@
 require 'net/http'
 require 'uri'
 require 'active_support'
+require 'airbrake/security'
 
 # Capistrano tasks for notifying Airbrake of deploys
 module AirbrakeTasks
@@ -37,11 +38,14 @@ module AirbrakeTasks
                             Airbrake.configuration.proxy_user,
                             Airbrake.configuration.proxy_pass)
     http = proxy.new(host, port)
+
+    # Handle Security
     http.use_ssl = Airbrake.configuration.secure
+    http.ca_file = Airbrake::Security.ca_bundle_path if Airbrake.configuration.secure
 
     post = Net::HTTP::Post.new("/deploys.txt")
     post.set_form_data(params)
-  
+
     if dry_run
       puts http.inspect, params.inspect
       return true

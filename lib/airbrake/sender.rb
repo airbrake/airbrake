@@ -1,3 +1,5 @@
+require 'airbrake/security'
+
 module Airbrake
   # Sends out the notice to Airbrake
   class Sender
@@ -32,17 +34,24 @@ module Airbrake
       http.read_timeout = http_read_timeout
       http.open_timeout = http_open_timeout
 
+      # if secure
+      #   http.use_ssl     = true
+      #   if File.exist?(OpenSSL::X509::DEFAULT_CERT_FILE)
+      #     http.ca_file     = OpenSSL::X509::DEFAULT_CERT_FILE
+      #   else
+      #     # ca-bundle.crt built from source, see resources/README.md
+      #     http.ca_file     = Sender.local_cert_path
+      #   end
+      #   http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+      # else
+      #   http.use_ssl     = false
+      # end
+
+      # Handle Security
+      http.use_ssl = secure
       if secure
-        http.use_ssl     = true
-        if File.exist?(OpenSSL::X509::DEFAULT_CERT_FILE)
-          http.ca_file     = OpenSSL::X509::DEFAULT_CERT_FILE 
-        else
-          # ca-bundle.crt built from source, see resources/README.md
-          http.ca_file     = Sender.local_cert_path
-        end
+        http.ca_file = Airbrake::Security.ca_bundle_path
         http.verify_mode = OpenSSL::SSL::VERIFY_PEER
-      else
-        http.use_ssl     = false
       end
 
       response = begin
@@ -63,13 +72,6 @@ module Airbrake
         error_id = response.body.match(%r{<error-id[^>]*>(.*?)</error-id>})
         error_id[1] if error_id
       end
-    end
-
-
-    # Local certificate path.
-    #
-    def self.local_cert_path
-      File.expand_path(File.join("..", "..", "..", "resources", "ca-bundle.crt"), __FILE__)
     end
 
     private
