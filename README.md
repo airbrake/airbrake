@@ -43,7 +43,7 @@ Add the airbrake gem to your Gemfile.  In Gemfile:
 Then from your project's RAILS_ROOT, and in your development environment, run:
 
     bundle install
-    script/rails generate airbrake --api-key your_key_here
+    rails generate airbrake --api-key your_key_here
 
 That's it!
 
