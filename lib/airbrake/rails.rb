@@ -29,9 +29,9 @@ module Airbrake
 
       Airbrake.configure(true) do |config|
         config.logger = rails_logger
-        config.environment_name = RAILS_ENV  if defined?(RAILS_ENV)
-        config.project_root     = RAILS_ROOT if defined?(RAILS_ROOT)
-        config.framework        = "Rails: #{::Rails::VERSION::STRING}" if defined?(::Rails::VERSION)
+        config.environment_name = if defined?(Rails.env) ? Rails.env : RAILS_ENV
+        config.project_root     = if defined?(Rails.root) ? Rails.root : RAILS_ROOT
+        config.framework        = if defined?(Rails.version) ? "Rails: #{Rails.version}" : "Rails: #{Rails::VERSION::STRING}"
       end
     end
   end

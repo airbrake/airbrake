@@ -70,6 +70,12 @@ class SenderTest < Test::Unit::TestCase
     assert_equal nil, send_exception(:secure => false)
   end
 
+  should "return nil on unexpected errors during posting" do
+    http = stub_http
+    http.stubs(:post).raises(RuntimeError)
+    assert_equal nil, send_exception(:secure => false)
+  end
+
   should "not fail when posting and a timeout exception occurs" do
     http = stub_http
     http.stubs(:post).raises(TimeoutError)
