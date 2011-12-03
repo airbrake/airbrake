@@ -125,7 +125,7 @@ You can then continue to install normally. If you don't remove the rake file,
 you will be unable to unpack this gem (Rails will think it's part of the
 framework).
 
-### Testing it out
+
 
 You can test that Airbrake is working in your production environment by using
 this rake task (from RAILS_ROOT):
@@ -134,6 +134,18 @@ this rake task (from RAILS_ROOT):
 
 If everything is configured properly, that task will send a notice to Airbrake
 which will be visible immediately.
+
+
+Non-rails apps using Bundler
+----------------------------
+There is an undocumented dependency in `activesupport` where the `i18n` gem is
+required only if the core classes extensions are used (`active_support/core_ext`). 
+This can lead to a confusing `LoadError` exception when using Airbrake. Until 
+this is fixed in `activesupport` the workaround is to add `i18n` to the Gemfile 
+for your Sinatra/Rack/pure ruby application:
+
+    gem 'i18n'
+    gem 'airbrake'
 
 Rack
 ----
@@ -157,23 +169,19 @@ middleware:
 Sinatra
 -------
 
-Using airbrake in a Sinatra app is just like a Rack app, but you have
-to disable Sinatra's error rescuing functionality:
+Using airbrake in a Sinatra app is just like a Rack app:
 
-    require 'sinatra/base'
+    require 'sinatra'
     require 'airbrake'
 
     Airbrake.configure do |config|
-      config.api_key = 'my_api_key'
+      config.api_key = 'my api key'
     end
 
-    class MyApp < Sinatra::Default
-      use Airbrake::Rack
-      enable :raise_errors
+    use Airbrake::Rack
 
-      get "/" do
-        raise "Sinatra has left the building"
-      end
+    get '/' do
+      raise "Sinatra has left the building"
     end
 
 Usage
@@ -317,8 +325,7 @@ configuration block.
       config.ignore       << "ActiveRecord::IgnoreThisError"
     end
 
-To ignore *only* certain errors (and override the defaults), use the
-#ignore_only attribute.
+To ignore *only* certain errors (and override the defaults), use the #ignore_only attribute.
 
     Airbrake.configure do |config|
       config.api_key      = '1234567890abcdef'
