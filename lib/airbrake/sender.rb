@@ -23,27 +23,7 @@ module Airbrake
     #
     # @param [String] data The XML notice to be sent off
     def send_to_airbrake(data)
-      logger.debug { "Sending request to #{url.to_s}:\n#{data}" } if logger
-
-      http =
-        Net::HTTP::Proxy(proxy_host, proxy_port, proxy_user, proxy_pass).
-        new(url.host, url.port)
-
-      http.read_timeout = http_read_timeout
-      http.open_timeout = http_open_timeout
-
-      if secure
-        http.use_ssl     = true
-        if File.exist?(OpenSSL::X509::DEFAULT_CERT_FILE)
-          http.ca_file     = OpenSSL::X509::DEFAULT_CERT_FILE 
-        else
-          # ca-bundle.crt built from source, see resources/README.md
-          http.ca_file     = Sender.local_cert_path
-        end
-        http.verify_mode = OpenSSL::SSL::VERIFY_PEER
-      else
-        http.use_ssl     = false
-      end
+      http = setup_http_connection
 
       response = begin
                    http.post(url.path, data, HEADERS)
@@ -63,6 +43,9 @@ module Airbrake
         error_id = response.body.match(%r{<error-id[^>]*>(.*?)</error-id>})
         error_id[1] if error_id
       end
+    rescue => e
+      log :error, "[Airbrake::Sender#send_to_airbrake] Cannot send notification. Error: #{e.class} - #{e.message}\nBacktrace:\n#{e.backtrace.join("\n\t")}"
+      nil
     end
 
 
@@ -89,6 +72,33 @@ module Airbrake
 
     def logger
       Airbrake.logger
+    end
+    
+    def setup_http_connection
+      http =
+        Net::HTTP::Proxy(proxy_host, proxy_port, proxy_user, proxy_pass).
+        new(url.host, url.port)
+
+      http.read_timeout = http_read_timeout
+      http.open_timeout = http_open_timeout
+
+      if secure
+        http.use_ssl     = true
+        if File.exist?(OpenSSL::X509::DEFAULT_CERT_FILE)
+          http.ca_file     = OpenSSL::X509::DEFAULT_CERT_FILE 
+        else
+          # ca-bundle.crt built from source, see resources/README.md
+          http.ca_file     = Sender.local_cert_path
+        end
+        http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+      else
+        http.use_ssl     = false
+      end
+      
+      http
+    rescue => e
+      log :error, "[Airbrake::Sender#setup_http_connection] Failure initializing the HTTP connection.\nError: #{e.class} - #{e.message}\nBacktrace:\n#{e.backtrace.join("\n\t")}"
+      raise e
     end
 
   end
