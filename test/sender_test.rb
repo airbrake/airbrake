@@ -108,8 +108,8 @@ class SenderTest < Test::Unit::TestCase
           assert_nil sender.send_to_airbrake("stuff")
         end
       end
-      
     end
+    
     should "return nil on failed posting" do
       http = stub_http
       http.stubs(:post).raises(Errno::ECONNREFUSED)

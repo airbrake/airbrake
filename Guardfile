@@ -3,3 +3,4 @@ guard :test do
   watch(%r{^test/.+_test\.rb$})
   watch('test/helper.rb')  { "test" }
 end
+

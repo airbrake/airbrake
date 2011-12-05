@@ -2,8 +2,9 @@ source "http://rubygems.org"
 
 gemspec
 
-group :test do
-  gem 'guard'
-  gem 'guard-spork'
-  gem 'guard-test'
+if true
+  group :test do
+    gem 'guard'
+    gem 'guard-test'
+  end
 end
