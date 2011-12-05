@@ -18,18 +18,6 @@ class LoggerTest < Test::Unit::TestCase
     Airbrake.stubs(:write_verbose_log)
   end
 
-  def assert_logged(expected)
-    assert_received(Airbrake, :write_verbose_log) do |expect|
-      expect.with {|actual| actual =~ expected }
-    end
-  end
-
-  def assert_not_logged(expected)
-    assert_received(Airbrake, :write_verbose_log) do |expect|
-      expect.with {|actual| actual =~ expected }.never
-    end
-  end
-
   def configure
     Airbrake.configure { |config| }
   end
