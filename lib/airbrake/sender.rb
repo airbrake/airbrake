@@ -13,8 +13,18 @@ module Airbrake
                    Errno::ECONNREFUSED].freeze
 
     def initialize(options = {})
-      [:proxy_host, :proxy_port, :proxy_user, :proxy_pass, :protocol,
-        :host, :port, :secure, :http_open_timeout, :http_read_timeout].each do |option|
+      [ :proxy_host,
+        :proxy_port, 
+        :proxy_user, 
+        :proxy_pass, 
+        :protocol,
+        :host, 
+        :port, 
+        :secure, 
+        :use_system_ssl_cert_chain, 
+        :http_open_timeout, 
+        :http_read_timeout
+      ].each do |option|
         instance_variable_set("@#{option}", options[option])
       end
     end
@@ -55,10 +65,22 @@ module Airbrake
       File.expand_path(File.join("..", "..", "..", "resources", "ca-bundle.crt"), __FILE__)
     end
 
-    private
+    attr_reader :proxy_host,
+                :proxy_port,
+                :proxy_user,
+                :proxy_pass,
+                :protocol,
+                :host,
+                :port,
+                :secure,
+                :use_system_ssl_cert_chain,
+                :http_open_timeout,
+                :http_read_timeout
 
-    attr_reader :proxy_host, :proxy_port, :proxy_user, :proxy_pass, :protocol,
-      :host, :port, :secure, :http_open_timeout, :http_read_timeout
+    alias_method :secure?, :secure
+    alias_method :use_system_ssl_cert_chain?, :use_system_ssl_cert_chain
+    
+  private
 
     def url
       URI.parse("#{protocol}://#{host}:#{port}").merge(NOTICES_URI)
@@ -82,13 +104,13 @@ module Airbrake
       http.read_timeout = http_read_timeout
       http.open_timeout = http_open_timeout
 
-      if secure
+      if secure?
         http.use_ssl     = true
+        
         if File.exist?(OpenSSL::X509::DEFAULT_CERT_FILE)
-          http.ca_file     = OpenSSL::X509::DEFAULT_CERT_FILE 
-        else
-          # ca-bundle.crt built from source, see resources/README.md
-          http.ca_file     = Sender.local_cert_path
+          http.ca_file     = OpenSSL::X509::DEFAULT_CERT_FILE      
+        elsif !use_system_ssl_cert_chain?
+          http.ca_file     = Sender.local_cert_path # ca-bundle.crt built from source, see resources/README.md
         end
         http.verify_mode = OpenSSL::SSL::VERIFY_PEER
       else

@@ -9,7 +9,7 @@ class SenderTest < Test::Unit::TestCase
   def build_sender(opts = {})
     config = Airbrake::Configuration.new
     opts.each {|opt, value| config.send(:"#{opt}=", value) }
-    Airbrake::Sender.new(config)
+    sender = Airbrake::Sender.new(config)
   end
 
   def send_exception(args = {})
@@ -172,6 +172,16 @@ class SenderTest < Test::Unit::TestCase
       assert(real_http.use_ssl?)
       assert_equal(OpenSSL::SSL::VERIFY_PEER,        real_http.verify_mode)
       assert_equal(Airbrake::Sender.local_cert_path, real_http.ca_file)
+    end
+    
+    should "use the system CAs if asked to" do
+      config = Airbrake::Configuration.new(:use_system_ssl_cert_chain => true)
+      sender = Airbrake::Sender.new(config)
+
+      assert(sender.use_system_ssl_cert_chain?)
+
+      http    = sender.send(:setup_http_connection)
+      assert_not_equal http.ca_file, Airbrake::Sender.local_cert_path
     end
 
     should "verify the SSL peer when the use_ssl option is set to true and the default cert exists" do
