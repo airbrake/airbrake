@@ -174,8 +174,9 @@ class SenderTest < Test::Unit::TestCase
       assert_equal(Airbrake::Sender.local_cert_path, real_http.ca_file)
     end
     
-    should "use the system CAs if asked to" do
-      config = Airbrake::Configuration.new(:use_system_ssl_cert_chain => true)
+    should "use the default DEFAULT_CERT_FILE if asked to" do
+      config = Airbrake::Configuration.new
+      config.use_system_ssl_cert_chain = true
       sender = Airbrake::Sender.new(config)
 
       assert(sender.use_system_ssl_cert_chain?)
@@ -183,23 +184,27 @@ class SenderTest < Test::Unit::TestCase
       http    = sender.send(:setup_http_connection)
       assert_not_equal http.ca_file, Airbrake::Sender.local_cert_path
     end
-
-    should "verify the SSL peer when the use_ssl option is set to true and the default cert exists" do
-      url = "https://airbrake.io#{Airbrake::Sender::NOTICES_URI}"
-      uri = URI.parse(url)
-
-      real_http = Net::HTTP.new(uri.host, uri.port)
-      real_http.stubs(:post => nil)
-      proxy = stub(:new => real_http)
-      Net::HTTP.stubs(:Proxy => proxy)
-      File.stubs(:exist?).with(OpenSSL::X509::DEFAULT_CERT_FILE).returns(true)
-
-      send_exception(:secure => true)
-      assert(real_http.use_ssl?)
-      assert_equal(OpenSSL::SSL::VERIFY_PEER,        real_http.verify_mode)
-      assert_equal(OpenSSL::X509::DEFAULT_CERT_FILE, real_http.ca_file)
+    
+    should "verify the connection when the use_ssl option is set (VERIFY_PEER)" do
+      sender  = build_sender(:secure => true)
+      http    = sender.send(:setup_http_connection)
+      assert_equal(OpenSSL::SSL::VERIFY_PEER, http.verify_mode)
     end
     
+    should "use the default cert (OpenSSL::X509::DEFAULT_CERT_FILE) only if explicitly told to" do
+      sender  = build_sender(:secure => true)
+      http    = sender.send(:setup_http_connection)
+      
+      assert_equal(Airbrake::Sender.local_cert_path, http.ca_file)
+
+      File.stubs(:exist?).with(OpenSSL::X509::DEFAULT_CERT_FILE).returns(true)
+      sender  = build_sender(:secure => true, :use_system_ssl_cert_chain => true)
+      http    = sender.send(:setup_http_connection)
+      
+      assert_not_equal(Airbrake::Sender.local_cert_path, http.ca_file)
+      assert_equal(OpenSSL::X509::DEFAULT_CERT_FILE, http.ca_file)
+    end
+
     should "connect to the right port for ssl" do
       stub_http
       send_exception(:secure => true)
