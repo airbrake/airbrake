@@ -7,9 +7,9 @@ class SenderTest < Test::Unit::TestCase
   end
 
   def build_sender(opts = {})
-    config = Airbrake::Configuration.new
-    opts.each {|opt, value| config.send(:"#{opt}=", value) }
-    sender = Airbrake::Sender.new(config)
+    Airbrake.configure do |conf|
+      opts.each {|opt, value| conf.send(:"#{opt}=", value) }
+    end
   end
 
   def send_exception(args = {})
@@ -171,7 +171,7 @@ class SenderTest < Test::Unit::TestCase
       send_exception(:secure => true)
       assert(real_http.use_ssl?)
       assert_equal(OpenSSL::SSL::VERIFY_PEER,        real_http.verify_mode)
-      assert_equal(Airbrake::Sender.local_cert_path, real_http.ca_file)
+      assert_equal(Airbrake.configuration.local_cert_path, real_http.ca_file)
     end
     
     should "use the default DEFAULT_CERT_FILE if asked to" do
@@ -182,7 +182,7 @@ class SenderTest < Test::Unit::TestCase
       assert(sender.use_system_ssl_cert_chain?)
 
       http    = sender.send(:setup_http_connection)
-      assert_not_equal http.ca_file, Airbrake::Sender.local_cert_path
+      assert_not_equal http.ca_file, config.local_cert_path
     end
     
     should "verify the connection when the use_ssl option is set (VERIFY_PEER)" do
@@ -195,13 +195,13 @@ class SenderTest < Test::Unit::TestCase
       sender  = build_sender(:secure => true)
       http    = sender.send(:setup_http_connection)
       
-      assert_equal(Airbrake::Sender.local_cert_path, http.ca_file)
+      assert_equal(Airbrake.configuration.local_cert_path, http.ca_file)
 
       File.stubs(:exist?).with(OpenSSL::X509::DEFAULT_CERT_FILE).returns(true)
       sender  = build_sender(:secure => true, :use_system_ssl_cert_chain => true)
       http    = sender.send(:setup_http_connection)
       
-      assert_not_equal(Airbrake::Sender.local_cert_path, http.ca_file)
+      assert_not_equal(Airbrake.configuration.local_cert_path, http.ca_file)
       assert_equal(OpenSSL::X509::DEFAULT_CERT_FILE, http.ca_file)
     end
 

@@ -123,6 +123,7 @@ module Airbrake
                       'AbstractController::ActionNotFound']
 
     alias_method :secure?, :secure
+    alias_method :use_system_ssl_cert_chain?, :use_system_ssl_cert_chain
 
     def initialize
       @secure                   = false
@@ -235,9 +236,20 @@ module Airbrake
       warn 'config.environment_filters has been deprecated and has no effect.'
       []
     end
+    
+    def ca_bundle_path
+      if use_system_ssl_cert_chain? && File.exist?(OpenSSL::X509::DEFAULT_CERT_FILE)
+        OpenSSL::X509::DEFAULT_CERT_FILE
+      else
+        local_cert_path # ca-bundle.crt built from source, see resources/README.md
+      end
+    end
 
-    private
+    def local_cert_path
+      File.expand_path(File.join("..", "..", "..", "resources", "ca-bundle.crt"), __FILE__)
+    end
 
+  private
     def default_port
       if secure?
         443

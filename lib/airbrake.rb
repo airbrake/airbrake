@@ -80,6 +80,7 @@ module Airbrake
       yield(configuration)
       self.sender = Sender.new(configuration)
       report_ready unless silent
+      self.sender
     end
 
     # The configuration object.
