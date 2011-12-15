@@ -1,7 +1,20 @@
+Version 3.0.9 - Thu Dec 15 23:51:38 +0100 2011
+===============================================================================
+
+David Palm (2):
+      Merge pull request #45 from spagalloco/patch-1
+      Pulls in ideas from https://github.com/kidsalsa/airbrake/commit/54982ba83bd6c577a0835b9ba5936c690029244c#L0R2 BUT
+        - moves #ca_bundle_path to Airbrake::Configuration
+        - moves #local_cert_path to Airbrake::Configuration
+        - adds #use_system_ssl_cert_chain? alias to Airbrake::Configuration
+        - makes Airbrake.configure return the created sender (in addition to yielding)
+        - stops airbrake deploy tasks duplicate code form the configuration class
+        - cleanup unused expectations from tests
+
 Version 3.0.8 - Sun Dec 11 22:14:18 +0100 2011
 ===============================================================================
 
-David Palm (15):
+David Palm (1):
       Use OpenSSL::X509::DEFAULT_CERT_FILE to connect only if configured to by setting use_system_ssl_cert_chain to true
 
 Version 3.0.7 - Sun Dec 11 21:04:08 +0100 2011
@@ -620,6 +633,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
