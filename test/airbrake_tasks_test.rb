@@ -39,12 +39,11 @@ class AirbrakeTasksTest < Test::Unit::TestCase
 
       context "given an optional HTTP proxy and valid options" do
         setup do
-          @response         = stub("response", :body => "stub body")
-          @http_proxy       = stub("proxy",    :request => @response)
+          @response         = stub("response",    :body => "stub body")
+          @http_proxy       = stub("proxy",       :request => @response)
           @http_proxy_class = stub("proxy_class", :new => @http_proxy)
-          @post             = stub("post",     :set_form_data => nil)
+          @post             = stub("post",        :set_form_data => nil)
 
-          @http_proxy.expects(:use_ssl=).with(Airbrake.configuration.secure)
           Net::HTTP.expects(:Proxy).
             with(Airbrake.configuration.proxy_host,
                  Airbrake.configuration.proxy_port,
@@ -61,7 +60,7 @@ class AirbrakeTasksTest < Test::Unit::TestCase
 
           should "return true without performing any actual request" do
             assert_equal true, @output
-            assert_received(@http_proxy, :request) do|expects|
+            assert_received(@http_proxy, :request) do |expects|
               expects.never
             end
           end
@@ -141,13 +140,11 @@ class AirbrakeTasksTest < Test::Unit::TestCase
         before_should "post to the custom host" do
           @post             = stub("post",     :set_form_data => nil)
           @http_proxy       = stub("proxy",    :request => @response)
-          @http_proxy.expects(:use_ssl=).with(Airbrake.configuration.secure)
+          
           @http_proxy_class = stub("proxy_class", :new => @http_proxy)
           @http_proxy_class.expects(:new).with("custom.host", 80).returns(@http_proxy)
           Net::HTTP.expects(:Proxy).with(any_parameters).returns(@http_proxy_class)
           Net::HTTP::Post.expects(:new).with("/deploys.txt").returns(@post)
-          # URI.stubs(:parse).with('http://custom.host/deploys.txt').returns(:uri)
-          # Net::HTTP.expects(:post_form).with(:uri, kind_of(Hash)).returns(successful_response)
           @post.expects(:set_form_data).with(kind_of(Hash))
           @http_proxy.expects(:request).with(any_parameters).returns(successful_response)
         end
