@@ -199,7 +199,8 @@ module Airbrake
     # Returns a hash of all configurable options
     def to_hash
       OPTIONS.inject({}) do |hash, option|
-        hash.merge(option.to_sym => send(option))
+        hash[option.to_sym] = self.send(option)
+        hash
       end
     end
 
