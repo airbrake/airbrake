@@ -308,14 +308,14 @@ When /^I configure the Heroku gem shim with "([^\"]*)"( and multiple app support
   heroku_script     = File.join(heroku_script_bin, "heroku")
   single_app_script = <<-SINGLE
     #!/bin/bash
-    if [[ $1 == 'console' && $2 == 'puts ENV[%{AIRBRAKE_API_KEY}]' ]]; then
+    if [[ $1 == 'console' && $2 == 'puts ENV[%{HOPTOAD_API_KEY}]' ]]; then
       echo #{api_key}
     fi
   SINGLE
 
   multi_app_script = <<-MULTI
     #!/bin/bash
-    if [[ $1 == 'console' && $2 == '--app' && $4 == 'puts ENV[%{AIRBRAKE_API_KEY}]' ]]; then
+    if [[ $1 == 'console' && $2 == '--app' && $4 == 'puts ENV[%{HOPTOAD_API_KEY}]' ]]; then
       echo #{api_key}
     fi
   MULTI
