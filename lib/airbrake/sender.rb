@@ -100,11 +100,6 @@ module Airbrake
       if secure?
         http.use_ssl     = true
 
-        # if use_system_ssl_cert_chain? && File.exist?(OpenSSL::X509::DEFAULT_CERT_FILE)
-        #   http.ca_file     = OpenSSL::X509::DEFAULT_CERT_FILE
-        # else
-        #   http.ca_file     = Sender.local_cert_path # ca-bundle.crt built from source, see resources/README.md
-        # end
         http.ca_file      = Airbrake.configuration.ca_bundle_path
         http.verify_mode  = OpenSSL::SSL::VERIFY_PEER
       else
