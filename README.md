@@ -13,7 +13,7 @@ For help with using Airbrake and this notifier visit [our support site](http://h
 
 For discussion of Airbrake development check out the [mailing list](http://groups.google.com/group/hoptoad-notifier-dev).
 
-For SSL verification see the [Resources](resources/README.md).
+For SSL verification see the [Resources](https://github.com/airbrake/airbrake/blob/master/resources/README.md).
 
 Rails Installation
 ------------------
@@ -446,7 +446,7 @@ Credits
 
 Airbrake is maintained and funded by [thoughtbot, inc](http://thoughtbot.com/community)
 
-Thank you to all [the contributors](https://github.com/thoughtbot/airbrake/contributors)!
+Thank you to all [the contributors](https://github.com/airbrake/airbrake/contributors)!
 
 The names and logos for thoughtbot are trademarks of thoughtbot, inc.
 
