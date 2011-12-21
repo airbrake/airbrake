@@ -18,6 +18,22 @@ For SSL verification see the [Resources](resources/README.md).
 Rails Installation
 ------------------
 
+NOTE: As of Airbrake gem v.3.1.0, all references to HOPTOAD are now eliminated within the codebase and our AddOn providers. This is of particular concern if you are a Heroku user. If you upgrade to notifier 3.1.0 or higher on heroku you will need to take these steps:
+
+    heroku config --long
+    # Find the HOPTOAD_API_KEY entry and then:
+    heroku config:add AIRBRAKE_API_KEY=the_value_from_the_output_above
+    # Edit the notifier initializer config/initializers/hoptoad_notifier.rb
+    # Make these substitutions:
+    #  HoptoadNotifier  => Airbrake
+    #  hoptoad_notifier => airbrake
+    #  HOPTOAD_API_KEY  => AIRBRAKE_API_KEY 
+    # Rename config/initializers/hoptoad_notifier.rb (for style points)
+    mv config/initializers/hoptoad_notifier.rb config/initializers/airbrake.rb 
+    # That's it! 
+
+We apologize for this inconvenience.
+
 ### Remove hoptoad_notifier
 
 in your ApplicationController, REMOVE this line:

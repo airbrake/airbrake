@@ -140,7 +140,7 @@ Feature: Install the Gem in a Rails application
     And I should see the Rails version
     And my Airbrake configuration should contain the following line:
       """
-      config.api_key = ENV['HOPTOAD_API_KEY']
+      config.api_key = ENV['AIRBRAKE_API_KEY']
       """
 
   Scenario: Support the --app option for the Heroku addon in the generator
@@ -155,7 +155,7 @@ Feature: Install the Gem in a Rails application
     And I should see the Rails version
     And my Airbrake configuration should contain the following line:
       """
-      config.api_key = ENV['HOPTOAD_API_KEY']
+      config.api_key = ENV['AIRBRAKE_API_KEY']
       """
 
   Scenario: Filtering parameters in a controller
