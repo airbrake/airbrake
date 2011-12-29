@@ -418,6 +418,13 @@ It's important to insert this very high in the markup, above all other javascrip
 
 This helper will automatically use the API key, host, and port specified in the configuration.
 
+To test the Javascript notifier in development environment, overwrite (temporarily) the development_environments option:
+
+    Airbrake.configure do |config|
+      # ...
+      config.development_environments = []
+    end
+
 Development
 -----------
 
