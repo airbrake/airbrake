@@ -120,7 +120,8 @@ module Airbrake
                       'ActionController::InvalidAuthenticityToken',
                       'CGI::Session::CookieStore::TamperedWithCookie',
                       'ActionController::UnknownAction',
-                      'AbstractController::ActionNotFound']
+                      'AbstractController::ActionNotFound',
+                      'Mongoid::Errors::DocumentNotFound']
 
     alias_method :secure?, :secure
     alias_method :use_system_ssl_cert_chain?, :use_system_ssl_cert_chain
