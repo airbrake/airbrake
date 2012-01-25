@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path( File.join(File.dirname(__FILE__), 'helper') )
 
 class SenderTest < Test::Unit::TestCase
 
@@ -64,30 +64,30 @@ class SenderTest < Test::Unit::TestCase
     assert_equal "3799307", send_exception(:secure => false)
   end
 
-  context "exceptions" do
+  context "when encountering exceptions: " do
     context "HTTP connection setup problems" do
       should "not be rescued" do
-        http    = stub(:new => NoMemoryError.new)
-        proxy   = stub(:new => http)
+        proxy = stub()
+        proxy.stubs(:new).raises(NoMemoryError)
         Net::HTTP.stubs(:Proxy => proxy)
       
-        assert_raise do
+        assert_raise NoMemoryError do
           build_sender.send(:setup_http_connection)
         end
       end
       
       should "be logged" do
-        http    = stub(:new => NoMemoryError.new)
-        proxy   = stub(:new => http)
+        proxy = stub()
+        proxy.stubs(:new).raises(RuntimeError)
         Net::HTTP.stubs(:Proxy => proxy)
         
         sender = build_sender
-        
-        assert_raise do
-          sender.expects(:log).with(:error, includes('Failure initializing the HTTP connection'))
-        
+        sender.expects(:log).with(:error, includes('Failure initializing the HTTP connection'))
+
+        assert_raise RuntimeError do
           sender.send(:setup_http_connection)
         end
+
       end
     end
     
@@ -102,7 +102,7 @@ class SenderTest < Test::Unit::TestCase
       
       should "return nil no matter what" do
         sender  = build_sender
-        sender.stubs(:setup_http_connection).raises(SystemExit.new)
+        sender.stubs(:setup_http_connection).raises(LocalJumpError)
         
         assert_nothing_thrown do
           assert_nil sender.send_to_airbrake("stuff")

@@ -55,10 +55,6 @@ module TestMethods
   end
 end
 
-class AirbrakeController < ActionController::Base
-  include TestMethods
-end
-
 class Test::Unit::TestCase
   def request(action = nil, method = :get, user_agent = nil, params = {})
     @request = ActionController::TestRequest.new
