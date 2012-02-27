@@ -41,7 +41,7 @@ module Airbrake
           filter_parameters(hash) rescue hash
         elsif defined?(ActionDispatch::Http::ParameterFilter)
           filter = ActionDispatch::Http::ParameterFilter.new(::Rails.application.config.filter_parameters)
-          filter.filter(params)
+          filter.filter(hash)
         else
           hash
         end
