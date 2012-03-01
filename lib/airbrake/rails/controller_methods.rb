@@ -37,8 +37,10 @@ module Airbrake
       def airbrake_filter_if_filtering(hash)
         return hash if ! hash.is_a?(Hash)
 
+        # Rails 2
         if respond_to?(:filter_parameters)
           filter_parameters(hash)
+        # Rails 3
         elsif defined?(ActionDispatch::Http::ParameterFilter)
           ActionDispatch::Http::ParameterFilter.new(::Rails.application.config.filter_parameters).filter(hash)
         else
