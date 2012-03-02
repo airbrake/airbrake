@@ -37,14 +37,17 @@ module Airbrake
       def airbrake_filter_if_filtering(hash)
         return hash if ! hash.is_a?(Hash)
 
+        # Rails 2
         if respond_to?(:filter_parameters)
-          filter_parameters(hash) rescue hash
+          filter_parameters(hash)
+        # Rails 3
         elsif defined?(ActionDispatch::Http::ParameterFilter)
-          filter = ActionDispatch::Http::ParameterFilter.new(::Rails.application.config.filter_parameters)
-          filter.filter(params)
+          ActionDispatch::Http::ParameterFilter.new(::Rails.application.config.filter_parameters).filter(hash)
         else
           hash
         end
+      rescue
+        hash
       end
 
       def airbrake_session_data
