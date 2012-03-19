@@ -380,10 +380,10 @@ Proxy Support
 The notifier supports using a proxy, if your server is not able to directly reach the Airbrake servers. To configure the proxy settings, added the following information to your Airbrake configuration block.
 
     Airbrake.configure do |config|
-      config.proxy_host = ...
-      config.proxy_port = ...
-      config.proxy_user = ...
-      config.proxy_pass = ...
+      config.proxy_host = proxy.host.com
+      config.proxy_port = 4038
+      config.proxy_user = foo # optional
+      config.proxy_pass = bar # optional
 
 Supported Rails versions
 ------------------------
