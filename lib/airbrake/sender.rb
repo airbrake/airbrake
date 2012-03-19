@@ -38,15 +38,13 @@ module Airbrake
       response = begin
                    http.post(url.path, data, HEADERS)
                  rescue *HTTP_ERRORS => e
-                   log :error, "Timeout while contacting the Airbrake server."
+                   log :error, "Unable to contact the Airbrake server. HTTP Error=#{e}"
                    nil
                  end
 
       case response
       when Net::HTTPSuccess then
         log :info, "Success: #{response.class}", response
-      else
-        log :error, "Failure: #{response.class}", response
       end
 
       if response && response.respond_to?(:body)
