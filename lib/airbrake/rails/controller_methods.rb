@@ -13,9 +13,9 @@ module Airbrake
       
       def airbrake_local_request?
         if defined?(::Rails.application.config)
-          ::Rails.application.config.consider_all_requests_local || request.local?
+          ::Rails.application.config.consider_all_requests_local || (request.local? && (!request.env["HTTP_X_FORWARDED_FOR"]))
         else
-          consider_all_requests_local || local_request?
+          consider_all_requests_local || (local_request? && (!request.env["HTTP_X_FORWARDED_FOR"]))
         end
       end
 
