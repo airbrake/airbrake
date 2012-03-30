@@ -54,6 +54,10 @@ The generator creates a file under `config/initializers/airbrake.rb` configuring
 Add the airbrake gem to your app. In config/environment.rb:
 
     config.gem 'airbrake'
+    
+or if you are using bundler:
+
+    gem 'airbrake', :require => 'airbrake/rails'
 
 Then from your project's RAILS_ROOT, and in your development environment, run:
 
