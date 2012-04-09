@@ -1,6 +1,16 @@
 module Airbrake
   module Rails
     module ControllerMethods
+
+      def airbrake_request_data
+        { :parameters       => airbrake_filter_if_filtering(params.to_hash),
+          :session_data     => airbrake_filter_if_filtering(airbrake_session_data),
+          :controller       => params[:controller],
+          :action           => params[:action],
+          :url              => airbrake_request_url,
+          :cgi_data         => airbrake_filter_if_filtering(request.env) }
+      end
+
       private
 
       # This method should be used for sending manual notifications while you are still
@@ -25,14 +35,6 @@ module Airbrake
         Airbrake.configuration.ignore_user_agent.flatten.any? { |ua| ua === user_agent }
       end
 
-      def airbrake_request_data
-        { :parameters       => airbrake_filter_if_filtering(params.to_hash),
-          :session_data     => airbrake_filter_if_filtering(airbrake_session_data),
-          :controller       => params[:controller],
-          :action           => params[:action],
-          :url              => airbrake_request_url,
-          :cgi_data         => airbrake_filter_if_filtering(request.env) }
-      end
 
       def airbrake_filter_if_filtering(hash)
         return hash if ! hash.is_a?(Hash)
