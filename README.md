@@ -373,7 +373,7 @@ use code like this in your test_helper.rb or spec_helper.rb files to redefine
 that method so those errors are not reported while running tests.
 
     module Airbrake
-      def self.notify(thing)
+      def self.notify(exception, opts = {})
         # do nothing.
       end
     end
