@@ -21,17 +21,17 @@ module Airbrake
         config.framework        = "Rails: #{::Rails::VERSION::STRING}"
       end
 
-      if defined?(::ActionController::Base)
+      ActiveSupport.on_load(:action_controller) do
         require 'airbrake/rails/javascript_notifier'
         require 'airbrake/rails/controller_methods'
 
-        ::ActionController::Base.send(:include, Airbrake::Rails::ControllerMethods)
-        ::ActionController::Base.send(:include, Airbrake::Rails::JavascriptNotifier)
+        include Airbrake::Rails::JavascriptNotifier
+        include Airbrake::Rails::ControllerMethods
+      end
 
-        if defined?(::ActionDispatch::DebugExceptions)
-          require 'airbrake/rails/middleware/debug_exceptions_catcher'
-          ::ActionDispatch::DebugExceptions.send(:include,Airbrake::Rails::Middleware::DebugExceptionsCatcher)
-        end
+      if defined?(::ActionDispatch::DebugExceptions)
+        require 'airbrake/rails/middleware/debug_exceptions_catcher'
+        ::ActionDispatch::DebugExceptions.send(:include,Airbrake::Rails::Middleware::DebugExceptionsCatcher)
       end
     end
   end
