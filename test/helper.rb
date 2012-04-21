@@ -55,10 +55,6 @@ module TestMethods
   end
 end
 
-class AirbrakeController < ActionController::Base
-  include TestMethods
-end
-
 class Test::Unit::TestCase
   def request(action = nil, method = :get, user_agent = nil, params = {})
     @request = ActionController::TestRequest.new
@@ -189,6 +185,20 @@ class Test::Unit::TestCase
            "but found #{nodes.map { |n| n.content }} in #{nodes.size} matching nodes." +
            "Document:\n#{document.to_s}"
   end
+  
+  def assert_logged(expected)
+    assert_received(Airbrake, :write_verbose_log) do |expect|
+      expect.with {|actual| actual =~ expected }
+    end
+  end
+
+  def assert_not_logged(expected)
+    assert_received(Airbrake, :write_verbose_log) do |expect|
+      expect.with {|actual| actual =~ expected }.never
+    end
+  end
+
+  
 end
 
 module DefinesConstants

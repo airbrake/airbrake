@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path( File.join(File.dirname(__FILE__), 'helper') )
 
 class NotifierTest < Test::Unit::TestCase
 
@@ -80,6 +80,17 @@ class NotifierTest < Test::Unit::TestCase
     Airbrake.notify(notice_args)
 
     assert_sent(notice, notice_args)
+  end
+
+  should "not pass the hash as an exception when sending a notice for it" do
+    set_public_env
+    notice = stub_notice!
+    notice_args = { :error_message => 'uh oh' }
+    stub_sender!
+
+    Airbrake.notify(notice_args)
+
+    assert_received(Airbrake::Notice, :new) {|expect| expect.with(Not(has_key(:exception))) }
   end
 
   should "create and send a notice for an exception that responds to to_hash" do

@@ -13,7 +13,7 @@ For help with using Airbrake and this notifier visit [our support site](http://h
 
 For discussion of Airbrake development check out the [mailing list](http://groups.google.com/group/hoptoad-notifier-dev).
 
-For SSL verification see the [Resources](resources/README.md).
+For SSL verification see the [Resources](https://github.com/airbrake/airbrake/blob/master/resources/README.md).
 
 Rails Installation
 ------------------
@@ -43,7 +43,7 @@ Add the airbrake gem to your Gemfile.  In Gemfile:
 Then from your project's RAILS_ROOT, and in your development environment, run:
 
     bundle install
-    script/rails generate airbrake --api-key your_key_here
+    rails generate airbrake --api-key your_key_here
 
 That's it!
 
@@ -54,6 +54,10 @@ The generator creates a file under `config/initializers/airbrake.rb` configuring
 Add the airbrake gem to your app. In config/environment.rb:
 
     config.gem 'airbrake'
+    
+or if you are using bundler:
+
+    gem 'airbrake', :require => 'airbrake/rails'
 
 Then from your project's RAILS_ROOT, and in your development environment, run:
 
@@ -125,7 +129,7 @@ You can then continue to install normally. If you don't remove the rake file,
 you will be unable to unpack this gem (Rails will think it's part of the
 framework).
 
-### Testing it out
+
 
 You can test that Airbrake is working in your production environment by using
 this rake task (from RAILS_ROOT):
@@ -134,6 +138,18 @@ this rake task (from RAILS_ROOT):
 
 If everything is configured properly, that task will send a notice to Airbrake
 which will be visible immediately.
+
+
+Non-rails apps using Bundler
+----------------------------
+There is an undocumented dependency in `activesupport` where the `i18n` gem is
+required only if the core classes extensions are used (`active_support/core_ext`). 
+This can lead to a confusing `LoadError` exception when using Airbrake. Until 
+this is fixed in `activesupport` the workaround is to add `i18n` to the Gemfile 
+for your Sinatra/Rack/pure ruby application:
+
+    gem 'i18n'
+    gem 'airbrake'
 
 Rack
 ----
@@ -157,23 +173,19 @@ middleware:
 Sinatra
 -------
 
-Using airbrake in a Sinatra app is just like a Rack app, but you have
-to disable Sinatra's error rescuing functionality:
+Using airbrake in a Sinatra app is just like a Rack app:
 
-    require 'sinatra/base'
+    require 'sinatra'
     require 'airbrake'
 
     Airbrake.configure do |config|
-      config.api_key = 'my_api_key'
+      config.api_key = 'my api key'
     end
 
-    class MyApp < Sinatra::Default
-      use Airbrake::Rack
-      enable :raise_errors
+    use Airbrake::Rack
 
-      get "/" do
-        raise "Sinatra has left the building"
-      end
+    get '/' do
+      raise "Sinatra has left the building"
     end
 
 Usage
@@ -317,8 +329,7 @@ configuration block.
       config.ignore       << "ActiveRecord::IgnoreThisError"
     end
 
-To ignore *only* certain errors (and override the defaults), use the
-#ignore_only attribute.
+To ignore *only* certain errors (and override the defaults), use the #ignore_only attribute.
 
     Airbrake.configure do |config|
       config.api_key      = '1234567890abcdef'
@@ -362,7 +373,7 @@ use code like this in your test_helper.rb or spec_helper.rb files to redefine
 that method so those errors are not reported while running tests.
 
     module Airbrake
-      def self.notify(thing)
+      def self.notify(exception, opts = {})
         # do nothing.
       end
     end
@@ -373,10 +384,10 @@ Proxy Support
 The notifier supports using a proxy, if your server is not able to directly reach the Airbrake servers. To configure the proxy settings, added the following information to your Airbrake configuration block.
 
     Airbrake.configure do |config|
-      config.proxy_host = ...
-      config.proxy_port = ...
-      config.proxy_user = ...
-      config.proxy_pass = ...
+      config.proxy_host = proxy.host.com
+      config.proxy_port = 4038
+      config.proxy_user = foo # optional
+      config.proxy_pass = bar # optional
 
 Supported Rails versions
 ------------------------
@@ -417,6 +428,13 @@ API key in the `js_api_key` option.
 
     config.js_api_key = 'another-projects-api-key'
 
+To test the Javascript notifier in development environment, overwrite (temporarily) the development_environments option:
+
+    Airbrake.configure do |config|
+      # ...
+      config.development_environments = []
+    end
+
 Development
 -----------
 
@@ -429,7 +447,7 @@ Credits
 
 Airbrake is maintained and funded by [thoughtbot, inc](http://thoughtbot.com/community)
 
-Thank you to all [the contributors](https://github.com/thoughtbot/airbrake/contributors)!
+Thank you to all [the contributors](https://github.com/airbrake/airbrake/contributors)!
 
 The names and logos for thoughtbot are trademarks of thoughtbot, inc.
 

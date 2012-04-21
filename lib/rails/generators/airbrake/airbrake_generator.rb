@@ -73,7 +73,9 @@ class AirbrakeGenerator < Rails::Generators::Base
 
   def heroku_api_key
     app = options[:app] ? " --app #{options[:app]}" : ''
-    `heroku console#{app} 'puts ENV[%{HOPTOAD_API_KEY}]'`.split("\n").first
+    cedar = !`heroku stack #{app} | grep \*\ cedar`.blank?
+    run = cedar ? " run " : ""
+    `heroku #{run} console#{app} 'puts ENV[%{HOPTOAD_API_KEY}]'`.split("\n").first
   end
 
   def heroku?

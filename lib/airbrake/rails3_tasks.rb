@@ -4,7 +4,10 @@ require File.join(File.dirname(__FILE__), 'shared_tasks')
 namespace :airbrake do
   desc "Verify your gem installation by sending a test exception to the airbrake service"
   task :test => [:environment] do
-    Rails.logger = Logger.new(STDOUT)
+    Rails.logger = defined?(ActiveSupport::TaggedLogging) ?
+      ActiveSupport::TaggedLogging.new(Logger.new(STDOUT)) :
+      Logger.new(STDOUT)
+      
     Rails.logger.level = Logger::DEBUG
     Airbrake.configure(true) do |config|
       config.logger = Rails.logger

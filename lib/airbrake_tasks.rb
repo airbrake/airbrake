@@ -25,20 +25,27 @@ module AirbrakeTasks
     end
 
     dry_run = opts.delete(:dry_run)
-    params = {'api_key' => opts.delete(:api_key) ||
-                             Airbrake.configuration.api_key}
+    params = {'api_key' => opts.delete(:api_key) || Airbrake.configuration.api_key}
     opts.each {|k,v| params["deploy[#{k}]"] = v }
 
     host = Airbrake.configuration.host || 'airbrake.io'
-    port = Airbrake.configuration.port || (Airbrake.configuration.secure ? 443 : 80)
+    port = Airbrake.configuration.port
 
     proxy = Net::HTTP.Proxy(Airbrake.configuration.proxy_host,
                             Airbrake.configuration.proxy_port,
                             Airbrake.configuration.proxy_user,
                             Airbrake.configuration.proxy_pass)
     http = proxy.new(host, port)
-    http.use_ssl = Airbrake.configuration.secure
 
+    
+
+    # Handle Security
+    if Airbrake.configuration.secure?
+      http.use_ssl      = true
+      http.ca_file      = Airbrake.configuration.ca_bundle_path
+      http.verify_mode  = OpenSSL::SSL::VERIFY_PEER
+    end
+    
     post = Net::HTTP::Post.new("/deploys.txt")
     post.set_form_data(params)
   

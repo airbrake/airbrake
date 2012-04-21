@@ -80,6 +80,7 @@ module Airbrake
       yield(configuration)
       self.sender = Sender.new(configuration)
       report_ready unless silent
+      self.sender
     end
 
     # The configuration object.
@@ -137,7 +138,7 @@ module Airbrake
 
     def build_notice_for(exception, opts = {})
       exception = unwrap_exception(exception)
-      opts = opts.merge(:exception => exception)
+      opts = opts.merge(:exception => exception) if exception.is_a?(Exception)
       opts = opts.merge(exception.to_hash) if exception.respond_to?(:to_hash)
       Notice.new(configuration.merge(opts))
     end

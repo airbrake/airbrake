@@ -7,8 +7,8 @@ module Airbrake
         :http_open_timeout, :http_read_timeout, :ignore, :ignore_by_filters,
         :ignore_user_agent, :notifier_name, :notifier_url, :notifier_version,
         :params_filters, :project_root, :port, :protocol, :proxy_host,
-        :proxy_pass, :proxy_port, :proxy_user, :secure, :framework,
-        :user_information, :rescue_rake_exceptions].freeze
+        :proxy_pass, :proxy_port, :proxy_user, :secure, :use_system_ssl_cert_chain, 
+        :framework, :user_information, :rescue_rake_exceptions].freeze
 
     # The API key for your project, found on the project edit form.
     attr_accessor :api_key
@@ -28,6 +28,9 @@ module Airbrake
 
     # +true+ for https connections, +false+ for http connections.
     attr_accessor :secure
+    
+    # +true+ to use whatever CAs OpenSSL has installed on your system. +false+ to use the ca-bundle.crt file included in Airbrake itself (reccomended and default)
+    attr_accessor :use_system_ssl_cert_chain
 
     # The HTTP open timeout in seconds (defaults to 2).
     attr_accessor :http_open_timeout
@@ -72,7 +75,7 @@ module Airbrake
     # The name of the environment the application is running in
     attr_accessor :environment_name
 
-    # The path to the project in which the error occurred, such as the RAILS_ROOT
+    # The path to the project in which the error occurred, such as the Rails.root
     attr_accessor :project_root
 
     # The name of the notifier library being used to send notifications (such as "Airbrake Notifier")
@@ -123,12 +126,15 @@ module Airbrake
                       'ActionController::InvalidAuthenticityToken',
                       'CGI::Session::CookieStore::TamperedWithCookie',
                       'ActionController::UnknownAction',
-                      'AbstractController::ActionNotFound']
+                      'AbstractController::ActionNotFound',
+                      'Mongoid::Errors::DocumentNotFound']
 
     alias_method :secure?, :secure
+    alias_method :use_system_ssl_cert_chain?, :use_system_ssl_cert_chain
 
     def initialize
       @secure                   = false
+      @use_system_ssl_cert_chain= false
       @host                     = 'airbrake.io'
       @http_open_timeout        = 2
       @http_read_timeout        = 5
@@ -153,7 +159,7 @@ module Airbrake
     #
     # @example
     #   config.filter_bracktrace do |line|
-    #     line.gsub(/^#{Rails.root}/, "[RAILS_ROOT]")
+    #     line.gsub(/^#{Rails.root}/, "[Rails.root]")
     #   end
     #
     # @param [Proc] block The new backtrace filter.
@@ -200,7 +206,8 @@ module Airbrake
     # Returns a hash of all configurable options
     def to_hash
       OPTIONS.inject({}) do |hash, option|
-        hash.merge(option.to_sym => send(option))
+        hash[option.to_sym] = self.send(option)
+        hash
       end
     end
 
@@ -241,9 +248,20 @@ module Airbrake
       warn 'config.environment_filters has been deprecated and has no effect.'
       []
     end
+    
+    def ca_bundle_path
+      if use_system_ssl_cert_chain? && File.exist?(OpenSSL::X509::DEFAULT_CERT_FILE)
+        OpenSSL::X509::DEFAULT_CERT_FILE
+      else
+        local_cert_path # ca-bundle.crt built from source, see resources/README.md
+      end
+    end
 
-    private
+    def local_cert_path
+      File.expand_path(File.join("..", "..", "..", "resources", "ca-bundle.crt"), __FILE__)
+    end
 
+  private
     def default_port
       if secure?
         443
