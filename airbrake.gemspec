@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.summary     = %q{Send your application errors to our hosted service and reclaim your inbox.}
 
   s.require_paths = ["lib"]
-  s.files         = Dir.glob("{features,generators,lib,rails,resources,script,test}/*") + Dir.glob("*.md") + %w(CHANGELOG Gemfile Guardfile INSTALL MIT-LICENSE Rakefile SUPPORT_RAILS_VERSION install.rb)
+  s.files         = Dir.glob("{features,generators,lib,rails,resources,script,test}/*") + Dir.glob("*.md") + %w(CHANGELOG Gemfile Guardfile INSTALL MIT-LICENSE Rakefile SUPPORTED_RAILS_VERSIONS install.rb)
   s.test_files    = Dir.glob("{test,spec,features}/**/*")
   
   s.add_runtime_dependency("builder")
