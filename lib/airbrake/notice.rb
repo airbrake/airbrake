@@ -284,7 +284,7 @@ module Airbrake
 
     def filter_key?(key)
       params_filters.any? do |filter|
-        key.to_s.include?(filter.to_s)
+        key.to_s.eql?(filter.to_s)
       end
     end
 

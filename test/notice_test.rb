@@ -442,9 +442,11 @@ class NoticeTest < Test::Unit::TestCase
 
   def assert_filters_hash(attribute)
     filters  = ["abc", :def]
-    original = { 'abc' => "123", 'def' => "456", 'ghi' => "789", 'nested' => { 'abc' => '100' } }
+    original = { 'abc' => "123", 'def' => "456", 'ghi' => "789", 'nested' => { 'abc' => '100' },
+      'something_with_abc' => 'stop regex matching!'}
     filtered = { 'abc'    => "[FILTERED]",
                  'def'    => "[FILTERED]",
+                 'something_with_abc' => "stop regex matching!",
                  'ghi'    => "789",
                  'nested' => { 'abc' => '[FILTERED]' } }
 
