@@ -89,6 +89,6 @@ Airbrake can deliver exception notifications to your email inbox.  To configure 
 
 If your Airbrake plan supports deploy notification, set it up for your Heroku application like this:
 
-    rake hoptoad:heroku:add_deploy_notification
+    rake airbrake:heroku:add_deploy_notification
 
 This will install a Heroku [HTTP Deploy Hook](http://docs.heroku.com/deploy-hooks) to notify Airbrake of the deploy.
