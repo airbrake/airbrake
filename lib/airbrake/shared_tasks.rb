@@ -18,11 +18,14 @@ namespace :airbrake do
   namespace :heroku do
     desc "Install Heroku deploy notifications addon"
     task :add_deploy_notification => [:environment] do
-      heroku_api_key, heroku_rails_env = ["hoptoad_api_key", "rails_env"].map do |env_var|
-        `heroku config | grep #{env_var.upcase} | awk '{ print $3; }'`.strip
+
+      def heroku_var(var)
+        `heroku config | grep -E "#{var.upcase}" | awk '{ print $3; }'`.strip
       end
 
-      heroku_api_key = Airbrake.configuration.api_key if heroku_api_key.blank?
+      heroku_rails_env = heroku_var("rails_env")
+      heroku_api_key = heroku_var("(hoptoad|airbrake)_api_key").split.find {|x| x unless x.blank?} ||
+        Airbrake.configuration.api_key
 
       command = %Q(heroku addons:add deployhooks:http --url="http://airbrake.io/deploys.txt?deploy[rails_env]=#{heroku_rails_env}&api_key=#{heroku_api_key}")
 
