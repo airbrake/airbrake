@@ -2,7 +2,7 @@ module Airbrake
   # Used to set up and modify settings for the notifier.
   class Configuration
 
-    OPTIONS = [:api_key, :backtrace_filters, :development_environments,
+    OPTIONS = [:api_key, :js_api_key, :backtrace_filters, :development_environments,
         :development_lookup, :environment_name, :host,
         :http_open_timeout, :http_read_timeout, :ignore, :ignore_by_filters,
         :ignore_user_agent, :notifier_name, :notifier_url, :notifier_version,
@@ -12,6 +12,12 @@ module Airbrake
 
     # The API key for your project, found on the project edit form.
     attr_accessor :api_key
+    
+    # If you're using the Javascript notifier and would want to separate
+    # Javascript notifications into another Airbrake project, specify
+    # its APi key here.
+    # Defaults to #api_key (of the base project)
+    attr_writer :js_api_key
 
     # The host to connect to (defaults to airbrake.io).
     attr_accessor :host
@@ -228,6 +234,10 @@ module Airbrake
       else
         'http'
       end
+    end
+
+    def js_api_key
+      @js_api_key || self.api_key
     end
 
     def js_notifier=(*args)

@@ -422,6 +422,12 @@ It's important to insert this very high in the markup, above all other javascrip
 
 This helper will automatically use the API key, host, and port specified in the configuration.
 
+The Javascript notifier tends to send much more notifications than the base Rails project.
+If you want to receive them into a separate Airbrake project, specify its
+API key in the `js_api_key` option.
+
+    config.js_api_key = 'another-projects-api-key'
+
 To test the Javascript notifier in development environment, overwrite (temporarily) the development_environments option:
 
     Airbrake.configure do |config|

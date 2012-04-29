@@ -21,7 +21,7 @@ module Airbrake
           :use_full_path     => false,
           :locals            => {
             :host            => host,
-            :api_key         => Airbrake.configuration.api_key,
+            :api_key         => Airbrake.configuration.js_api_key,
             :environment     => Airbrake.configuration.environment_name,
             :action_name     => action_name,
             :controller_name => controller_name,
