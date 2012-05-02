@@ -14,9 +14,18 @@ module Airbrake
           end
         end
 
+        def skip_user_agent?(env)
+          begin
+            user_agent = env["HTTP_USER_AGENT"]
+            ::Airbrake.configuration.ignore_user_agent.flatten.any? { |ua| ua === user_agent }
+          rescue
+            false
+          end
+        end
+
         def render_exception_with_airbrake(env,exception)
           controller = env['action_controller.instance']
-          env['airbrake.error_id'] = Airbrake.notify_or_ignore(exception, controller.airbrake_request_data)
+          env['airbrake.error_id'] = Airbrake.notify_or_ignore(exception, controller.airbrake_request_data) unless skip_user_agent?(env)
           if defined?(controller.rescue_action_in_public_without_airbrake)
             env['fake_exception'] = exception
             define_proxy_method(controller.class)
