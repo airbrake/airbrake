@@ -16,3 +16,4 @@ Gemfile.lock
 .bundle
 
 *.rbc
+*.plan

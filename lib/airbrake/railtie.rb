@@ -9,8 +9,8 @@ module Airbrake
     end
 
     initializer "airbrake.use_rack_middleware" do |app|
-      app.config.middleware.use "Airbrake::Rack" unless defined?(::ActionDispatch::DebugExceptions)
       app.config.middleware.insert 0, "Airbrake::UserInformer"
+      app.config.middleware.insert_after "Airbrake::UserInformer","Airbrake::Rack"
     end
 
     config.after_initialize do
