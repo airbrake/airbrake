@@ -135,7 +135,7 @@ module Airbrake
     def initialize
       @secure                   = false
       @use_system_ssl_cert_chain= false
-      @host                     = 'airbrake.io'
+      @host                     = 'api.airbrake.io'
       @http_open_timeout        = 2
       @http_read_timeout        = 5
       @params_filters           = DEFAULT_PARAMS_FILTERS.dup
@@ -147,7 +147,7 @@ module Airbrake
       @development_lookup       = true
       @notifier_name            = 'Airbrake Notifier'
       @notifier_version         = VERSION
-      @notifier_url             = 'http://airbrake.io'
+      @notifier_url             = 'https://github.com/airbrake/airbrake'
       @framework                = 'Standalone'
       @user_information         = 'Airbrake Error {{error_id}}'
       @rescue_rake_exceptions   = nil

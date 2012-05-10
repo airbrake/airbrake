@@ -19,7 +19,7 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
     And I perform a request to "http://example.com:123/test/index"
     Then I should see the notifier JavaScript for the following:
       | api_key  | environment | host           |
-      | myapikey | production  | airbrake.io |
+      | myapikey | production  | api.airbrake.io |
     And the notifier JavaScript should provide the following errorDefaults:
       | url                           | component | action |
       | http://example.com:123/test/index | test      | index  |
@@ -94,4 +94,4 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
     And I perform a request to "http://example.com:123/test/index"
     Then I should see the notifier JavaScript for the following:
       | api_key     | environment | host        |
-      | myjsapikey! | production  | airbrake.io |
+      | myjsapikey! | production  | api.airbrake.io |

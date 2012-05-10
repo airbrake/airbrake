@@ -14,9 +14,9 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_default :logger,              nil
     assert_config_default :notifier_version,    Airbrake::VERSION
     assert_config_default :notifier_name,       'Airbrake Notifier'
-    assert_config_default :notifier_url,        'http://airbrake.io'
+    assert_config_default :notifier_url,        'https://github.com/airbrake/airbrake'
     assert_config_default :secure,              false
-    assert_config_default :host,                'airbrake.io'
+    assert_config_default :host,                'api.airbrake.io'
     assert_config_default :http_open_timeout,   2
     assert_config_default :http_read_timeout,   5
     assert_config_default :ignore_by_filters,   []

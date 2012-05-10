@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency("shoulda",       "~> 2.11.3")
   s.add_development_dependency("capistrano",    "~> 2.8.0")
 
-  s.authors = ["thoughtbot, inc"]
+  s.authors = ["Airbrake"]
   s.email   = %q{support@airbrake.io}
   s.homepage = "http://www.airbrake.io"
 

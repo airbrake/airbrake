@@ -363,7 +363,7 @@ end
 
 Then /^I should see the notifier JavaScript for the following:$/ do |table|
   hash = table.hashes.first
-  host        = hash['host']        || 'airbrake.io'
+  host        = hash['host']        || 'api.airbrake.io'
   secure      = hash['secure']      || false
   api_key     = hash['api_key']
   environment = hash['environment'] || 'production'

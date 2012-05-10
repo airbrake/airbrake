@@ -18,22 +18,6 @@ For SSL verification see the [Resources](https://github.com/airbrake/airbrake/bl
 Rails Installation
 ------------------
 
-### Remove hoptoad_notifier
-
-in your ApplicationController, REMOVE this line:
-
-    include HoptoadNotifiable
-
-In your config/environment* files, remove all references to HoptoadNotifier
-
-Remove the vendor/plugins/hoptoad_notifier directory.
-
-### Remove hoptoad_notifier plugin
-
-Remove the vendor/plugins/hoptoad_notifier directory before installing the gem, or run:
-
-    script/plugin remove hoptoad_notifier
-
 ### Rails 3.x
 
 Add the airbrake gem to your Gemfile.  In Gemfile:
@@ -139,6 +123,21 @@ this rake task (from RAILS_ROOT):
 If everything is configured properly, that task will send a notice to Airbrake
 which will be visible immediately.
 
+### Removing hoptoad_notifier
+
+in your ApplicationController, REMOVE this line:
+
+    include HoptoadNotifiable
+
+In your config/environment* files, remove all references to HoptoadNotifier
+
+Remove the vendor/plugins/hoptoad_notifier directory.
+
+### Remove hoptoad_notifier plugin
+
+Remove the vendor/plugins/hoptoad_notifier directory before installing the gem, or run:
+
+    script/plugin remove hoptoad_notifier
 
 Non-rails apps using Bundler
 ----------------------------

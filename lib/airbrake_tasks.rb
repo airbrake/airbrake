@@ -30,7 +30,7 @@ module AirbrakeTasks
     params = {'api_key' => api_key}
     opts.each {|k,v| params["deploy[#{k}]"] = v }
 
-    host = Airbrake.configuration.host || 'airbrake.io'
+    host = Airbrake.configuration.host || 'api.airbrake.io'
     port = Airbrake.configuration.port
 
     proxy = Net::HTTP.Proxy(Airbrake.configuration.proxy_host,
