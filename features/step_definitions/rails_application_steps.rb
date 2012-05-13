@@ -25,15 +25,15 @@ When /^I generate a new Rails application$/ do
     raise "Unable to generate a Rails application:\n#{@terminal.output}"
   end
   require_thread
-  When %{I configure my application to require the "rake" gem with version "0.8.7"}
+  step %{I configure my application to require the "rake" gem with version "0.8.7"}
   config_gem_dependencies unless rails3
 end
 
 When /^I run the airbrake generator with "([^\"]*)"$/ do |generator_args|
   if rails3?
-    When %{I run "./script/rails generate airbrake #{generator_args}"}
+    step %{I run "./script/rails generate airbrake #{generator_args}"}
   else
-    When %{I run "./script/generate airbrake #{generator_args}"}
+    step %{I run "./script/generate airbrake #{generator_args}"}
   end
 end
 
@@ -73,7 +73,7 @@ When /^I run "([^\"]*)"$/ do |command|
 end
 
 Then /^I should receive a Airbrake notification$/ do
-  Then %{I should see "[Airbrake] Success: Net::HTTPOK"}
+  step %{I should see "[Airbrake] Success: Net::HTTPOK"}
 end
 
 Then /^I should receive two Airbrake notifications$/ do
@@ -178,7 +178,7 @@ end
 
 When /^I install cached gems$/ do
   if bundler_manages_gems?
-    When %{I run "bundle install"}
+    step %{I run "bundle install"}
   end
 end
 
@@ -246,11 +246,11 @@ Then /^I should receive the following Airbrake notification:$/ do |table|
 end
 
 Then /^I should see the Rails version$/ do
-  Then %{I should see "[Rails: #{rails_version}]"}
+  step %{I should see "[Rails: #{rails_version}]"}
 end
 
 Then /^I should see that "([^\"]*)" is not considered a framework gem$/ do |gem_name|
-  Then %{I should not see "[R] #{gem_name}"}
+  step %{I should not see "[R] #{gem_name}"}
 end
 
 Then /^the command should have run successfully$/ do
