@@ -110,7 +110,8 @@ module RailsHelpers
   def perform_request(uri, environment = 'production')
     if rails3?
       request_script = <<-SCRIPT
-        require 'config/environment'
+        require File.expand_path('../config/environment', __FILE__)
+
 
         env      = Rack::MockRequest.env_for(#{uri.inspect})
         response = RailsRoot::Application.call(env).last
@@ -126,7 +127,7 @@ module RailsHelpers
       @terminal.run("ruby -rthread ./script/rails runner -e #{environment} request.rb")
     elsif rails_uses_rack?
       request_script = <<-SCRIPT
-        require 'config/environment'
+        require File.expand_path('../config/environment', __FILE__)
 
         env = Rack::MockRequest.env_for(#{uri.inspect})
         app = Rack::Lint.new(ActionController::Dispatcher.new)
