@@ -72,7 +72,7 @@ class AirbrakeGenerator < Rails::Generators::Base
   end
 
   def heroku_var(var,app_name = nil)
-    app = app_name ? " --app #{app_name}" : ''
+    app = app_name ? "--app #{app_name}" : ''
     `heroku config #{app} | grep -E "#{var.upcase}" | awk '{ print $3; }'`.strip
   end
 
