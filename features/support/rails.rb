@@ -11,6 +11,10 @@ module RailsHelpers
     rails_version =~ /^3/
   end
 
+  def rails_version_at_least(ver)
+    rails_version >= ver
+  end
+
   def rails_root
     LOCAL_RAILS_ROOT
   end

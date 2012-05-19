@@ -65,6 +65,7 @@ Feature: Install the Gem in a Rails application
     And I configure the Airbrake shim
     And I configure my application to require the "airbrake" gem
     And I run the airbrake generator with "-k myapikey"
+    And I configure my application to require the "capistrano" gem if necessary
     And I run "cap -T"
     Then I should see "airbrake:deploy"
 
@@ -77,6 +78,7 @@ Feature: Install the Gem in a Rails application
     And I run the airbrake generator with "-k myapikey"
     And I uninstall the "airbrake" gem
     And I install cached gems
+    And I configure my application to require the "capistrano" gem if necessary
     And I run "cap -T"
     Then I should see "airbrake:deploy"
 

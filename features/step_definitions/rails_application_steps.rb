@@ -25,15 +25,17 @@ When /^I generate a new Rails application$/ do
     raise "Unable to generate a Rails application:\n#{@terminal.output}"
   end
   require_thread
-  step %{I configure my application to require the "rake" gem with version "0.8.7"}
+  if rails_version_at_least("3.1.0")
+    When %{I configure my application to require the "therubyracer" gem with version "0.10.1"}
+  end
   config_gem_dependencies unless rails3
 end
 
 When /^I run the airbrake generator with "([^\"]*)"$/ do |generator_args|
   if rails3?
-    step %{I run "./script/rails generate airbrake #{generator_args}"}
+    When %{I run "./script/rails generate airbrake #{generator_args}"}
   else
-    step %{I run "./script/generate airbrake #{generator_args}"}
+    When %{I run "./script/generate airbrake #{generator_args}"}
   end
 end
 
@@ -47,6 +49,10 @@ end
 
 Given /^I have built and installed the "([^\"]*)" gem$/ do |gem_name|
   @terminal.build_and_install_gem(File.join(PROJECT_ROOT, "#{gem_name}.gemspec"))
+end
+
+When /^I configure my application to require the "capistrano" gem if necessary$/ do
+  When %{I configure my application to require the "capistrano" gem} if rails_version_at_least("3.1.0")
 end
 
 When /^I configure my application to require the "([^\"]*)" gem(?: with version "(.+)")?$/ do |gem_name, version|
@@ -75,7 +81,7 @@ end
 Then /^I should receive a Airbrake notification$/ do
   # myapi key is non-existent, but it should return the error notice
   # hence this is success
-  step %{I should see "Your account is being provisioned or no longer active."}
+  Then %{I should see "Your account is being provisioned or no longer active."}
 end
 
 Then /^I should receive two Airbrake notifications$/ do
@@ -180,7 +186,7 @@ end
 
 When /^I install cached gems$/ do
   if bundler_manages_gems?
-    step %{I run "bundle install"}
+    Then %{I run "bundle install"}
   end
 end
 
@@ -248,11 +254,11 @@ Then /^I should receive the following Airbrake notification:$/ do |table|
 end
 
 Then /^I should see the Rails version$/ do
-  step %{I should see "[Rails: #{rails_version}]"}
+  Then %{I should see "[Rails: #{rails_version}]"}
 end
 
 Then /^I should see that "([^\"]*)" is not considered a framework gem$/ do |gem_name|
-  step %{I should not see "[R] #{gem_name}"}
+  Then %{I should not see "[R] #{gem_name}"}
 end
 
 Then /^the command should have run successfully$/ do
