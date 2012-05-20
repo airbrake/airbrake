@@ -18,8 +18,3 @@ this rake task (from RAILS_ROOT):
 
 If everything is configured properly, that task will send a notice to Airbrake 
 which will be visible immediately.
-
-NOTE FOR RAILS 1.2.* USERS:
-
-You will need to copy the airbrake_tasks.rb file into your
-RAILS_ROOT/lib/tasks directory in order for the rake airbrake:test task to work.
