@@ -171,7 +171,7 @@ def run_rails_cucumbr_task(version, additional_cucumber_args)
     raise "No Rails version specified - make sure ENV['RAILS_VERSION'] is set, e.g. with `rake cucumber:rails:all`"
   end
   ENV['RAILS_VERSION'] = version
-  cmd   = "cucumber --format #{ENV['CUCUMBER_FORMAT'] || 'progress'} #{additional_cucumber_args} features/rails.feature features/rails_with_js_notifier.feature" 
+  cmd   = "cucumber --format #{ENV['CUCUMBER_FORMAT'] || 'progress'} #{additional_cucumber_args} features/rails.feature features/rails_with_js_notifier.feature"
   puts "Running command: #{cmd}"
   system(cmd)
 end

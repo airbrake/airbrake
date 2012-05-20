@@ -11,10 +11,6 @@ module RailsHelpers
     rails_version =~ /^3/
   end
 
-  def rails_version_at_least(ver)
-    rails_version >= ver
-  end
-
   def rails_root
     LOCAL_RAILS_ROOT
   end
@@ -54,6 +50,10 @@ module RailsHelpers
 
   def rails_finds_generators_in_gems?
     rails3? || rails_version =~ /^2\./
+  end
+
+  def version_string
+    ENV['RAILS_VERSION']
   end
 
   def environment_path
@@ -182,6 +182,16 @@ module RailsHelpers
       @terminal.cd(rails_root)
       @terminal.run("ruby -rthread ./script/runner -e #{environment} request.rb")
     end
+  end
+
+  def monkeypatch_old_version
+    monkeypatchin= <<-MONKEYPATCHIN
+
+    MissingSourceFile::REGEXPS << [/^cannot load such file -- (.+)$/i, 1]
+
+    MONKEYPATCHIN
+
+    File.open(File.join(rails_root,"config","initializers", 'monkeypatchin.rb'), 'w') { |file| file.write(monkeypatchin) }
   end
 end
 

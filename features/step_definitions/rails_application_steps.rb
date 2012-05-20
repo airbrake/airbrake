@@ -3,7 +3,6 @@ require 'active_support/core_ext/string/inflections'
 
 When /^I generate a new Rails application$/ do
   @terminal.cd(TEMP_DIR)
-  version_string = ENV['RAILS_VERSION']
 
   rails3 = version_string =~ /^3/
 
@@ -15,7 +14,7 @@ When /^I generate a new Rails application$/ do
 
   load_rails = <<-RUBY
     gem 'rails', '#{version_string}'; \
-    load Gem.bin_path('#{rails_version_at_least("3.2.0") ? "railties" : "rails"}', 'rails', '#{version_string}')
+    load Gem.bin_path('#{version_string >= "3.2.0" ? "railties" : "rails"}', 'rails', '#{version_string}')
   RUBY
 
   @terminal.run(%{ruby -rrubygems -rthread -e "#{load_rails.strip!}" #{rails_create_command} rails_root})
@@ -25,8 +24,10 @@ When /^I generate a new Rails application$/ do
     raise "Unable to generate a Rails application:\n#{@terminal.output}"
   end
   require_thread
-  if rails_version_at_least("3.1.0")
+  if version_string >= "3.1.0"
     When %{I configure my application to require the "therubyracer" gem with version "0.10.1"}
+  elsif version_string == "2.3.14"
+    monkeypatch_old_version
   end
   config_gem_dependencies unless rails3
 end
@@ -52,7 +53,7 @@ Given /^I have built and installed the "([^\"]*)" gem$/ do |gem_name|
 end
 
 When /^I configure my application to require the "capistrano" gem if necessary$/ do
-  When %{I configure my application to require the "capistrano" gem} if rails_version_at_least("3.1.0")
+  When %{I configure my application to require the "capistrano" gem} if version_string >= "3.1.0"
 end
 
 When /^I configure my application to require the "([^\"]*)" gem(?: with version "(.+)")?$/ do |gem_name, version|
