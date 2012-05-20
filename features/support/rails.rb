@@ -25,7 +25,9 @@ module RailsHelpers
 
   def rails_version
     @rails_version ||= begin
-      if bundler_manages_gems?
+      if ENV["RAILS_VERSION"]
+        ENV["RAILS_VERSION"]
+      elsif bundler_manages_gems?
         rails_version = open(gemfile_path).read.match(/gem.*rails["'].*["'](.+)["']/)[1]
       else
         environment_file = File.join(rails_root, 'config', 'environment.rb')

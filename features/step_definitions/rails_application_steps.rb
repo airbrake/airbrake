@@ -15,7 +15,7 @@ When /^I generate a new Rails application$/ do
 
   load_rails = <<-RUBY
     gem 'rails', '#{version_string}'; \
-    load Gem.bin_path('rails', 'rails', '#{version_string}')
+    load Gem.bin_path('#{rails_version_at_least("3.2.0") ? "railties" : "rails"}', 'rails', '#{version_string}')
   RUBY
 
   @terminal.run(%{ruby -rrubygems -rthread -e "#{load_rails.strip!}" #{rails_create_command} rails_root})

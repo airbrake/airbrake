@@ -115,8 +115,18 @@ task :clobber => [:clobber_rdoc, :clobber_package]
 
 LOCAL_GEM_ROOT = File.join(GEM_ROOT, 'tmp', 'local_gems').freeze
 RAILS_VERSIONS = IO.read('SUPPORTED_RAILS_VERSIONS').strip.split("\n")
-LOCAL_GEMS = [['sham_rack', nil], ['capistrano', nil], ['sqlite3-ruby', nil], ['sinatra', nil], ['rake', '0.8.7']] +
-  RAILS_VERSIONS.collect { |version| ['rails', version] }
+LOCAL_GEMS =
+  [
+    ["rack","1.3.2"],
+  ] +
+  RAILS_VERSIONS.collect { |version| ['rails', version] } +
+  [
+    ['sham_rack', nil],
+    ['capistrano', nil],
+    ['sqlite3-ruby', nil],
+    ["therubyracer",nil]
+  ]
+
 
 desc "Vendor test gems: Run this once to prepare your test environment"
 task :vendor_test_gems do
@@ -124,20 +134,26 @@ task :vendor_test_gems do
   old_gem_home = ENV['GEM_HOME']
   ENV['GEM_PATH'] = LOCAL_GEM_ROOT
   ENV['GEM_HOME'] = LOCAL_GEM_ROOT
+
   LOCAL_GEMS.each do |gem_name, version|
     gem_file_pattern = [gem_name, version || '*'].compact.join('-')
     version_option = version ? "-v #{version}" : ''
     pattern = File.join(LOCAL_GEM_ROOT, 'gems', "#{gem_file_pattern}")
     existing = Dir.glob(pattern).first
-    unless existing
-      command = "gem install -i #{LOCAL_GEM_ROOT} --no-ri --no-rdoc --backtrace #{version_option} #{gem_name}"
-      puts "Vendoring #{gem_file_pattern}..."
-      unless system("#{command} 2>&1")
-        puts "Command failed: #{command}"
-        exit(1)
-      end
+    if existing
+      puts "\nskipping #{gem_name} since it's already vendored," +
+      "remove it from the tmp directory first."
+      next
+    end
+
+    command = "gem install -i #{LOCAL_GEM_ROOT} --no-ri --no-rdoc --backtrace #{version_option} #{gem_name}"
+    puts "Vendoring #{gem_file_pattern}..."
+    unless system("#{command} 2>&1")
+      puts "Command failed: #{command}"
+      exit(1)
     end
   end
+
   ENV['GEM_PATH'] = old_gem_path
   ENV['GEM_HOME'] = old_gem_home
 end
