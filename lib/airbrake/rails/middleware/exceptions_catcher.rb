@@ -1,7 +1,7 @@
 module Airbrake
   module Rails
     module Middleware
-      module DebugExceptionsCatcher
+      module ExceptionsCatcher
         def self.included(base)
           base.send(:alias_method_chain,:render_exception,:airbrake)
         end
@@ -15,12 +15,10 @@ module Airbrake
         end
 
         def skip_user_agent?(env)
-          begin
-            user_agent = env["HTTP_USER_AGENT"]
-            ::Airbrake.configuration.ignore_user_agent.flatten.any? { |ua| ua === user_agent }
-          rescue
-            false
-          end
+          user_agent = env["HTTP_USER_AGENT"]
+          ::Airbrake.configuration.ignore_user_agent.flatten.any? { |ua| ua === user_agent }
+        rescue
+          false
         end
 
         def render_exception_with_airbrake(env,exception)

@@ -22,6 +22,8 @@ module Airbrake
       end
 
       ActiveSupport.on_load(:action_controller) do
+        # Lazily load action_controller methods
+        #
         require 'airbrake/rails/javascript_notifier'
         require 'airbrake/rails/controller_methods'
 
@@ -30,8 +32,16 @@ module Airbrake
       end
 
       if defined?(::ActionDispatch::DebugExceptions)
-        require 'airbrake/rails/middleware/debug_exceptions_catcher'
-        ::ActionDispatch::DebugExceptions.send(:include,Airbrake::Rails::Middleware::DebugExceptionsCatcher)
+        # We should catch the exceptions in ActionDispatch::DebugExceptions in Rails 3.2.x.
+        #
+        require 'airbrake/rails/middleware/exceptions_catcher'
+        ::ActionDispatch::DebugExceptions.send(:include,Airbrake::Rails::Middleware::ExceptionsCatcher)
+      elsif defined?(::ActionDispatch::ShowExceptions)
+        # ActionDispatch::DebugExceptions is not defined in Rails 3.0.x and 3.1.x so
+        # catch the exceptions in ShowExceptions.
+        #
+        require 'airbrake/rails/middleware/exceptions_catcher'
+        ::ActionDispatch::ShowExceptions.send(:include,Airbrake::Rails::Middleware::ExceptionsCatcher)
       end
     end
   end
