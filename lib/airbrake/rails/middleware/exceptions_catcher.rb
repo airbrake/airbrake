@@ -8,8 +8,9 @@ module Airbrake
 
         def define_proxy_method(klass)
           klass.class_eval do
-            def call_the_real_method_if_exists
-              rescue_action_in_public_without_airbrake(request.env['fake_exception'])
+            def after_airbrake_hook
+              exception = request.env.delete('fake_exception')
+              rescue_action_in_public_without_airbrake(exception)
             end
           end
         end
@@ -27,7 +28,7 @@ module Airbrake
           if defined?(controller.rescue_action_in_public_without_airbrake)
             env['fake_exception'] = exception
             define_proxy_method(controller.class)
-            controller.class.action(:call_the_real_method_if_exists).call(env)
+            controller.class.action(:after_airbrake_hook).call(env)
           else
             render_exception_without_airbrake(env,exception)
           end
