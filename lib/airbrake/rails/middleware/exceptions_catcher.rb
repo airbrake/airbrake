@@ -6,15 +6,6 @@ module Airbrake
           base.send(:alias_method_chain,:render_exception,:airbrake)
         end
 
-        def define_proxy_method(klass)
-          klass.class_eval do
-            def after_airbrake_hook
-              exception = request.env.delete('fake_exception')
-              rescue_action_in_public_without_airbrake(exception)
-            end
-          end
-        end
-
         def skip_user_agent?(env)
           user_agent = env["HTTP_USER_AGENT"]
           ::Airbrake.configuration.ignore_user_agent.flatten.any? { |ua| ua === user_agent }
@@ -26,12 +17,9 @@ module Airbrake
           controller = env['action_controller.instance']
           env['airbrake.error_id'] = Airbrake.notify_or_ignore(exception, controller.airbrake_request_data) unless skip_user_agent?(env)
           if defined?(controller.rescue_action_in_public_without_airbrake)
-            env['fake_exception'] = exception
-            define_proxy_method(controller.class)
-            controller.class.action(:after_airbrake_hook).call(env)
-          else
-            render_exception_without_airbrake(env,exception)
+            controller.rescue_action_in_public_without_airbrake(exception)
           end
+          render_exception_without_airbrake(env,exception)
         end
       end
     end
