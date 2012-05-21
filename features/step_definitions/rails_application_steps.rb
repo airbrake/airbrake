@@ -53,7 +53,7 @@ Given /^I have built and installed the "([^\"]*)" gem$/ do |gem_name|
 end
 
 When /^I configure my application to require the "capistrano" gem if necessary$/ do
-  When %{I configure my application to require the "capistrano" gem} if version_string >= "3.1.0"
+  When %{I configure my application to require the "capistrano" gem} if version_string >= "3.0.0"
 end
 
 When /^I configure my application to require the "([^\"]*)" gem(?: with version "(.+)")?$/ do |gem_name, version|
