@@ -12,9 +12,11 @@ module Airbrake
   #   end
   #
   #   app = Rack::Builder.app do
-  #     use Airbrake::Rack
   #     run lambda { |env| raise "Rack down" }
   #   end
+  #
+  #   use Airbrake::Rack
+  #   run app
   #
   # Use a standard Airbrake.configure call to configure your api key.
   class Rack
