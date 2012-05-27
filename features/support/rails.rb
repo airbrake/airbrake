@@ -53,7 +53,7 @@ module RailsHelpers
   end
 
   def version_string
-    ENV['RAILS_VERSION']
+    ENV['RAILS_VERSION'] || `tail -n 1 SUPPORTED_RAILS_VERSIONS` # use latest version if ENV["RAILS_VERSION"] is undefined
   end
 
   def environment_path
