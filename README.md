@@ -165,9 +165,11 @@ middleware:
     end
 
     app = Rack::Builder.app do
-      use Airbrake::Rack
       run lambda { |env| raise "Rack down" }
     end
+    
+    use Airbrake::Rack
+    run app
 
 Sinatra
 -------
