@@ -315,12 +315,14 @@ notifications (when #notify is called directly).
 
 Airbrake ignores the following exceptions by default:
 
-    AbstractController::ActionNotFound
     ActiveRecord::RecordNotFound
     ActionController::RoutingError
     ActionController::InvalidAuthenticityToken
-    ActionController::UnknownAction
     CGI::Session::CookieStore::TamperedWithCookie
+    ActionController::UnknownAction
+    AbstractController::ActionNotFound
+    Mongoid::Errors::DocumentNotFound
+
 
 To ignore errors in addition to those, specify their names in your Airbrake
 configuration block.
