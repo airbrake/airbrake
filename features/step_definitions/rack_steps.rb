@@ -18,3 +18,6 @@ When /^I perform a Rack request to "([^\"]*)"$/ do |url|
   @terminal.run("ruby #{request_file}")
 end
 
+Then /^I should receive a Airbrake notification for rack$/ do
+  Then %{I should see "You have accessed a deleted account."}
+end

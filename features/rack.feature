@@ -19,9 +19,5 @@ Feature: Use the notifier in a plain Rack app
       end
       """
     When I perform a Rack request to "http://example.com:123/test/index?param=value"
-    Then I should receive the following Airbrake notification:
-      | error message | RuntimeError: Rack down                       |
-      | error class   | RuntimeError                                  |
-      | parameters    | param: value                                  |
-      | url           | http://example.com:123/test/index?param=value |
+    Then I should receive a Airbrake notification for rack
 
