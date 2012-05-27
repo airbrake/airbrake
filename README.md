@@ -227,10 +227,10 @@ then that comment will be replaced with the text "Airbrake Error [errnum]". You 
 of the informer by setting `config.user_information`. Airbrake will replace "{{ error_id }}" with the
 ID of the error that is returned from Airbrake.
 
-  Airbrake.configure do |config|
+    Airbrake.configure do |config|
     ...
-    config.user_information = "<p>Tell the devs that it was <strong>{{ error_id }}</strong>'s fault.</p>"
-  end
+      config.user_information = "<p>Tell the devs that it was <strong>{{ error_id }}</strong>'s fault.</p>"
+    end
 
 You can also turn the middleware that handles this completely off by setting `config.user_information` to false.
 
