@@ -192,9 +192,9 @@ Using airbrake in a Sinatra app is just like a Rack app:
 Usage
 -----
 
-For the most part, Airbrake works for itself. Once you've included the notifier
-in your ApplicationController (which is now done automatically by the gem),
-all errors will be rescued by the #rescue_action_in_public provided by the gem.
+For the most part, Airbrake works for itself. 
+
+It intercepts the exception middleware calls, sends notifications and continues the middleware call chain.
 
 If you want to log arbitrary things which you've rescued yourself from a
 controller, you can do something like this:
@@ -398,8 +398,8 @@ Supported Rails versions
 See SUPPORTED_RAILS_VERSIONS for a list of official supported versions of
 Rails.
 
-Please open up a support ticket ( http://help.airbrake.io ) if
-you're using a version of Rails that is listed above and the notifier is
+Please open up a support ticket ( http://help.airbrake.io ) or submit a new github issue
+if you're using a version of Rails that is listed above and the notifier is
 not working properly.
 
 Javascript Notifer
