@@ -18,7 +18,6 @@ require 'airbrake/user_informer'
 
 require 'airbrake/railtie' if defined?(Rails::Railtie)
 
-# Gem for applications to automatically post errors to the Airbrake of their choice.
 module Airbrake
   API_VERSION = "2.2"
   LOG_PREFIX = "** [Airbrake] "
@@ -55,8 +54,8 @@ module Airbrake
     # Returns the Ruby version, Rails version, and current Rails environment
     def environment_info
       info = "[Ruby: #{RUBY_VERSION}]"
-      info << " [#{configuration.framework}]"
-      info << " [Env: #{configuration.environment_name}]"
+      info << " [#{configuration.framework}]" if configuration.framework
+      info << " [Env: #{configuration.environment_name}]" if configuration.environment_name
     end
 
     # Writes out the given message to the #logger

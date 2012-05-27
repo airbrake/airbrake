@@ -228,6 +228,9 @@ module Airbrake
       @port || default_port
     end
 
+    # Determines whether protocol should be "http" or "https".
+    # @return [String] Returns +"http"+ if you've set secure to +false+ in
+    # configuration, and +"https"+ otherwise.
     def protocol
       if secure?
         'https'
@@ -248,7 +251,7 @@ module Airbrake
       warn 'config.environment_filters has been deprecated and has no effect.'
       []
     end
-    
+
     def ca_bundle_path
       if use_system_ssl_cert_chain? && File.exist?(OpenSSL::X509::DEFAULT_CERT_FILE)
         OpenSSL::X509::DEFAULT_CERT_FILE
@@ -262,6 +265,9 @@ module Airbrake
     end
 
   private
+    # Determines what port should we use for sending notices.
+    # @return [Fixnum] Returns 443 if you've set secure to true in your
+    # configuration, and 80 otherwise.
     def default_port
       if secure?
         443

@@ -124,7 +124,8 @@ LOCAL_GEMS =
     ['sham_rack', nil],
     ['capistrano', nil],
     ['sqlite3-ruby', nil],
-    ["therubyracer",nil]
+    ["therubyracer",nil],
+    ["sinatra",nil]
   ]
 
 
