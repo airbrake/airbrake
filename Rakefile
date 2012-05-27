@@ -8,8 +8,10 @@ rescue LoadError
   exit 1
 end
 
+SUPPORTED_FRAMEWORKS = ["sinatra","rack","metal"]
+
 desc 'Default: run unit tests.'
-task :default => [:test, "cucumber:rails:all"]
+task :default => [:test, "cucumber:rails:all"] + SUPPORTED_FRAMEWORKS
 
 desc "Clean out the tmp directory"
 task :clean do
@@ -166,6 +168,7 @@ end
 
 task :cucumber => [:vendor_test_gems]
 
+
 def run_rails_cucumbr_task(version, additional_cucumber_args)
   puts "Testing Rails #{version}"
   if version.empty?
@@ -203,5 +206,16 @@ namespace :cucumber do
   end
 
   define_rails_cucumber_tasks
-end
 
+  rule /#{"(" + SUPPORTED_FRAMEWORKS.join("|") + ")"}/ do |t|
+    framework = t.name
+    desc "Test integration of the gem with #{framework}"
+    task framework.to_sym do
+      puts "Testing #{framework.split(":").last}..."
+      cmd = "cucumber --format #{ENV['CUCUMBER_FORMAT'] || 'progress'} features/#{framework.split(":").last}.feature"
+      puts "Running command: #{cmd}"
+      system(cmd)
+    end
+  end
+
+end
