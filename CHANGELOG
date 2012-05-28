@@ -1,3 +1,164 @@
+Version 3.1.0 - 2012-05-28 02:25:09 +0200
+===============================================================================
+
+Andre Arko (1):
+      stop using deprecated RAILS_ROOT
+
+Benjamin Oakes (5):
+      notify_airbrake: filter params on Rails 3.1 (and maybe 3.0 also)
+      `params` is the (eventual) intent, but `hash` is clearer in context
+      One-liner, per @shime
+      Exception safety: worst case scenario, report the unfiltered hash
+      (m) Summarize the cases for future maintainers
+
+Blake Watters (1):
+      Modify Rake handler to use Airbrake.notify_or_ignore rather than Airbrake.notify
+
+Chris Griego (1):
+      Fix allowing airbrake_env/TO being different from rails_env/RAILS_ENV in deployment notifications.
+
+David (10):
+      Merge pull request #33 from cgriego/patch-1
+      Merge pull request #51 from unnu/master
+      Merge pull request #56 from GateGuru/rake_handler_fix
+      Merge pull request #60 from DaPulse/master
+      Merge pull request #71 from sgonyea/patch-1
+      Merge pull request #75 from blackhacker/master
+      Merge pull request #81 from brainopia/patch-1
+      Merge pull request #82 from ghurrell/fix-readme-stubbing-example
+      Merge pull request #80 from yanowitz/patch-1
+      Merge pull request #86 from Playhem/master
+
+David Palm (5):
+      Set VERIFY_PEER in rake task
+      More idiomatic inject
+      Not quite ready yet. Revert "Heroku references now are to Airbrake."
+      Adds `pry` to the gems available in test env
+      Works outside Rails
+
+Eran Kampf (2):
+      Fix for apps behind a local proxy (EY App Master)
+      Changed if statement to one liner
+
+Erik Ostrom (1):
+      Updated Heroku README to use Airbrake's new name.
+
+Gary Rafferty (1):
+      Fix typo in airbrake.gemspec
+
+Greg Hurrell (1):
+      Update stubbing example in README to match method signature
+
+Hrvoje Šimić (47):
+      Merge pull request #59 from benjaminoakes/master
+      Merge pull request #62 from sleparc/master
+      Merge pull request #63 from benjaminoakes/master
+      improved readability
+      added new middleware catcher, fixes #73
+      Merge pull request #72 from 'jdel/lazyload'
+      Merge pull request #87 from gary-rafferty/master
+      Stop using include? to filter parameters
+      renaming so it's easier to understand
+      Merge pull request #90 from samoli/patch-1
+      Merge pull request #68 from cylence/master
+      read ENV variables from heroku config, fixes #89
+      check for airbrake_api_key on heroku
+      Merge pull request #91 from mikz/patch-1
+      ignore user agents in rails 3.0+
+      Merge branch 'master' of github.com:airbrake/airbrake
+      Merge pull request #79 from morgoth/fix-passing-api-key-as-param-to-rake-task
+      minor test fix
+      let's catch errors that happen early in the stack
+      remove deprecated step definitions
+      update url in a test
+      fix required files in gemspec
+      use top-level namespace
+      fix requirements
+      add rvmrc
+      update server response in scenarios
+      update heroku mock
+      remove unnecessary space
+      prefer the latest stable ruby version
+      update steps for newer rails versions
+      support rails 3.2.x with the test suite
+      update exception catcher
+      monkeypatch the old rails versions in tests
+      remove fake exception from env
+      add sanity to rescue_action_in_public_without_airbrake call
+      remove note for rails 1.2.x users, we don't support it
+      support the latest rails versions
+      add 3.0.11 and 3.0.12 to supported versions
+      update rack synopsis
+      log messages for sinatra and rack
+      make rack and sinatra tests green
+      update rack example in readme
+      Update ignored exceptions by default in readme
+      update explanation how we catch errors in readme
+      fix formatting
+      add all supported frameworks to rake test task
+      make metal tests green
+
+Jason Yanowitz (2):
+      remove git dependency from generating gemspec file.  causes errors when vendoring this gem in other projects
+      updated gemspec files specification based on feedback
+
+Jean-Michel Garnier (1):
+      Update README.md
+
+Jonathan Siegel (5):
+      Heroku references now are to Airbrake.
+      Merge branch 'master' of github.com:airbrake/airbrake
+      Added beta support fer cedar.
+      Added beta support fer cedar.
+      Migrated to new api.airbrake.io endpoint.
+
+Jonathan del Strother (1):
+      Lazily-load actioncontroller
+
+Leonid Shevtsov (3):
+      Feature: use a separate API key for Javascript notifications
+      cleaned up configuration
+      Merge branch 'master' of git://github.com/airbrake/airbrake
+
+Michal Cichra (1):
+      Use id to lookup error instead of error-id.
+
+Nathan Broadbent (1):
+      Added Mongoid::Errors::DocumentNotFound to default IGNORED exceptions (same as ActiveRecord::RecordNotFound, for Mongoid.)
+
+Ravil Bayramgalin (1):
+      Update lib/airbrake/user_informer.rb
+
+Ryan L. Cross (1):
+      Added unix style param for url in the deployhook rake task.
+
+Sam Oliver (1):
+      Update hoptoad=>aibrake in rake task example
+
+Scott Gonyea (1):
+      Document proxy parameters; namely, that the proxy_host does not require "http://" as a prefix. Ideally, config.proxy= could be given a URI.
+
+Simon Le Parc (1):
+      Shouldn't test the native dup method
+
+Stuart Chaney (1):
+      Updating README gem instructions for Rails 2.3 with bundler.
+
+Wojciech Wnętrzak (1):
+      fixed passing api_key param to Airbrake deploy task
+
+blackhacker (1):
+      more detailed error message
+
+unnu (1):
+      Fixed TaggedLogging bug in Rails 3 rake test task
+
+usiegj00 (3):
+      Merge pull request #46 from eostrom/master
+      Merge pull request #47 from 21croissants/master
+      Merge pull request #38 from ndbroadbent/ignore_mongoid_notfound
+
+
 Version 3.0.9 - Thu Dec 15 23:51:38 +0100 2011
 ===============================================================================
 
@@ -633,6 +794,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 

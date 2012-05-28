@@ -65,19 +65,20 @@ EOF
     file    = "CHANGELOG"
     old     = File.read(file)
     version = Airbrake::VERSION
-    message = "Bumping to version #{version}"
+    message = "add a CHANGELOG entry for #{version}"
+    editor = ENV["EDITOR"] || "vim" # prefer vim if no env variable for editor is set
 
     File.open(file, "w") do |f|
       f.write <<EOF
 Version #{version} - #{Time.now}
 ===============================================================================
 
-#{`git log $(git tag | tail -1)..HEAD | git shortlog`}
+#{`git log $(git tag | grep -v rc | tail -1)..HEAD | git shortlog`}
 #{old}
 EOF
     end
 
-    exec ["#{ENV["EDITOR"]} #{file}",
+    exec ["#{editor} #{file}",
           "git commit -aqm '#{message}'",
           "git tag -a -m '#{message}' v#{version}",
           "echo '\n\n\033[32mMarked v#{version} /' `git show-ref -s refs/heads/master` 'for release. Run: rake changeling:push\033[0m\n\n'"].join(' && ')
