@@ -65,7 +65,7 @@ EOF
     file    = "CHANGELOG"
     old     = File.read(file)
     version = Airbrake::VERSION
-    message = "add a CHANGELOG entry for #{version}"
+    message = "Bumping to version #{version}"
     editor = ENV["EDITOR"] || "vim" # prefer vim if no env variable for editor is set
 
     File.open(file, "w") do |f|
@@ -99,7 +99,7 @@ EOF
   desc "Push the latest version and tags"
   task :push do |t|
     system("git push origin master")
-    system("git push origin $(git tag | tail -1)")
+    system("git push origin $(git tag | grep -v rc | tail -1)")
   end
 end
 
