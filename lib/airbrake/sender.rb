@@ -50,7 +50,7 @@ module Airbrake
       end
 
       if response && response.respond_to?(:body)
-        error_id = response.body.match(%r{<_id[^>]*>(.*?)</id>})
+        error_id = response.body.match(%r{<_id[^>]*>(.*?)</_id>})
         error_id[1] if error_id
       end
     rescue => e
