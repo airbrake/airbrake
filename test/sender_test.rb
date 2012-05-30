@@ -60,7 +60,7 @@ class SenderTest < Test::Unit::TestCase
   end
 
   should "return the created group's id on successful posting" do
-    http = stub_http(:body => '<id type="integer">3799307</id>')
+    http = stub_http(:body => '<_id>3799307</id>')
     assert_equal "3799307", send_exception(:secure => false)
   end
 
