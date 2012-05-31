@@ -17,11 +17,11 @@ Feature: Use the Gem to catch errors in a Rake application
   Scenario: Autodetect, running from terminal
     When I run rake with airbrake autodetect from terminal
     Then Airbrake should not catch the exception
-  
+
   Scenario: Autodetect, not running from terminal
     When I run rake with airbrake autodetect not from terminal
     Then Airbrake should catch the exception
 
-  Scenario: Sendind the correct component name
+  Scenario: Sending the correct component name
     When I run rake with airbrake
     Then Airbrake should send the rake command line as the component name

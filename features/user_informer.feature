@@ -18,7 +18,7 @@ Feature: Inform the user of the airbrake notice that was just created
       """
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index?param=value"
-    Then I should see "Airbrake Error 3799307"
+    Then I should see "Airbrake Error b6817316-9c45-ed26-45eb-780dbb86aadb"
 
   Scenario: Rescue an exception in a controller with a custom error string
     When I generate a new Rails application
@@ -39,7 +39,7 @@ Feature: Inform the user of the airbrake notice that was just created
       """
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index?param=value"
-    Then I should see "Error #3799307"
+    Then I should see "Error #b6817316-9c45-ed26-45eb-780dbb86aadb"
 
   Scenario: Don't inform them user
     When I generate a new Rails application
@@ -60,4 +60,4 @@ Feature: Inform the user of the airbrake notice that was just created
       """
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index?param=value"
-    Then I should not see "Airbrake Error 3799307"
+    Then I should not see "Airbrake Error b6817316-9c45-ed26-45eb-780dbb86aadb"
