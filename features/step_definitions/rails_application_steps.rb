@@ -80,13 +80,13 @@ When /^I run "([^\"]*)"$/ do |command|
 end
 
 Then /^I should receive a Airbrake notification$/ do
-  # myapi key is non-existent, but it should return the error notice
-  # hence this is success
-  Then %{I should see "Your account is being provisioned or no longer active."}
+  Then %{I should see "** [Airbrake] Response from Airbrake:"}
+  And %{I should see "b6817316-9c45-ed26-45eb-780dbb86aadb"}
+  And %{I should see "http://airbrake.io/locate/b6817316-9c45-ed26-45eb-780dbb86aadb"}
 end
 
 Then /^I should receive two Airbrake notifications$/ do
-  @terminal.output.scan(/Your account is being provisioned or no longer active./).size.should == 2
+  @terminal.output.scan(/\[Airbrake\] Response from Airbrake:/).size.should == 2
 end
 
 When /^I configure the Airbrake shim$/ do

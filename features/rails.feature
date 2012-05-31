@@ -22,7 +22,7 @@ Feature: Install the Gem in a Rails application
     When I uninstall the "airbrake" gem
     And I install cached gems
     And I run "rake airbrake:test"
-    Then I should see "Your account is being provisioned or no longer active."
+    Then I should see "** [Airbrake] Response from Airbrake:"
     And I should receive two Airbrake notifications
 
   Scenario: Configure the notifier by hand

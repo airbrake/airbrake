@@ -2,7 +2,6 @@ require 'sham_rack'
 
 ShamRack.at("api.airbrake.io") do |env|
   response = <<-end_xml
-** [Airbrake] Response from Airbrake:
 <notice>
 <id>b6817316-9c45-ed26-45eb-780dbb86aadb</id>
 <url>http://airbrake.io/locate/b6817316-9c45-ed26-45eb-780dbb86aadb</url>
