@@ -234,6 +234,11 @@ ID of the error that is returned from Airbrake.
 
 You can also turn the middleware that handles this completely off by setting `config.user_information` to false.
 
+Note that this feature is reading the error id from `env['airbrake.error_id']`. When the exception is caught
+automatically in a controller, Airbrake sets that value. If you're, however, calling the Airbrake methods like
+`Airbrake#notify` or `Airbrake#notify_or_ignore`, please make sure you set that value. So the proper way of calling the 
+"manual" methods would be `env['airbrake.error_id'] = Airbrake.notify_or_ignore(...)`.
+
 Tracking deployments in Airbrake
 --------------------------------
 
