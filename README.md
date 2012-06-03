@@ -453,13 +453,13 @@ Credits
 
 ![thoughtbot](http://thoughtbot.com/images/tm/logo.png)
 
-Airbrake is maintained and funded by [thoughtbot, inc](http://thoughtbot.com/community)
+Airbrake is maintained and funded by [airbrake.io](http://airbrake.io)
 
 Thank you to all [the contributors](https://github.com/airbrake/airbrake/contributors)!
 
-The names and logos for thoughtbot are trademarks of thoughtbot, inc.
+The names and logos for Airbrake, thoughtbot are trademarks of their respective holders.
 
 License
 -------
 
-Airbrake is Copyright © 2008-2011 thoughtbot. It is free software, and may be redistributed under the terms specified in the MIT-LICENSE file.
+Airbrake is Copyright © 2008-2012 Airbrake. It is free software, and may be redistributed under the terms specified in the MIT-LICENSE file.
