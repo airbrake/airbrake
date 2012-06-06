@@ -19,5 +19,5 @@ Feature: Use the notifier in a plain Rack app
       end
       """
     When I perform a Rack request to "http://example.com:123/test/index?param=value"
-    Then I should receive a Airbrake notification for rack
+    Then I should receive a Airbrake notification
 
