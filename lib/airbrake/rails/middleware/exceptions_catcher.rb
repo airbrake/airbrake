@@ -15,7 +15,9 @@ module Airbrake
 
         def render_exception_with_airbrake(env,exception)
           controller = env['action_controller.instance']
-          env['airbrake.error_id'] = Airbrake.notify_or_ignore(exception, controller.airbrake_request_data) unless skip_user_agent?(env)
+          env['airbrake.error_id'] = Airbrake.
+            notify(exception,
+                   controller.try(:airbrake_request_data) || :rack_env => env) unless skip_user_agent?(env)
           if defined?(controller.rescue_action_in_public_without_airbrake)
             controller.rescue_action_in_public_without_airbrake(exception)
           end
