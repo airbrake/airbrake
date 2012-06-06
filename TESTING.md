@@ -17,6 +17,11 @@ Then, to start the suite, run
     rake
     # NOT: bundle exec rake
 
+Finally, this test suite runs against many rails versions. If you
+prefer to run it against specific version hit
+
+    rake cucumber:rails:<VERSION>
+
 
 For Maintainers
 ================
