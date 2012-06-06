@@ -1,6 +1,10 @@
 require 'uri'
 require 'active_support/core_ext/string/inflections'
 
+Given /^I have built and installed the "([^\"]*)" gem$/ do |gem_name|
+  @terminal.build_and_install_gem(File.join(PROJECT_ROOT, "#{gem_name}.gemspec"))
+end
+
 When /^I generate a new Rails application$/ do
   @terminal.cd(TEMP_DIR)
 
@@ -48,9 +52,6 @@ Given /^I have installed the "([^\"]*)" gem$/ do |gem_name|
   @terminal.install_gem(gem_name)
 end
 
-Given /^I have built and installed the "([^\"]*)" gem$/ do |gem_name|
-  @terminal.build_and_install_gem(File.join(PROJECT_ROOT, "#{gem_name}.gemspec"))
-end
 
 When /^I configure my application to require the "capistrano" gem if necessary$/ do
   When %{I configure my application to require the "capistrano" gem} if version_string >= "3.0.0"
@@ -422,4 +423,11 @@ end
 Then /^I should not see notifier JavaScript$/ do
   response = Nokogiri::HTML.parse('<html>' + @terminal.output.split('<html>').last)
   response.at_css("script[type='text/javascript'][src$='/javascripts/notifier.js']").should be_nil
+end
+
+
+When /^I configure usage of Airbrake$/ do
+    When %{I configure my application to require the "airbrake" gem}
+    When %{I run the airbrake generator with "-k myapikey"}
+    @terminal.flush!                                              # flush the results of setting up Airbrake (generates notification)
 end

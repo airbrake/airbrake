@@ -60,6 +60,10 @@ class Terminal
     logger.debug(string)
   end
 
+  def flush!
+    @output = ""
+  end
+
   def build_and_install_gem(gemspec)
     pkg_dir = File.join(TEMP_DIR, 'pkg')
     FileUtils.mkdir_p(pkg_dir)
