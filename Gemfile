@@ -7,5 +7,6 @@ if true
     gem 'pry'
     gem 'guard'
     gem 'guard-test'
+    gem 'simplecov'
   end
 end
