@@ -122,6 +122,9 @@ module RailsHelpers
         env      = Rack::MockRequest.env_for(#{uri.inspect})
         response = RailsRoot::Application.call(env)
 
+
+        response = response.last if response.last.is_a?(ActionDispatch::Response)
+
         if response.is_a?(Array)
           puts response.join
         else
