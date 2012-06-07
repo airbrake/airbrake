@@ -202,6 +202,10 @@ Feature: Install the Gem in a Rails application
   Scenario: Reporting 404s
     When I configure the Airbrake shim
     And I configure usage of Airbrake
+    And I configure the notifier to use the following configuration lines:
+    """
+    config.ignore_only = []
+    """
     And I perform a request to "http://example.com:123/this/route/does/not/exist"
-    And I should see "The page you were looking for doesn't exist."
+    Then I should see "The page you were looking for doesn't exist."
     And I should receive a Airbrake notification
