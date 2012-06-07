@@ -7,6 +7,7 @@ rescue LoadError
   $stderr.puts "Please install cucumber: `gem install cucumber`"
   exit 1
 end
+require './lib/airbrake/version'
 
 FEATURES = ["sinatra","rack","metal","user_informer"]
 
