@@ -1,3 +1,6 @@
+require 'rubygems'
+require "bundler/setup"
+require 'appraisal'
 require 'rake'
 require 'rake/testtask'
 require 'rubygems/package_task'
@@ -12,7 +15,20 @@ require './lib/airbrake/version'
 FEATURES = ["sinatra","rack","metal","user_informer"]
 
 desc 'Default: run unit tests.'
-task :default => [:test, "cucumber:rails:all"] + FEATURES
+task :default do
+  if ENV['BUNDLE_GEMFILE'] =~ /gemfiles/
+    exec 'rake cucumber'
+  else
+    Rake::Task['appraise'].execute
+  end
+end
+
+
+task :appraise => ['appraisal:install'] do
+  exec 'rake appraisal cucumber'
+end
+
+
 
 desc "Clean out the tmp directory"
 task :clean do
@@ -165,10 +181,9 @@ end
 
 Cucumber::Rake::Task.new(:cucumber) do |t|
   t.fork = true
-  t.cucumber_opts = ['--format', (ENV['CUCUMBER_FORMAT'] || 'progress')]
 end
 
-task :cucumber => [:vendor_test_gems]
+
 
 
 def run_rails_cucumber_task(version, additional_cucumber_args)
