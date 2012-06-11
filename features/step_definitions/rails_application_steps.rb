@@ -1,12 +1,13 @@
 require 'uri'
+
 require 'active_support/core_ext/string/inflections'
 
-Given /^I have built and installed the "([^\"]*)" gem$/ do |gem_name|
-  @terminal.build_and_install_gem(File.join(PROJECT_ROOT, "#{gem_name}.gemspec"))
-end
+
+#Given /^I have built and installed the "([^\"]*)" gem$/ do |gem_name|
+  #@terminal.build_and_install_gem(File.join(PROJECT_ROOT, "#{gem_name}.gemspec"))
+#end
 
 When /^I generate a new Rails application$/ do
-  @terminal.cd(TEMP_DIR)
 
   rails3 = version_string =~ /^3/
 
@@ -16,20 +17,19 @@ When /^I generate a new Rails application$/ do
     rails_create_command = ''
   end
 
-  load_rails = <<-RUBY
-    gem 'rails', '#{version_string}'; \
-    load Gem.bin_path('#{version_string >= "3.2.0" ? "railties" : "rails"}', 'rails', '#{version_string}')
-  RUBY
 
-  @terminal.run(%{ruby -rrubygems -rthread -e "#{load_rails.strip!}" #{rails_create_command} rails_root})
+  #@terminal.run(%{BUNDLE_GEMFILE=#{File.join(PROJECT_ROOT,"gemfiles",version_string.strip + ".gemfile")} bundle exec rails #{rails_create_command} rails_root})
+
+  step %{I run `bundle exec rails #{rails_create_command} rails_root --skip-bundle`}
+
   if rails_root_exists?
-    @terminal.echo("Generated a Rails #{version_string} application")
+    step %{I run `echo "Generated a Rails #{version_string} application!`}
   else
     raise "Unable to generate a Rails application:\n#{@terminal.output}"
   end
   require_thread
   if version_string >= "3.1.0"
-    When %{I configure my application to require the "therubyracer" gem with version "0.10.1"}
+    step %{I configure my application to require the "therubyracer" gem with version "0.10.1"}
   elsif version_string == "2.3.14"
     monkeypatch_old_version
   end
@@ -38,9 +38,9 @@ end
 
 When /^I run the airbrake generator with "([^\"]*)"$/ do |generator_args|
   if rails3?
-    When %{I run "./script/rails generate airbrake #{generator_args}"}
+    step %{I successfully run `./script/rails generate airbrake #{generator_args}`}
   else
-    When %{I run "./script/generate airbrake #{generator_args}"}
+    step %{I successfully run `./script/generate airbrake #{generator_args}`}
   end
 end
 
@@ -52,16 +52,24 @@ Given /^I have installed the "([^\"]*)" gem$/ do |gem_name|
   @terminal.install_gem(gem_name)
 end
 
+When /^I configure the application to use Airbrake$/ do
+  append_to_gemfile("gem 'airbrake',:path => '#{PROJECT_ROOT}'")
+  steps %{
+    When I reset Bundler environment variable
+    And I successfully run `bundle install --local`
+  }
+end
 
 When /^I configure my application to require the "capistrano" gem if necessary$/ do
-  When %{I configure my application to require the "capistrano" gem} if version_string >= "3.0.0"
+  step %{I configure my application to require the "capistrano" gem} if version_string >= "3.0.0"
 end
 
 When /^I configure my application to require the "([^\"]*)" gem(?: with version "(.+)")?$/ do |gem_name, version|
   if rails_manages_gems?
     config_gem(gem_name, version)
   elsif bundler_manages_gems?
-    bundle_gem(gem_name, version)
+    append_to_gemfile("gem '#{gem_name}'#{version ? ",'#{version}'":""}")
+    step %{I successfully run `bundle install --local`}
   else
     File.open(environment_path, 'a') do |file|
       file.puts
@@ -75,24 +83,21 @@ When /^I configure my application to require the "([^\"]*)" gem(?: with version 
   end
 end
 
-When /^I run "([^\"]*)"$/ do |command|
-  @terminal.cd(rails_root)
-  @terminal.run(command)
-end
-
-Then /^I should receive a Airbrake notification$/ do
-  Then %{I should see "** [Airbrake] Response from Airbrake:"}
-  And %{I should see "b6817316-9c45-ed26-45eb-780dbb86aadb"}
-  And %{I should see "http://airbrake.io/locate/b6817316-9c45-ed26-45eb-780dbb86aadb"}
+Then /^I should (?:(not ))?receive a Airbrake notification$/ do |negator|
+  steps %{
+    Then the output should #{negator}contain "** [Airbrake] Response from Airbrake:"
+    And the output should #{negator}contain "b6817316-9c45-ed26-45eb-780dbb86aadb"
+    And the output should #{negator}contain "http://airbrake.io/locate/b6817316-9c45-ed26-45eb-780dbb86aadb"
+  }
 end
 
 Then /^I should receive two Airbrake notifications$/ do
-  @terminal.output.scan(/\[Airbrake\] Response from Airbrake:/).size.should == 2
+  step %{the output should match /\[Airbrake\] Response from Airbrake:/}
 end
 
 When /^I configure the Airbrake shim$/ do
   if bundler_manages_gems?
-    bundle_gem("sham_rack")
+    append_to_gemfile("gem 'sham_rack'")
   end
 
   shim_file = File.join(PROJECT_ROOT, 'features', 'support', 'airbrake_shim.rb.template')
@@ -149,16 +154,8 @@ def rails_non_initializer_airbrake_config_file
   File.join(rails_root, 'config', 'airbrake.rb')
 end
 
-Then /^I should see "([^\"]*)"$/ do |expected_text|
-  unless @terminal.output.include?(expected_text)
-    raise("Got terminal output:\n#{@terminal.output}\n\nExpected output:\n#{expected_text}")
-  end
-end
-
-Then /^I should not see "([^\"]*)"$/ do |unexpected_text|
-  if @terminal.output.include?(unexpected_text)
-    raise("Got terminal output:\n#{@terminal.output}\n\nDid not expect the following output:\n#{unexpected_text}")
-  end
+Then /^I should (?:(not ))?see "([^\"]*)"$/ do |negator,expected_text|
+  step %{the output should #{negator}contain "#{expected_text}"}
 end
 
 When /^I uninstall the "([^\"]*)" gem$/ do |gem_name|
@@ -188,7 +185,7 @@ end
 
 When /^I install cached gems$/ do
   if bundler_manages_gems?
-    Then %{I run "bundle install"}
+    step %{I run `bundle install`}
   end
 end
 
@@ -213,10 +210,13 @@ end
 
 When /^I perform a request to "([^\"]*)"$/ do |uri|
   perform_request(uri)
+  step %{I run `bundle exec ./script/rails runner request.rb`}
 end
 
 When /^I perform a request to "([^\"]*)" in the "([^\"]*)" environment$/ do |uri, environment|
-  perform_request(uri, environment)
+  perform_request(uri,environment)
+  #step %{I run `bundle exec ./script/rails runner -e #{environment} request.rb`}
+  step %{I run `bundle exec rails runner -e #{environment} request.rb`}
 end
 
 Given /^the response page for a "([^\"]*)" error is$/ do |error, html|
@@ -225,42 +225,12 @@ Given /^the response page for a "([^\"]*)" error is$/ do |error, html|
   end
 end
 
-Then /^I should receive the following Airbrake notification:$/ do |table|
-  exceptions = @terminal.output.scan(%r{Recieved the following exception:\n([^\n]*)\n}m)
-  exceptions.should_not be_empty
-
-  xml = exceptions.last[0]
-  doc = Nokogiri::XML.parse(xml)
-
-  hash = table.transpose.hashes.first
-
-  doc.should have_content('//error/message', hash['error message'])
-  doc.should have_content('//error/class',   hash['error class'])
-  doc.should have_content('//request/url',   hash['url'])
-
-  doc.should have_content('//component', hash['component']) if hash['component']
-  doc.should have_content('//action', hash['action']) if hash['action']
-  doc.should have_content('//server-environment/project-root', hash['project-root']) if hash['project-root']
-
-  if hash['session']
-    session_key, session_value = hash['session'].split(': ')
-    doc.should have_content('//request/session/var/@key', session_key)
-    doc.should have_content('//request/session/var',      session_value)
-  end
-
-  if hash['parameters']
-    param_key, param_value     = hash['parameters'].split(': ')
-    doc.should have_content('//request/params/var/@key',  param_key)
-    doc.should have_content('//request/params/var',       param_value)
-  end
-end
-
 Then /^I should see the Rails version$/ do
-  Then %{I should see "[Rails: #{rails_version}]"}
+  step %{I should see "[Rails: #{rails_version}]"}
 end
 
 Then /^I should see that "([^\"]*)" is not considered a framework gem$/ do |gem_name|
-  Then %{I should not see "[R] #{gem_name}"}
+  step %{I should not see "[R] #{gem_name}"}
 end
 
 Then /^the command should have run successfully$/ do
@@ -353,7 +323,7 @@ fi
     end
   end
   FileUtils.chmod(0755, heroku_script)
-  @terminal.prepend_path(heroku_script_bin)
+  prepend_path(heroku_script_bin)
 end
 
 When /^I configure the application to filter parameter "([^\"]*)"$/ do |parameter|
@@ -393,41 +363,27 @@ Then /^I should see the notifier JavaScript for the following:$/ do |table|
   api_key     = hash['api_key']
   environment = hash['environment'] || 'production'
 
-  document_body = '<html>' + @terminal.output.split('<html>').last
-  document_body.should include("#{host}/javascripts/notifier.js")
-
-  response = Nokogiri::HTML.parse(document_body)
-  response.css("script[type='text/javascript']:last-child").each do |element|
-    content = element.content
-    content.should include("Airbrake.setKey('#{api_key}');")
-    content.should include("Airbrake.setHost('#{host}');")
-    content.should include("Airbrake.setEnvironment('#{environment}');")
-  end
+  steps %{
+    Then the output should contain "#{host}/javascripts/notifier.js"
+    And the output should contain "Airbrake.setKey('#{api_key}');"
+    And the output should contain "Airbrake.setHost('#{host}');"
+    And the output should contain "Airbrake.setEnvironment('#{environment}');"
+  }
 end
 
-Then "the notifier JavaScript should provide the following errorDefaults:" do |table|
+Then /^the notifier JavaScript should provide the following errorDefaults:$/ do |table|
   hash = table.hashes.first
-
-  document_body = '<html>' + @terminal.output.split('<html>').last
-
-  response = Nokogiri::HTML.parse(document_body)
-  response.css("script[type='text/javascript']:last-child").each do |element|
-    content = element.content
-
-    hash.each do |key, value|
-      content.should =~ %r{Airbrake\.setErrorDefaults.*#{key}: "#{value}}m
-    end
+  hash.each do |key, value|
+    assert_matching_output("Airbrake\.setErrorDefaults.*#{key}: \"#{value}\"",all_output)
   end
 end
 
 Then /^I should not see notifier JavaScript$/ do
-  response = Nokogiri::HTML.parse('<html>' + @terminal.output.split('<html>').last)
-  response.at_css("script[type='text/javascript'][src$='/javascripts/notifier.js']").should be_nil
+  step %{the output should not contain "script[type='text/javascript'][src$='/javascripts/notifier.js']"}
 end
 
 
 When /^I configure usage of Airbrake$/ do
-    When %{I configure my application to require the "airbrake" gem}
-    When %{I run the airbrake generator with "-k myapikey"}
-    @terminal.flush!                                              # flush the results of setting up Airbrake (generates notification)
+    step %{I configure my application to require the "airbrake" gem}
+    step %{I run the airbrake generator with "-k myapikey"}
 end

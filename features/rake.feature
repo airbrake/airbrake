@@ -1,6 +1,6 @@
 Feature: Use the Gem to catch errors in a Rake application
   Background:
-    Given I have built and installed the "airbrake" gem
+    Given I have fixed this suite
 
   Scenario: Catching exceptions in Rake
     When I run rake with airbrake

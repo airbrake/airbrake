@@ -1,41 +1,36 @@
 Feature: Install the Gem in a Rails application
 
   Background:
-    Given I have built and installed the "airbrake" gem
-    And I generate a new Rails application
+    Given I successfully run `bundle exec rails new rails_root`
+    And I cd to "rails_root"
+    And I configure the application to use Airbrake
 
   Scenario: Use the gem without vendoring the gem in a Rails application
     When I configure the Airbrake shim
-    And I configure my application to require the "airbrake" gem
     And I run the airbrake generator with "-k myapikey"
-    Then the command should have run successfully
-    And I should receive a Airbrake notification
+    Then I should receive a Airbrake notification
     And I should see the Rails version
 
   Scenario: vendor the gem and uninstall
     When I configure the Airbrake shim
-    And I configure my application to require the "airbrake" gem
     And I unpack the "airbrake" gem
     And I run the airbrake generator with "-k myapikey"
-    Then the command should have run successfully
-    When I uninstall the "airbrake" gem
+    And I uninstall the "airbrake" gem
     And I install cached gems
-    And I run "rake airbrake:test"
-    Then I should see "** [Airbrake] Response from Airbrake:"
-    And I should receive two Airbrake notifications
+    And I run `rake airbrake:test`
+    Then the output should match /\[Airbrake\] Response from Airbrake:/
+    # this should be matched for times, not once
 
   Scenario: Configure the notifier by hand
     When I configure the Airbrake shim
     And I configure the notifier to use "myapikey" as an API key
-    And I configure my application to require the "airbrake" gem
     And I run the airbrake generator with ""
     Then I should receive a Airbrake notification
 
   Scenario: Configuration within initializer isn't overridden by Railtie
     When I configure the Airbrake shim
-    And I configure usage of Airbrake
-    Then the command should have run successfully
-    When I configure the notifier to use the following configuration lines:
+    And I run the airbrake generator with "-k myapikey"
+    And I configure the notifier to use the following configuration lines:
       """
       config.api_key = "myapikey"
       config.project_root = "argle/bargle"
@@ -50,42 +45,38 @@ Feature: Install the Gem in a Rails application
     Then I should receive a Airbrake notification
 
   Scenario: Try to install without an api key
-    When I configure my application to require the "airbrake" gem
-    And I run the airbrake generator with ""
+    When I run the airbrake generator with ""
     Then I should see "Must pass --api-key or --heroku or create config/initializers/airbrake.rb"
 
   Scenario: Configure and deploy using only installed gem
-    When I run "capify ."
+    When I run `capify .`
     And I configure the Airbrake shim
-    And I configure my application to require the "airbrake" gem
     And I run the airbrake generator with "-k myapikey"
     And I configure my application to require the "capistrano" gem if necessary
-    And I run "cap -T"
+    And I run `cap -T`
     Then I should see "airbrake:deploy"
 
   Scenario: Configure and deploy using only vendored gem
-    When I run "capify ."
+    When I run `capify .`
     And I configure the Airbrake shim
-    And I configure my application to require the "airbrake" gem
     And I unpack the "airbrake" gem
     And I run the airbrake generator with "-k myapikey"
     And I uninstall the "airbrake" gem
     And I install cached gems
     And I configure my application to require the "capistrano" gem if necessary
-    And I run "cap -T"
+    And I run `cap -T`
     Then I should see "airbrake:deploy"
 
   Scenario: Try to install when the airbrake plugin still exists
     When I install the "airbrake" plugin
     And I configure the Airbrake shim
     And I configure the notifier to use "myapikey" as an API key
-    And I configure my application to require the "airbrake" gem
     And I run the airbrake generator with ""
     Then I should see "You must first remove the airbrake plugin. Please run: script/plugin remove airbrake"
 
   Scenario: Rescue an exception in a controller
     When I configure the Airbrake shim
-    And I configure usage of Airbrake
+    And I run the airbrake generator with "-k myapikey"
     And I define a response for "TestController#index":
       """
       session[:value] = "test"
@@ -97,16 +88,14 @@ Feature: Install the Gem in a Rails application
 
   Scenario: The gem should not be considered a framework gem
     When I configure the Airbrake shim
-    And I configure my application to require the "airbrake" gem
     And I run the airbrake generator with "-k myapikey"
-    And I run "rake gems"
+    And I run `rake gems`
     Then I should see that "airbrake" is not considered a framework gem
 
   Scenario: The app uses Vlad instead of Capistrano
     When I configure the Airbrake shim
-    And I configure my application to require the "airbrake" gem
-    And I run "touch config/deploy.rb"
-    And I run "rm Capfile"
+    And I run `touch config/deploy.rb`
+    And I run `rm Capfile`
     And I run the airbrake generator with "-k myapikey"
     Then "config/deploy.rb" should not contain "capistrano"
 
@@ -114,10 +103,8 @@ Feature: Install the Gem in a Rails application
     When I configure the Airbrake shim
     And I configure the Heroku rake shim
     And I configure the Heroku gem shim with "myapikey"
-    And I configure my application to require the "airbrake" gem
     And I run the airbrake generator with "--heroku"
-    Then the command should have run successfully
-    And I should receive a Airbrake notification
+    Then I should receive a Airbrake notification
     And I should see the Rails version
     And my Airbrake configuration should contain the following line:
       """
@@ -128,10 +115,8 @@ Feature: Install the Gem in a Rails application
     When I configure the Airbrake shim
     And I configure the Heroku rake shim
     And I configure the Heroku gem shim with "myapikey" and multiple app support
-    And I configure my application to require the "airbrake" gem
     And I run the airbrake generator with "--heroku -a myapp"
-    Then the command should have run successfully
-    And I should receive a Airbrake notification
+    Then I should receive a Airbrake notification
     And I should see the Rails version
     And my Airbrake configuration should contain the following line:
       """
@@ -140,7 +125,7 @@ Feature: Install the Gem in a Rails application
 
   Scenario: Filtering parameters in a controller
     When I configure the Airbrake shim
-    And I configure usage of Airbrake
+    And I run the airbrake generator with "-k myapikey"
     When I configure the notifier to use the following configuration lines:
       """
       config.api_key = "myapikey"
@@ -157,7 +142,7 @@ Feature: Install the Gem in a Rails application
 
   Scenario: Filtering session in a controller
     When I configure the Airbrake shim
-    And I configure usage of Airbrake
+    And I run the airbrake generator with "-k myapikey"
     When I configure the notifier to use the following configuration lines:
       """
       config.api_key = "myapikey"
@@ -174,7 +159,7 @@ Feature: Install the Gem in a Rails application
 
   Scenario: Filtering session and params based on Rails parameter filters
     When I configure the Airbrake shim
-    And I configure usage of Airbrake
+    And I run the airbrake generator with "-k myapikey"
     And I configure the application to filter parameter "secret"
     And I define a response for "TestController#index":
       """
@@ -188,7 +173,7 @@ Feature: Install the Gem in a Rails application
 
   Scenario: Notify airbrake within the controller
     When I configure the Airbrake shim
-    And I configure usage of Airbrake
+    And I run the airbrake generator with "-k myapikey"
     And I define a response for "TestController#index":
       """
       session[:value] = "test"
@@ -201,11 +186,12 @@ Feature: Install the Gem in a Rails application
 
   Scenario: Reporting 404s
     When I configure the Airbrake shim
-    And I configure usage of Airbrake
+    And I run the airbrake generator with "-k myapikey"
     And I configure the notifier to use the following configuration lines:
     """
     config.ignore_only = []
     """
     And I perform a request to "http://example.com:123/this/route/does/not/exist"
-    Then I should see "The page you were looking for doesn't exist."
+    Then I should see "404"
+    And I should see "Not Found"
     And I should receive a Airbrake notification
