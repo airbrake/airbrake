@@ -1,3 +1,21 @@
+BUNDLE_ENV_VARS = %w(RUBYOPT BUNDLE_PATH BUNDLE_BIN_PATH BUNDLE_GEMFILE)
+ORIGINAL_BUNDLE_VARS = Hash[ENV.select{ |key,value| BUNDLE_ENV_VARS.include?(key) }]
+
+ENV['RAILS_ENV'] = 'test'
+
+Before do
+  ENV['BUNDLE_GEMFILE'] = File.join(Dir.pwd, ENV['BUNDLE_GEMFILE']) unless ENV['BUNDLE_GEMFILE'].start_with?(Dir.pwd)
+  @framework_version = nil
+end
+
+After do |s|
+  ORIGINAL_BUNDLE_VARS.each_pair do |key, value|
+    ENV[key] = value
+  end
+
+  Cucumber.wants_to_quit = true if s.failed?
+end
+
 module RailsHelpers
   def rails_root_exists?
     File.exists?(environment_path)
@@ -64,14 +82,6 @@ module RailsHelpers
     File.join(rails_root, 'Rakefile')
   end
 
-  def bundle_gem(gem_name, version = nil)
-    File.open(gemfile_path, 'a') do |file|
-      gem = "gem '#{gem_name}'"
-      gem += ", '#{version}'" if version
-      file.puts(gem)
-    end
-  end
-
   def config_gem(gem_name, version = nil)
     run     = "Rails::Initializer.run do |config|"
     insert  = "  config.gem '#{gem_name}'"
@@ -113,7 +123,7 @@ module RailsHelpers
     File.open(rakefile_path, 'wb') { |file| file.write(content) }
   end
 
-  def perform_request(uri, environment = 'production')
+def perform_request(uri, environment = 'production')
     if rails3?
       request_script = <<-SCRIPT
         require File.expand_path('../config/environment', __FILE__)
@@ -132,8 +142,6 @@ module RailsHelpers
         end
       SCRIPT
       File.open(File.join(rails_root, 'request.rb'), 'w') { |file| file.write(request_script) }
-      @terminal.cd(rails_root)
-      @terminal.run("ruby -rthread ./script/rails runner -e #{environment} request.rb")
     elsif rails_uses_rack?
       request_script = <<-SCRIPT
         require File.expand_path('../config/environment', __FILE__)
@@ -153,8 +161,6 @@ module RailsHelpers
         puts response
       SCRIPT
       File.open(File.join(rails_root, 'request.rb'), 'w') { |file| file.write(request_script) }
-      @terminal.cd(rails_root)
-      @terminal.run("ruby -rthread ./script/runner -e #{environment} request.rb")
     else
       uri = URI.parse(uri)
       request_script = <<-SCRIPT
@@ -182,8 +188,6 @@ module RailsHelpers
         Dispatcher.dispatch(cgi)
       SCRIPT
       File.open(File.join(rails_root, 'request.rb'), 'w') { |file| file.write(request_script) }
-      @terminal.cd(rails_root)
-      @terminal.run("ruby -rthread ./script/runner -e #{environment} request.rb")
     end
   end
 
