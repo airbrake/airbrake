@@ -24,8 +24,18 @@ task :default do
 end
 
 
-task :appraise => ['appraisal:install'] do
+task :appraise  do
+  Rake::Task["bundle:bundler"].execute
   exec 'rake appraisal cucumber'
+  Rake::Task['appraisal:install'].execute
+end
+
+namespace :bundle do
+  task :bundler do
+    path = `bundle show rake`.split("gems").first
+    command = "gem install -i #{path} bundler"
+    system command
+  end
 end
 
 
