@@ -12,7 +12,7 @@ tags
 doc
 pkg
 
-Gemfile.lock
+*emfile.lock
 .bundle
 
 *.rbc
