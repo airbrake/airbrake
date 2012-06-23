@@ -1,3 +1,14 @@
+Version 3.1.2 - 2012-06-23 02:27:01 +0200
+===============================================================================
+
+Hrvoje Šimić (5):
+      routing errors ignored by default, for #92
+      use simplecov for test coverage
+      fix features for javascript
+      ignore user agents in rack, closes #61
+      error out if controller is undefined
+
+
 Version 3.1.1 - 2012-06-06 20:35:00 -0700
 ===============================================================================
 
@@ -813,6 +824,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
