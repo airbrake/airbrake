@@ -80,10 +80,10 @@ When /^I run "([^\"]*)"$/ do |command|
   @terminal.run(command)
 end
 
-Then /^I should receive a Airbrake notification$/ do
-  Then %{I should see "** [Airbrake] Response from Airbrake:"}
-  And %{I should see "b6817316-9c45-ed26-45eb-780dbb86aadb"}
-  And %{I should see "http://airbrake.io/locate/b6817316-9c45-ed26-45eb-780dbb86aadb"}
+Then /^I should( not)? receive a Airbrake notification$/ do |or_should_not|
+  Then %{I should#{or_should_not} see "** [Airbrake] Response from Airbrake:"}
+  And %{I should#{or_should_not} see "b6817316-9c45-ed26-45eb-780dbb86aadb"}
+  And %{I should#{or_should_not} see "http://airbrake.io/locate/b6817316-9c45-ed26-45eb-780dbb86aadb"}
 end
 
 Then /^I should receive two Airbrake notifications$/ do

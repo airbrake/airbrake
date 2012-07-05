@@ -199,13 +199,21 @@ Feature: Install the Gem in a Rails application
     And I perform a request to "http://example.com:123/test/index?param=value"
     Then I should receive a Airbrake notification
 
-  Scenario: Reporting 404s
+  Scenario: Reporting 404s should be disabled by default
     When I configure the Airbrake shim
     And I configure usage of Airbrake
-    And I configure the notifier to use the following configuration lines:
-    """
-    config.ignore_only = []
-    """
+    And I perform a request to "http://example.com:123/this/route/does/not/exist"
+    Then I should see "The page you were looking for doesn't exist."
+    And I should not receive a Airbrake notification
+
+  Scenario: Reporting 404s should work when configured properly
+    When I configure the Airbrake shim
+    And I configure usage of Airbrake
+    When I configure the notifier to use the following configuration lines:
+      """
+      config.ignore_only = []
+      """
     And I perform a request to "http://example.com:123/this/route/does/not/exist"
     Then I should see "The page you were looking for doesn't exist."
     And I should receive a Airbrake notification
+
