@@ -317,6 +317,8 @@ module Airbrake
 
     def rack_env(method)
       rack_request.send(method) if rack_request
+    rescue
+      {:message => "failed to call #{method} on Rack::Request -- #{$!.message}"}
     end
 
     def rack_request
