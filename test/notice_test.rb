@@ -368,6 +368,20 @@ class NoticeTest < Test::Unit::TestCase
     assert_equal 'GET', notice.cgi_data['REQUEST_METHOD']
   end
 
+  should "show a nice warning when rack environment exceeds rack keyspace" do
+    # simulate exception for to big query
+    Rack::Request.any_instance.expects(:params).raises(RangeError.new("exceeded available parameter key space"))
+
+    url = "https://subdomain.happylane.com:100/test/file.rb?var=x"
+    env = Rack::MockRequest.env_for(url)
+
+    notice = build_notice(:rack_env => env)
+
+    assert_equal url, notice.url
+    assert_equal({:message => "failed to call params on Rack::Request -- exceeded available parameter key space"}, notice.parameters)
+    assert_equal 'GET', notice.cgi_data['REQUEST_METHOD']
+  end
+
   should "extract data from a rack environment hash with action_dispatch info" do
     params = { 'controller' => 'users', 'action' => 'index', 'id' => '7' }
     env = Rack::MockRequest.env_for('/', { 'action_dispatch.request.parameters' => params })
