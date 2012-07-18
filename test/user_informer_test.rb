@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path '../helper', __FILE__
 
 class UserInformerTest < Test::Unit::TestCase
   should "modify output if there is an airbrake id" do
