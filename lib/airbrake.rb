@@ -60,7 +60,7 @@ module Airbrake
 
     # Writes out the given message to the #logger
     def write_verbose_log(message)
-      logger.info LOG_PREFIX + message if logger
+      logger.debug LOG_PREFIX + message if logger
     end
 
     # Look for the Rails logger currently defined
