@@ -272,7 +272,7 @@ controllers:
       }
       my_unpredicable_method(params)
     rescue => e
-      Airbrake.notify(
+      Airbrake.notify_or_ignore(
         :error_class   => "Special Error",
         :error_message => "Special Error: #{e.message}",
         :parameters    => params
