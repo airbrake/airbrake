@@ -5,6 +5,10 @@ Given /^I have built and installed the "([^\"]*)" gem$/ do |gem_name|
   @terminal.build_and_install_gem(File.join(PROJECT_ROOT, "#{gem_name}.gemspec"))
 end
 
+Given /^PENDING/ do
+  pending
+end
+
 When /^I generate a new Rails application$/ do
   @terminal.cd(TEMP_DIR)
 
@@ -431,3 +435,29 @@ When /^I configure usage of Airbrake$/ do
     When %{I run the airbrake generator with "-k myapikey"}
     @terminal.flush!                                              # flush the results of setting up Airbrake (generates notification)
 end
+
+
+When /^I have set up authentication system in my app that uses "([^\"]*)"$/ do |current_user|
+  application_controller = File.join(rails_root, 'app', 'controllers', "application_controller.rb")
+  definition =
+    """
+  class ApplicationController < ActionController::Base
+    def consider_all_requests_local; false; end
+    def local_request?; false; end
+
+    # this is the ultimate authentication system, devise is history
+    def #{current_user}
+      Struct.new(:attributes).new({:id => 1,:name => 'Bender',:email => 'bender@beer.com',:username => 'b3nd0r'})
+    end
+  end
+  """
+  File.open(application_controller, "w") {|file| file.puts definition }
+end
+
+Then /^the Airbrake notification should contain user details$/ do
+  Then %{I should see "Bender"}
+  And %{I should see "bender@beer.com"}
+  And %{I should see "<id>1</id>"}
+  And %{I should see "b3nd0r"}
+end
+

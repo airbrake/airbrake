@@ -12,7 +12,7 @@ module Airbrake
 
     # The API key for your project, found on the project edit form.
     attr_accessor :api_key
-    
+
     # If you're using the Javascript notifier and would want to separate
     # Javascript notifications into another Airbrake project, specify
     # its APi key here.
@@ -28,7 +28,7 @@ module Airbrake
 
     # +true+ for https connections, +false+ for http connections.
     attr_accessor :secure
-    
+
     # +true+ to use whatever CAs OpenSSL has installed on your system. +false+ to use the ca-bundle.crt file included in Airbrake itself (reccomended and default)
     attr_accessor :use_system_ssl_cert_chain
 

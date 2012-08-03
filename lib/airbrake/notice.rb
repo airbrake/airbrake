@@ -69,6 +69,23 @@ module Airbrake
     # The host name where this error occurred (if any)
     attr_reader :hostname
 
+    # Details about the user who experienced the error
+    attr_reader :user
+
+    private
+
+    # Private writers for all the attributes
+    attr_writer :exception, :api_key, :backtrace, :error_class, :error_message,
+      :backtrace_filters, :parameters, :params_filters,
+      :environment_filters, :session_data, :project_root, :url, :ignore,
+      :ignore_by_filters, :notifier_name, :notifier_url, :notifier_version,
+      :component, :action, :cgi_data, :environment_name, :hostname, :user
+
+    # Arguments given in the initializer
+    attr_accessor :args
+
+    public
+
     def initialize(args)
       self.args         = args
       self.exception    = args[:exception]
@@ -100,6 +117,7 @@ module Airbrake
       end
 
       self.hostname        = local_hostname
+      self.user = args[:user]
 
       also_use_rack_params_filters
       find_session_data
@@ -161,6 +179,14 @@ module Airbrake
           env.tag!("environment-name", environment_name)
           env.tag!("hostname", hostname)
         end
+        if user
+          notice.tag!("current-user") do |u|
+            u.tag!("id",user[:id])
+            u.tag!("name",user[:name])
+            u.tag!("email",user[:email])
+            u.tag!("username",user[:username])
+          end
+        end
       end
       xml.to_s
     end
@@ -188,14 +214,6 @@ module Airbrake
 
     private
 
-    attr_writer :exception, :api_key, :backtrace, :error_class, :error_message,
-      :backtrace_filters, :parameters, :params_filters,
-      :environment_filters, :session_data, :project_root, :url, :ignore,
-      :ignore_by_filters, :notifier_name, :notifier_url, :notifier_version,
-      :component, :action, :cgi_data, :environment_name, :hostname
-
-    # Arguments given in the initializer
-    attr_accessor :args
 
     # Gets a property named +attribute+ of an exception, either from an actual
     # exception or a hash.

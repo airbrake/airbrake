@@ -239,6 +239,24 @@ automatically in a controller, Airbrake sets that value. If you're, however, cal
 `Airbrake#notify` or `Airbrake#notify_or_ignore`, please make sure you set that value. So the proper way of calling the 
 "manual" methods would be `env['airbrake.error_id'] = Airbrake.notify_or_ignore(...)`.
 
+Current user information
+------------------------
+Airbrake provides information about the current logged in user, so you
+could easily determine the user who experienced the error in your app.
+
+It uses `current_user` and `current_member` to identify the
+authenticated user, where `current_user` takes precendence.
+
+If you use different naming, please add the following lines to your
+controller:
+
+    alias_method :current_duck, :current_user
+    helper_method :current_duck
+
+Voila! You'll get information about a duck that experienced crash about
+your app.
+
+
 Tracking deployments in Airbrake
 --------------------------------
 

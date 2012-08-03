@@ -6,6 +6,9 @@ ShamRack.at("api.airbrake.io") do |env|
 <id>b6817316-9c45-ed26-45eb-780dbb86aadb</id>
 <url>http://airbrake.io/locate/b6817316-9c45-ed26-45eb-780dbb86aadb</url>
 </notice>
+
+Request:
+#{env["rack.input"].read}
   end_xml
   ["200 OK", { "Content-type" => "text/xml" }, [response]]
 end

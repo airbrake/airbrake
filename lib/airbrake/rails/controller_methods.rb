@@ -3,12 +3,15 @@ module Airbrake
     module ControllerMethods
 
       def airbrake_request_data
-        { :parameters       => airbrake_filter_if_filtering(params.to_hash),
+        {
+          :parameters       => airbrake_filter_if_filtering(params.to_hash),
           :session_data     => airbrake_filter_if_filtering(airbrake_session_data),
           :controller       => params[:controller],
           :action           => params[:action],
           :url              => airbrake_request_url,
-          :cgi_data         => airbrake_filter_if_filtering(request.env) }
+          :cgi_data         => airbrake_filter_if_filtering(request.env),
+          :user             => airbrake_current_user
+        }
       end
 
       private
@@ -20,7 +23,7 @@ module Airbrake
           Airbrake.notify(hash_or_exception, airbrake_request_data)
         end
       end
-      
+
       def airbrake_local_request?
         if defined?(::Rails.application.config)
           ::Rails.application.config.consider_all_requests_local || (request.local? && (!request.env["HTTP_X_FORWARDED_FOR"]))
@@ -39,7 +42,7 @@ module Airbrake
       def airbrake_filter_if_filtering(hash)
         return hash if ! hash.is_a?(Hash)
 
-        
+
         if respond_to?(:filter_parameters) # Rails 2
           filter_parameters(hash)  
         elsif defined?(ActionDispatch::Http::ParameterFilter) # Rails 3
@@ -47,7 +50,7 @@ module Airbrake
         else
           hash
         end rescue hash
-        
+
       end
 
       def airbrake_session_data
@@ -67,6 +70,15 @@ module Airbrake
 
         url << request.fullpath
         url
+      end
+
+      def airbrake_current_user
+        user = current_user || current_member
+        user.attributes.select do |k, v|
+          /^(id|name|username|email)$/ === k unless v.blank?
+        end
+      rescue NoMethodError, NameError
+        {}
       end
     end
   end
