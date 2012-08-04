@@ -1,3 +1,4 @@
+require "girl_friday"
 require 'net/http'
 require 'net/https'
 require 'rubygems'
@@ -26,6 +27,11 @@ module Airbrake
     'Content-type'             => 'text/xml',
     'Accept'                   => 'text/xml, application/xml'
   }
+
+
+  AIRBRAKE_QUEUE = GirlFriday::WorkQueue.new(nil,:size => 3) do |notice|
+    sender.send_to_airbrake(notice.to_xml)
+  end
 
   class << self
     # The sender object is responsible for delivering formatted data to the Airbrake server.
@@ -131,7 +137,11 @@ module Airbrake
 
     def send_notice(notice)
       if configuration.public?
-        sender.send_to_airbrake(notice.to_xml)
+        if configuration.async
+          AIRBRAKE_QUEUE << notice
+        else
+          sender.send_to_airbrake(notice.to_xml)
+        end
       end
     end
 

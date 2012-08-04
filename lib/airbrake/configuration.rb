@@ -100,6 +100,10 @@ module Airbrake
     # (boolean or nil; set to nil to catch exceptions when rake isn't running from a terminal; default is nil)
     attr_accessor :rescue_rake_exceptions
 
+    # Should Airbrake send notifications asynchronously
+    # (boolean or nil; default is nil)
+    attr_accessor :async
+
     DEFAULT_PARAMS_FILTERS = %w(password password_confirmation).freeze
 
     DEFAULT_BACKTRACE_FILTERS = [

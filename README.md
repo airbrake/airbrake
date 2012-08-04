@@ -256,6 +256,27 @@ controller:
 Voila! You'll get information about a duck that experienced crash about
 your app.
 
+Asynchronous notifications with Airbrake
+----------------------------------------
+When your user experiences error using your application, it gets sent to
+Airbrake server. This introduces a considerable latency in the response. 
+
+Asynchronous notification sending deals with this problem. Airbrake uses 
+[girl_friday](https://github.com/mperham/girl_friday) to achieve this
+. (thanks Mike)
+
+It's disabled by default and you can enable it in your Airbrake
+configuration.
+
+    Airbrake.configure do |config|
+      ...
+      config.async = true
+    end
+
+*Note that this feature is enabled with JRuby 1.6+, Rubinius 2.0+ and*
+*Ruby 1.9+. It does not support Ruby 1.8 because of its poor threading*
+*support.*
+
 
 Tracking deployments in Airbrake
 --------------------------------
