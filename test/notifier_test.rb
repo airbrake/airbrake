@@ -157,7 +157,7 @@ class NotifierTest < Test::Unit::TestCase
     config_opts = { 'one' => 'two', 'three' => 'four' }
     notice = stub_notice!
     stub_sender!
-    Airbrake.configuration = stub('config', :merge => config_opts, :public? => true)
+    Airbrake.configuration = stub('config', :merge => config_opts, :public? => true,:async? => nil)
 
     Airbrake.notify(exception)
 

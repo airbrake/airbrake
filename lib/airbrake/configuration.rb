@@ -135,6 +135,7 @@ module Airbrake
 
     alias_method :secure?, :secure
     alias_method :use_system_ssl_cert_chain?, :use_system_ssl_cert_chain
+    alias_method :async?, :async
 
     def initialize
       @secure                   = false

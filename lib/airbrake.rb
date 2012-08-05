@@ -29,6 +29,8 @@ module Airbrake
   }
 
 
+  # Queue used to send async notices. Used only if configuration.async is
+  # set to true.
   AIRBRAKE_QUEUE = GirlFriday::WorkQueue.new(nil,:size => 3) do |notice|
     sender.send_to_airbrake(notice.to_xml)
   end
@@ -137,7 +139,7 @@ module Airbrake
 
     def send_notice(notice)
       if configuration.public?
-        if configuration.async
+        if configuration.async?
           AIRBRAKE_QUEUE << notice
         else
           sender.send_to_airbrake(notice.to_xml)
