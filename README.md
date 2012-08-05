@@ -435,6 +435,17 @@ The notifier supports using a proxy, if your server is not able to directly reac
       config.proxy_port = 4038
       config.proxy_user = foo # optional
       config.proxy_pass = bar # optional
+      
+Logging
+------------
+
+Airbrake uses the logger from your Rails application by default, presumably STDOUT. If you don't like Airbrake scribbling to your 
+standard output, just pass another `Logger` instance inside your configuration:
+
+    Airbrake.configure do |config|
+      ...
+      config.logger = Logger.new("path/to/your/log/file")
+    end
 
 Supported Rails versions
 ------------------------
