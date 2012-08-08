@@ -11,8 +11,6 @@ Help
 
 For help with using Airbrake and this notifier visit [our support site](http://help.airbrake.io).
 
-For discussion of Airbrake development check out the [mailing list](http://groups.google.com/group/hoptoad-notifier-dev).
-
 For SSL verification see the [Resources](https://github.com/airbrake/airbrake/blob/master/resources/README.md).
 
 Rails Installation
