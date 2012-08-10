@@ -140,6 +140,35 @@ class NotifierTest < Test::Unit::TestCase
     assert_received(sender, :send_to_airbrake) {|expect| expect.never }
   end
 
+  should "deliver exception in async-mode" do
+    Airbrake.configure do |config|
+      config.environment_name = 'production'
+      config.async = lambda {|job, _notice| job.call}
+    end
+    exception = build_exception
+    sender = stub_sender!
+    notice = stub_notice!
+
+    Airbrake.notify(exception)
+
+    assert_sent(notice, :exception => exception)
+  end
+
+  should "pass notice in async-mode" do
+    received_notice = nil
+    Airbrake.configure do |config|
+      config.environment_name = 'production'
+      config.async = lambda {|_job, notice| received_notice = notice}
+    end
+    exception = build_exception
+    sender = stub_sender!
+    notice = stub_notice!
+
+    Airbrake.notify(exception)
+
+    assert_equal received_notice, notice
+  end
+
   should "deliver an ignored exception when notifying manually" do
     set_public_env
     exception = build_exception

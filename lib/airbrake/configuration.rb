@@ -102,7 +102,7 @@ module Airbrake
 
     # Should Airbrake send notifications asynchronously
     # (boolean or nil; default is nil)
-    attr_accessor :async
+    attr_reader :async
 
     DEFAULT_PARAMS_FILTERS = %w(password password_confirmation).freeze
 
@@ -244,6 +244,11 @@ module Airbrake
       end
     end
 
+    def async=(value)
+      # use default GirlFriday-async for 'true' value
+      @async = value == true ? girl_friday_async_processor : value
+    end
+
     def js_api_key
       @js_api_key || self.api_key
     end
@@ -279,6 +284,11 @@ module Airbrake
       else
         80
       end
+    end
+
+    def girl_friday_async_processor
+      queue = GirlFriday::WorkQueue.new(nil, :size => 3) {|job| job.call}
+      lambda {|job, _notice| queue << job}
     end
 
   end
