@@ -2,13 +2,6 @@ require "girl_friday"
 require 'net/http'
 require 'net/https'
 require 'rubygems'
-begin
-  require 'active_support'
-  require 'active_support/core_ext'
-rescue LoadError
-  require 'activesupport'
-  require 'activesupport/core_ext'
-end
 require 'airbrake/version'
 require 'airbrake/configuration'
 require 'airbrake/notice'
