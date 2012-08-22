@@ -481,4 +481,10 @@ class NoticeTest < Test::Unit::TestCase
 
     assert_equal session_data, notice.session_data
   end
+
+  should "prefer passed error_message to exception message" do
+    exception = build_exception
+    notice = build_notice(:exception => exception,:error_message => "Random ponies")
+    assert_equal "BacktracedException: Random ponies", notice.error_message
+  end
 end

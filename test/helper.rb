@@ -132,16 +132,6 @@ class Test::Unit::TestCase
     BacktracedException.new(opts)
   end
 
-  class BacktracedException < Exception
-    attr_accessor :backtrace
-    def initialize(opts)
-      @backtrace = opts[:backtrace]
-    end
-    def set_backtrace(bt)
-      @backtrace = bt
-    end
-  end
-
   def build_notice_data(exception = nil)
     exception ||= build_exception
     {
@@ -259,3 +249,15 @@ class FakeLogger
   def fatal(*args); end
 end
 
+class BacktracedException < Exception
+  attr_accessor :backtrace
+  def initialize(opts)
+    @backtrace = opts[:backtrace]
+  end
+  def set_backtrace(bt)
+    @backtrace = bt
+  end
+  def message
+    "Something went wrong. Did you press the red button?"
+  end
+end

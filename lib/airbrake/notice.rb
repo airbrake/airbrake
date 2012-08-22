@@ -113,7 +113,7 @@ module Airbrake
       self.backtrace        = Backtrace.parse(exception_attribute(:backtrace, caller), :filters => self.backtrace_filters)
       self.error_class      = exception_attribute(:error_class) {|exception| exception.class.name }
       self.error_message    = exception_attribute(:error_message, 'Notification') do |exception|
-        "#{exception.class.name}: #{exception.message}"
+        "#{exception.class.name}: #{args[:error_message] || exception.message}"
       end
 
       self.hostname        = local_hostname
