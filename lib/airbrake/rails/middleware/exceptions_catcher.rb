@@ -1,4 +1,3 @@
-class AirbrakeError < StandardError; end
 module Airbrake
   module Rails
     module Middleware
