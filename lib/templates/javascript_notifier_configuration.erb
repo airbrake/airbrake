@@ -1,11 +1,4 @@
 <%= javascript_tag %Q{
-  (function(){
-    var notifierJsScheme = (("https:" == document.location.protocol) ? "https://" : "http://");
-    document.write(unescape("%3Cscript src='" + notifierJsScheme + "#{host}/javascripts/notifier.js' type='text/javascript'%3E%3C/script%3E"));
-  })();
-}%>
-
-<%= javascript_tag %Q{
     window.Airbrake = (typeof(Airbrake) == 'undefined' && typeof(Hoptoad) != 'undefined') ? Hoptoad : Airbrake
     Airbrake.setKey('#{api_key}');
     Airbrake.setHost('#{host}');
