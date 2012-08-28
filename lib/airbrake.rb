@@ -28,13 +28,6 @@ module Airbrake
     'Accept'                   => 'text/xml, application/xml'
   }
 
-
-  # Queue used to send async notices. Used only if configuration.async is
-  # set to true.
-  AIRBRAKE_QUEUE = GirlFriday::WorkQueue.new(nil,:size => 3) do |notice|
-    sender.send_to_airbrake(notice.to_xml)
-  end
-
   class << self
     # The sender object is responsible for delivering formatted data to the Airbrake server.
     # Must respond to #send_to_airbrake. See Airbrake::Sender.
@@ -140,7 +133,8 @@ module Airbrake
     def send_notice(notice)
       if configuration.public?
         if configuration.async?
-          AIRBRAKE_QUEUE << notice
+          job = lambda {sender.send_to_airbrake(notice.to_xml)}
+          configuration.async.call(job, notice)
         else
           sender.send_to_airbrake(notice.to_xml)
         end

@@ -275,6 +275,24 @@ configuration.
 *Ruby 1.9+. It does not support Ruby 1.8 because of its poor threading*
 *support.*
 
+For implementing custom asynchronous send, pass any callable object instead of
+`true`. This callable receives `job` and `notice` params. `job.call` does
+actual notification delivery. `notice` is useful in case of some remote
+worker(e.g. Resque or Sidekiq), when execution of `job.call` isn't possible.
+
+    # configuration for Threads or Actors
+    Airbrake.configure do |config|
+      ...
+      config.async = lambda {|job, _notice| Thread.new {job.call}}
+    end
+
+    # Resque-like configuration
+    Airbrake.configure do |config|
+      ...
+      config.async = lambda do |_job, notice|
+        Resque.enqueue(AirbrakeDeliveryWorker, notice)
+      end
+    end
 
 Tracking deployments in Airbrake
 --------------------------------
