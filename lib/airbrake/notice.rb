@@ -179,7 +179,7 @@ module Airbrake
           env.tag!("environment-name", environment_name)
           env.tag!("hostname", hostname)
         end
-        if user
+        unless user.blank?
           notice.tag!("current-user") do |u|
             u.tag!("id",user[:id])
             u.tag!("name",user[:name])
