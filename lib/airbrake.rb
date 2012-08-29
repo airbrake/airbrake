@@ -2,13 +2,7 @@ require "girl_friday"
 require 'net/http'
 require 'net/https'
 require 'rubygems'
-begin
-  require 'active_support'
-  require 'active_support/core_ext'
-rescue LoadError
-  require 'activesupport'
-  require 'activesupport/core_ext'
-end
+require 'active_support/core_ext/object/blank'
 require 'airbrake/version'
 require 'airbrake/configuration'
 require 'airbrake/notice'
@@ -27,7 +21,6 @@ module Airbrake
     'Content-type'             => 'text/xml',
     'Accept'                   => 'text/xml, application/xml'
   }
-
 
   # Queue used to send async notices. Used only if configuration.async is
   # set to true.
