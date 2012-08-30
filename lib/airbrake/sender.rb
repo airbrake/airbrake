@@ -1,7 +1,7 @@
 module Airbrake
   # Sends out the notice to Airbrake
   class Sender
-    
+
     NOTICES_URI = '/notifier_api/v2/notices/'.freeze
     HTTP_ERRORS = [Timeout::Error,
                    Errno::EINVAL,
@@ -14,15 +14,15 @@ module Airbrake
 
     def initialize(options = {})
       [ :proxy_host,
-        :proxy_port, 
-        :proxy_user, 
-        :proxy_pass, 
+        :proxy_port,
+        :proxy_user,
+        :proxy_pass,
         :protocol,
-        :host, 
-        :port, 
-        :secure, 
-        :use_system_ssl_cert_chain, 
-        :http_open_timeout, 
+        :host,
+        :port,
+        :secure,
+        :use_system_ssl_cert_chain,
+        :http_open_timeout,
         :http_read_timeout
       ].each do |option|
         instance_variable_set("@#{option}", options[option])
@@ -72,7 +72,7 @@ module Airbrake
 
     alias_method :secure?, :secure
     alias_method :use_system_ssl_cert_chain?, :use_system_ssl_cert_chain
-    
+
   private
 
     def url
@@ -88,7 +88,7 @@ module Airbrake
     def logger
       Airbrake.logger
     end
-    
+
     def setup_http_connection
       http =
         Net::HTTP::Proxy(proxy_host, proxy_port, proxy_user, proxy_pass).
@@ -105,12 +105,11 @@ module Airbrake
       else
         http.use_ssl     = false
       end
-      
+
       http
     rescue => e
       log :error, "[Airbrake::Sender#setup_http_connection] Failure initializing the HTTP connection.\nError: #{e.class} - #{e.message}\nBacktrace:\n#{e.backtrace.join("\n\t")}"
       raise e
     end
-
   end
 end

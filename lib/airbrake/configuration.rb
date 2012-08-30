@@ -108,7 +108,7 @@ module Airbrake
 
     DEFAULT_BACKTRACE_FILTERS = [
       lambda { |line|
-        if defined?(Airbrake.configuration.project_root) && Airbrake.configuration.project_root.to_s != '' 
+        if defined?(Airbrake.configuration.project_root) && Airbrake.configuration.project_root.to_s != ''
           line.sub(/#{Airbrake.configuration.project_root}/, "[PROJECT_ROOT]")
         else
           line
@@ -280,7 +280,5 @@ module Airbrake
         80
       end
     end
-
   end
-
 end

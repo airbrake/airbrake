@@ -49,4 +49,3 @@ class JavascriptNotifierTest < Test::Unit::TestCase
     assert ! controller.send(:airbrake_javascript_notifier)['"bad_javascript"']
   end
 end
-

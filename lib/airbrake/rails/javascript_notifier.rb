@@ -42,7 +42,6 @@ module Airbrake
         end
 
       end
-
     end
   end
 end

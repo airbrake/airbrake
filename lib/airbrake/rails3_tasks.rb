@@ -7,7 +7,7 @@ namespace :airbrake do
     Rails.logger = defined?(ActiveSupport::TaggedLogging) ?
       ActiveSupport::TaggedLogging.new(Logger.new(STDOUT)) :
       Logger.new(STDOUT)
-      
+
     Rails.logger.level = Logger::DEBUG
     Airbrake.configure(true) do |config|
       config.logger = Rails.logger
@@ -82,4 +82,3 @@ namespace :airbrake do
     Rails.application.call(env)
   end
 end
-

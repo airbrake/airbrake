@@ -44,7 +44,7 @@ module Airbrake
 
 
         if respond_to?(:filter_parameters) # Rails 2
-          filter_parameters(hash)  
+          filter_parameters(hash)
         elsif defined?(ActionDispatch::Http::ParameterFilter) # Rails 3
           ActionDispatch::Http::ParameterFilter.new(::Rails.application.config.filter_parameters).filter(hash)
         else
@@ -83,4 +83,3 @@ module Airbrake
     end
   end
 end
-

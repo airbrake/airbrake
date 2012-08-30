@@ -41,4 +41,3 @@ end
 if Capistrano::Configuration.instance
   Airbrake::Capistrano.load_into(Capistrano::Configuration.instance)
 end
-

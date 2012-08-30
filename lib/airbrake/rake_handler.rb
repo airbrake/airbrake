@@ -10,7 +10,7 @@ module Airbrake::RakeHandler
 
   def display_error_message_with_airbrake(ex)
     if Airbrake.sender && Airbrake.configuration &&
-        (Airbrake.configuration.rescue_rake_exceptions || 
+        (Airbrake.configuration.rescue_rake_exceptions ||
           (Airbrake.configuration.rescue_rake_exceptions===nil && !self.tty_output?))
 
       Airbrake.notify_or_ignore(ex, :component => reconstruct_command_line, :cgi_data => ENV)
@@ -22,11 +22,11 @@ module Airbrake::RakeHandler
   def reconstruct_command_line
     "rake #{ARGV.join( ' ' )}"
   end
-  
+
   # This module brings Rake 0.8.7 error handling to 0.9.0 standards
   module Rake087Methods
     # Method taken from Rake 0.9.0 source
-    # 
+    #
     # Provide standard exception handling for the given block.
     def standard_exception_handling
       begin
@@ -63,4 +63,3 @@ Rake.application.instance_eval do
     include Airbrake::RakeHandler
   end
 end
-
