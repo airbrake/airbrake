@@ -27,14 +27,14 @@ When /^I generate a new Rails application$/ do
 
   @terminal.run(%{ruby -rrubygems -rthread -e "#{load_rails.strip!}" #{rails_create_command} rails_root})
   if rails_root_exists?
-    @terminal.echo("Generated a Rails #{version_string} application")
+    @terminal.echo("Generated a Rails #{version_string.strip} application")
   else
     raise "Unable to generate a Rails application:\n#{@terminal.output}"
   end
   require_thread
   if version_string >= "3.1.0"
     When %{I configure my application to require the "therubyracer" gem with version "0.10.1"}
-  elsif version_string == "2.3.14"
+  elsif version_string =~ /2.3.14/
     monkeypatch_old_version
   end
   config_gem_dependencies unless rails3
