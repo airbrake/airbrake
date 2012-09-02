@@ -11,7 +11,7 @@ class LoggerTest < Test::Unit::TestCase
   end
 
   def send_notice
-    Airbrake.sender.send_to_airbrake('data')
+    Airbrake.sender.send_to_airbrake({'foo' => "bar"})
   end
 
   def stub_verbose_log
@@ -70,4 +70,10 @@ class LoggerTest < Test::Unit::TestCase
     assert_logged /Response from Airbrake:/
   end
 
+  should "print information about the notice when Airbrake server fails" do
+    stub_verbose_log
+    stub_http(Net::HTTPError, "test")
+    send_notice
+    assert_logged /Notice details:/
+  end
 end

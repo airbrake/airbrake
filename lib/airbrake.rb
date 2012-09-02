@@ -32,7 +32,7 @@ module Airbrake
   # Queue used to send async notices. Used only if configuration.async is
   # set to true.
   AIRBRAKE_QUEUE = GirlFriday::WorkQueue.new(nil,:size => 3) do |notice|
-    sender.send_to_airbrake(notice.to_xml)
+    sender.send_to_airbrake(notice)
   end
 
   class << self
@@ -57,6 +57,11 @@ module Airbrake
     # Prints out the response body from Airbrake for debugging help
     def report_response_body(response)
       write_verbose_log("Response from Airbrake: \n#{response}")
+    end
+
+    # Prints out the details about the notice that wasn't sent to server
+    def report_notice(notice)
+      write_verbose_log("Notice details: \n#{notice}")
     end
 
     # Returns the Ruby version, Rails version, and current Rails environment
@@ -142,7 +147,7 @@ module Airbrake
         if configuration.async?
           AIRBRAKE_QUEUE << notice
         else
-          sender.send_to_airbrake(notice.to_xml)
+          sender.send_to_airbrake(notice)
         end
       end
     end

@@ -14,6 +14,7 @@ class SenderTest < Test::Unit::TestCase
 
   def send_exception(args = {})
     notice = args.delete(:notice) || build_notice_data
+    notice.stubs(:to_xml)
     sender = args.delete(:sender) || build_sender(args)
     sender.send_to_airbrake(notice)
   end
@@ -51,7 +52,7 @@ class SenderTest < Test::Unit::TestCase
                    :proxy_port => proxy_port,
                    :proxy_user => proxy_user,
                    :proxy_pass => proxy_pass)
-    assert_received(http, :post) do |expect| 
+    assert_received(http, :post) do |expect|
       expect.with(uri.path, anything, Airbrake::HEADERS)
     end
     assert_received(Net::HTTP, :Proxy) do |expect|
@@ -82,7 +83,7 @@ class SenderTest < Test::Unit::TestCase
         Net::HTTP.stubs(:Proxy => proxy)
 
         sender = build_sender
-        sender.expects(:log).with(:error, includes('Failure initializing the HTTP connection'))
+        sender.expects(:log)
 
         assert_raise RuntimeError do
           sender.send(:setup_http_connection)
@@ -90,14 +91,14 @@ class SenderTest < Test::Unit::TestCase
 
       end
     end
-    
+
     context "unexpected exception sending problems" do
       should "be logged" do
         sender  = build_sender
         sender.stubs(:setup_http_connection).raises(RuntimeError.new)
-        
-        sender.expects(:log).with(:error, includes('Cannot send notification. Error'))
-        sender.send_to_airbrake("stuff")
+
+        sender.expects(:log)
+        send_exception(:sender => sender)
       end
 
       should "return nil no matter what" do
@@ -105,7 +106,7 @@ class SenderTest < Test::Unit::TestCase
         sender.stubs(:setup_http_connection).raises(LocalJumpError)
 
         assert_nothing_thrown do
-          assert_nil sender.send_to_airbrake("stuff")
+          assert_nil sender.send_to_airbrake(build_notice_data)
         end
       end
     end

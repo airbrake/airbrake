@@ -4,6 +4,21 @@ require 'socket'
 module Airbrake
   class Notice
 
+    class << self
+      def attr_reader_with_tracking(*names)
+        attr_readers.concat(names)
+        attr_reader_without_tracking(*names)
+      end
+
+      alias_method :attr_reader_without_tracking, :attr_reader
+      alias_method :attr_reader, :attr_reader_with_tracking
+
+
+      def attr_readers
+        @attr_readers ||= []
+      end
+    end
+
     # The exception that caused this notice, if any
     attr_reader :exception
 
@@ -364,5 +379,12 @@ module Airbrake
       Socket.gethostname
     end
 
+    def to_s
+      content = []
+      self.class.attr_readers.each do |attr|
+        content << "  #{attr}: #{send(attr)}"
+      end
+      content.join("\n")
+    end
   end
 end

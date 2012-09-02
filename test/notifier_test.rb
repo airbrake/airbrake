@@ -17,8 +17,7 @@ class NotifierTest < Test::Unit::TestCase
 
   def assert_sent(notice, notice_args)
     assert_received(Airbrake::Notice, :new) {|expect| expect.with(has_entries(notice_args)) }
-    assert_received(notice, :to_xml)
-    assert_received(Airbrake.sender, :send_to_airbrake) {|expect| expect.with(notice.to_xml) }
+    assert_received(Airbrake.sender, :send_to_airbrake) {|expect| expect.with(notice) }
   end
 
   def set_public_env

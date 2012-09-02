@@ -31,22 +31,29 @@ module Airbrake
 
     # Sends the notice data off to Airbrake for processing.
     #
-    # @param [String] data The XML notice to be sent off
-    def send_to_airbrake(data)
+    # @param [Notice] notice The notice to be sent off
+    def send_to_airbrake(notice)
+      data = notice.to_xml
       http = setup_http_connection
 
       response = begin
                    http.post(url.path, data, HEADERS)
                  rescue *HTTP_ERRORS => e
-                   log :error, "Unable to contact the Airbrake server. HTTP Error=#{e}"
+                   log :level => :error,
+                       :message => "Unable to contact the Airbrake server. HTTP Error=#{e}"
                    nil
                  end
 
       case response
       when Net::HTTPSuccess then
-        log :info, "Success: #{response.class}", response
+        log :level => :info,
+            :message => "Success: #{response.class}",
+            :response => response
       else
-        log :error, "Failure: #{response.class}", response
+        log :level => :error,
+            :message => "Failure: #{response.class}",
+            :response => response,
+            :notice => notice
       end
 
       if response && response.respond_to?(:body)
@@ -54,7 +61,10 @@ module Airbrake
         error_id[1] if error_id
       end
     rescue => e
-      log :error, "[Airbrake::Sender#send_to_airbrake] Cannot send notification. Error: #{e.class} - #{e.message}\nBacktrace:\n#{e.backtrace.join("\n\t")}"
+      log :level => :error,
+        :message => "[Airbrake::Sender#send_to_airbrake] Cannot send notification. Error: #{e.class}" +
+        " - #{e.message}\nBacktrace:\n#{e.backtrace.join("\n\t")}"
+
       nil
     end
 
@@ -79,10 +89,11 @@ module Airbrake
       URI.parse("#{protocol}://#{host}:#{port}").merge(NOTICES_URI)
     end
 
-    def log(level, message, response = nil)
-      logger.send level, LOG_PREFIX + message if logger
+    def log(opts = {})
+      opts[:logger].send opts[:level], LOG_PREFIX + opts[:message] if opts[:logger]
       Airbrake.report_environment_info
-      Airbrake.report_response_body(response.body) if response && response.respond_to?(:body)
+      Airbrake.report_response_body(opts[:response].body) if opts[:response] && opts[:response].respond_to?(:body)
+      Airbrake.report_notice(opts[:notice]) if opts[:notice]
     end
 
     def logger
@@ -108,7 +119,9 @@ module Airbrake
 
       http
     rescue => e
-      log :error, "[Airbrake::Sender#setup_http_connection] Failure initializing the HTTP connection.\nError: #{e.class} - #{e.message}\nBacktrace:\n#{e.backtrace.join("\n\t")}"
+      log :level => :error,
+          :message => "[Airbrake::Sender#setup_http_connection] Failure initializing the HTTP connection.\n" +
+                      "Error: #{e.class} - #{e.message}\nBacktrace:\n#{e.backtrace.join("\n\t")}"
       raise e
     end
   end

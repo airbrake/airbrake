@@ -75,7 +75,7 @@ class ActionControllerCatcherTest < Test::Unit::TestCase
   end
 
   def last_sent_notice_xml
-    sender.collected.last
+    sender.collected.last.to_xml
   end
 
   def last_sent_notice_document

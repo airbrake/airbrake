@@ -77,6 +77,14 @@ module Airbrake
       "<Backtrace: " + lines.collect { |line| line.inspect }.join(", ") + ">"
     end
 
+    def to_s
+      content = []
+      lines.each do |line|
+        content << line
+      end
+      content.join("\n")
+    end
+
     def ==(other)
       if other.respond_to?(:lines)
         lines == other.lines
