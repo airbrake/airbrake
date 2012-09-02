@@ -94,6 +94,7 @@ Feature: Install the Gem in a Rails application
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index?param=value"
     Then I should receive a Airbrake notification
+    Then I should see "test"
 
   Scenario: The gem should not be considered a framework gem
     When I configure the Airbrake shim
@@ -154,6 +155,8 @@ Feature: Install the Gem in a Rails application
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index?param=value"
     Then I should receive a Airbrake notification
+    Then I should not see "red23"
+    And I should see "FILTERED"
 
   Scenario: Filtering session in a controller
     When I configure the Airbrake shim
@@ -171,6 +174,8 @@ Feature: Install the Gem in a Rails application
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index?param=value"
     Then I should receive a Airbrake notification
+    Then I should not see "blue42"
+    And I should see "FILTERED"
 
   Scenario: Filtering session and params based on Rails parameter filters
     When I configure the Airbrake shim
@@ -185,6 +190,9 @@ Feature: Install the Gem in a Rails application
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index?param=value"
     Then I should receive a Airbrake notification
+    And I should not see "red23"
+    And I should not see "blue42"
+    And I should see "FILTERED"
 
   Scenario: Notify airbrake within the controller
     When I configure the Airbrake shim
@@ -198,6 +206,7 @@ Feature: Install the Gem in a Rails application
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index?param=value"
     Then I should receive a Airbrake notification
+    And I should see "test"
 
   Scenario: Reporting 404s should be disabled by default
     When I configure the Airbrake shim
@@ -249,3 +258,15 @@ Feature: Install the Gem in a Rails application
     And I perform a request to "http://example.com:123/test/index"
     Then I should receive a Airbrake notification
     And the Airbrake notification should contain user details
+
+  Scenario: It should log the notice when failure happens
+    When Airbrake server is not responding
+    And I configure usage of Airbrake
+    And I define a response for "TestController#index":
+      """
+      raise RuntimeError, "some message"
+      """
+    And I route "/test/index" to "test#index"
+    And I perform a request to "http://example.com:123/test/index?param=value"
+    Then I should see "Notice details:"
+    And I should see "some message"

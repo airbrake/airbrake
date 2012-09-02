@@ -9,6 +9,18 @@ Given /^PENDING/ do
   pending
 end
 
+Given /^Airbrake server is not responding$/ do
+  bundle_gem("sham_rack")
+  content = <<-CONTENT
+  require 'sham_rack'
+
+  ShamRack.at("api.airbrake.io") {["500", { "Content-type" => "text/xml" }, ["Internal server error"]]}
+
+  CONTENT
+  target = File.join(rails_root, 'config', 'initializers', 'airbrake_shim.rb')
+  File.open(target,"w") { |f| f.write content }
+end
+
 When /^I generate a new Rails application$/ do
   @terminal.cd(TEMP_DIR)
 
@@ -95,20 +107,11 @@ Then /^I should receive two Airbrake notifications$/ do
 end
 
 When /^I configure the Airbrake shim$/ do
-  if bundler_manages_gems?
-    bundle_gem("sham_rack")
-  end
+  bundle_gem("sham_rack")
 
   shim_file = File.join(PROJECT_ROOT, 'features', 'support', 'airbrake_shim.rb.template')
-  if rails_supports_initializers?
-    target = File.join(rails_root, 'config', 'initializers', 'airbrake_shim.rb')
-    FileUtils.cp(shim_file, target)
-  else
-    File.open(environment_path, 'a') do |file|
-      file.puts
-      file.write IO.read(shim_file)
-    end
-  end
+  target = File.join(rails_root, 'config', 'initializers', 'airbrake_shim.rb')
+  FileUtils.cp(shim_file, target)
 end
 
 When /^I configure the notifier to use "([^\"]*)" as an API key$/ do |api_key|
