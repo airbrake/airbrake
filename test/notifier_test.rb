@@ -143,7 +143,7 @@ class NotifierTest < Test::Unit::TestCase
     Airbrake.configure do |config|
       config.environment_name = 'production'
       config.async do |notice|
-        Airbrake.sender.send_to_airbrake(notice.to_xml)
+        Airbrake.sender.send_to_airbrake(notice)
       end
     end
     exception = build_exception

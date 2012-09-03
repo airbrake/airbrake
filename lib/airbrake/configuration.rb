@@ -300,7 +300,7 @@ module Airbrake
     # Async notice delivery defaults to girl friday
     def default_async_processor
       queue = GirlFriday::WorkQueue.new(nil, :size => 3) do |notice|
-        Airbrake.sender.send_to_airbrake(notice.to_xml)
+        Airbrake.sender.send_to_airbrake(notice)
       end
       lambda {|notice| queue << notice}
     end
