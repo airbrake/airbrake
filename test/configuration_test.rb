@@ -32,6 +32,19 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_default :async, nil
   end
 
+  should "set GirlFriday-callable for async=true" do
+    config = Airbrake::Configuration.new
+    config.async = true
+    assert config.async.respond_to?(:call)
+  end
+
+  should "set provided-callable for async {}" do
+    config = Airbrake::Configuration.new
+    config.async {|notice| :ok}
+    assert config.async.respond_to?(:call)
+    assert_equal :ok, config.async.call
+  end
+
   should "provide default values for secure connections" do
     config = Airbrake::Configuration.new
     config.secure = true

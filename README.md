@@ -275,6 +275,28 @@ configuration.
 *Ruby 1.9+. It does not support Ruby 1.8 because of its poor threading*
 *support.*
 
+For implementing custom asynchronous send, provide block to `config.async`. It
+receives `notice` param. Pass it to `Airbrake.sender.send_to_airbrake` method
+to do actual delivery. In this way it's possible to move Airbrake notification
+even in background worker(e.g. Resque or Sidekiq).
+
+    # Thread-based asynchronous send
+    Airbrake.configure do |config|
+      ...
+      config.async do |notice|
+        Thread.new {
+          Airbrake.sender.send_to_airbrake(notice.to_xml)
+        }
+      end
+    end
+
+    # Resque-like configuration
+    Airbrake.configure do |config|
+      ...
+      config.async do |notice|
+        Resque.enqueue(AirbrakeDeliveryWorker, notice)
+      end
+    end
 
 Tracking deployments in Airbrake
 --------------------------------
