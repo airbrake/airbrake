@@ -143,7 +143,9 @@ class NotifierTest < Test::Unit::TestCase
   should "deliver exception in async-mode" do
     Airbrake.configure do |config|
       config.environment_name = 'production'
-      config.async = lambda {|job, _notice| job.call}
+      config.async do |notice|
+        Airbrake.sender.send_to_airbrake(notice.to_xml)
+      end
     end
     exception = build_exception
     sender = stub_sender!
@@ -158,7 +160,7 @@ class NotifierTest < Test::Unit::TestCase
     received_notice = nil
     Airbrake.configure do |config|
       config.environment_name = 'production'
-      config.async = lambda {|_job, notice| received_notice = notice}
+      config.async {|notice| received_notice = notice}
     end
     exception = build_exception
     sender = stub_sender!

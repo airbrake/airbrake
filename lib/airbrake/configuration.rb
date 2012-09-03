@@ -100,9 +100,6 @@ module Airbrake
     # (boolean or nil; set to nil to catch exceptions when rake isn't running from a terminal; default is nil)
     attr_accessor :rescue_rake_exceptions
 
-    # Should Airbrake send notifications asynchronously
-    # (boolean or nil; default is nil)
-    attr_reader :async
 
     DEFAULT_PARAMS_FILTERS = %w(password password_confirmation).freeze
 
@@ -135,7 +132,6 @@ module Airbrake
 
     alias_method :secure?, :secure
     alias_method :use_system_ssl_cert_chain?, :use_system_ssl_cert_chain
-    alias_method :async?, :async
 
     def initialize
       @secure                   = false
@@ -244,9 +240,24 @@ module Airbrake
       end
     end
 
+    # Should Airbrake send notifications asynchronously
+    # (boolean, nil or callable; default is nil).
+    # Can be used as callable-setter when block provided.
+    def async(&block)
+      if block_given?
+        @async = block
+      end
+      @async
+    end
+    alias_method :async?, :async
+
     def async=(value)
       # use default GirlFriday-async for 'true' value
-      @async = value == true ? girl_friday_async_processor : value
+      @async = if value == true
+                 default_async_processor
+               else
+                 value
+               end
     end
 
     def js_api_key
@@ -286,9 +297,11 @@ module Airbrake
       end
     end
 
-    def girl_friday_async_processor
-      queue = GirlFriday::WorkQueue.new(nil, :size => 3) {|job| job.call}
-      lambda {|job, _notice| queue << job}
+    def default_async_processor
+      queue = GirlFriday::WorkQueue.new(nil, :size => 3) do |notice|
+        Airbrake.sender.send_to_airbrake(notice.to_xml)
+      end
+      lambda {|notice| queue << notice}
     end
 
   end

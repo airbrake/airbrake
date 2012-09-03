@@ -133,8 +133,7 @@ module Airbrake
     def send_notice(notice)
       if configuration.public?
         if configuration.async?
-          job = lambda {sender.send_to_airbrake(notice.to_xml)}
-          configuration.async.call(job, notice)
+          configuration.async.call(notice)
         else
           sender.send_to_airbrake(notice.to_xml)
         end
