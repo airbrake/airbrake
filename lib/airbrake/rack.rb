@@ -22,7 +22,6 @@ module Airbrake
   class Rack
     def initialize(app)
       @app = app
-      Airbrake.configuration.logger ||= Logger.new STDOUT
     end
 
     def ignored_user_agent?(env)
