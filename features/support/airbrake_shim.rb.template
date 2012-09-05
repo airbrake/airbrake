@@ -1,5 +1,7 @@
 require 'sham_rack'
 
+Airbrake.configuration.logger = Logger.new STDOUT
+
 ShamRack.at("api.airbrake.io") do |env|
   response = <<-end_xml
 <notice>

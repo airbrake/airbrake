@@ -14,6 +14,8 @@ Given /^Airbrake server is not responding$/ do
   content = <<-CONTENT
   require 'sham_rack'
 
+  Airbrake.configuration.logger = Logger.new STDOUT
+
   ShamRack.at("api.airbrake.io") {["500", { "Content-type" => "text/xml" }, ["Internal server error"]]}
 
   CONTENT
