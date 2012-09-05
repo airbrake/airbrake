@@ -109,9 +109,19 @@ Then /^I should receive two Airbrake notifications$/ do
 end
 
 When /^I configure the Airbrake shim$/ do
-  bundle_gem("sham_rack")
-
+  if bundler_manages_gems?
+    bundle_gem("sham_rack")
+  end
   shim_file = File.join(PROJECT_ROOT, 'features', 'support', 'airbrake_shim.rb.template')
+  if rails_supports_initializers?
+    target = File.join(rails_root, 'config', 'initializers', 'airbrake_shim.rb')
+    FileUtils.cp(shim_file, target)
+  else
+    File.open(environment_path, 'a') do |file|
+      file.puts
+      file.write IO.read(shim_file)
+    end
+  end
   target = File.join(rails_root, 'config', 'initializers', 'airbrake_shim.rb')
   FileUtils.cp(shim_file, target)
 end
