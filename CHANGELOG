@@ -1,3 +1,58 @@
+Version 3.1.3 - 2012-09-05 18:58:27 +0200
+===============================================================================
+
+Ben Arent (1):
+      Removed old mailing list.
+
+Dylan Smith (1):
+      Use debug log level for verbose log messages.
+
+Hrvoje Šimić (21):
+      add a note for testing against different frameworks
+      add a scenario to make sure 404s are ignored by default
+      failing scenario for #100
+      remove unnecessary bundler/setup requirement
+      move dependencies from Gemfile to gemspec
+      send info about the current logged in user
+      add async notifications
+      use async? instead of asnyc
+      add info about logger
+      prefer provided error message over original exception message
+      don't load entire environment for deploy task
+      safely handle render exception
+      remove unnecessary AirbrakeError
+      update XML schema
+      test fixes
+      clean whitespace
+      print the failed notice details
+      update supported rails versions
+      update scenarios
+      stop converting notice to xml before passing it to sender
+      remove logger from rack handler
+      update supported rails versions
+
+John Pignata (1):
+      Cherry-pick Object#blank? extension
+
+Joshua Wood (2):
+      rbenv support
+      Fixes outdated rake feature.
+
+Matt Colyer (1):
+      Fix Airbrake so it actually reports data.
+
+Morgan Mikel McDaris (1):
+      changed notify to notify_or_ignore
+
+Sergii Boiko (2):
+      Refactor config.async to provide custom asynchronous delivery way
+      Simplify config.async to use only notice param
+
+grosser (2):
+      fix exceeded available parameter key space breaks notification, fixes #99
+      make all tests runnable via ruby test_file.rb by loading the helper absolutely
+
+
 Version 3.1.2 - 2012-06-23 02:27:01 +0200
 ===============================================================================
 
@@ -824,6 +879,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
