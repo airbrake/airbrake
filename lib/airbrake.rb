@@ -2,7 +2,7 @@ require "girl_friday"
 require 'net/http'
 require 'net/https'
 require 'rubygems'
-require 'active_support/core_ext/object/blank'
+require 'airbrake/utils/blank'
 require 'airbrake/version'
 require 'airbrake/configuration'
 require 'airbrake/notice'
