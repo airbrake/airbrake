@@ -251,13 +251,10 @@ module Airbrake
     end
     alias_method :async?, :async
 
-    def async=(value)
-      # use default GirlFriday-async for 'true' value
-      @async = if value == true
-                 default_async_processor
-               else
-                 value
-               end
+    def async=(use_default_or_this)
+      @async = use_default_or_this == true ?
+        default_async_processor :
+        use_default_or_this
     end
 
     def js_api_key

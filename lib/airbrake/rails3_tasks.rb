@@ -8,6 +8,18 @@ namespace :airbrake do
       ActiveSupport::TaggedLogging.new(Logger.new(STDOUT)) :
       Logger.new(STDOUT)
 
+    def wait_for_threads
+      # if using multiple threads, we have to wait for
+      # them to finish
+      if GirlFriday.status.empty?
+        Thread.list.each do |thread|
+          thread.join unless thread == Thread.current
+        end
+      else
+        GirlFriday.shutdown!
+      end
+    end
+
     Rails.logger.level = Logger::DEBUG
     Airbrake.configure(true) do |config|
       config.logger = Rails.logger
@@ -80,5 +92,7 @@ namespace :airbrake do
     env = Rack::MockRequest.env_for("/verify")
 
     Rails.application.call(env)
+
+    wait_for_threads
   end
 end
