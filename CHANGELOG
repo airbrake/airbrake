@@ -1,3 +1,19 @@
+Version 3.1.4 - 2012-09-11 04:31:51 +0200
+===============================================================================
+
+Ben Arent (1):
+      Update to MIT license to reflect new ownership.
+
+Hrvoje Šimić (4):
+      remove activesupport from runtime dependencies
+      use different logger for async notices
+      Merge pull request #118 from exviva/load_initializer_conditionally
+      symbolize user's keys
+
+Olek Janiszewski (1):
+      Fallback to loading whole environment if initializer does not exist
+
+
 Version 3.1.3 - 2012-09-05 18:58:27 +0200
 ===============================================================================
 
@@ -879,6 +895,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
