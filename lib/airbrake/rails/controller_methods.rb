@@ -73,10 +73,10 @@ module Airbrake
       end
 
       def airbrake_current_user
-        user = current_user || current_member
+        user = begin current_user rescue current_member end
         user.attributes.select do |k, v|
           /^(id|name|username|email)$/ === k unless v.blank?
-        end
+        end.symbolize_keys
       rescue NoMethodError, NameError
         {}
       end
