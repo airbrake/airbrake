@@ -31,6 +31,32 @@ class SenderTest < Test::Unit::TestCase
     http
   end
 
+  should "post to Airbrake with XML passed" do
+    xml_notice = Airbrake::Notice.new(:error_class => "FooBar", :error_message => "Foo Bar").to_xml
+
+    http = stub_http
+
+    sender = build_sender
+    sender.send_to_airbrake(xml_notice)
+
+    assert_received(http, :post) do |expect|
+      expect.with(anything, xml_notice, Airbrake::HEADERS)
+    end
+  end
+
+  should "post to Airbrake with a Notice instance passed" do
+    notice = Airbrake::Notice.new(:error_class => "FooBar", :error_message => "Foo Bar")
+
+    http = stub_http
+
+    sender = build_sender
+    sender.send_to_airbrake(notice)
+
+    assert_received(http, :post) do |expect|
+      expect.with(anything, notice.to_xml, Airbrake::HEADERS)
+    end
+  end
+
   should "post to Airbrake when using an HTTP proxy" do
     response = stub(:body => 'body')
     http     = stub(:post          => response,
