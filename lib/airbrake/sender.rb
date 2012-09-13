@@ -33,7 +33,7 @@ module Airbrake
     #
     # @param [Notice] notice The notice to be sent off
     def send_to_airbrake(notice)
-      data = notice.to_xml
+      data = notice.respond_to?(:to_xml) : notice.to_xml : notice
       http = setup_http_connection
 
       response = begin
