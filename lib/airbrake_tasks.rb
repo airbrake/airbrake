@@ -1,6 +1,5 @@
 require 'net/http'
 require 'uri'
-require 'active_support'
 
 # Capistrano tasks for notifying Airbrake of deploys
 module AirbrakeTasks
