@@ -12,6 +12,7 @@ require 'airbrake/rack'
 require 'airbrake/user_informer'
 
 require 'airbrake/railtie' if defined?(Rails::Railtie)
+require 'airbrake/engine' if defined?(Rails::Engine)
 
 module Airbrake
   API_VERSION = "2.3"
