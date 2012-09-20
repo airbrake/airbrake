@@ -240,7 +240,7 @@ automatically in a controller, Airbrake sets that value. If you're, however, cal
 Current user information
 ------------------------
 Airbrake provides information about the current logged in user, so you
-could easily determine the user who experienced the error in your app.
+can easily determine the user who experienced the error in your app.
 
 It uses `current_user` and `current_member` to identify the
 authenticated user, where `current_user` takes precendence.
@@ -251,8 +251,22 @@ controller:
     alias_method :current_duck, :current_user
     helper_method :current_duck
 
-Voila! You'll get information about a duck that experienced crash about
+Voila! You'll get information about a duck that experienced a crash of
 your app.
+
+By default Airbrake collects the following attributes:
+* id
+* name
+* username
+* email
+
+You can also customize attributes that will be collected
+
+    Airbrake.configure do |config|
+      ...
+      # collect only user ids
+      config.user_attributes = [:id] # ["id"] also works
+    end
 
 Asynchronous notifications with Airbrake
 ----------------------------------------

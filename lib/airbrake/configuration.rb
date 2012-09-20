@@ -100,8 +100,13 @@ module Airbrake
     # (boolean or nil; set to nil to catch exceptions when rake isn't running from a terminal; default is nil)
     attr_accessor :rescue_rake_exceptions
 
+    # User attributes that are being captured
+    attr_accessor :user_attributes
+
 
     DEFAULT_PARAMS_FILTERS = %w(password password_confirmation).freeze
+
+    DEFAULT_USER_ATTRIBUTES = %w(id name username email).freeze
 
     DEFAULT_BACKTRACE_FILTERS = [
       lambda { |line|
@@ -152,6 +157,7 @@ module Airbrake
       @framework                = 'Standalone'
       @user_information         = 'Airbrake Error {{error_id}}'
       @rescue_rake_exceptions   = nil
+      @user_attributes          = DEFAULT_USER_ATTRIBUTES.dup
     end
 
     # Takes a block and adds it to the list of backtrace filters. When the filters

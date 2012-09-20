@@ -75,7 +75,9 @@ module Airbrake
       def airbrake_current_user
         user = begin current_user rescue current_member end
         user.attributes.select do |k, v|
-          /^(id|name|username|email)$/ === k unless v.blank?
+          Airbrake.configuration.
+            user_attributes.map(&:to_sym).
+            include? k.to_sym unless v.blank?
         end.symbolize_keys
       rescue NoMethodError, NameError
         {}
