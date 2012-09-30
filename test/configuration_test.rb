@@ -25,6 +25,7 @@ class ConfigurationTest < Test::Unit::TestCase
                           Airbrake::Configuration::DEFAULT_PARAMS_FILTERS
     assert_config_default :backtrace_filters,
                           Airbrake::Configuration::DEFAULT_BACKTRACE_FILTERS
+    assert_config_default :rake_environment_filters, []
     assert_config_default :ignore,
                           Airbrake::Configuration::IGNORE_DEFAULT
     assert_config_default :development_lookup, true
@@ -114,12 +115,8 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_appends_value :params_filters
   end
 
-  should "warn when attempting to read environment filters" do
-    config = Airbrake::Configuration.new
-    config.
-      expects(:warn).
-      with(regexp_matches(/deprecated/i))
-    assert_equal [], config.environment_filters
+  should "allow rake environment filters to be appended" do
+    assert_appends_value :rake_environment_filters
   end
 
   should "warn when attempting to write js_notifier" do

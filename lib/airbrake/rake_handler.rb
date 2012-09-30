@@ -13,7 +13,7 @@ module Airbrake::RakeHandler
         (Airbrake.configuration.rescue_rake_exceptions ||
           (Airbrake.configuration.rescue_rake_exceptions===nil && !self.tty_output?))
 
-      Airbrake.notify_or_ignore(ex, :component => reconstruct_command_line, :cgi_data => ENV)
+      Airbrake.notify_or_ignore(ex, :component => reconstruct_command_line, :cgi_data => environment_info)
     end
 
     display_error_message_without_airbrake(ex)
@@ -21,6 +21,12 @@ module Airbrake::RakeHandler
 
   def reconstruct_command_line
     "rake #{ARGV.join( ' ' )}"
+  end
+
+  def environment_info
+    ENV.reject do |k|
+      Airbrake.configuration.rake_environment_filters.include? k
+    end
   end
 
   # This module brings Rake 0.8.7 error handling to 0.9.0 standards

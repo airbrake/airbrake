@@ -9,7 +9,7 @@ rescue LoadError
 end
 require './lib/airbrake/version'
 
-FEATURES = ["sinatra","rack","metal","user_informer"]
+FEATURES = ["sinatra","rack","metal","user_informer","rake"]
 
 desc 'Default: run unit tests.'
 task :default => [:test, "cucumber:rails:all"] + FEATURES

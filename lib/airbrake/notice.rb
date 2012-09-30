@@ -92,7 +92,7 @@ module Airbrake
     # Private writers for all the attributes
     attr_writer :exception, :api_key, :backtrace, :error_class, :error_message,
       :backtrace_filters, :parameters, :params_filters,
-      :environment_filters, :session_data, :project_root, :url, :ignore,
+      :session_data, :project_root, :url, :ignore,
       :ignore_by_filters, :notifier_name, :notifier_url, :notifier_version,
       :component, :action, :cgi_data, :environment_name, :hostname, :user
 
