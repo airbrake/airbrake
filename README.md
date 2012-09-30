@@ -212,6 +212,15 @@ To perform custom error processing after Airbrake has been notified, define the
 instance method `#rescue_action_in_public_without_airbrake(exception)` in your
 controller.
 
+Rake Tasks
+----------
+Do you want Airbrake to report exceptions that happen inside a rake task?
+    
+    Airbrake.configure do |config|
+      ...
+      config.rescue_rake_exceptions = true
+    end
+
 Informing the User
 ------------------
 
