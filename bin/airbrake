@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+require "airbrake"
+
+def parse_options(array = [])
+  opts = Hash[*array]
+  opts[:error]   = opts.delete("-e")  || opts.delete("--error")   { RuntimeError }
+  opts[:message] = opts.delete("-m")  || opts.delete("--message") { "I've made a huge mistake" }
+  opts[:api_key] = opts.delete("-k")  || opts.delete("--api-key")
+  opts[:host]    = opts.delete("-h")  || opts.delete("--host")
+  opts[:port]    = opts.delete("-p")  || opts.delete("--port")
+  opts
+end
+
+args = ARGV.dup
+command = args.shift.strip rescue nil
+
+case command
+  when 'raise'
+    options = parse_options(ARGV[1..-1])
+    abort "You didn't provide API_KEY so nothing was raised."\
+          " Refer to usage for more info (airbrake --help)." unless options[:api_key]
+    Airbrake.configure do |c|
+      c.api_key = options[:api_key]
+      c.host    = options[:host] if options[:host]
+      c.port    = options[:port] if options[:port]
+    end
+    exception_id = Airbrake.notify(:error_class   => options[:error],
+                                   :error_message => "#{options[:error]}: #{options[:message]}",
+                                   :cgi_data      => ENV)
+    abort "Error sending exception to Airbrake server. Try again later." unless exception_id
+    puts "Exception sent successfully: http://airbrake.io/locate/#{exception_id}"
+  else
+    puts <<USAGE
+Usage: airbrake [COMMAND] [OPTION]...
+Commands:
+  raise                    # Raise an exception specified by ERROR and MESSAGE.
+
+Options:
+  -e, [--error=ERROR]      # Error class to raise. Default:  RuntimeError
+  -m, [--message=MESSAGE]  # Error message. Default: "I've made a huge mistake"
+  -k, [--api-key=API_KEY]  # Api key of your Airbrake application.
+  -h, [--host=HOST]        # URL of the Airbrake API server. Default: api.airbrake.io
+  -p, [--port=PORT]        # Port of the Airbrake API server. Default: 80
+  -h, [--help]             # Show this usage
+USAGE
+  end

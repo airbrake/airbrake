@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
   s.summary     = %q{Send your application errors to our hosted service and reclaim your inbox.}
 
   s.require_paths = ["lib"]
+  s.executables << "airbrake"
   s.files         = Dir["{generators/**/*,lib/**/*,rails/**/*,resources/*,script/*}"]  +
     %w(airbrake.gemspec CHANGELOG Gemfile Guardfile INSTALL MIT-LICENSE Rakefile README_FOR_HEROKU_ADDON.md README.md TESTING.md SUPPORTED_RAILS_VERSIONS install.rb)
   s.test_files    = Dir.glob("{test,spec,features}/**/*")
