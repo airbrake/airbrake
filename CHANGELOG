@@ -1,3 +1,19 @@
+Version 3.1.5 - 2012-10-05 17:32:23 +0200
+===============================================================================
+
+Hrvoje Šimić (3):
+      make collected user attributes customizable
+      enable filtering of env vars for rake handler
+      add a simple executable
+
+Morgan Mikel McDaris (1):
+      rake section added
+
+Zachary Anker (2):
+      Add the ability to pass XML directly to send_to_airbrake
+      Remove active_support require since it's no longer necessary
+
+
 Version 3.1.4 - 2012-09-11 04:31:51 +0200
 ===============================================================================
 
@@ -895,6 +911,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
