@@ -5,10 +5,15 @@ def parse_options(array = [])
   opts = Hash[*array]
   opts[:error]   = opts.delete("-e")  || opts.delete("--error")   { RuntimeError }
   opts[:message] = opts.delete("-m")  || opts.delete("--message") { "I've made a huge mistake" }
-  opts[:api_key] = opts.delete("-k")  || opts.delete("--api-key")
-  opts[:host]    = opts.delete("-h")  || opts.delete("--host")
-  opts[:port]    = opts.delete("-p")  || opts.delete("--port")
+  opts[:api_key] = opts.delete("-k")  || opts.delete("--api-key") || config_from_file.api_key || ENV["AIRBRAKE_API_KEY"]
+  opts[:host]    = opts.delete("-h")  || opts.delete("--host")    || config_from_file.host
+  opts[:port]    = opts.delete("-p")  || opts.delete("--port")    || config_from_file.port
   opts
+end
+
+def config_from_file
+  load "config/initializers/airbrake.rb"
+  Airbrake.configuration
 end
 
 args = ARGV.dup
