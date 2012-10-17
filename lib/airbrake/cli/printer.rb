@@ -12,6 +12,7 @@ Commands:
   raise                          # Raise an exception specified by ERROR and MESSAGE.
   list                           # List all the projects for given AUTH_TOKEN and ACCOUNT.
   create                         # Create a project with the given NAME.
+  deploy                         # Send a new deployment notification to a project that matches the API_KEY.
 
 Options:
   -e, [--error=ERROR]            # Error class to raise. Default:  RuntimeError
@@ -22,6 +23,7 @@ Options:
   -t, [--auth-token=AUTH_TOKEN]  # The auth token used for API requests.
   -a, [--account=ACCOUNT]        # The account used for API requests.
   -n, [--name=NAME]              # The name of the project you're trying to create.
+  -E, [--rails-env=NAME]         # The name of the environment you're deploying to. Default: production
   -h, [--help]                   # Show this usage
    USAGE
   end

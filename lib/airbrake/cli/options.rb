@@ -1,11 +1,17 @@
 class Options
 
-  attr_reader :error, :message, :api_key, :host, :port, :auth_token, :name, :account
+  ATTRIBUTES = [:error, :message, :api_key, :host, :port, :auth_token, :name, :account, :rails_env]
+
+  ATTRIBUTES.each do |attribute|
+    attr_reader attribute
+  end
 
   private
 
   # You should not write to this from outside
-  attr_writer :error, :message, :api_key, :host, :port, :auth_token, :name, :account
+  ATTRIBUTES.each do |attribute|
+    attr_writer attribute
+  end
 
   public
 
@@ -20,6 +26,7 @@ class Options
     self.auth_token    = opts.delete("-t")  || opts.delete("--auth-token") || ENV["AIRBRAKE_AUTH_TOKEN"]
     self.name          = opts.delete("-n")  || opts.delete("--name")
     self.account       = opts.delete("-a")  || opts.delete("--account")    || ENV["AIRBRAKE_ACCOUNT"]
+    self.rails_env     = opts.delete("-E")  || opts.delete("--rails-env")  || ENV["RAILS_ENV"] || "production"
     opts
   end
 

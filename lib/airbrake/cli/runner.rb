@@ -28,12 +28,19 @@ module Runner
                                      :cgi_data      => ENV)
       abort "Error sending exception to Airbrake server. Try again later." unless exception_id
       puts "Exception sent successfully: http://airbrake.io/locate/#{exception_id}"
+
     when "list"
       validates :auth_token, :account
       Client.print_projects
+
     when "create"
       validates :auth_token, :account
       Client.create_project
+
+    when "deploy"
+      validates :api_key
+      Client.create_deploy
+
     else
       Printer.print_usage
     end

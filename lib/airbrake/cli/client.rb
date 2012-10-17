@@ -28,6 +28,16 @@ module Client
     print_project_response(response.body)
   end
 
+  def create_deploy
+    uri = URI.parse "http://airbrake.io"\
+    "/projects/1/deploys.xml"
+    http = Net::HTTP.new(uri.host,uri.port)
+    request = Net::HTTP::Post.new(uri.request_uri)
+    request.set_form_data('deploy[rails_env]' => options.rails_env,"api_key" => options.api_key)
+    response = http.request(request)
+    puts response.body
+  end
+
   def print_projects
     factory = ProjectFactory.new
     projects = fetch_projects
