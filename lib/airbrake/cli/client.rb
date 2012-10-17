@@ -17,7 +17,7 @@ module Client
   end
 
   def create_project
-    uri = URI.parse "http://#{options.account}.airbrake.local:3000"\
+    uri = URI.parse "http://#{options.account}.airbrake.io"\
     "/data_api/v1/projects.xml"
     http = Net::HTTP.new(uri.host,uri.port)
     request = Net::HTTP::Post.new(uri.request_uri)
