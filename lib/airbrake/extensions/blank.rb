@@ -1,67 +1,73 @@
 # stolen from ActiveSupport
 
 class Object
-  # Don't override already defined or aliased methods
-  #
-  def safe_def(name,&blk)
-    unless method_defined?(name.to_sym)
-      self.send(:define_method,name, &blk)
+  unless method_defined?(:blank?)
+    def blank?
+      respond_to?(:empty?) ? empty? : !self
     end
   end
 
-  def safe_alias(new_method, orig_method)
-    unless method_defined?(new_method.to_sym)
-      alias_method(new_method, orig_method)
+  unless method_defined?(:present?)
+    def present?
+      !blank?
     end
   end
 
-  safe_def(:blank?) do
-    respond_to?(:empty?) ? empty? : !self
-  end
-
-  safe_def(:present?) do
-    !blank?
-  end
-
-  safe_def(:presence) do
-    self if present?
+  unless method_defined?(:presence)
+    def presence
+      self if present?
+    end
   end
 end
 
 class NilClass
-  safe_def(:blank?) do
-    true
+  unless method_defined?(:blank?)
+    def blank?
+      true
+    end
   end
 end
 
 class FalseClass
-  safe_def(:blank?) do
-    true
+  unless method_defined?(:blank?)
+    def blank?
+      true
+    end
   end
 end
 
 class TrueClass
-  safe_def(:blank?) do
-    false
+  unless method_defined?(:blank?)
+    def blank?
+      false
+    end
   end
 end
 
 class Array
-  safe_alias(:blank?, :empty?)
+  unless method_defined?(:blank?)
+    alias_method :blank?, :empty?
+  end
 end
 
 class Hash
-  safe_alias(:blank?, :empty?)
+  unless method_defined?(:blank?)
+    alias_method :blank?, :empty?
+  end
 end
 
 class String
-  safe_def(:blank?) do
-    self !~ /[^[:space:]]/
+  unless method_defined?(:blank?)
+    def blank?
+      self !~ /[^[:space:]]/
+    end
   end
 end
 
 class Numeric
-  safe_def(:blank?) do
-    false
+  unless method_defined?(:blank?)
+    def blank?
+      false
+    end
   end
 end
