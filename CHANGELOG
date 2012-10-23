@@ -1,3 +1,21 @@
+Version 3.1.6 - 2012-10-23 21:15:50 +0200
+===============================================================================
+
+Hrvoje Šimić (9):
+      load api key from file and env if not provided for executable
+      get a list of your projects from command line
+      create projects from command line
+      fix cli client host
+      creating deploys from command line
+      don't override extension methods
+      update heroku plan in readme
+      another fix for heroku readme
+      don't pollute global namespace with blank?
+
+Sam Umbach (1):
+      Send deploy notification on deploy:cold
+
+
 Version 3.1.5 - 2012-10-05 17:32:23 +0200
 ===============================================================================
 
@@ -911,6 +929,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
