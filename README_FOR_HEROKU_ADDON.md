@@ -7,8 +7,9 @@ Send your application errors to our hosted service and reclaim your inbox.
 ----------------------------
 To use Airbrake on Heroku, install the Airbrake add-on:
 
-    $ heroku addons:add airbrake:basic # This adds the the basic plan.
-                                       # If you'd like another plan, specify that instead.
+    $ heroku addons:add airbrake:developer # This adds the the basic plan.
+                                           # If you'd like another plan, specify that instead.
+                                           # Check https://addons.heroku.com/airbrake for a full list of plans.
 
 2. Including the Airbrake notifier in your application
 --------------------------------------------------
