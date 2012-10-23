@@ -7,6 +7,7 @@ module Airbrake
       configuration.load do
         after "deploy",            "airbrake:deploy"
         after "deploy:migrations", "airbrake:deploy"
+        after "deploy:cold",       "airbrake:deploy"
 
         namespace :airbrake do
           desc <<-DESC
