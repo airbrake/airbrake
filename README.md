@@ -75,7 +75,6 @@ Credits
 -------
 
 ![thoughtbot](http://thoughtbot.com/images/tm/logo.png)
-![airbrake](https://secure.gravatar.com/avatar/9b706b7832bea4e387a9956531c12a7f)
 
 Airbrake is maintained and funded by [airbrake.io](http://airbrake.io).
 
