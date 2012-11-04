@@ -3,7 +3,7 @@ require 'rails/generators'
 class AirbrakeGenerator < Rails::Generators::Base
 
   class_option :api_key, :aliases => "-k", :type => :string, :desc => "Your Airbrake API key"
-  class_option :heroku, :type => :boolean, :desc => "Use the Heroku addon to provide your Airbrake API key"
+  class_option :heroku, :aliases => "-h", :type => :boolean, :desc => "Use the Heroku addon to provide your Airbrake API key"
   class_option :app, :aliases => "-a", :type => :string, :desc => "Your Heroku app name (only required if deploying to >1 Heroku app)"
 
   def self.source_root
@@ -49,7 +49,7 @@ class AirbrakeGenerator < Rails::Generators::Base
     s = if options[:api_key]
       "'#{options[:api_key]}'"
     elsif options[:heroku]
-      "ENV['HOPTOAD_API_KEY']"
+      "ENV['AIRBRAKE_API_KEY']"
     end
   end
 
@@ -59,21 +59,22 @@ class AirbrakeGenerator < Rails::Generators::Base
 
   def determine_api_key
     puts "Attempting to determine your API Key from Heroku..."
-    ENV['HOPTOAD_API_KEY'] = heroku_api_key
-    if ENV['HOPTOAD_API_KEY'].blank?
+    ENV['AIRBRAKE_API_KEY'] = heroku_api_key
+    if ENV['AIRBRAKE_API_KEY'].blank?
       puts "... Failed."
       puts "WARNING: We were unable to detect the Airbrake API Key from your Heroku environment."
       puts "Your Heroku application environment may not be configured correctly."
+      puts "make sure you have installed the addon by running heroku addons:add airbrake"
       exit 1
     else
       puts "... Done."
-      puts "Heroku's Airbrake API Key is '#{ENV['HOPTOAD_API_KEY']}'"
+      puts "Heroku's Airbrake API Key is '#{ENV['AIRBRAKE_API_KEY']}'"
     end
   end
 
   def heroku_var(var,app_name = nil)
     app = app_name ? "--app #{app_name}" : ''
-    `heroku config #{app} | grep -E "#{var.upcase}" | awk '{ print $3; }'`.strip
+    `heroku config #{app} | grep -E "#{var.upcase}" | awk '{ print $2; }'`.strip
   end
 
   def heroku_api_key
@@ -82,8 +83,8 @@ class AirbrakeGenerator < Rails::Generators::Base
 
   def heroku?
     options[:heroku] ||
-      system("grep HOPTOAD_API_KEY config/initializers/airbrake.rb") ||
-      system("grep HOPTOAD_API_KEY config/environment.rb")
+      system("grep AIRBRAKE_API_KEY config/initializers/airbrake.rb") ||
+      system("grep AIRBRAKE_API_KEY config/environment.rb")
   end
 
   def api_key_configured?
