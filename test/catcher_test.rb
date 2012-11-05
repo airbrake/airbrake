@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path '../helper', __FILE__
 
 class ActionControllerCatcherTest < Test::Unit::TestCase
 
@@ -75,7 +75,7 @@ class ActionControllerCatcherTest < Test::Unit::TestCase
   end
 
   def last_sent_notice_xml
-    sender.collected.last
+    sender.collected.last.to_xml
   end
 
   def last_sent_notice_document

@@ -1,7 +1,18 @@
 namespace :airbrake do
   desc "Notify Airbrake of a new deploy."
-  task :deploy => :environment do
+  task :deploy do
     require 'airbrake_tasks'
+
+    if defined?(Rails.root)
+      initializer_file = Rails.root.join('config', 'initializers','airbrake.rb')
+
+      if initializer_file.exist?
+        load initializer_file
+      else
+        Rake::Task[:environment].invoke
+      end
+    end
+
     AirbrakeTasks.deploy(:rails_env      => ENV['TO'],
                         :scm_revision   => ENV['REVISION'],
                         :scm_repository => ENV['REPO'],

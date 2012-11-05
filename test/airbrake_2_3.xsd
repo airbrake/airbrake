@@ -9,6 +9,7 @@
         <xs:element name="error" type="error"/>
         <xs:element name="request" type="request" minOccurs="0"/>
         <xs:element name="server-environment" type="serverEnvironment"/>
+        <xs:element name="current-user" type="current-user" minOccurs="0"/>
       </xs:all>
       <xs:attribute name="version" type="xs:string" use="required"/>
     </xs:complexType>
@@ -32,7 +33,7 @@
 
   <xs:complexType name="backtrace">
     <xs:sequence>
-      <xs:element name="line" maxOccurs="unbounded">
+      <xs:element name="line" maxOccurs="unbounded" minOccurs="0">
         <xs:complexType>
           <xs:attribute name="file" type="xs:string" use="required"/>
           <xs:attribute name="number" type="xs:string" use="required"/>
@@ -73,6 +74,15 @@
       <xs:element name="app-version" type="xs:string" minOccurs="0"/>
       <xs:element name="hostname" type="xs:string" minOccurs="0"/>
     </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="current-user">
+    <xs:all>
+      <xs:element name="id" type="xs:string"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="email" type="xs:string" minOccurs="0"/>
+      <xs:element name="username" type="xs:string" minOccurs="0"/>
+    </xs:all>
   </xs:complexType>
 
 </xs:schema>

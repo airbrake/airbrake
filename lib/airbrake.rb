@@ -1,13 +1,8 @@
+require "girl_friday"
 require 'net/http'
 require 'net/https'
 require 'rubygems'
-begin
-  require 'active_support'
-  require 'active_support/core_ext'
-rescue LoadError
-  require 'activesupport'
-  require 'activesupport/core_ext'
-end
+require 'airbrake/extensions/blank'
 require 'airbrake/version'
 require 'airbrake/configuration'
 require 'airbrake/notice'
@@ -19,7 +14,7 @@ require 'airbrake/user_informer'
 require 'airbrake/railtie' if defined?(Rails::Railtie)
 
 module Airbrake
-  API_VERSION = "2.2"
+  API_VERSION = "2.3"
   LOG_PREFIX = "** [Airbrake] "
 
   HEADERS = {
@@ -51,6 +46,11 @@ module Airbrake
       write_verbose_log("Response from Airbrake: \n#{response}")
     end
 
+    # Prints out the details about the notice that wasn't sent to server
+    def report_notice(notice)
+      write_verbose_log("Notice details: \n#{notice}")
+    end
+
     # Returns the Ruby version, Rails version, and current Rails environment
     def environment_info
       info = "[Ruby: #{RUBY_VERSION}]"
@@ -60,7 +60,7 @@ module Airbrake
 
     # Writes out the given message to the #logger
     def write_verbose_log(message)
-      logger.info LOG_PREFIX + message if logger
+      logger.debug LOG_PREFIX + message if logger
     end
 
     # Look for the Rails logger currently defined
@@ -131,7 +131,11 @@ module Airbrake
 
     def send_notice(notice)
       if configuration.public?
-        sender.send_to_airbrake(notice.to_xml)
+        if configuration.async?
+          configuration.async.call(notice)
+        else
+          sender.send_to_airbrake(notice)
+        end
       end
     end
 

@@ -15,7 +15,7 @@ module Airbrake
 
     config.after_initialize do
       Airbrake.configure(true) do |config|
-        config.logger           ||= ::Rails.logger
+        config.logger           ||= config.async? ? ::Logger.new(STDERR) : ::Rails.logger
         config.environment_name ||= ::Rails.env
         config.project_root     ||= ::Rails.root
         config.framework        = "Rails: #{::Rails::VERSION::STRING}"

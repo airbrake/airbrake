@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path '../helper', __FILE__
 
 class ConfigurationTest < Test::Unit::TestCase
 
@@ -25,10 +25,25 @@ class ConfigurationTest < Test::Unit::TestCase
                           Airbrake::Configuration::DEFAULT_PARAMS_FILTERS
     assert_config_default :backtrace_filters,
                           Airbrake::Configuration::DEFAULT_BACKTRACE_FILTERS
+    assert_config_default :rake_environment_filters, []
     assert_config_default :ignore,
                           Airbrake::Configuration::IGNORE_DEFAULT
     assert_config_default :development_lookup, true
     assert_config_default :framework, 'Standalone'
+    assert_config_default :async, nil
+  end
+
+  should "set GirlFriday-callable for async=true" do
+    config = Airbrake::Configuration.new
+    config.async = true
+    assert config.async.respond_to?(:call)
+  end
+
+  should "set provided-callable for async {}" do
+    config = Airbrake::Configuration.new
+    config.async {|notice| :ok}
+    assert config.async.respond_to?(:call)
+    assert_equal :ok, config.async.call
   end
 
   should "provide default values for secure connections" do
@@ -70,6 +85,7 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_overridable :environment_name
     assert_config_overridable :development_lookup
     assert_config_overridable :logger
+    assert_config_overridable :async
   end
 
   should "have an api key" do
@@ -84,7 +100,7 @@ class ConfigurationTest < Test::Unit::TestCase
      :http_read_timeout, :ignore, :ignore_by_filters, :ignore_user_agent,
      :notifier_name, :notifier_url, :notifier_version, :params_filters,
      :project_root, :port, :protocol, :proxy_host, :proxy_pass, :proxy_port,
-     :proxy_user, :secure, :development_lookup].each do |option|
+     :proxy_user, :secure, :development_lookup, :async].each do |option|
       assert_equal config[option], hash[option], "Wrong value for #{option}"
     end
   end
@@ -99,12 +115,8 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_appends_value :params_filters
   end
 
-  should "warn when attempting to read environment filters" do
-    config = Airbrake::Configuration.new
-    config.
-      expects(:warn).
-      with(regexp_matches(/deprecated/i))
-    assert_equal [], config.environment_filters
+  should "allow rake environment filters to be appended" do
+    assert_appends_value :rake_environment_filters
   end
 
   should "warn when attempting to write js_notifier" do

@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path '../helper', __FILE__
 
 class BacktraceTest < Test::Unit::TestCase
 
@@ -20,7 +20,7 @@ class BacktraceTest < Test::Unit::TestCase
     assert_equal 'app/controllers/users_controller.rb', line.file
     assert_equal 'index', line.method
   end
-  
+
   should "parse a windows backtrace into lines" do
     array = [
       "C:/Program Files/Server/app/models/user.rb:13:in `magic'",

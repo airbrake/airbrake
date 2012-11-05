@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require File.expand_path '../helper', __FILE__
 
 class NoticeTest < Test::Unit::TestCase
 
@@ -22,6 +22,79 @@ class NoticeTest < Test::Unit::TestCase
                       :request_uri => '/some/uri',
                       :session     => { :to_hash => { 'a' => 'b' } },
                       :env         => { 'three' => 'four' } }.update(attrs))
+  end
+
+  def assert_accepts_exception_attribute(attribute, args = {}, &block)
+    exception = build_exception
+    block ||= lambda { exception.send(attribute) }
+    value = block.call(exception)
+
+    notice_from_exception = build_notice(args.merge(:exception => exception))
+
+    assert_equal notice_from_exception.send(attribute),
+                 value,
+                 "#{attribute} was not correctly set from an exception"
+
+    notice_from_hash = build_notice(args.merge(attribute => value))
+    assert_equal notice_from_hash.send(attribute),
+                 value,
+                 "#{attribute} was not correctly set from a hash"
+  end
+
+  def assert_serializes_hash(attribute)
+    [File.open(__FILE__), Proc.new { puts "boo!" }, Module.new].each do |object|
+      hash = {
+        :strange_object => object,
+        :sub_hash => {
+          :sub_object => object
+        },
+        :array => [object]
+      }
+      notice = build_notice(attribute => hash)
+      hash = notice.send(attribute)
+      assert_equal object.to_s, hash[:strange_object], "objects should be serialized"
+      assert_kind_of Hash, hash[:sub_hash], "subhashes should be kept"
+      assert_equal object.to_s, hash[:sub_hash][:sub_object], "subhash members should be serialized"
+      assert_kind_of Array, hash[:array], "arrays should be kept"
+      assert_equal object.to_s, hash[:array].first, "array members should be serialized"
+    end
+  end
+
+  def assert_valid_notice_document(document)
+    xsd_path = File.join(File.dirname(__FILE__), "airbrake_2_3.xsd")
+    schema = Nokogiri::XML::Schema.new(IO.read(xsd_path))
+    errors = schema.validate(document)
+    assert errors.empty?, errors.collect{|e| e.message }.join
+  end
+
+  def assert_filters_hash(attribute)
+    filters  = ["abc", :def]
+    original = { 'abc' => "123", 'def' => "456", 'ghi' => "789", 'nested' => { 'abc' => '100' },
+      'something_with_abc' => 'match the entire string'}
+    filtered = { 'abc'    => "[FILTERED]",
+                 'def'    => "[FILTERED]",
+                 'something_with_abc' => "match the entire string",
+                 'ghi'    => "789",
+                 'nested' => { 'abc' => '[FILTERED]' } }
+
+    notice = build_notice(:params_filters => filters, attribute => original)
+
+    assert_equal(filtered,
+                 notice.send(attribute))
+  end
+
+  def build_backtrace_array
+    ["app/models/user.rb:13:in `magic'",
+      "app/controllers/users_controller.rb:8:in `index'"]
+  end
+
+  def hostname
+    `hostname`.chomp
+  end
+
+  def user
+    Struct.new(:email,:id,:name).
+      new("darth@vader.com",1,"Anakin Skywalker")
   end
 
   should "set the api key" do
@@ -76,6 +149,12 @@ class NoticeTest < Test::Unit::TestCase
     assert_equal backtrace,
                  notice_from_hash.backtrace,
                  "backtrace was not correctly set from a hash"
+  end
+
+  should "accept user" do
+    assert_equal user.id, build_notice(:user => user).user.id
+    assert_equal user.email, build_notice(:user => user).user.email
+    assert_equal user.name, build_notice(:user => user).user.name
   end
 
   should "pass its backtrace filters for parsing" do
@@ -316,14 +395,7 @@ class NoticeTest < Test::Unit::TestCase
     end
   end
 
-  ignored_error_classes = %w(
-    ActiveRecord::RecordNotFound
-    AbstractController::ActionNotFound
-    ActionController::RoutingError
-    ActionController::InvalidAuthenticityToken
-    CGI::Session::CookieStore::TamperedWithCookie
-    ActionController::UnknownAction
-  )
+  ignored_error_classes = Airbrake::Configuration::IGNORE_DEFAULT
 
   ignored_error_classes.each do |ignored_error_class|
     should "ignore #{ignored_error_class} error by default" do
@@ -349,7 +421,6 @@ class NoticeTest < Test::Unit::TestCase
     end
   end
 
-
   should "ensure #to_ary is called on objects that support it" do
     assert_nothing_raised do
       build_notice(:session => { :object => stub(:to_ary => {}) })
@@ -365,6 +436,20 @@ class NoticeTest < Test::Unit::TestCase
 
     assert_equal url, notice.url
     assert_equal parameters, notice.parameters
+    assert_equal 'GET', notice.cgi_data['REQUEST_METHOD']
+  end
+
+  should "show a nice warning when rack environment exceeds rack keyspace" do
+    # simulate exception for too big query
+    Rack::Request.any_instance.expects(:params).raises(RangeError.new("exceeded available parameter key space"))
+
+    url = "https://subdomain.happylane.com:100/test/file.rb?var=x"
+    env = Rack::MockRequest.env_for(url)
+
+    notice = build_notice(:rack_env => env)
+
+    assert_equal url, notice.url
+    assert_equal({:message => "failed to call params on Rack::Request -- exceeded available parameter key space"}, notice.parameters)
     assert_equal 'GET', notice.cgi_data['REQUEST_METHOD']
   end
 
@@ -397,72 +482,9 @@ class NoticeTest < Test::Unit::TestCase
     assert_equal session_data, notice.session_data
   end
 
-  def assert_accepts_exception_attribute(attribute, args = {}, &block)
+  should "prefer passed error_message to exception message" do
     exception = build_exception
-    block ||= lambda { exception.send(attribute) }
-    value = block.call(exception)
-
-    notice_from_exception = build_notice(args.merge(:exception => exception))
-
-    assert_equal notice_from_exception.send(attribute),
-                 value,
-                 "#{attribute} was not correctly set from an exception"
-
-    notice_from_hash = build_notice(args.merge(attribute => value))
-    assert_equal notice_from_hash.send(attribute),
-                 value,
-                 "#{attribute} was not correctly set from a hash"
+    notice = build_notice(:exception => exception,:error_message => "Random ponies")
+    assert_equal "BacktracedException: Random ponies", notice.error_message
   end
-
-  def assert_serializes_hash(attribute)
-    [File.open(__FILE__), Proc.new { puts "boo!" }, Module.new].each do |object|
-      hash = {
-        :strange_object => object,
-        :sub_hash => {
-          :sub_object => object
-        },
-        :array => [object]
-      }
-      notice = build_notice(attribute => hash)
-      hash = notice.send(attribute)
-      assert_equal object.to_s, hash[:strange_object], "objects should be serialized"
-      assert_kind_of Hash, hash[:sub_hash], "subhashes should be kept"
-      assert_equal object.to_s, hash[:sub_hash][:sub_object], "subhash members should be serialized"
-      assert_kind_of Array, hash[:array], "arrays should be kept"
-      assert_equal object.to_s, hash[:array].first, "array members should be serialized"
-    end
-  end
-
-  def assert_valid_notice_document(document)
-    xsd_path = File.join(File.dirname(__FILE__), "airbrake_2_2.xsd")
-    schema = Nokogiri::XML::Schema.new(IO.read(xsd_path))
-    errors = schema.validate(document)
-    assert errors.empty?, errors.collect{|e| e.message }.join
-  end
-
-  def assert_filters_hash(attribute)
-    filters  = ["abc", :def]
-    original = { 'abc' => "123", 'def' => "456", 'ghi' => "789", 'nested' => { 'abc' => '100' },
-      'something_with_abc' => 'match the entire string'}
-    filtered = { 'abc'    => "[FILTERED]",
-                 'def'    => "[FILTERED]",
-                 'something_with_abc' => "match the entire string",
-                 'ghi'    => "789",
-                 'nested' => { 'abc' => '[FILTERED]' } }
-
-    notice = build_notice(:params_filters => filters, attribute => original)
-
-    assert_equal(filtered,
-                 notice.send(attribute))
-  end
-
-  def build_backtrace_array
-    ["app/models/user.rb:13:in `magic'",
-      "app/controllers/users_controller.rb:8:in `index'"]
-  end
-
-  def hostname
-    `hostname`.chomp
-  end
-
 end

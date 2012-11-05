@@ -1,4 +1,4 @@
-require File.expand_path( File.join(File.dirname(__FILE__), 'helper') )
+require File.expand_path '../helper', __FILE__
 
 class SenderTest < Test::Unit::TestCase
 
@@ -14,6 +14,7 @@ class SenderTest < Test::Unit::TestCase
 
   def send_exception(args = {})
     notice = args.delete(:notice) || build_notice_data
+    notice.stubs(:to_xml)
     sender = args.delete(:sender) || build_sender(args)
     sender.send_to_airbrake(notice)
   end
@@ -28,6 +29,32 @@ class SenderTest < Test::Unit::TestCase
                 :use_ssl=      => nil)
     Net::HTTP.stubs(:new => http)
     http
+  end
+
+  should "post to Airbrake with XML passed" do
+    xml_notice = Airbrake::Notice.new(:error_class => "FooBar", :error_message => "Foo Bar").to_xml
+
+    http = stub_http
+
+    sender = build_sender
+    sender.send_to_airbrake(xml_notice)
+
+    assert_received(http, :post) do |expect|
+      expect.with(anything, xml_notice, Airbrake::HEADERS)
+    end
+  end
+
+  should "post to Airbrake with a Notice instance passed" do
+    notice = Airbrake::Notice.new(:error_class => "FooBar", :error_message => "Foo Bar")
+
+    http = stub_http
+
+    sender = build_sender
+    sender.send_to_airbrake(notice)
+
+    assert_received(http, :post) do |expect|
+      expect.with(anything, notice.to_xml, Airbrake::HEADERS)
+    end
   end
 
   should "post to Airbrake when using an HTTP proxy" do
@@ -51,7 +78,7 @@ class SenderTest < Test::Unit::TestCase
                    :proxy_port => proxy_port,
                    :proxy_user => proxy_user,
                    :proxy_pass => proxy_pass)
-    assert_received(http, :post) do |expect| 
+    assert_received(http, :post) do |expect|
       expect.with(uri.path, anything, Airbrake::HEADERS)
     end
     assert_received(Net::HTTP, :Proxy) do |expect|
@@ -70,19 +97,19 @@ class SenderTest < Test::Unit::TestCase
         proxy = stub()
         proxy.stubs(:new).raises(NoMemoryError)
         Net::HTTP.stubs(:Proxy => proxy)
-      
+
         assert_raise NoMemoryError do
           build_sender.send(:setup_http_connection)
         end
       end
-      
+
       should "be logged" do
         proxy = stub()
         proxy.stubs(:new).raises(RuntimeError)
         Net::HTTP.stubs(:Proxy => proxy)
-        
+
         sender = build_sender
-        sender.expects(:log).with(:error, includes('Failure initializing the HTTP connection'))
+        sender.expects(:log)
 
         assert_raise RuntimeError do
           sender.send(:setup_http_connection)
@@ -90,26 +117,26 @@ class SenderTest < Test::Unit::TestCase
 
       end
     end
-    
+
     context "unexpected exception sending problems" do
       should "be logged" do
         sender  = build_sender
         sender.stubs(:setup_http_connection).raises(RuntimeError.new)
-        
-        sender.expects(:log).with(:error, includes('Cannot send notification. Error'))
-        sender.send_to_airbrake("stuff")
+
+        sender.expects(:log)
+        send_exception(:sender => sender)
       end
-      
+
       should "return nil no matter what" do
         sender  = build_sender
         sender.stubs(:setup_http_connection).raises(LocalJumpError)
-        
+
         assert_nothing_thrown do
-          assert_nil sender.send_to_airbrake("stuff")
+          assert_nil sender.send_to_airbrake(build_notice_data)
         end
       end
     end
-    
+
     should "return nil on failed posting" do
       http = stub_http
       http.stubs(:post).raises(Errno::ECONNREFUSED)
@@ -173,7 +200,7 @@ class SenderTest < Test::Unit::TestCase
       assert_equal(OpenSSL::SSL::VERIFY_PEER,        real_http.verify_mode)
       assert_equal(Airbrake.configuration.local_cert_path, real_http.ca_file)
     end
-    
+
     should "use the default DEFAULT_CERT_FILE if asked to" do
       config = Airbrake::Configuration.new
       config.use_system_ssl_cert_chain = true
@@ -184,23 +211,23 @@ class SenderTest < Test::Unit::TestCase
       http    = sender.send(:setup_http_connection)
       assert_not_equal http.ca_file, config.local_cert_path
     end
-    
+
     should "verify the connection when the use_ssl option is set (VERIFY_PEER)" do
       sender  = build_sender(:secure => true)
       http    = sender.send(:setup_http_connection)
       assert_equal(OpenSSL::SSL::VERIFY_PEER, http.verify_mode)
     end
-    
+
     should "use the default cert (OpenSSL::X509::DEFAULT_CERT_FILE) only if explicitly told to" do
       sender  = build_sender(:secure => true)
       http    = sender.send(:setup_http_connection)
-      
+
       assert_equal(Airbrake.configuration.local_cert_path, http.ca_file)
 
       File.stubs(:exist?).with(OpenSSL::X509::DEFAULT_CERT_FILE).returns(true)
       sender  = build_sender(:secure => true, :use_system_ssl_cert_chain => true)
       http    = sender.send(:setup_http_connection)
-      
+
       assert_not_equal(Airbrake.configuration.local_cert_path, http.ca_file)
       assert_equal(OpenSSL::X509::DEFAULT_CERT_FILE, http.ca_file)
     end
@@ -229,9 +256,9 @@ class SenderTest < Test::Unit::TestCase
       assert_received(Net::HTTP, :new) {|expect| expect.with('example.org', 80) }
     end
 
-    
+
   end
-  
+
   context "network timeouts" do
     should "default the open timeout to 2 seconds" do
       http = stub_http

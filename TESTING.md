@@ -22,6 +22,14 @@ prefer to run it against specific version hit
 
     rake cucumber:rails:<VERSION>
 
+You can also specify to test only against the certain frameworks we
+support (rack, rake and sinatra) by executing
+
+    rake cucumber:<FRAMEWORK>
+
+This tasks are not printed out with `rake -T` since they're added
+dynamically in the Rakefile.
+
 
 For Maintainers
 ================

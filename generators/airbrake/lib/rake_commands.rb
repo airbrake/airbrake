@@ -2,7 +2,7 @@ Rails::Generator::Commands::Create.class_eval do
   def rake(cmd, opts = {})
     logger.rake "rake #{cmd}"
     unless system("rake #{cmd}")
-      logger.rake "#{cmd} failed. Rolling back"      
+      logger.rake "#{cmd} failed. Rolling back"
       command(:destroy).invoke!
     end
   end

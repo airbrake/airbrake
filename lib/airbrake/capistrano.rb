@@ -7,6 +7,7 @@ module Airbrake
       configuration.load do
         after "deploy",            "airbrake:deploy"
         after "deploy:migrations", "airbrake:deploy"
+        after "deploy:cold",       "airbrake:deploy"
 
         namespace :airbrake do
           desc <<-DESC
@@ -41,4 +42,3 @@ end
 if Capistrano::Configuration.instance
   Airbrake::Capistrano.load_into(Capistrano::Configuration.instance)
 end
-

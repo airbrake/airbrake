@@ -1,3 +1,119 @@
+Version 3.1.6 - 2012-10-23 21:15:50 +0200
+===============================================================================
+
+Hrvoje Šimić (9):
+      load api key from file and env if not provided for executable
+      get a list of your projects from command line
+      create projects from command line
+      fix cli client host
+      creating deploys from command line
+      don't override extension methods
+      update heroku plan in readme
+      another fix for heroku readme
+      don't pollute global namespace with blank?
+
+Sam Umbach (1):
+      Send deploy notification on deploy:cold
+
+
+Version 3.1.5 - 2012-10-05 17:32:23 +0200
+===============================================================================
+
+Hrvoje Šimić (3):
+      make collected user attributes customizable
+      enable filtering of env vars for rake handler
+      add a simple executable
+
+Morgan Mikel McDaris (1):
+      rake section added
+
+Zachary Anker (2):
+      Add the ability to pass XML directly to send_to_airbrake
+      Remove active_support require since it's no longer necessary
+
+
+Version 3.1.4 - 2012-09-11 04:31:51 +0200
+===============================================================================
+
+Ben Arent (1):
+      Update to MIT license to reflect new ownership.
+
+Hrvoje Šimić (4):
+      remove activesupport from runtime dependencies
+      use different logger for async notices
+      Merge pull request #118 from exviva/load_initializer_conditionally
+      symbolize user's keys
+
+Olek Janiszewski (1):
+      Fallback to loading whole environment if initializer does not exist
+
+
+Version 3.1.3 - 2012-09-05 18:58:27 +0200
+===============================================================================
+
+Ben Arent (1):
+      Removed old mailing list.
+
+Dylan Smith (1):
+      Use debug log level for verbose log messages.
+
+Hrvoje Šimić (21):
+      add a note for testing against different frameworks
+      add a scenario to make sure 404s are ignored by default
+      failing scenario for #100
+      remove unnecessary bundler/setup requirement
+      move dependencies from Gemfile to gemspec
+      send info about the current logged in user
+      add async notifications
+      use async? instead of asnyc
+      add info about logger
+      prefer provided error message over original exception message
+      don't load entire environment for deploy task
+      safely handle render exception
+      remove unnecessary AirbrakeError
+      update XML schema
+      test fixes
+      clean whitespace
+      print the failed notice details
+      update supported rails versions
+      update scenarios
+      stop converting notice to xml before passing it to sender
+      remove logger from rack handler
+      update supported rails versions
+
+John Pignata (1):
+      Cherry-pick Object#blank? extension
+
+Joshua Wood (2):
+      rbenv support
+      Fixes outdated rake feature.
+
+Matt Colyer (1):
+      Fix Airbrake so it actually reports data.
+
+Morgan Mikel McDaris (1):
+      changed notify to notify_or_ignore
+
+Sergii Boiko (2):
+      Refactor config.async to provide custom asynchronous delivery way
+      Simplify config.async to use only notice param
+
+grosser (2):
+      fix exceeded available parameter key space breaks notification, fixes #99
+      make all tests runnable via ruby test_file.rb by loading the helper absolutely
+
+
+Version 3.1.2 - 2012-06-23 02:27:01 +0200
+===============================================================================
+
+Hrvoje Šimić (5):
+      routing errors ignored by default, for #92
+      use simplecov for test coverage
+      fix features for javascript
+      ignore user agents in rack, closes #61
+      error out if controller is undefined
+
+
 Version 3.1.1 - 2012-06-06 20:35:00 -0700
 ===============================================================================
 
@@ -813,6 +929,11 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
+
+
+
+
 
 
 

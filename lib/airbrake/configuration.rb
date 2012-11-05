@@ -7,12 +7,12 @@ module Airbrake
         :http_open_timeout, :http_read_timeout, :ignore, :ignore_by_filters,
         :ignore_user_agent, :notifier_name, :notifier_url, :notifier_version,
         :params_filters, :project_root, :port, :protocol, :proxy_host,
-        :proxy_pass, :proxy_port, :proxy_user, :secure, :use_system_ssl_cert_chain, 
-        :framework, :user_information, :rescue_rake_exceptions].freeze
+        :proxy_pass, :proxy_port, :proxy_user, :secure, :use_system_ssl_cert_chain,
+        :framework, :user_information, :rescue_rake_exceptions, :rake_environment_filters].freeze
 
     # The API key for your project, found on the project edit form.
     attr_accessor :api_key
-    
+
     # If you're using the Javascript notifier and would want to separate
     # Javascript notifications into another Airbrake project, specify
     # its APi key here.
@@ -28,7 +28,7 @@ module Airbrake
 
     # +true+ for https connections, +false+ for http connections.
     attr_accessor :secure
-    
+
     # +true+ to use whatever CAs OpenSSL has installed on your system. +false+ to use the ca-bundle.crt file included in Airbrake itself (reccomended and default)
     attr_accessor :use_system_ssl_cert_chain
 
@@ -59,6 +59,10 @@ module Airbrake
 
     # A list of filters for ignoring exceptions. See #ignore_by_filter.
     attr_reader :ignore_by_filters
+
+    # A list of environment keys that will be ignored from what is sent to Airbrake server
+    # Empty by default and used only in rake handler
+    attr_reader :rake_environment_filters
 
     # A list of exception classes to ignore. The array can be appended to.
     attr_reader :ignore
@@ -100,11 +104,17 @@ module Airbrake
     # (boolean or nil; set to nil to catch exceptions when rake isn't running from a terminal; default is nil)
     attr_accessor :rescue_rake_exceptions
 
+    # User attributes that are being captured
+    attr_accessor :user_attributes
+
+
     DEFAULT_PARAMS_FILTERS = %w(password password_confirmation).freeze
+
+    DEFAULT_USER_ATTRIBUTES = %w(id name username email).freeze
 
     DEFAULT_BACKTRACE_FILTERS = [
       lambda { |line|
-        if defined?(Airbrake.configuration.project_root) && Airbrake.configuration.project_root.to_s != '' 
+        if defined?(Airbrake.configuration.project_root) && Airbrake.configuration.project_root.to_s != ''
           line.sub(/#{Airbrake.configuration.project_root}/, "[PROJECT_ROOT]")
         else
           line
@@ -151,6 +161,8 @@ module Airbrake
       @framework                = 'Standalone'
       @user_information         = 'Airbrake Error {{error_id}}'
       @rescue_rake_exceptions   = nil
+      @user_attributes          = DEFAULT_USER_ATTRIBUTES.dup
+      @rake_environment_filters = []
     end
 
     # Takes a block and adds it to the list of backtrace filters. When the filters
@@ -239,17 +251,29 @@ module Airbrake
       end
     end
 
+    # Should Airbrake send notifications asynchronously
+    # (boolean, nil or callable; default is nil).
+    # Can be used as callable-setter when block provided.
+    def async(&block)
+      if block_given?
+        @async = block
+      end
+      @async
+    end
+    alias_method :async?, :async
+
+    def async=(use_default_or_this)
+      @async = use_default_or_this == true ?
+        default_async_processor :
+        use_default_or_this
+    end
+
     def js_api_key
       @js_api_key || self.api_key
     end
 
     def js_notifier=(*args)
       warn '[AIRBRAKE] config.js_notifier has been deprecated and has no effect.  You should use <%= airbrake_javascript_notifier %> directly at the top of your layouts.  Be sure to place it before all other javascript.'
-    end
-
-    def environment_filters
-      warn 'config.environment_filters has been deprecated and has no effect.'
-      []
     end
 
     def ca_bundle_path
@@ -276,6 +300,12 @@ module Airbrake
       end
     end
 
+    # Async notice delivery defaults to girl friday
+    def default_async_processor
+      queue = GirlFriday::WorkQueue.new(nil, :size => 3) do |notice|
+        Airbrake.sender.send_to_airbrake(notice)
+      end
+      lambda {|notice| queue << notice}
+    end
   end
-
 end

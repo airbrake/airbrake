@@ -7,6 +7,24 @@ require 'active_support/core_ext/string/inflections'
   #@terminal.build_and_install_gem(File.join(PROJECT_ROOT, "#{gem_name}.gemspec"))
 #end
 
+Given /^PENDING/ do
+  pending
+end
+
+Given /^Airbrake server is not responding$/ do
+  bundle_gem("sham_rack")
+  content = <<-CONTENT
+  require 'sham_rack'
+
+  Airbrake.configuration.logger = Logger.new STDOUT
+
+  ShamRack.at("api.airbrake.io") {["500", { "Content-type" => "text/xml" }, ["Internal server error"]]}
+
+  CONTENT
+  target = File.join(rails_root, 'config', 'initializers', 'airbrake_shim.rb')
+  File.open(target,"w") { |f| f.write content }
+end
+
 When /^I generate a new Rails application$/ do
 
   rails3 = version_string =~ /^3/
@@ -16,9 +34,6 @@ When /^I generate a new Rails application$/ do
   else
     rails_create_command = ''
   end
-
-
-  #@terminal.run(%{BUNDLE_GEMFILE=#{File.join(PROJECT_ROOT,"gemfiles",version_string.strip + ".gemfile")} bundle exec rails #{rails_create_command} rails_root})
 
   step %{I run `bundle exec rails #{rails_create_command} rails_root --skip-bundle`}
 
@@ -99,7 +114,6 @@ When /^I configure the Airbrake shim$/ do
   if bundler_manages_gems?
     append_to_gemfile("gem 'sham_rack'")
   end
-
   shim_file = File.join(PROJECT_ROOT, 'features', 'support', 'airbrake_shim.rb.template')
   if rails_supports_initializers?
     target = File.join(rails_root, 'config', 'initializers', 'airbrake_shim.rb')
@@ -110,6 +124,8 @@ When /^I configure the Airbrake shim$/ do
       file.write IO.read(shim_file)
     end
   end
+  target = File.join(rails_root, 'config', 'initializers', 'airbrake_shim.rb')
+  FileUtils.cp(shim_file, target)
 end
 
 When /^I configure the notifier to use "([^\"]*)" as an API key$/ do |api_key|
@@ -387,3 +403,29 @@ When /^I configure usage of Airbrake$/ do
     step %{I configure my application to require the "airbrake" gem}
     step %{I run the airbrake generator with "-k myapikey"}
 end
+
+
+When /^I have set up authentication system in my app that uses "([^\"]*)"$/ do |current_user|
+  application_controller = File.join(rails_root, 'app', 'controllers', "application_controller.rb")
+  definition =
+    """
+  class ApplicationController < ActionController::Base
+    def consider_all_requests_local; false; end
+    def local_request?; false; end
+
+    # this is the ultimate authentication system, devise is history
+    def #{current_user}
+      Struct.new(:attributes).new({:id => 1,:name => 'Bender',:email => 'bender@beer.com',:username => 'b3nd0r'})
+    end
+  end
+  """
+  File.open(application_controller, "w") {|file| file.puts definition }
+end
+
+Then /^the Airbrake notification should contain user details$/ do
+  Then %{I should see "Bender"}
+  And %{I should see "bender@beer.com"}
+  And %{I should see "<id>1</id>"}
+  And %{I should see "b3nd0r"}
+end
+
