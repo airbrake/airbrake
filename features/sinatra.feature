@@ -5,9 +5,11 @@ Feature: Use the notifier in a Sinatra app
       """
       require 'sinatra/base'
       require 'airbrake'
+      require 'logger'
 
       Airbrake.configure do |config|
-        config.api_key = 'my_api_key'
+        config.api_key = 'my_api_key' 
+        config.logger  = Logger.new STDOUT
       end
 
       class FontaneApp < Sinatra::Base
@@ -21,12 +23,6 @@ Feature: Use the notifier in a Sinatra app
 
       app = FontaneApp
       """
-    And I initialize Gemfile
-    And I add "sinatra" requirement
-    And I add "sham_rack" requirement
-    And I add "airbrake" requirement with ":path => '../'" option
-    And I reset Bundler environment variable
-    And I successfully run `bundle install`
     When I perform a Rack request to "http://example.com:123/test/index?param=value"
     Then I should receive a Airbrake notification
 

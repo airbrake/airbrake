@@ -1,13 +1,12 @@
 Feature: Inform the user of the airbrake notice that was just created
 
   Background:
-    Given I successfully run `bundle exec rails new rails_root`
+    Given I successfully run `rails new rails_root -O --skip-gemfile`
     And I cd to "rails_root"
-    And I configure the application to use Airbrake
     And I configure the Airbrake shim
 
   Scenario: Rescue an exception in a controller
-    When I run the airbrake generator with "-k myapikey"
+    When I run `rails generate airbrake -k myapikey`
     And I define a response for "TestController#index":
       """
       raise RuntimeError, "some message"
@@ -25,7 +24,7 @@ Feature: Inform the user of the airbrake notice that was just created
     """
     config.user_information = 'Error #{{ error_id }}'
     """
-    And I run the airbrake generator with "-k myapikey"
+    And I run `rails generate airbrake -k myapikey`
     And I define a response for "TestController#index":
       """
       raise RuntimeError, "some message"
@@ -38,12 +37,12 @@ Feature: Inform the user of the airbrake notice that was just created
     And I perform a request to "http://example.com:123/test/index?param=value" in the "production" environment
     Then I should see "Error #b6817316-9c45-ed26-45eb-780dbb86aadb"
 
-  Scenario: Don't inform them user
+  Scenario: Don't inform the user
     When I configure the notifier to use the following configuration lines:
     """
     config.user_information = false
     """
-    And I run the airbrake generator with "-k myapikey"
+    And I run `rails generate airbrake -k myapikey`
     And I define a response for "TestController#index":
       """
       raise RuntimeError, "some message"

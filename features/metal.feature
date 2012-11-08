@@ -1,15 +1,25 @@
-@no-clobber
 Feature: Rescue errors in Rails middleware
   Background:
-    Given I successfully run `bundle exec rails new rails_root --without-bundler`
+    Given I successfully run `rails new rails_root -O --without-gemfile`
     And I cd to "rails_root"
-    And I append "gem 'airbrake', :path => '../../'" to Gemfile
-    And I successfully run `bundle install`
-    And I configure the Airbrake shim
-    And I define a Metal endpoint called "Exploder":
+    And I configure the notifier to use the following configuration lines:
     """
-    def self.call(env)
-    raise "Explode"
+      config.logger = Logger.new STDOUT
+    """
+    And I configure the Airbrake shim
+    And I append to "app/metal/exploder.rb" with:
+    """
+      class Exploder
+        def call(env)
+          raise "Explode!"
+        end
+      end
+    """
+    And I remove the file "config/routes.rb"
+    And I append to "config/routes.rb" with:
+    """
+    RailsRoot::Application.routes.draw do
+      mount Exploder.new => "/"
     end
     """
 

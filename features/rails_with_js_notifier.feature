@@ -1,9 +1,8 @@
 Feature: Install the Gem in a Rails application and enable the JavaScript notifier
 
   Background:
-    Given I successfully run `bundle exec rails new rails_root`
+    Given I successfully run `rails new rails_root -O --skip-gemfile`
     And I cd to "rails_root"
-    And I configure the application to use Airbrake
     And I configure the Airbrake shim
 
   Scenario: Include the Javascript notifier when enabled

@@ -12,7 +12,6 @@ tags
 doc
 pkg
 
-*emfile.lock
 .bundle
 
 *.rbc
