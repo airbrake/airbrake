@@ -8,3 +8,7 @@ Then /^"([^\"]*)" should not contain text of "([^\"]*)"$/ do |target_file, conte
 
   target_text.should_not include(contents_text)
 end
+
+Then /^I append "([^\"]*)" to Gemfile$/ do |contents|
+  append_to_gemfile(contents)
+end

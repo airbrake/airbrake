@@ -45,8 +45,7 @@ end
 
 module Airbrake
   def self.notify_or_ignore(*args)
-    # TODO if you need to check more params, you'll have to use json.dump or something
-    $stderr.puts "airbrake #{args[1][:component]}"
+    $stderr.puts "[airbrake] #{args[1][:component]}"
   end
 end
 

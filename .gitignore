@@ -12,7 +12,6 @@ tags
 doc
 pkg
 
-Gemfile.lock
 .bundle
 
 *.rbc

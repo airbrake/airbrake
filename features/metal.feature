@@ -1,18 +1,33 @@
 Feature: Rescue errors in Rails middleware
-
   Background:
-    Given I have built and installed the "airbrake" gem
-    And I generate a new Rails application
+    Given I successfully run `rails new rails_root -O --without-gemfile`
+    And I cd to "rails_root"
+    And I configure the notifier to use the following configuration lines:
+    """
+      config.logger = Logger.new STDOUT
+    """
     And I configure the Airbrake shim
-    And I configure my application to require the "airbrake" gem
-    And I run the airbrake generator with "-k myapikey"
-
-  Scenario: Rescue an exception in the dispatcher
-    When I define a Metal endpoint called "Exploder":
-      """
-      def self.call(env)
-        raise "Explode"
+    And I append to "app/metal/exploder.rb" with:
+    """
+      class Exploder
+        def call(env)
+          raise "Explode!"
+        end
       end
-      """
+    """
+    And I remove the file "config/routes.rb"
+    And I append to "config/routes.rb" with:
+    """
+    RailsRoot::Application.routes.draw do
+      mount Exploder.new => "/"
+    end
+    """
+
+  Scenario: It should not report to Airbrake in development
     When I perform a request to "http://example.com:123/metal/index?param=value"
+    Then I should not receive a Airbrake notification
+
+  Scenario: It should report to Airbrake in production
+    When I perform a request to "http://example.com:123/metal/index?param=value" in the "production" environment
     Then I should receive a Airbrake notification
+

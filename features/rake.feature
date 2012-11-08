@@ -1,6 +1,7 @@
 Feature: Use the Gem to catch errors in a Rake application
+
   Background:
-    Given I have built and installed the "airbrake" gem
+    Given I've prepared the Rakefile
 
   Scenario: Catching exceptions in Rake
     When I run rake with airbrake
@@ -22,6 +23,6 @@ Feature: Use the Gem to catch errors in a Rake application
     When I run rake with airbrake autodetect not from terminal
     Then Airbrake should catch the exception
 
-  Scenario: Sending the correct component name
-    When I run rake with airbrake
-    Then Airbrake should send the rake command line as the component name
+  Scenario: Airbrake should also send the command name
+    When I run `rake airbrake_autodetect_not_from_terminal`
+    Then command "airbrake_autodetect_not_from_terminal" should be reported

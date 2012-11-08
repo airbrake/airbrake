@@ -1,12 +1,11 @@
 Feature: Install the Gem in a Rails application and enable the JavaScript notifier
 
   Background:
-    Given I have built and installed the "airbrake" gem
+    Given I successfully run `rails new rails_root -O --skip-gemfile`
+    And I cd to "rails_root"
+    And I configure the Airbrake shim
 
   Scenario: Include the Javascript notifier when enabled
-    When I generate a new Rails application
-    And I configure the Airbrake shim
-    And I configure my application to require the "airbrake" gem
     When I configure the notifier to use the following configuration lines:
       """
       config.api_key     = "myapikey"
@@ -16,7 +15,7 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
         render :inline => '<html><head profile="http://example.com"><%= airbrake_javascript_notifier %></head><body></body></html>'
       """
     And I route "/test/index" to "test#index"
-    And I perform a request to "http://example.com:123/test/index"
+    And I perform a request to "http://example.com:123/test/index" in the "production" environment
     Then I should see the notifier JavaScript for the following:
       | api_key  | environment | host           |
       | myapikey | production  | api.airbrake.io |
@@ -25,11 +24,9 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
       | http://example.com:123/test/index | test      | index  |
 
   Scenario: Include the Javascript notifier when enabled using custom configuration settings
-    When I generate a new Rails application
-    And I configure the Airbrake shim
-    And I configure my application to require the "airbrake" gem
     When I configure the notifier to use the following configuration lines:
       """
+      config.development_environments = []
       config.api_key     = "myapikey!"
       config.host        = "myairbrake.com"
       config.port        = 3001
@@ -42,12 +39,9 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
     And I perform a request to "http://example.com:123/test/index"
     Then I should see the notifier JavaScript for the following:
       | api_key   | environment | host               |
-      | myapikey! | production  | myairbrake.com:3001 |
+      | myapikey! | test  | myairbrake.com:3001 |
 
   Scenario: Don't include the Javascript notifier by default
-    When I generate a new Rails application
-    And I configure the Airbrake shim
-    And I configure my application to require the "airbrake" gem
     When I configure the notifier to use the following configuration lines:
       """
       config.api_key = "myapikey!"
@@ -61,9 +55,6 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
     Then I should not see notifier JavaScript
 
   Scenario: Don't include the Javascript notifier when enabled in non-public environments
-    When I generate a new Rails application
-    And I configure the Airbrake shim
-    And I configure my application to require the "airbrake" gem
     When I configure the notifier to use the following configuration lines:
       """
       config.api_key          = "myapikey!"
@@ -76,11 +67,8 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index" in the "test" environment
     Then I should not see notifier JavaScript
-  
-  Scenario: Include the Javascript notifier with a custom api key
-    When I generate a new Rails application
-    And I configure the Airbrake shim
-    And I configure my application to require the "airbrake" gem
+
+  Scenario: Use the js_api_key if present
     When I configure the notifier to use the following configuration lines:
       """
       config.api_key     = "myapikey!"
@@ -91,7 +79,7 @@ Feature: Install the Gem in a Rails application and enable the JavaScript notifi
         render :inline => '<html><head><%= airbrake_javascript_notifier %></head><body></body></html>'
       """
     And I route "/test/index" to "test#index"
-    And I perform a request to "http://example.com:123/test/index"
+    And I perform a request to "http://example.com:123/test/index" in the "production" environment
     Then I should see the notifier JavaScript for the following:
       | api_key     | environment | host        |
       | myjsapikey! | production  | api.airbrake.io |
