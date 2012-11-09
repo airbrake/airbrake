@@ -69,7 +69,7 @@ https://github.com/airbrake/airbrake/wiki
 Development
 -----------
 
-See `TESTING.md` for instructions on how to run the tests.
+Use `bundle && rake` to run the tests.
 
 Credits
 -------
