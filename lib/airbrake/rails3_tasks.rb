@@ -26,6 +26,10 @@ namespace :airbrake do
       config.logger = Rails.logger
     end
 
+    # Override Rails exception middleware, so we stop cluttering STDOUT
+    class ActionDispatch::DebugExceptions; def call(env); @app.call(env); end; end
+    class ActionDispatch::ShowExceptions; def call(env); @app.call(env); end; end
+
     require './app/controllers/application_controller'
 
     class AirbrakeTestingException < RuntimeError; end

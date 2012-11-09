@@ -34,7 +34,7 @@ class AirbrakeGenerator < Rails::Generator::Base
         end
       end
       determine_api_key if heroku?
-      m.rake "airbrake:test --trace", :generate_only => true
+      m.rake "airbrake:test", :generate_only => true
     end
   end
 

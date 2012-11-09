@@ -91,7 +91,7 @@ class AirbrakeGenerator < Rails::Generators::Base
   end
 
   def test_airbrake
-    puts run("rake airbrake:test --trace")
+    puts run("rake airbrake:test")
   end
 
   def plugin_is_present?
