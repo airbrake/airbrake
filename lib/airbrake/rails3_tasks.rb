@@ -20,6 +20,7 @@ namespace :airbrake do
       end
     end
 
+    # Sets up verbose logging
     Rails.logger.level = Logger::DEBUG
     Airbrake.configure(true) do |config|
       config.logger = Rails.logger
@@ -29,11 +30,14 @@ namespace :airbrake do
 
     class AirbrakeTestingException < RuntimeError; end
 
+    # Checks if api_key is set
     unless Airbrake.configuration.api_key
       puts "Airbrake needs an API key configured! Check the README to see how to add it."
       exit
     end
 
+    # Enables Airbrake reporting on all environments,
+    # so we don't have to worry about invoking the task in production
     Airbrake.configuration.development_environments = []
 
     puts "Configuration:"
@@ -52,23 +56,12 @@ namespace :airbrake do
       prepend_before_filter :test_airbrake
       def test_airbrake
         puts "Raising '#{exception_class.name}' to simulate application failure."
-        raise exception_class.new, 'Testing airbrake via "rake airbrake:test". If you can see this, it works.'
+        raise exception_class.new, "\nTesting airbrake via \"rake airbrake:test\"."\
+                                   " If you can see this, it works."
       end
-
-      # def rescue_action(exception)
-      #   rescue_action_in_public exception
-      # end
 
       # Ensure we actually have an action to go to.
       def verify; end
-
-      # def consider_all_requests_local
-      #   false
-      # end
-
-      # def local_request?
-      #   false
-      # end
 
       def exception_class
         exception_name = ENV['EXCEPTION'] || "AirbrakeTestingException"
@@ -76,14 +69,8 @@ namespace :airbrake do
       rescue
         Object.const_set(exception_name, Class.new(Exception))
       end
-
-      def logger
-        nil
-      end
     end
-    class AirbrakeVerificationController < ApplicationController; end
 
-    Rails.application.routes_reloader.execute_if_updated
     Rails.application.routes.draw do
       match 'verify' => 'application#verify', :as => 'verify'
     end
