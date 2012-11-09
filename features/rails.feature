@@ -90,6 +90,7 @@ Feature: Install the Gem in a Rails application
       config.api_key = ENV['HOPTOAD_API_KEY']
       """
 
+    @wip
   Scenario: Support the --app option for the Heroku addon in the generator
     When I configure the Airbrake shim
     And I configure the Heroku shim with "myapikey" and multiple app support
