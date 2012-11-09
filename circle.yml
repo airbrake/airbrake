@@ -1,0 +1,9 @@
+## Customize dependencies
+dependencies:
+  override:
+    - bundle
+
+## Customize test commands
+test:
+  override:
+    - rake
