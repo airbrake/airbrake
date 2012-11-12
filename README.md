@@ -85,4 +85,4 @@ The names and logos for Airbrake, thoughtbot are trademarks of their respective 
 License
 -------
 
-Airbrake is Copyright © 2008-2012 Airbrake. It is free software, and may be redistributed under the terms specified in the MIT-LICENSE file.
+Airbrake is Copyright © 2008-2012 Airbrake. 
