@@ -13,14 +13,6 @@ Given /^Airbrake server is not responding$/ do
   File.open(target,"w") { |f| f.write content }
 end
 
-# When /^I configure my application to require the "capistrano" gem if necessary$/ do
-#   step %{I configure my application to require the "capistrano" gem}
-# end
-
-# When /^I configure my application to require the "([^\"]*)" gem(?: with version "(.+)")?$/ do |gem_name, version|
-#   config_gem(gem_name, version)
-# end
-
 Then /^I should (?:(not ))?receive a Airbrake notification$/ do |negator|
   steps %{
     Then the output should #{negator}contain "** [Airbrake] Response from Airbrake:"
@@ -249,3 +241,6 @@ Then /^the Airbrake notification should contain user details$/ do
   step %{I should see "b3nd0r"}
 end
 
+Then /^the Airbrake notification should contain the framework information$/ do
+  step %{the output should contain "Rails: #{ENV["RAILS_VERSION"]}"}
+end

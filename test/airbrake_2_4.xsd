@@ -10,6 +10,7 @@
         <xs:element name="request" type="request" minOccurs="0"/>
         <xs:element name="server-environment" type="serverEnvironment"/>
         <xs:element name="current-user" type="current-user" minOccurs="0"/>
+        <xs:element name="framework" type="xs:string" minOccurs="0"/>
       </xs:all>
       <xs:attribute name="version" type="xs:string" use="required"/>
     </xs:complexType>

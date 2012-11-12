@@ -202,6 +202,9 @@ module Airbrake
             u.tag!("username",user[:username])
           end
         end
+        unless framework.blank?
+          notice.tag!("framework", framework)
+        end
       end
       xml.to_s
     end
@@ -377,6 +380,10 @@ module Airbrake
 
     def local_hostname
       Socket.gethostname
+    end
+
+    def framework
+      Airbrake.configuration.framework
     end
 
     def to_s

@@ -77,7 +77,7 @@ Feature: Install the Gem in a Rails application
     And I run `rails generate airbrake -k myapikey`
     Then "config/deploy.rb" should not contain "capistrano"
 
-    @wip
+  @wip
   Scenario: Support the Heroku addon in the generator
     When I configure the Airbrake shim
     And I run `rails generate airbrake -k myapikey`
@@ -90,7 +90,7 @@ Feature: Install the Gem in a Rails application
       config.api_key = ENV['HOPTOAD_API_KEY']
       """
 
-    @wip
+  @wip
   Scenario: Support the --app option for the Heroku addon in the generator
     When I configure the Airbrake shim
     And I configure the Heroku shim with "myapikey" and multiple app support
@@ -233,3 +233,19 @@ Feature: Install the Gem in a Rails application
     And I perform a request to "http://example.com:123/test/index?param=value" in the "production" environment
     Then I should see "Notice details:"
     And I should see "some message"
+
+  Scenario: It should send the framework info
+    When I configure the Airbrake shim
+    And I configure the notifier to use the following configuration lines:
+    """
+       config.api_key = "myapikey"
+       config.logger  = Logger.new STDOUT
+    """
+    And I define a response for "TestController#index":
+      """
+      raise RuntimeError, "some message"
+      """
+    And I route "/test/index" to "test#index"
+    And I perform a request to "http://example.com:123/test/index" in the "production" environment
+    Then I should receive a Airbrake notification
+    And the Airbrake notification should contain the framework information
