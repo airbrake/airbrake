@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
     %w(airbrake.gemspec CHANGELOG Gemfile Guardfile INSTALL MIT-LICENSE Rakefile README_FOR_HEROKU_ADDON.md README.md TESTING.md SUPPORTED_RAILS_VERSIONS install.rb)
   s.test_files    = Dir.glob("{test,spec,features}/**/*")
 
-  s.add_runtime_dependency("builder", "~> 3.0.4")
+  s.add_runtime_dependency("builder")
   s.add_runtime_dependency("girl_friday")
 
   s.add_development_dependency("bourne",        ">= 1.0")

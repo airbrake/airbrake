@@ -4,7 +4,6 @@ PATH
     airbrake (3.1.6)
       builder
       girl_friday
-      json
 
 GEM
   remote: http://rubygems.org/
@@ -147,6 +146,11 @@ GEM
     rspec-expectations (2.6.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.6.0)
+    rspec-rails (2.6.1)
+      actionpack (~> 3.0)
+      activesupport (~> 3.0)
+      railties (~> 3.0)
+      rspec (~> 2.6.0)
     rubinius-actor (0.0.2)
       rubinius-core-api
     rubinius-core-api (0.0.1)
@@ -191,6 +195,7 @@ DEPENDENCIES
   nokogiri (~> 1.5.0)
   rails (~> 3.2.9)
   rspec (~> 2.6.0)
+  rspec-rails
   sham_rack (~> 1.3.0)
   shoulda (~> 2.11.3)
   sinatra
