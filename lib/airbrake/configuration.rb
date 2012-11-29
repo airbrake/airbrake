@@ -306,6 +306,9 @@ module Airbrake
         Airbrake.sender.send_to_airbrake(notice)
       end
       lambda {|notice| queue << notice}
+    rescue NameError
+      warn "[AIRBRAKE] You can't use the default async handler without girl_friday."\
+        " Please make sure you have girl_friday installed."
     end
   end
 end

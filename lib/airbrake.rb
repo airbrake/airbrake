@@ -1,4 +1,8 @@
-require "girl_friday"
+begin
+  require "girl_friday"
+rescue LoadError
+end
+
 require 'net/http'
 require 'net/https'
 require 'rubygems'
