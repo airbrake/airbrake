@@ -74,7 +74,7 @@ Use `bundle && rake` to run the tests.
 Credits
 -------
 
-![thoughtbot](http://thoughtbot.com/images/tm/logo.png)
+![thoughtbot](https://secure.gravatar.com/avatar/a95a04df2dae60397c38c9bd04492c53)
 
 Airbrake is maintained and funded by [airbrake.io](http://airbrake.io).
 
