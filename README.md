@@ -56,7 +56,7 @@ The generator creates a file under `config/initializers/airbrake.rb` configuring
 Supported Rails versions
 ------------------------
 
-See **SUPPORTED_RAILS_VERSIONS** for a list of official supported versions of
+See **[SUPPORTED_RAILS_VERSIONS](https://github.com/airbrake/airbrake/blob/master/SUPPORTED_RAILS_VERSIONS)** for a list of official supported versions of
 Rails.
 
 Airbrake wiki pages
