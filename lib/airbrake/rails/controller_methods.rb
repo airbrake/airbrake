@@ -20,7 +20,7 @@ module Airbrake
       # inside the controller. Otherwise it works like Airbrake.notify.
       def notify_airbrake(hash_or_exception)
         unless airbrake_local_request?
-          Airbrake.notify(hash_or_exception, airbrake_request_data)
+          Airbrake.notify_or_ignore(hash_or_exception, airbrake_request_data)
         end
       end
 
