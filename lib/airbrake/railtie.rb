@@ -5,7 +5,7 @@ module Airbrake
   class Railtie < ::Rails::Railtie
     rake_tasks do
       require 'airbrake/rake_handler'
-      require "airbrake/rails3_tasks"
+      require 'airbrake/rails3_tasks'
     end
 
     initializer "airbrake.use_rack_middleware" do |app|

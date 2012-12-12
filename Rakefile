@@ -13,20 +13,8 @@ end
 require './lib/airbrake/version'
 
 task :default do
-  if ENV['BUNDLE_GEMFILE'] =~ /gemfiles/
-    exec 'rake cucumber'
-  else
-    exec 'rake appraise'
-  end
-end
-
-task :appraise => ["appraisal:install"] do
+  exec 'rake appraisal test'
   exec 'rake appraisal cucumber'
-end
-
-desc "Clean out the tmp directory"
-task :clean do
-  exec "rm -rf tmp"
 end
 
 desc 'Test the airbrake gem.'

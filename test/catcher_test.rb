@@ -1,12 +1,31 @@
 require File.expand_path '../helper', __FILE__
 
-class ActionControllerCatcherTest < Test::Unit::TestCase
+require 'airbrake/rails/controller_methods'
+require 'airbrake/rails/middleware/exceptions_catcher'
+
+module ActionDispatch
+  class ShowExceptions
+    include Airbrake::Rails::Middleware::ExceptionsCatcher
+    private
+    def public_path
+      "/null"
+    end
+
+    # Silence logger
+    def logger
+      nil
+    end
+  end
+end
+
+class ActionControllerCatcherTest < ActionDispatch::IntegrationTest
 
   include DefinesConstants
 
   def setup
     super
     reset_config
+    Airbrake.configuration.environment_name = "test"
     Airbrake.sender = CollectingSender.new
     define_constant('RAILS_ROOT', '/path/to/rails/root')
   end
@@ -15,17 +34,10 @@ class ActionControllerCatcherTest < Test::Unit::TestCase
     Airbrake.configuration.ignore << exception_class
   end
 
-  def build_controller_class(&definition)
-     Class.new(ActionController::Base).tap do |klass|
-      klass.__send__(:include, Airbrake::Rails::ActionControllerCatcher)
-      klass.class_eval(&definition) if definition
-      define_constant('AirbrakeTestController', klass)
-    end
-  end
-
   def assert_sent_hash(hash, xpath)
     hash.each do |key, value|
-      next if key.match(/^airbrake\./) # We added this key.
+      next if key.match(/^airbrake\./) || # We added this key.
+        hash[key].blank?
 
       element_xpath = "#{xpath}/var[@key = '#{key}']"
       if value.respond_to?(:to_hash)
@@ -66,7 +78,8 @@ class ActionControllerCatcherTest < Test::Unit::TestCase
       url << ":#{request.port}"
     end
 
-    url << request.request_uri
+    url << request.fullpath
+
     url
   end
 
@@ -83,251 +96,275 @@ class ActionControllerCatcherTest < Test::Unit::TestCase
     Nokogiri::XML.parse(xml)
   end
 
-  def process_action(opts = {}, &action)
-    opts[:request]  ||= ActionController::TestRequest.new
-    opts[:response] ||= ActionController::TestResponse.new
-    klass = build_controller_class do
-      cattr_accessor :local
-      define_method(:index, &action)
-      def local_request?
-        local
-      end
+  class AirbrakeTestController < ActionController::Base
+    begin
+      use ActionDispatch::ShowExceptions, ActionDispatch::PublicExceptions.new("/null")
+    rescue NameError
+      use ActionDispatch::ShowExceptions
     end
-    if opts[:filters]
-      klass.filter_parameter_logging *opts[:filters]
-    end
-    if opts[:user_agent]
-      if opts[:request].respond_to?(:user_agent=)
-        opts[:request].user_agent = opts[:user_agent]
-      else
-        opts[:request].env["HTTP_USER_AGENT"] = opts[:user_agent]
-      end
-    end
-    if opts[:port]
-      opts[:request].port = opts[:port]
-    end
-    klass.consider_all_requests_local = opts[:all_local]
-    klass.local                       = opts[:local]
-    controller = klass.new
-    controller.stubs(:rescue_action_in_public_without_airbrake)
-    opts[:request].query_parameters = opts[:request].query_parameters.merge(opts[:params] || {})
-    opts[:request].session = ActionController::TestSession.new(opts[:session] || {})
-    # Prevents request.fullpath from crashing Rails in tests
-    opts[:request].env['REQUEST_URI'] = opts[:request].request_uri
-    controller.process(opts[:request], opts[:response])
-    controller
-  end
 
-  def process_action_with_manual_notification(args = {})
-    process_action(args) do
-      notify_airbrake(:error_message => 'fail')
-      # Rails will raise a template error if we don't render something
+    include Airbrake::Rails::ControllerMethods
+
+    cattr_accessor :local
+
+    before_filter :params_magic
+
+    def params_magic
+      unless params.empty?
+
+        if params[:user_agent]
+          if request.respond_to?(:user_agent=)
+            request.user_agent = params[:user_agent]
+          else
+            request.env["HTTP_USER_AGENT"] = params[:user_agent]
+          end
+        end
+
+        request.session = ActionController::TestSession.new(params[:session] || {})
+        request.port = params[:port] if params[:port]
+      end
+    end
+
+    def boom
+      raise "boom"
+    end
+
+    def hello
+      render :text => "hello"
+    end
+
+    def manual_airbrake
+      notify_airbrake(:error_message => "fail")
       render :nothing => true
     end
-  end
 
-  def process_action_with_automatic_notification(args = {})
-    process_action(args) { raise "Hello" }
-  end
+    protected
 
-  should "deliver notices from exceptions raised in public requests" do
-    process_action_with_automatic_notification
-    assert_caught_and_sent
-  end
-
-  should "not deliver notices from exceptions in local requests" do
-    process_action_with_automatic_notification(:local => true)
-    assert_caught_and_not_sent
-  end
-
-  should "not deliver notices from exceptions when all requests are local" do
-    process_action_with_automatic_notification(:all_local => true)
-    assert_caught_and_not_sent
-  end
-
-  should "not deliver notices from actions that don't raise" do
-    controller = process_action { render :text => 'Hello' }
-    assert_caught_and_not_sent
-    assert_equal 'Hello', controller.response.body
-  end
-
-  should "not deliver ignored exceptions raised by actions" do
-    ignore(RuntimeError)
-    process_action_with_automatic_notification
-    assert_caught_and_not_sent
-  end
-
-  should "deliver ignored exception raised manually" do
-    ignore(RuntimeError)
-    process_action_with_manual_notification
-    assert_caught_and_sent
-  end
-
-  should "deliver manually sent notices in public requests" do
-    process_action_with_manual_notification
-    assert_caught_and_sent
-  end
-
-  should "not deliver manually sent notices in local requests" do
-    process_action_with_manual_notification(:local => true)
-    assert_caught_and_not_sent
-  end
-
-  should "not deliver manually sent notices when all requests are local" do
-    process_action_with_manual_notification(:all_local => true)
-    assert_caught_and_not_sent
-  end
-
-  should "continue with default behavior after delivering an exception" do
-    controller = process_action_with_automatic_notification(:public => true)
-    # TODO: can we test this without stubbing?
-    assert_received(controller, :rescue_action_in_public_without_airbrake)
-  end
-
-  should "not create actions from Airbrake methods" do
-    controller = build_controller_class.new
-    assert_equal [], Airbrake::Rails::ActionControllerCatcher.instance_methods
-  end
-
-  should "ignore exceptions when user agent is being ignored by regular expression" do
-    Airbrake.configuration.ignore_user_agent_only = [/Ignored/]
-    process_action_with_automatic_notification(:user_agent => 'ShouldBeIgnored')
-    assert_caught_and_not_sent
-  end
-
-  should "ignore exceptions when user agent is being ignored by string" do
-    Airbrake.configuration.ignore_user_agent_only = ['IgnoredUserAgent']
-    process_action_with_automatic_notification(:user_agent => 'IgnoredUserAgent')
-    assert_caught_and_not_sent
-  end
-
-  should "not ignore exceptions when user agent is not being ignored" do
-    Airbrake.configuration.ignore_user_agent_only = ['IgnoredUserAgent']
-    process_action_with_automatic_notification(:user_agent => 'NonIgnoredAgent')
-    assert_caught_and_sent
-  end
-
-  should "send session data for manual notifications" do
-    data = { 'one' => 'two' }
-    process_action_with_manual_notification(:session => data)
-    assert_sent_hash data, "/notice/request/session"
-  end
-
-  should "send session data for automatic notification" do
-    data = { 'one' => 'two' }
-    process_action_with_automatic_notification(:session => data)
-    assert_sent_hash data, "/notice/request/session"
-  end
-
-  should "send request data for manual notification" do
-    params = { 'controller' => "airbrake_test", 'action' => "index" }
-    controller = process_action_with_manual_notification(:params => params)
-    assert_sent_request_info_for controller.request
-  end
-
-  should "send request data for manual notification with non-standard port" do
-    params = { 'controller' => "airbrake_test", 'action' => "index" }
-    controller = process_action_with_manual_notification(:params => params, :port => 81)
-    assert_sent_request_info_for controller.request
-  end
-
-  should "send request data for automatic notification" do
-    params = { 'controller' => "airbrake_test", 'action' => "index" }
-    controller = process_action_with_automatic_notification(:params => params)
-    assert_sent_request_info_for controller.request
-  end
-
-  should "send request data for automatic notification with non-standard port" do
-    params = { 'controller' => "airbrake_test", 'action' => "index" }
-    controller = process_action_with_automatic_notification(:params => params, :port => 81)
-    assert_sent_request_info_for controller.request
-  end
-
-  should "use standard rails logging filters on params and session and env" do
-    filtered_params = { "abc" => "123",
-                        "def" => "456",
-                        "ghi" => "[FILTERED]" }
-    filtered_session = { "abc" => "123",
-                         "ghi" => "[FILTERED]" }
-    ENV['ghi'] = 'abc'
-    filtered_env = { 'ghi' => '[FILTERED]' }
-    filtered_cgi = { 'REQUEST_METHOD' => '[FILTERED]' }
-
-    process_action_with_automatic_notification(:filters => [:ghi, :request_method],
-                                               :params => { "abc" => "123",
-                                                            "def" => "456",
-                                                            "ghi" => "789" },
-                                               :session => { "abc" => "123",
-                                                             "ghi" => "789" })
-    assert_sent_hash filtered_params, '/notice/request/params'
-    assert_sent_hash filtered_cgi, '/notice/request/cgi-data'
-    assert_sent_hash filtered_session, '/notice/request/session'
-  end
-
-  context "for a local error with development lookup enabled" do
-    setup do
-      Airbrake.configuration.development_lookup = true
-      Airbrake.stubs(:build_lookup_hash_for).returns({ :awesome => 2 })
-
-      @controller = process_action_with_automatic_notification(:local => true)
-      @response   = @controller.response
-    end
-
-    should "append custom CSS and JS to response body for a local error" do
-      assert_match /text\/css/, @response.body
-      assert_match /text\/javascript/, @response.body
-    end
-
-    should "contain host, API key and notice JSON" do
-      assert_match Airbrake.configuration.host.to_json, @response.body
-      assert_match Airbrake.configuration.api_key.to_json, @response.body
-      assert_match ({ :awesome => 2 }).to_json, @response.body
+    def airbrake_local_request?
+      @@local
     end
   end
 
-  context "for a local error with development lookup disabled" do
-    setup do
-      Airbrake.configuration.development_lookup = false
 
-      @controller = process_action_with_automatic_notification(:local => true)
-      @response   = @controller.response
-    end
+   should "deliver notices from exceptions raised in public requests" do
+     Airbrake.configuration.environment_name = "production"
 
-    should "not append custom CSS and JS to response for a local error" do
-      assert_no_match /text\/css/, @response.body
-      assert_no_match /text\/javascript/, @response.body
-    end
+     @app = AirbrakeTestController.action(:boom)
+     get '/'
+     assert_caught_and_sent
+   end
+
+  should "not deliver notices from exceptions in development environments" do
+     @app = AirbrakeTestController.action(:boom)
+     get '/'
+     assert_caught_and_not_sent
   end
 
-  should "call session.to_hash if available" do
-    hash_data = {:key => :value}
+   should "not deliver notices from actions that don't raise" do
+     @app = AirbrakeTestController.action(:hello)
+     get '/'
+     assert_caught_and_not_sent
+     assert_equal 'hello', response.body
+   end
 
-    session = ActionController::TestSession.new
-    ActionController::TestSession.stubs(:new).returns(session)
-    session.stubs(:to_hash).returns(hash_data)
+   should "not deliver ignored exceptions raised by actions" do
+     @app = AirbrakeTestController.action(:boom)
+     ignore(RuntimeError)
+     get '/'
+     assert_caught_and_not_sent
+   end
 
-    process_action_with_automatic_notification
-    assert_received(session, :to_hash)
-    assert_received(session, :data) { |expect| expect.never }
-    assert_caught_and_sent
+   should "deliver ignored exception raised manually" do
+     Airbrake.configuration.environment_name = "production"
+     @app = AirbrakeTestController.action(:manual_airbrake)
+     ignore(RuntimeError)
+     get '/'
+     assert_caught_and_sent
+   end
+
+   should "not deliver manually sent notices in local requests" do
+     Airbrake.configuration.environment_name = "production"
+     AirbrakeTestController.local = true
+     @app = AirbrakeTestController.action(:manual_airbrake)
+     get '/'
+     assert_caught_and_not_sent
+     AirbrakeTestController.local = false
+   end
+
+
+   # TODO: remove this since it should be tested in integration tests
+   # should "continue with default behavior after delivering an exception" do
+   #    Airbrake.configuration.environment_name = "production"
+   #    @app = AirbrakeTestController.action(:boom)
+   #    get '/'
+   #    assert_received(ActionDispatch::ShowExceptions, :render_exception)
+   # end
+
+   should "not create actions from Airbrake methods" do
+     Airbrake::Rails::ControllerMethods.instance_methods.each do |method|
+       assert !(AirbrakeTestController.new.action_methods.include?(method))
+     end
+   end
+
+   should "ignore exceptions when user agent is being ignored by regular expression" do
+     Airbrake.configuration.ignore_user_agent_only = [/Ignored/]
+     @app = AirbrakeTestController.action(:boom)
+     get "/", :user_agent => "ShouldBeIgnored"
+     assert_caught_and_not_sent
+   end
+
+   should "ignore exceptions when user agent is being ignored by string" do
+     Airbrake.configuration.ignore_user_agent_only = ['IgnoredUserAgent']
+     @app = AirbrakeTestController.action(:boom)
+     get "/", :user_agent => "ShouldBeIgnored"
+     assert_caught_and_not_sent
+   end
+
+   should "not ignore exceptions when user agent is not being ignored" do
+     Airbrake.configuration.ignore_user_agent_only = ['IgnoredUserAgent']
+     @app = AirbrakeTestController.action(:boom)
+     get "/", :user_agent => "NonIgnoredAgent"
+     assert_caught_and_not_sent
+   end
+
+   should "send session data for manual notifications" do
+     Airbrake.configuration.environment_name = "production"
+     @app = AirbrakeTestController.action(:manual_airbrake)
+     data = { 'one' => 'two' }
+     get "/", :session => data
+     assert_sent_hash data, "/notice/request/session"
+   end
+
+   should "send request data for manual notification" do
+     Airbrake.configuration.environment_name = "production"
+     params = { 'controller' => "airbrake_test", 'action' => "index" }
+     @app = AirbrakeTestController.action(:manual_airbrake)
+     get "/", params
+     assert_sent_request_info_for @request
+   end
+
+   should "send request data for manual notification with non-standard port" do
+     Airbrake.configuration.environment_name = "production"
+     params = { 'controller' => "airbrake_test", 'action' => "index" }
+     @app = AirbrakeTestController.action(:manual_airbrake)
+     get "/", params.merge(:port => 81)
+     assert_sent_request_info_for @request
   end
 
-  should "call session.data if session.to_hash is undefined" do
-    hash_data = {:key => :value}
+   should "send request data for automatic notification" do
+     Airbrake.configuration.environment_name = "production"
+     params = { 'controller' => "airbrake_test", 'action' => "index" }
+     @app = AirbrakeTestController.action(:boom)
+     get "/", params
+     assert_sent_request_info_for @request
+   end
 
-    session = ActionController::TestSession.new
-    ActionController::TestSession.stubs(:new).returns(session)
-    session.stubs(:data).returns(hash_data)
-    if session.respond_to?(:to_hash)
-      class << session
-        undef to_hash
-      end
-    end
+   should "send request data for automatic notification with non-standard port" do
+     Airbrake.configuration.environment_name = "production"
+     params = { 'controller' => "airbrake_test", 'action' => "index" }
+     @app = AirbrakeTestController.action(:boom)
+     get "/", params, {"SERVER_PORT" => 81}
+     assert_sent_request_info_for @request
+     assert_sent_element 81, "/notice/request/cgi-data/var[@key = 'SERVER_PORT']"
+   end
 
-    process_action_with_automatic_notification
-    assert_received(session, :to_hash) { |expect| expect.never }
-    assert_received(session, :data) { |expect| expect.at_least_once }
-    assert_caught_and_sent
-  end
+  # TODO: remove this since this should be tested in integration tests
+  # should "use standard rails logging filters on params and session and env" do
+  #   Airbrake.configuration.environment_name = "production"
+  #   filtered_params = { "abc" => "123",
+  #                       "def" => "456",
+  #                       "ghi" => "[FILTERED]" }
 
+  #   filtered_session = { "abc" => "123",
+  #                        "ghi" => "[FILTERED]" }
+  #   ENV['ghi'] = 'abc'
+  #   filtered_env = { 'ghi' => '[FILTERED]' }
+  #   filtered_cgi = { 'REQUEST_METHOD' => '[FILTERED]' }
+
+  #   params = { "abc" => "123",
+  #              "def" => "456",
+  #              "ghi" => "789" }
+
+  #   @app = AirbrakeTestController.action(:boom)
+
+  #   get "/",
+  #   params.merge(:session => { "abc" => "122",
+  #                "ghi" => "789" },:filter => "yes"),
+  #   {"action_dispatch.parameter_filter" => [:ghi, :request_method]}
+  #   assert_sent_hash filtered_params, '/notice/request/params'
+  #   assert_sent_hash filtered_cgi, '/notice/request/cgi-data'
+  #   assert_sent_hash filtered_session, '/notice/request/session'
+  # end
+
+  # context "for a local error with development lookup enabled" do
+  #   setup do
+  #     Airbrake.configuration.development_lookup = true
+  #     Airbrake.stubs(:build_lookup_hash_for).returns({ :awesome => 2 })
+
+  #     @response = process_action_with_automatic_notification(:local => true)
+  #   end
+
+  #   should "append custom CSS and JS to response body for a local error" do
+  #     assert_match /text\/css/, @response
+  #     assert_match /text\/javascript/, @response
+  #   end
+
+  #   should "contain host, API key and notice JSON" do
+  #     assert_match Airbrake.configuration.host.to_json, @response
+  #     assert_match Airbrake.configuration.api_key.to_json, @response
+  #     assert_match ({ :awesome => 2 }).to_json, @response
+  #   end
+  # end
+
+  # context "for a local error with development lookup disabled" do
+  #   setup do
+  #     Airbrake.configuration.development_lookup = false
+
+  #     @response = process_action_with_automatic_notification(:local => true)
+  #   end
+
+  #   should "not append custom CSS and JS to response for a local error" do
+  #     assert_no_match /text\/css/, @response
+  #     assert_no_match /text\/javascript/, @response
+  #   end
+  # end
+
+  # should "call session.to_hash if available" do
+  #   hash_data = {:key => :value}
+
+  #   session = ActionController::TestSession.new
+  #   ActionController::TestSession.stubs(:new).returns(session)
+  #   session.stubs(:to_hash).returns(hash_data)
+
+  #   Airbrake.configuration.environment_name = "production"
+
+  #   @app = AirbrakeTestController.action(:boom)
+  #   get '/'
+
+  #   assert_received(session, :to_hash)
+  #   assert_received(session, :data) { |expect| expect.never }
+  #   assert_caught_and_sent
+  # end
+
+  # should "call session.data if session.to_hash is undefined" do
+  #   hash_data = {:key => :value}
+
+  #   session = ActionController::TestSession.new
+  #   ActionController::TestSession.stubs(:new).returns(session)
+  #   session.stubs(:data).returns(hash_data)
+  #   if session.respond_to?(:to_hash)
+  #     class << session
+  #       undef to_hash
+  #     end
+  #   end
+
+  #   Airbrake.configuration.environment_name = "production"
+
+  #   @app = AirbrakeTestController.action(:boom)
+  #   get '/'
+
+  #   assert_received(session, :to_hash) { |expect| expect.never }
+  #   assert_received(session, :data) { |expect| expect.at_least_once }
+  #   assert_caught_and_sent
+  # end
 end

@@ -8,10 +8,14 @@ require 'thread'
 require 'shoulda'
 require 'mocha'
 
+require 'abstract_controller'
 require 'action_controller'
-require 'action_controller/test_process'
+require 'action_dispatch'
+require 'active_support/dependencies'
+require 'active_model'
 require 'active_record'
-require 'active_support'
+require 'active_support/core_ext/kernel/reporting'
+
 require 'nokogiri'
 require 'rack'
 require 'bourne'
@@ -20,6 +24,122 @@ require 'sham_rack'
 require "airbrake"
 
 begin require 'redgreen'; rescue LoadError; end
+
+# Show backtraces for deprecated behavior for quicker cleanup.
+ActiveSupport::Deprecation.debug = true
+
+FIXTURE_LOAD_PATH = File.join(File.dirname(__FILE__), 'fixtures')
+FIXTURES = Pathname.new(FIXTURE_LOAD_PATH)
+
+SharedTestRoutes = ActionDispatch::Routing::RouteSet.new
+
+class RoutedRackApp
+  attr_reader :routes
+
+  def initialize(routes, &blk)
+    @routes = routes
+    @stack = ActionDispatch::MiddlewareStack.new(&blk).build(@routes)
+  end
+
+  def call(env)
+    @stack.call(env)
+  end
+end
+
+class ActionDispatch::IntegrationTest < ActiveSupport::TestCase
+  setup do
+    @routes = SharedTestRoutes
+  end
+end
+
+class ActionController::IntegrationTest < ActiveSupport::TestCase
+  def self.build_app(routes = nil)
+    RoutedRackApp.new(routes || ActionDispatch::Routing::RouteSet.new) do |middleware|
+      middleware.use "ActionDispatch::Callbacks"
+      middleware.use "ActionDispatch::ParamsParser"
+      middleware.use "ActionDispatch::Cookies"
+      middleware.use "ActionDispatch::Flash"
+      middleware.use "ActionDispatch::Head"
+      yield(middleware) if block_given?
+    end
+  end
+
+  self.app = build_app
+
+  # Stub Rails dispatcher so it does not get controller references and
+  # simply return the controller#action as Rack::Body.
+  class StubDispatcher < ::ActionDispatch::Routing::RouteSet::Dispatcher
+    protected
+    def controller_reference(controller_param)
+      controller_param
+    end
+
+    def dispatch(controller, action, env)
+      [200, {'Content-Type' => 'text/html'}, ["#{controller}##{action}"]]
+    end
+  end
+
+  def self.stub_controllers
+    old_dispatcher = ActionDispatch::Routing::RouteSet::Dispatcher
+    ActionDispatch::Routing::RouteSet.module_eval { remove_const :Dispatcher }
+    ActionDispatch::Routing::RouteSet.module_eval { const_set :Dispatcher, StubDispatcher }
+    yield ActionDispatch::Routing::RouteSet.new
+  ensure
+    ActionDispatch::Routing::RouteSet.module_eval { remove_const :Dispatcher }
+    ActionDispatch::Routing::RouteSet.module_eval { const_set :Dispatcher, old_dispatcher }
+  end
+
+  def with_routing(&block)
+    temporary_routes = ActionDispatch::Routing::RouteSet.new
+    old_app, self.class.app = self.class.app, self.class.build_app(temporary_routes)
+    old_routes = SharedTestRoutes
+    silence_warnings { Object.const_set(:SharedTestRoutes, temporary_routes) }
+
+    yield temporary_routes
+  ensure
+    self.class.app = old_app
+    silence_warnings { Object.const_set(:SharedTestRoutes, old_routes) }
+  end
+
+  def with_autoload_path(path)
+    path = File.join(File.dirname(__FILE__), "fixtures", path)
+    if ActiveSupport::Dependencies.autoload_paths.include?(path)
+      yield
+    else
+      begin
+        ActiveSupport::Dependencies.autoload_paths << path
+        yield
+      ensure
+        ActiveSupport::Dependencies.autoload_paths.reject! {|p| p == path}
+        ActiveSupport::Dependencies.clear
+      end
+    end
+  end
+end
+
+module ActionController
+  class Base
+    include ActionController::Testing
+  end
+
+  Base.view_paths = FIXTURE_LOAD_PATH
+
+  class TestCase
+    include ActionDispatch::TestProcess
+
+    setup do
+      @routes = SharedTestRoutes
+    end
+  end
+end
+
+# This stub emulates the Railtie including the URL helpers from a Rails application
+module ActionController
+  class Base
+    include SharedTestRoutes.url_helpers
+  end
+end
+
 
 module TestMethods
   def rescue_action e
@@ -54,41 +174,6 @@ module TestMethods
 end
 
 class Test::Unit::TestCase
-  def request(action = nil, method = :get, user_agent = nil, params = {})
-    @request = ActionController::TestRequest.new
-    @request.action = action ? action.to_s : ""
-
-    if user_agent
-      if @request.respond_to?(:user_agent=)
-        @request.user_agent = user_agent
-      else
-        @request.env["HTTP_USER_AGENT"] = user_agent
-      end
-    end
-    @request.query_parameters = @request.query_parameters.merge(params)
-    @response = ActionController::TestResponse.new
-    @controller.process(@request, @response)
-  end
-
-  # Borrowed from ActiveSupport 2.3.2
-  def assert_difference(expression, difference = 1, message = nil, &block)
-    b = block.send(:binding)
-    exps = Array.wrap(expression)
-    before = exps.map { |e| eval(e, b) }
-
-    yield
-
-    exps.each_with_index do |e, i|
-      error = "#{e.inspect} didn't change by #{difference}"
-      error = "#{message}.\n#{error}" if message
-      assert_equal(before[i] + difference, eval(e, b), error)
-    end
-  end
-
-  def assert_no_difference(expression, message = nil, &block)
-    assert_difference expression, 0, message, &block
-  end
-
   def stub_sender
     stub('sender', :send_to_airbrake => nil)
   end
@@ -105,10 +190,6 @@ class Test::Unit::TestCase
      stub_notice.tap do |notice|
       Airbrake::Notice.stubs(:new => notice)
     end
-  end
-
-  def create_dummy
-    Airbrake::DummySender.new
   end
 
   def reset_config
@@ -185,8 +266,6 @@ class Test::Unit::TestCase
       expect.with {|actual| actual =~ expected }.never
     end
   end
-
-
 end
 
 module DefinesConstants
@@ -237,14 +316,6 @@ class CollectingSender
   def send_to_airbrake(data)
     @collected << data
   end
-end
-
-class FakeLogger
-  def info(*args);  end
-  def debug(*args); end
-  def warn(*args);  end
-  def error(*args); end
-  def fatal(*args); end
 end
 
 class BacktracedException < Exception

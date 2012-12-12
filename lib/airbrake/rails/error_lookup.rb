@@ -4,8 +4,10 @@ module Airbrake
 
       # Sets up an alias chain to catch exceptions when Rails does
       def self.included(base) #:nodoc:
-        base.send(:alias_method, :rescue_action_locally_without_airbrake, :rescue_action_locally)
-        base.send(:alias_method, :rescue_action_locally, :rescue_action_locally_with_airbrake)
+        if base.method_defined?(:rescue_action_locally)
+          base.send(:alias_method, :rescue_action_locally_without_airbrake, :rescue_action_locally)
+          base.send(:alias_method, :rescue_action_locally, :rescue_action_locally_with_airbrake)
+        end
       end
 
       private
