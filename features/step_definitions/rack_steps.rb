@@ -25,7 +25,3 @@ When /^I perform a Rack request to "([^\"]*)"$/ do |url|
   end
   step %{I run `bundle exec ruby #{request_file}`}
 end
-
-Then /^I should receive a Airbrake notification for rack$/ do
-  step %{I should see "You have accessed a deleted account."}
-end

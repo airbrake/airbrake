@@ -33,22 +33,27 @@ module Airbrake
     end
 
     def notify_airbrake(exception,env)
-      Airbrake.notify_or_ignore(exception,:rack_env => env) unless ignored_user_agent?(env)
-    end
+      Airbrake.notify_or_ignore(exception,:rack_env => env) unless ignored_user_agent?(env) end
 
     def call(env)
+      @env = env
       begin
-        response = @app.call(env)
+        response = @app.call(@env)
       rescue Exception => raised
-        env['airbrake.error_id'] = notify_airbrake(raised,env)
+        @env['airbrake.error_id'] = notify_airbrake(raised, @env)
         raise
       end
 
-      if env['rack.exception']
-        env['airbrake.error_id'] = notify_airbrake(env['rack.exception'],env)
+      if framework_exception
+        @env['airbrake.error_id'] = notify_airbrake(framework_exception, @env)
       end
 
       response
     end
+
+    def framework_exception
+      framework_exception = @env['rack.exception']
+    end
+
   end
 end

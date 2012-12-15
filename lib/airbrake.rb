@@ -13,6 +13,7 @@ require 'airbrake/notice'
 require 'airbrake/sender'
 require 'airbrake/backtrace'
 require 'airbrake/rack'
+require 'airbrake/sinatra'
 require 'airbrake/user_informer'
 
 require 'airbrake/railtie' if defined?(Rails::Railtie)
