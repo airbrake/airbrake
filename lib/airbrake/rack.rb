@@ -33,7 +33,8 @@ module Airbrake
     end
 
     def notify_airbrake(exception,env)
-      Airbrake.notify_or_ignore(exception,:rack_env => env) unless ignored_user_agent?(env) end
+      Airbrake.notify_or_ignore(exception,:rack_env => env) unless ignored_user_agent?(env)
+    end
 
     def call(env)
       @env = env
