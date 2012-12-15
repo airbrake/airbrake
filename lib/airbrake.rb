@@ -19,7 +19,7 @@ require 'airbrake/user_informer'
 require 'airbrake/railtie' if defined?(Rails::Railtie)
 
 module Airbrake
-  API_VERSION = "2.3"
+  API_VERSION = "2.4"
   LOG_PREFIX = "** [Airbrake] "
 
   HEADERS = {

@@ -22,6 +22,7 @@ module Airbrake
   class Rack
     def initialize(app)
       @app = app
+      Airbrake.configuration.framework = "Rack: #{::Rack.release}"
     end
 
     def ignored_user_agent?(env)
