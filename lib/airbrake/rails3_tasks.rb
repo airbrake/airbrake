@@ -80,7 +80,10 @@ namespace :airbrake do
     end
 
     puts 'Processing request.'
-    env = Rack::MockRequest.env_for("/verify")
+
+    protocol = Rails.application.config.force_ssl ? 'https' : 'http'
+
+    env = Rack::MockRequest.env_for("#{protocol}://www.example.com/verify")
 
     Rails.application.call(env)
 
