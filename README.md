@@ -31,6 +31,10 @@ That's it!
 
 The generator creates a file under `config/initializers/airbrake.rb` configuring Airbrake with your API key. This file should be checked into your version control system so that it is deployed to your staging and production environments.
 
+The default behaviour of the gem is to only operate in rails environments that are NOT **development**, **test** & **cucumber**. You can change this by adding this configuration to the airbrake.rb initializer like this:
+    
+    config.development_environments = ["development", "test", "cucumber", "custom"]
+
 ### Rails 2.x
 
 Add the airbrake gem to your app. In config/environment.rb:
@@ -51,7 +55,6 @@ As always, if you choose not to vendor the airbrake gem, make sure
 every server you deploy to has the gem installed or your application won't start.
 
 The generator creates a file under `config/initializers/airbrake.rb` configuring Airbrake with your API key. This file should be checked into your version control system so that it is deployed to your staging and production environments.
-
 
 Supported Rails versions
 ------------------------
