@@ -74,11 +74,11 @@ module Airbrake
 
       def airbrake_current_user
         user = begin current_user rescue current_member end
-        user.attributes.select do |k, v|
-          Airbrake.configuration.
-            user_attributes.map(&:to_sym).
-            include? k.to_sym unless v.blank?
-        end.symbolize_keys
+        h = {}
+        Airbrake.configuration.user_attributes.map(&:to_sym).each do |attr|
+          h[attribute.to_sym] = user.send(attr) if user.respond_to? attr
+        end
+        h
       rescue NoMethodError, NameError
         {}
       end
