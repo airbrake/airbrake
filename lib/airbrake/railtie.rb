@@ -24,11 +24,15 @@ module Airbrake
       ActiveSupport.on_load(:action_controller) do
         # Lazily load action_controller methods
         #
-        require 'airbrake/rails/javascript_notifier'
         require 'airbrake/rails/controller_methods'
 
-        include Airbrake::Rails::JavascriptNotifier
         include Airbrake::Rails::ControllerMethods
+      end
+
+      if defined?(::ActionController::Base)
+        require 'airbrake/rails/javascript_notifier'
+
+        ::ActionController::Base.send(:include, Airbrake::Rails::JavascriptNotifier)
       end
 
       if defined?(::ActionDispatch::DebugExceptions)
