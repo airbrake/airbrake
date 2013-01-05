@@ -138,6 +138,7 @@ module Airbrake
       if configuration.public?
         if configuration.async?
           configuration.async.call(notice)
+          nil # make sure we never set env["airbrake.error_id"] for async notices
         else
           sender.send_to_airbrake(notice)
         end
