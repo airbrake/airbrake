@@ -172,17 +172,17 @@ module Airbrake
             request.url(url)
             request.component(controller)
             request.action(action)
-            unless parameters.nil? || parameters.empty?
+            unless parameters.blank?
               request.params do |params|
                 xml_vars_for(params, parameters)
               end
             end
-            unless session_data.nil? || session_data.empty?
+            unless session_data.blank?
               request.session do |session|
                 xml_vars_for(session, session_data)
               end
             end
-            unless cgi_data.nil? || cgi_data.empty?
+            unless cgi_data.blank?
               request.tag!("cgi-data") do |cgi_datum|
                 xml_vars_for(cgi_datum, cgi_data)
               end
