@@ -6,7 +6,7 @@ end
 require 'net/http'
 require 'net/https'
 require 'rubygems'
-require 'airbrake/extensions/blank'
+require 'active_support/core_ext/object/blank'
 require 'airbrake/version'
 require 'airbrake/configuration'
 require 'airbrake/notice'

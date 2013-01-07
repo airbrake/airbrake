@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.test_files    = Dir.glob("{test,spec,features}/**/*")
 
   s.add_runtime_dependency("builder")
+  s.add_runtime_dependency("activesupport")
 
   s.add_development_dependency("bourne",        ">= 1.0")
   s.add_development_dependency("cucumber-rails","~> 1.1.1")
