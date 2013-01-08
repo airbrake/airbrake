@@ -61,7 +61,7 @@ class NoticeTest < Test::Unit::TestCase
   end
 
   def assert_valid_notice_document(document)
-    xsd_path = File.join(File.dirname(__FILE__), "airbrake_2_4.xsd")
+    xsd_path = File.expand_path(File.join(File.dirname(__FILE__),"..", "resources", "airbrake_2_4.xsd"))
     schema = Nokogiri::XML::Schema.new(IO.read(xsd_path))
     errors = schema.validate(document)
     assert errors.empty?, errors.collect{|e| e.message }.join
