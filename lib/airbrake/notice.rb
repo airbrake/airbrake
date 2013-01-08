@@ -209,6 +209,47 @@ module Airbrake
       xml.to_s
     end
 
+    def to_json
+      {
+        'notifier' => {
+          'name'    => 'airbrake',
+          'version' => Airbrake::VERSION,
+          'url'     => 'https://github.com/airbrake/airbrake'
+          },
+        'errors' => [{
+            'type'       => error_class,
+            'message'    => error_message,
+            'backtrace'  => backtrace.lines.map do |line|
+                {
+                  'file'     => line.file,
+                  'line'     => line.number.to_i,
+                  'function' => line.method
+                }
+            end
+          }],
+         'context' => {}.tap do |hash|
+            if url || controller || action || !parameters.blank? || !cgi_data.blank? || !session_data.blank?
+              hash['url']           = url
+              hash['component']     = controller
+              hash['action']        = action
+              hash['rootDirectory'] = File.dirname(project_root)
+              hash['environment']   = environment_name
+            end
+           end.tap do |hash|
+            next if user.blank?
+
+            hash['userId']    = user[:id]
+            hash['userName']  = user[:name]
+            hash['userEmail'] = user[:email]
+          end
+
+      }.tap do |hash|
+          hash['environment'] = cgi_data     unless cgi_data.blank?
+          hash['params']      = parameters   unless parameters.blank?
+          hash['session']     = session_data unless session_data.blank?
+      end.to_json
+    end
+
     # Determines if this notice should be ignored
     def ignore?
       ignored_class_names.include?(error_class) ||

@@ -67,6 +67,12 @@ class NoticeTest < Test::Unit::TestCase
     assert errors.empty?, errors.collect{|e| e.message }.join
   end
 
+  def assert_valid_json(notice)
+    json_schema = File.expand_path(File.join(File.dirname(__FILE__),"..", "resources", "airbrake_3_0.json"))
+    errors = JSON::Validator.fully_validate(json_schema, notice)
+    assert errors.empty?, errors.collect{|e| e.message }.join
+  end
+
   def assert_filters_hash(attribute)
     filters  = ["abc", :def]
     original = { 'abc' => "123", 'def' => "456", 'ghi' => "789", 'nested' => { 'abc' => '100' },
@@ -262,6 +268,32 @@ class NoticeTest < Test::Unit::TestCase
     assert_equal({"abc" => "123"}, notice.cgi_data)
   end
 
+  context "a Notice turned into JSON" do
+    setup do
+      @exception = build_exception
+
+      @notice = build_notice({
+        :notifier_name    => 'a name',
+        :notifier_version => '1.2.3',
+        :notifier_url     => 'http://some.url/path',
+        :exception        => @exception,
+        :controller       => "controller",
+        :action           => "action",
+        :url              => "http://url.com",
+        :parameters       => { "paramskey"     => "paramsvalue",
+                               "nestparentkey" => { "nestkey" => "nestvalue" } },
+        :session_data     => { "sessionkey" => "sessionvalue" },
+        :cgi_data         => { "cgikey" => "cgivalue" },
+        :project_root     => "RAILS_ROOT",
+        :environment_name => "RAILS_ENV"
+      })
+    end
+
+    should "validate against the JSON schema" do
+      assert_valid_json @json
+    end
+  end
+
   context "a Notice turned into XML" do
     setup do
       Airbrake.configure do |config|
@@ -294,6 +326,7 @@ class NoticeTest < Test::Unit::TestCase
     should "validate against the XML schema" do
       assert_valid_notice_document @document
     end
+
 
     should "serialize a Notice to XML when sent #to_xml" do
       assert_valid_node(@document, "//api-key", @notice.api_key)

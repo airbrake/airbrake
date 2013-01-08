@@ -20,6 +20,7 @@ require 'nokogiri'
 require 'rack'
 require 'bourne'
 require 'sham_rack'
+require 'json-schema'
 
 require "airbrake"
 
