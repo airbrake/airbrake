@@ -9,6 +9,10 @@ module Airbrake
     end
 
     def call(env)
+      dup._call(env)
+    end
+
+    def _call(env)
       status, headers, body = @app.call(env)
 
       if env['airbrake.error_id'] && Airbrake.configuration.user_information
@@ -23,6 +27,9 @@ module Airbrake
       end
 
       [status, headers, body]
+
+    ensure
+      body.close if body && body.respond_to?(:close) && $!
     end
   end
 end
