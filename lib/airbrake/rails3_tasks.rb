@@ -81,7 +81,8 @@ namespace :airbrake do
 
     puts 'Processing request.'
 
-    protocol = Rails.application.config.force_ssl ? 'https' : 'http'
+    config = Rails.application.config
+    protocol = (config.respond_to?(:force_ssl) && config.force_ssl) ? 'https' : 'http'
 
     env = Rack::MockRequest.env_for("#{protocol}://www.example.com/verify")
 
