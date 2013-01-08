@@ -107,6 +107,9 @@ module Airbrake
     # User attributes that are being captured
     attr_accessor :user_attributes
 
+    # Only used for JSON API
+    attr_accessor :project_id
+
 
     DEFAULT_PARAMS_FILTERS = %w(password password_confirmation).freeze
 

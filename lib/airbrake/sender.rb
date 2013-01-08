@@ -4,9 +4,15 @@ module Airbrake
 
     NOTICES_URI = '/notifier_api/v2/notices/'.freeze
     HEADERS = {
-      'Content-type'             => 'text/xml',
-      'Accept'                   => 'text/xml, application/xml'
-    }
+      :xml => {
+      'Content-type' => 'text/xml',
+      'Accept'       => 'text/xml, application/xml'
+    },:json => {
+      'Content-Type' => 'application/json',
+      'Accept'       => 'application/json'
+    }}
+
+    JSON_API_URI = '/api/v3/projects'.freeze
     HTTP_ERRORS = [Timeout::Error,
                    Errno::EINVAL,
                    Errno::ECONNRESET,
@@ -27,21 +33,26 @@ module Airbrake
         :secure,
         :use_system_ssl_cert_chain,
         :http_open_timeout,
-        :http_read_timeout
+        :http_read_timeout,
+        :project_id,
+        :api_key
       ].each do |option|
         instance_variable_set("@#{option}", options[option])
       end
     end
 
+
     # Sends the notice data off to Airbrake for processing.
     #
     # @param [Notice or String] notice The notice to be sent off
     def send_to_airbrake(notice)
-      data = notice.respond_to?(:to_xml) ? notice.to_xml : notice
+      data = prepare_notice(notice)
       http = setup_http_connection
 
       response = begin
-                   http.post(url.path, data, HEADERS)
+                   http.post(url.respond_to?(:path) ? url.path : url,
+                             data,
+                             headers)
                  rescue *HTTP_ERRORS => e
                    log :level => :error,
                        :message => "Unable to contact the Airbrake server. HTTP Error=#{e}"
@@ -82,15 +93,46 @@ module Airbrake
                 :secure,
                 :use_system_ssl_cert_chain,
                 :http_open_timeout,
-                :http_read_timeout
+                :http_read_timeout,
+                :project_id,
+                :api_key
 
     alias_method :secure?, :secure
     alias_method :use_system_ssl_cert_chain?, :use_system_ssl_cert_chain
 
   private
 
+    def prepare_notice(notice)
+      if json_api_enabled?
+        begin
+          JSON.parse(notice)
+          notice
+        rescue
+          notice.to_json
+        end
+      else
+        notice.respond_to?(:to_xml) ? notice.to_xml : notice
+      end
+    end
+
+    def api_url
+      if json_api_enabled?
+        "#{JSON_API_URI}/#{project_id}/notices?key=#{api_key}"
+      else
+        NOTICES_URI
+      end
+    end
+
+    def headers
+      if json_api_enabled?
+        HEADERS[:json]
+      else
+        HEADERS[:xml]
+      end
+    end
+
     def url
-      URI.parse("#{protocol}://#{host}:#{port}").merge(NOTICES_URI)
+      URI.parse("#{protocol}://#{host}:#{port}").merge(api_url)
     end
 
     def log(opts = {})
@@ -127,6 +169,11 @@ module Airbrake
           :message => "[Airbrake::Sender#setup_http_connection] Failure initializing the HTTP connection.\n" +
                       "Error: #{e.class} - #{e.message}\nBacktrace:\n#{e.backtrace.join("\n\t")}"
       raise e
+    end
+
+    def json_api_enabled?
+      !!(host =~ /collect.airbrake.io/) &&
+        project_id.present?
     end
   end
 end

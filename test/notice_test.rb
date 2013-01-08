@@ -70,7 +70,7 @@ class NoticeTest < Test::Unit::TestCase
   def assert_valid_json(notice)
     json_schema = File.expand_path(File.join(File.dirname(__FILE__),"..", "resources", "airbrake_3_0.json"))
     errors = JSON::Validator.fully_validate(json_schema, notice)
-    assert errors.empty?, errors.collect{|e| e.message }.join
+    assert errors.empty?, errors.join
   end
 
   def assert_filters_hash(attribute)
@@ -287,6 +287,8 @@ class NoticeTest < Test::Unit::TestCase
         :project_root     => "RAILS_ROOT",
         :environment_name => "RAILS_ENV"
       })
+
+      @json = @notice.to_json
     end
 
     should "validate against the JSON schema" do

@@ -39,7 +39,9 @@
          "rootDirectory"  : {"type" : "string"},
          "userId"         : {"type" : "string"},
          "userName"       : {"type" : "string"},
-         "userEmail"      : {"type" : "string"}
+         "userEmail"      : {"type" : "string"},
+         "component"      : {"type" : "string"},
+         "action"         : {"type" : "string"}
        }
      },
    "environment" : {"type" : "hash"},

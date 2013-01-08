@@ -31,32 +31,6 @@ class SenderTest < Test::Unit::TestCase
     http
   end
 
-  should "post to Airbrake with XML passed" do
-    xml_notice = Airbrake::Notice.new(:error_class => "FooBar", :error_message => "Foo Bar").to_xml
-
-    http = stub_http
-
-    sender = build_sender
-    sender.send_to_airbrake(xml_notice)
-
-    assert_received(http, :post) do |expect|
-      expect.with(anything, xml_notice, Airbrake::Sender::HEADERS)
-    end
-  end
-
-  should "post to Airbrake with a Notice instance passed" do
-    notice = Airbrake::Notice.new(:error_class => "FooBar", :error_message => "Foo Bar")
-
-    http = stub_http
-
-    sender = build_sender
-    sender.send_to_airbrake(notice)
-
-    assert_received(http, :post) do |expect|
-      expect.with(anything, notice.to_xml, Airbrake::Sender::HEADERS)
-    end
-  end
-
   should "post to Airbrake when using an HTTP proxy" do
     response = stub(:body => 'body')
     http     = stub(:post          => response,
@@ -79,7 +53,7 @@ class SenderTest < Test::Unit::TestCase
                    :proxy_user => proxy_user,
                    :proxy_pass => proxy_pass)
     assert_received(http, :post) do |expect|
-      expect.with(uri.path, anything, Airbrake::Sender::HEADERS)
+      expect.with(uri.path, anything, Airbrake::Sender::HEADERS[:xml])
     end
     assert_received(Net::HTTP, :Proxy) do |expect|
       expect.with(proxy_host, proxy_port, proxy_user, proxy_pass)
@@ -89,6 +63,66 @@ class SenderTest < Test::Unit::TestCase
   should "return the created group's id on successful posting" do
     http = stub_http(:body => '<id type="integer">3799307</id>')
     assert_equal "3799307", send_exception(:secure => false)
+  end
+
+  context "when using the XML API" do
+
+    should "post to Airbrake with XML passed" do
+      xml_notice = Airbrake::Notice.new(:error_class => "FooBar", :error_message => "Foo Bar").to_xml
+
+      http = stub_http
+
+      sender = build_sender
+      sender.send_to_airbrake(xml_notice)
+
+      assert_received(http, :post) do |expect|
+        expect.with(anything, xml_notice, Airbrake::Sender::HEADERS[:xml])
+      end
+    end
+
+    should "post to Airbrake with a Notice instance passed" do
+      notice = Airbrake::Notice.new(:error_class => "FooBar", :error_message => "Foo Bar")
+
+      http = stub_http
+
+      sender = build_sender
+      sender.send_to_airbrake(notice)
+
+      assert_received(http, :post) do |expect|
+        expect.with(anything, notice.to_xml, Airbrake::Sender::HEADERS[:xml])
+      end
+    end
+
+  end
+
+  context "when using new JSON API" do
+    should "post to Airbrake with JSON passed" do
+      json_notice = Airbrake::Notice.new(:error_class => "FooBar", :error_message => "Foo Bar").to_json
+
+      http = stub_http
+
+      sender = build_sender(:project_id => "PROJECT_ID", :host => "collect.airbrake.io")
+      sender.send_to_airbrake(json_notice)
+
+      assert_received(http, :post) do |expect|
+        expect.with(anything, json_notice, Airbrake::Sender::HEADERS[:json])
+      end
+
+    end
+
+    should "post to Airbrake with notice passed" do
+      notice = Airbrake::Notice.new(:error_class => "FooBar", :error_message => "Foo Bar")
+
+      http = stub_http
+
+      sender = build_sender(:project_id => "PROJECT_ID", :host => "collect.airbrake.io")
+      sender.send_to_airbrake(notice)
+
+      assert_received(http, :post) do |expect|
+        expect.with(anything, notice.to_json, Airbrake::Sender::HEADERS[:json])
+      end
+
+    end
   end
 
   context "when encountering exceptions: " do
@@ -176,13 +210,13 @@ class SenderTest < Test::Unit::TestCase
       url = "http://api.airbrake.io:80#{Airbrake::Sender::NOTICES_URI}"
       uri = URI.parse(url)
       send_exception(:secure => false)
-      assert_received(http, :post) {|expect| expect.with(uri.path, anything, Airbrake::Sender::HEADERS) }
+      assert_received(http, :post) {|expect| expect.with(uri.path, anything, Airbrake::Sender::HEADERS[:xml]) }
     end
 
     should "post to the right path for ssl" do
       http = stub_http
       send_exception(:secure => true)
-      assert_received(http, :post) {|expect| expect.with(Airbrake::Sender::NOTICES_URI, anything, Airbrake::Sender::HEADERS) }
+      assert_received(http, :post) {|expect| expect.with(Airbrake::Sender::NOTICES_URI, anything, Airbrake::Sender::HEADERS[:xml]) }
     end
 
     should "verify the SSL peer when the use_ssl option is set to true" do
@@ -255,8 +289,6 @@ class SenderTest < Test::Unit::TestCase
       send_exception(:secure => false, :host => 'example.org')
       assert_received(Net::HTTP, :new) {|expect| expect.with('example.org', 80) }
     end
-
-
   end
 
   context "network timeouts" do
@@ -284,5 +316,4 @@ class SenderTest < Test::Unit::TestCase
       assert_received(http, :read_timeout=) {|expect| expect.with(10) }
     end
   end
-
 end

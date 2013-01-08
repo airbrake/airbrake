@@ -31,6 +31,7 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_default :development_lookup, true
     assert_config_default :framework, 'Standalone'
     assert_config_default :async, nil
+    assert_config_default :project_id, nil
   end
 
   should "set GirlFriday-callable for async=true" do
@@ -86,6 +87,7 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_overridable :development_lookup
     assert_config_overridable :logger
     assert_config_overridable :async
+    assert_config_overridable :project_id
   end
 
   should "have an api key" do
