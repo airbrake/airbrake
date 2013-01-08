@@ -16,3 +16,4 @@ pkg
 
 *.rbc
 *.plan
+gemfiles/*.lock
