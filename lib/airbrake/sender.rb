@@ -3,6 +3,10 @@ module Airbrake
   class Sender
 
     NOTICES_URI = '/notifier_api/v2/notices/'.freeze
+    HEADERS = {
+      'Content-type'             => 'text/xml',
+      'Accept'                   => 'text/xml, application/xml'
+    }
     HTTP_ERRORS = [Timeout::Error,
                    Errno::EINVAL,
                    Errno::ECONNRESET,

@@ -40,7 +40,7 @@ class SenderTest < Test::Unit::TestCase
     sender.send_to_airbrake(xml_notice)
 
     assert_received(http, :post) do |expect|
-      expect.with(anything, xml_notice, Airbrake::HEADERS)
+      expect.with(anything, xml_notice, Airbrake::Sender::HEADERS)
     end
   end
 
@@ -53,7 +53,7 @@ class SenderTest < Test::Unit::TestCase
     sender.send_to_airbrake(notice)
 
     assert_received(http, :post) do |expect|
-      expect.with(anything, notice.to_xml, Airbrake::HEADERS)
+      expect.with(anything, notice.to_xml, Airbrake::Sender::HEADERS)
     end
   end
 
@@ -79,7 +79,7 @@ class SenderTest < Test::Unit::TestCase
                    :proxy_user => proxy_user,
                    :proxy_pass => proxy_pass)
     assert_received(http, :post) do |expect|
-      expect.with(uri.path, anything, Airbrake::HEADERS)
+      expect.with(uri.path, anything, Airbrake::Sender::HEADERS)
     end
     assert_received(Net::HTTP, :Proxy) do |expect|
       expect.with(proxy_host, proxy_port, proxy_user, proxy_pass)
@@ -176,13 +176,13 @@ class SenderTest < Test::Unit::TestCase
       url = "http://api.airbrake.io:80#{Airbrake::Sender::NOTICES_URI}"
       uri = URI.parse(url)
       send_exception(:secure => false)
-      assert_received(http, :post) {|expect| expect.with(uri.path, anything, Airbrake::HEADERS) }
+      assert_received(http, :post) {|expect| expect.with(uri.path, anything, Airbrake::Sender::HEADERS) }
     end
 
     should "post to the right path for ssl" do
       http = stub_http
       send_exception(:secure => true)
-      assert_received(http, :post) {|expect| expect.with(Airbrake::Sender::NOTICES_URI, anything, Airbrake::HEADERS) }
+      assert_received(http, :post) {|expect| expect.with(Airbrake::Sender::NOTICES_URI, anything, Airbrake::Sender::HEADERS) }
     end
 
     should "verify the SSL peer when the use_ssl option is set to true" do

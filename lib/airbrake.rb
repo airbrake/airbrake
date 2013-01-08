@@ -22,11 +22,6 @@ module Airbrake
   API_VERSION = "2.4"
   LOG_PREFIX = "** [Airbrake] "
 
-  HEADERS = {
-    'Content-type'             => 'text/xml',
-    'Accept'                   => 'text/xml, application/xml'
-  }
-
   class << self
     # The sender object is responsible for delivering formatted data to the Airbrake server.
     # Must respond to #send_to_airbrake. See Airbrake::Sender.
