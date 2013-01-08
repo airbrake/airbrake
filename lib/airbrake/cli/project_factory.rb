@@ -13,11 +13,14 @@ class ProjectFactory
 
   def create_projects_from_xml(xml)
     xml.split("\n").each do |line|
-      /<name[^>]*>(?<name>.*?)<\/name>/ =~ line
+      /<name[^>]*>(.*)<\/name>/ =~ line
+      name = $1
       project.name    = name.capitalize if name
-      /<id[^>]*>(?<id>.*?)<\/id>/ =~ line
+      /<id[^>]*>(.*)<\/id>/ =~ line
+      id = $1
       project.id      = id              if id
-      /<api-key[^>]*>(?<api_key>.*?)<\/api-key>/ =~ line
+      /<api-key[^>]*>(.*)<\/api-key>/ =~ line
+      api_key = $1
       project.api_key = api_key         if api_key
       check_project
     end
