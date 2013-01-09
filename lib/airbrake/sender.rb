@@ -2,7 +2,7 @@ module Airbrake
   # Sends out the notice to Airbrake
   class Sender
 
-    NOTICES_URI = '/notifier_api/v2/notices/'.freeze
+    NOTICES_URI = '/notifier_api/v2/notices'.freeze
     HEADERS = {
       :xml => {
       'Content-type' => 'text/xml',
