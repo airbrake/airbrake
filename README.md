@@ -61,11 +61,10 @@ every server you deploy to has the gem installed or your application won't start
 
 The generator creates a file under `config/initializers/airbrake.rb` configuring Airbrake with your API key. This file should be checked into your version control system so that it is deployed to your staging and production environments.
 
-Supported Rails versions
+Supported frameworks
 ------------------------
 
-See **[SUPPORTED_RAILS_VERSIONS](https://github.com/airbrake/airbrake/blob/master/SUPPORTED_RAILS_VERSIONS)** for a list of official supported versions of
-Rails.
+See **[TESTED_AGAINST](https://github.com/airbrake/airbrake/blob/master/TESTED_AGAINST)** for a full list of frameworks and versions we test against.
 
 Airbrake wiki pages
 ------------------------

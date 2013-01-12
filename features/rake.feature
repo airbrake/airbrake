@@ -23,6 +23,7 @@ Feature: Use the Gem to catch errors in a Rake application
     When I run rake with airbrake autodetect not from terminal
     Then Airbrake should catch the exception
 
+  @wip
   Scenario: Airbrake should also send the command name
     When I run `rake airbrake_autodetect_not_from_terminal`
     Then command "airbrake_autodetect_not_from_terminal" should be reported

@@ -227,7 +227,7 @@ When /^I have set up authentication system in my app that uses "([^\"]*)"$/ do |
 
     # this is the ultimate authentication system, devise is history
     def #{current_user}
-      Struct.new(:attributes).new({:id => 1,:name => 'Bender',:email => 'bender@beer.com',:username => 'b3nd0r'})
+      Struct.new(:id, :name, :email, :username).new(1, 'Bender', 'bender@beer.com', 'b3nd0r')
     end
   end
   """

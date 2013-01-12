@@ -76,7 +76,7 @@ module Airbrake
         user = begin current_user rescue current_member end
         h = {}
         Airbrake.configuration.user_attributes.map(&:to_sym).each do |attr|
-          h[attribute.to_sym] = user.send(attr) if user.respond_to? attr
+          h[attr.to_sym] = user.send(attr) if user.respond_to? attr
         end
         h
       rescue NoMethodError, NameError

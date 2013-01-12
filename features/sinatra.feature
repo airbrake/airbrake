@@ -10,11 +10,11 @@ Feature: Use the notifier in a Sinatra app
       Airbrake.configure do |config|
         config.api_key = 'my_api_key' 
         config.logger  = Logger.new STDOUT
+        config.development_environments = []
       end
 
       class FontaneApp < Sinatra::Base
         use Airbrake::Sinatra
-        enable :raise_errors
 
         get "/test/index" do
           raise "Sinatra has left the building"
@@ -42,7 +42,6 @@ Feature: Use the notifier in a Sinatra app
         use Airbrake::Sinatra
 
         set :environment, :production
-        enable :raise_errors
 
         get "/test/index" do
           raise "Sinatra has left the building"

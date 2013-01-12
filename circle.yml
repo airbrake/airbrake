@@ -2,8 +2,9 @@
 dependencies:
   override:
     - bundle
+    - bundle exec rake appraisal:install
 
 ## Customize test commands
 test:
   override:
-    - rake
+    - bundle exec rake
