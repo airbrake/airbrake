@@ -13,8 +13,10 @@ end
 require './lib/airbrake/version'
 
 task :default do
-  exec 'rake appraisal test'
-  exec 'rake appraisal cucumber'
+  exec 'rake appraisal:rails-3.0 test '\
+  '&& rake appraisal:rails-3.1 test '\
+  '&& rake appraisal:rails-3.2 test '\
+  '&& rake appraisal cucumber'\
 end
 
 desc 'Test the airbrake gem.'

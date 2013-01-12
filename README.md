@@ -76,7 +76,18 @@ https://github.com/airbrake/airbrake/wiki
 Development
 -----------
 
-Use `bundle && rake` to run the tests.
+We use [Appraisals](https://github.com/thoughtbot/appraisal) to run the tests.
+
+To run the test suite on your machine, you need to run the following commands:
+
+    bundle
+    bundle exec rake appraisal:install
+
+After this, you're ready to run the suite with:
+
+    bundle exec rake
+
+This will include cucumber features we use to fully test the integration.
 
 Credits
 -------
