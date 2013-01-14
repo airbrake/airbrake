@@ -125,6 +125,8 @@ LOCAL_GEM_ROOT = File.join(GEM_ROOT, 'tmp', 'local_gems').freeze
 def cucumber_opts
   opts = "--tags ~@wip --format progress "
 
+  opts << ENV["FEATURE"] and return if ENV["FEATURE"]
+
   case ENV["BUNDLE_GEMFILE"]
   when /rails/
     opts << "features/rails.feature features/rails_with_js_notifier.feature features/metal.feature features/user_informer.feature"
