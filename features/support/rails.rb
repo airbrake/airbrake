@@ -134,7 +134,18 @@ def perform_request(uri, environment = 'production')
         response = response.last if response.last.is_a?(ActionDispatch::Response)
 
         if response.is_a?(Array)
-          puts response.join
+          puts "Status: " + response.first.to_s
+          puts "Headers: " + response.second.to_s
+          if response.last.respond_to?(:each)
+            # making it work even with Rack::BodyProxy
+            body = ""
+            response.last.each do |chunk|
+              body << chunk
+            end
+            response.pop
+            response << body
+          end
+          puts "Body: " + response.last.to_s
         else
           puts response.body
         end
