@@ -138,6 +138,7 @@ module Airbrake
                       'ActionController::RoutingError',
                       'ActionController::InvalidAuthenticityToken',
                       'CGI::Session::CookieStore::TamperedWithCookie',
+                      'ActionController::UnknownHttpMethod',
                       'ActionController::UnknownAction',
                       'AbstractController::ActionNotFound',
                       'Mongoid::Errors::DocumentNotFound']
