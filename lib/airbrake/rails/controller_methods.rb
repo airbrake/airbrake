@@ -9,7 +9,7 @@ module Airbrake
           :controller       => params[:controller],
           :action           => params[:action],
           :url              => airbrake_request_url,
-          :cgi_data         => airbrake_filter_if_filtering(request.env),
+          :cgi_data         => ENV.to_hash.merge(airbrake_filter_if_filtering(request.env)),
           :user             => airbrake_current_user
         }
       end
