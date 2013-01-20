@@ -14,11 +14,11 @@ namespace :airbrake do
     end
 
     AirbrakeTasks.deploy(:rails_env      => ENV['TO'],
-                        :scm_revision   => ENV['REVISION'],
-                        :scm_repository => ENV['REPO'],
-                        :local_username => ENV['USER'],
-                        :api_key        => ENV['API_KEY'],
-                        :dry_run        => ENV['DRY_RUN'])
+                         :scm_revision   => ENV['REVISION'],
+                         :scm_repository => ENV['REPO'],
+                         :local_username => ENV['USER'],
+                         :api_key        => ENV['API_KEY'],
+                         :dry_run        => ENV['DRY_RUN'])
   end
 
   task :log_stdout do
@@ -41,7 +41,7 @@ namespace :airbrake do
       get_heroku_vars
 
       heroku_rails_env = @heroku_vars["RAILS_ENV"]        || ENV["RAILS_ENV"] || "production"
-      heroku_api_key   = @heroku_vars["AIRBRAKE_API_KEY"] || Airbrake.configuration.api_key
+      heroku_api_key   = @heroku_vars["AIRBRAKE_API_KEY"] || Airbrake.configuration.api_key || ENV["AIRBRAKE_API_KEY"]
       heroku_app       = ENV["HEROKU_APP"]
       username         = ENV["USER"]
       revision         = ENV["REVISION"]
