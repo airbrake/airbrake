@@ -1,11 +1,9 @@
 require File.expand_path '../helper', __FILE__
 
 require 'airbrake/rails/controller_methods'
-require 'airbrake/rails/middleware/exceptions_catcher'
 
 module ActionDispatch
   class ShowExceptions
-    include Airbrake::Rails::Middleware::ExceptionsCatcher
     private
     def public_path
       "/null"
@@ -104,6 +102,8 @@ class ActionControllerCatcherTest < ActionDispatch::IntegrationTest
     rescue NameError
       use ActionDispatch::ShowExceptions
     end
+
+    use Airbrake::Rails::Middleware
 
     include Airbrake::Rails::ControllerMethods
 

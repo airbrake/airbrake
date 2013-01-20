@@ -43,7 +43,7 @@ module Airbrake
         response = @app.call(@env)
       rescue Exception => raised
         @env['airbrake.error_id'] = notify_airbrake(raised, @env)
-        raise
+        raise raised
       end
 
       if framework_exception
