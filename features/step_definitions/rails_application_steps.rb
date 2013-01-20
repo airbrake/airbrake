@@ -106,7 +106,7 @@ Then /^I should see that "([^\"]*)" is not considered a framework gem$/ do |gem_
 end
 
 When /^I route "([^\"]*)" to "([^\"]*)"$/ do |path, controller_action_pair|
-  route = %(match "#{path}", :to => "#{controller_action_pair}")
+  route = %(get "#{path}", :to => "#{controller_action_pair}")
   routes_file = File.join(rails_root, "config", "routes.rb")
   File.open(routes_file, "r+") do |file|
     content = file.read
