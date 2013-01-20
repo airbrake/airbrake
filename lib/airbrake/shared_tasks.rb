@@ -42,10 +42,12 @@ namespace :airbrake do
 
       heroku_rails_env = @heroku_vars["RAILS_ENV"]        || ENV["RAILS_ENV"] || "production"
       heroku_api_key   = @heroku_vars["AIRBRAKE_API_KEY"] || Airbrake.configuration.api_key
+      heroku_app       = ENV["HEROKU_APP"]
 
       command = %Q(heroku addons:add deployhooks:http --url="http://airbrake.io/deploys.txt?api_key=#{heroku_api_key})
       command << "&deploy[rails_env]=#{heroku_rails_env}" if heroku_rails_env
       command << '"'
+      command << " --app=#{heroku_app}" if heroku_app
 
       puts "\nRunning:\n#{command}\n"
       puts `#{command}`
