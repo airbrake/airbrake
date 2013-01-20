@@ -38,9 +38,11 @@ module Airbrake
       end
 
       def notify_airbrake(exception)
-        error_id = Airbrake.notify_or_ignore(exception, request_data) unless ignored_user_agent?
-        after_airbrake_handler(exception)
-        error_id
+        unless ignored_user_agent?
+          error_id = Airbrake.notify_or_ignore(exception, request_data)
+          after_airbrake_handler(exception)
+          error_id
+        end
       end
 
       def request_data

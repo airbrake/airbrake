@@ -33,8 +33,10 @@ module Airbrake
         any? { |ua| ua === env['HTTP_USER_AGENT'] }
     end
 
-    def notify_airbrake(exception,env)
-      Airbrake.notify_or_ignore(exception,:rack_env => env) unless ignored_user_agent?(env)
+    def notify_airbrake(exception, env)
+      unless ignored_user_agent?(env)
+        Airbrake.notify_or_ignore(exception, :rack_env => env)
+      end
     end
 
     def call(env)
