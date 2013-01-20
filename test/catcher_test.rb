@@ -1,6 +1,7 @@
 require File.expand_path '../helper', __FILE__
 
 require 'airbrake/rails/controller_methods'
+require 'airbrake/rails/middleware'
 
 module ActionDispatch
   class ShowExceptions
