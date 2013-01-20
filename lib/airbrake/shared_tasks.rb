@@ -30,15 +30,22 @@ namespace :airbrake do
     desc "Install Heroku deploy notifications addon"
     task :add_deploy_notification => [:environment] do
 
-      def heroku_var(var)
-        `heroku config | grep -E "#{var.upcase}" | awk '{ print $3; }'`.strip
+      def get_heroku_vars
+        config = `heroku config --shell`
+        array_of_vars = config.split.map do |var|
+          var.partition("=").tap {|part| part.delete_at(1)}
+        end.flatten
+        @heroku_vars = Hash[*array_of_vars]
       end
 
-      heroku_rails_env = heroku_var("rails_env")
-      heroku_api_key = heroku_var("(hoptoad|airbrake)_api_key").split.find {|x| x unless x.blank?} ||
-        Airbrake.configuration.api_key
+      get_heroku_vars
 
-      command = %Q(heroku addons:add deployhooks:http --url="http://airbrake.io/deploys.txt?deploy[rails_env]=#{heroku_rails_env}&api_key=#{heroku_api_key}")
+      heroku_rails_env = @heroku_vars["RAILS_ENV"]        || ENV["RAILS_ENV"] || "production"
+      heroku_api_key   = @heroku_vars["AIRBRAKE_API_KEY"] || Airbrake.configuration.api_key
+
+      command = %Q(heroku addons:add deployhooks:http --url="http://airbrake.io/deploys.txt?api_key=#{heroku_api_key})
+      command << "&deploy[rails_env]=#{heroku_rails_env}" if heroku_rails_env
+      command << '"'
 
       puts "\nRunning:\n#{command}\n"
       puts `#{command}`
