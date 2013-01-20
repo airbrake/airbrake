@@ -15,7 +15,7 @@ To use Airbrake on Heroku, install the Airbrake add-on:
 After adding the Airbrake add-on, you will need to install and configure the Airbrake notifier.
 
 Your application connects to Airbrake with an API key. On Heroku, this is automatically provided to your
-application in `ENV['HOPTOAD_API_KEY']`, so installation should be a snap! (Hoptoad is Airbrake's old name.)
+application in `ENV['AIRBRAKE_API_KEY']`, so installation should be a snap!
 
 ### Rails 3.x
 
@@ -57,7 +57,7 @@ In order to use airbrake in a non-Rails rack app, just load the airbrake, config
     require 'airbrake'
 
     Airbrake.configure do |config|
-      config.api_key = `ENV['HOPTOAD_API_KEY']`
+      config.api_key = `ENV['AIRBRAKE_API_KEY']`
     end
 
     app = Rack::Builder.app do
@@ -67,8 +67,8 @@ In order to use airbrake in a non-Rails rack app, just load the airbrake, config
 
 ### Rails 1.x
 
-For Rails 1.x, visit the [Airbrake notifier's README on GitHub](http://github.com/thoughtbot/airbrake),
-and be sure to use `ENV['HOPTOAD_API_KEY']` where your API key is required in configuration code.
+For Rails 1.x, visit the [Airbrake's README on GitHub](http://github.com/airbrake/airbrake),
+and be sure to use `ENV['AIRBRAKE_API_KEY']` where your API key is required in configuration code.
 
 3. Configure your notification settings (important!)
 ---------------------------------------------------
@@ -82,7 +82,7 @@ Airbrake can deliver exception notifications to your email inbox.  To configure 
 
 1. Visit your applications resources page, like [ http://api.heroku.com/myapps/my-great-app/resources ](http://api.heroku.com/myapps/my-great-app/resources).
 2. Click the name of your Airbrake addon. (It may still be called Hoptoad.)
-3. Click "Settings" to configure the Hoptoad Add-on.
+3. Click "Settings" to configure the Airbrake Add-on.
 
 4. Optionally: Set up deploy notification
 -----------------------------------------
@@ -92,3 +92,11 @@ If your Airbrake plan supports deploy notification, set it up for your Heroku ap
     rake airbrake:heroku:add_deploy_notification
 
 This will install a Heroku [HTTP Deploy Hook](http://docs.heroku.com/deploy-hooks) to notify Airbrake of the deploy.
+
+You can pass in additional information for the deploy hook, in the ENV. Here are the available parameters:
+* `ENV["RAILS_ENV"]`         - Rails environment you're deploying to, if not set on Heroku
+* `ENV["AIRBRAKE_API_KEY"]`  - API key if not saved on Heroku or in initializer
+* `ENV["HEROKU_APP"]`        - app name if you have multiple Heroku apps
+* `ENV["USER"]`              - your username
+* `ENV["REVISION"]`          - revision you're deploying
+* `ENV["REPO"]`              - Github url of the repo you're deploying 
