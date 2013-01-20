@@ -54,7 +54,7 @@ module Airbrake
     end
 
     def framework_exception
-      framework_exception = @env['rack.exception']
+      @env['rack.exception']
     end
 
   end
