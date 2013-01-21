@@ -97,6 +97,6 @@ You can pass in additional information for the deploy hook, in the ENV. Here are
 * `ENV["RAILS_ENV"]`         - Rails environment you're deploying to, if not set on Heroku
 * `ENV["AIRBRAKE_API_KEY"]`  - API key if not saved on Heroku or in initializer
 * `ENV["HEROKU_APP"]`        - app name if you have multiple Heroku apps
-* `ENV["REPO"]`              - Github url of the repo you're deploying 
+* `ENV["REPO"]`              - Github url of the repo you're deploying, set this if you're not using remote named "origin"
 
 We will also set "username" and "revision" from Heroku variables.
