@@ -257,6 +257,15 @@ class NoticeTest < Test::Unit::TestCase
   should "filter session" do
     assert_filters_hash(:session_data)
   end
+  
+  should "should always remove a Rails application's secret token" do
+    original = {
+      "action_dispatch.secret_token" => "abc123xyz456",
+      "abc" => "123"
+    }
+    notice = build_notice(:cgi_data => original)
+    assert_equal({"abc" => "123"}, notice.cgi_data)
+  end
 
   should "remove rack.request.form_vars" do
     original = {
