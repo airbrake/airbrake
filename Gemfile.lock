@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    airbrake (3.1.6)
+    airbrake (3.1.7)
       activesupport
       builder
       json

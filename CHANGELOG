@@ -1,3 +1,118 @@
+Version 3.1.7 - 2013-01-28 13:35:10 +0100
+===============================================================================
+
+Adam Duke (1):
+      fix an error if not using ActionController::Base
+
+Ben Arent (2):
+      Update to Readme.md
+      2013! woot.
+
+Cory Kaufman-Schofield (1):
+      Use https for rake airbrake:test if force_ssl set to true (fixes #145)
+
+Dmitry Medvinsky (1):
+      Fix notifier API URL as per Airbrake docs
+
+George Ogata (1):
+      Ignore ActionController::UnknownHttpMethod by default.
+
+Hrvoje Šimić (59):
+      move dependencies from Gemfile
+      CI test only for 3.0.0 for now
+      use appraisal
+      use aruba instead of home-grown terminal
+      fix *ALL* the tests!
+      remove bundler version
+      support all major rails versions for now
+      add bundler dependency
+      destroy rvmrc
+      update appraisals
+      add task for bundling bundler
+      remove gemfile locks
+      update appraisals
+      clean up README
+      logo is not needed in README
+      update the integration tests
+      update testing instructions
+      use CircleCI for continuous integration
+      update rake default task
+      mark heroku tests as wip for now
+      Clean up the rake task
+      stop cluttering STDOUT with trace of rake tasks
+      update supported rails versions
+      send framework info
+      use specific version of builder
+      update appraisals
+      revert "use specific version of builder"
+      remove hard dependency on girl_friday
+      update thoughtbot logo
+      update test suite to newer Rails versions
+      unfreezing version
+      More description about development environments
+      make sure we don't set env["airbrake.error_id"] for async notices
+      stop extending Object, use ActiveSupport instead
+      blank? instead of nil? || empty?
+      move XSD schema to resources
+      enable sending to new JSON API (#163)
+      define headers in Sender
+      ignore gemfile.locks
+      make sending to new JSON API disabled by default (#163)
+      don't use named groups in regexes, they are ruby 1.9 only (#162)
+      make sure we close the body even if exception occurs (closes #153)
+      Rails::Application::Configuration.force_ssl is undefined for Rails 3.0.x
+      update the test suite
+      update the default rake task
+      add the ability to pass a single feature to rake test task
+      tests support Rack::BodyProxy now
+      use rails 4 compatible routes in tests
+      remove unnecessary local variables
+      stop with monkeypatchig of Rails exception middleware
+      style fixes
+      require the new middleware in tests
+      better handler for adding Heroku deploy hooks (#167)
+      support multiple apps in Heroku deploy hooks task (#166)
+      read every available parameter for deploy hook from ENV (#168)
+      fallback to reading API key from ENV for deploy hooks
+      freshen up Heroku readme
+      set username and revision from Heroku variables (#168)
+      automatically get remote origin for deploy hooks (#168)
+
+Joel Friedlaender (1):
+      configuring development environments
+
+Jon Evans (1):
+      Use "get" instead of "match" for verify route
+
+Josh Goebel (1):
+      clean_rack_request_data should also filter out "action_dispatch.secret_token" to prevent passing a Rails applications secret token
+
+Kyle Wilkinson (1):
+      Fix broken gemspec with missing file names.  MIT-LICENSE is now just called LICENSE and there is no TESTING.md
+
+Manuel Meurer (1):
+      Use Airbrake.notify_or_ignore instead of just Airbrake.notify in notify_airbrake controller method
+
+Marko Šiftar (3):
+      better Sinatra handling
+      fix typo
+      add framework info for Sinatra and Rack
+
+Morgan Mikel McDaris (3):
+      fixed the heroku airbrake.rb generation
+      fixed the heroku airbrake.rb generation
+      made supported versions into a link
+
+Pedro Nascimento (1):
+      Allow virtual attributes to be used in user data instead of just attributes.
+
+Ryan Souza (1):
+      Prettier rake exception actions
+
+cielavenir (1):
+      airbrake_javascript_notifier_options should be externalized
+
+
 Version 3.1.6 - 2012-10-23 21:15:50 +0200
 ===============================================================================
 
@@ -929,6 +1044,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
