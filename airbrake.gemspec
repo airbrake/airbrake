@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.executables   << "airbrake"
   s.files         = Dir["{generators/**/*,lib/**/*,rails/**/*,resources/*,script/*}"]  +
-    %w(airbrake.gemspec CHANGELOG Gemfile Guardfile INSTALL LICENSE Rakefile README_FOR_HEROKU_ADDON.md README.md SUPPORTED_RAILS_VERSIONS install.rb)
+    %w(airbrake.gemspec CHANGELOG Gemfile Guardfile INSTALL LICENSE Rakefile README_FOR_HEROKU_ADDON.md README.md TESTED_AGAINST install.rb)
   s.test_files    = Dir.glob("{test,spec,features}/**/*")
 
   s.add_runtime_dependency("builder")
