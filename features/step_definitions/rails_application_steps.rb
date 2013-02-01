@@ -244,3 +244,8 @@ end
 Then /^the Airbrake notification should contain the framework information$/ do
   step %{the output should contain "Rails: #{ENV["RAILS_VERSION"]}"}
 end
+
+Then /^the Airbrake middleware should be placed correctly$/ do
+  pending
+end
+
