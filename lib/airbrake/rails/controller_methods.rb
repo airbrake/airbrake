@@ -75,6 +75,7 @@ module Airbrake
       def airbrake_current_user
         user = begin current_user rescue current_member end
         h = {}
+        return h if user.nil?
         Airbrake.configuration.user_attributes.map(&:to_sym).each do |attr|
           h[attr.to_sym] = user.send(attr) if user.respond_to? attr
         end
