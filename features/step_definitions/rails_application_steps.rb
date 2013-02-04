@@ -245,7 +245,16 @@ Then /^the Airbrake notification should contain the framework information$/ do
   step %{the output should contain "Rails: #{ENV["RAILS_VERSION"]}"}
 end
 
+When /^I list the application's middleware and save it into a file$/ do
+  step %{I run `bash -c 'bundle exec rake middleware > middleware.dump'`}
+end
+
 Then /^the Airbrake middleware should be placed correctly$/ do
-  pending
+  middleware_file = File.join(LOCAL_RAILS_ROOT, 'middleware.dump')
+  middleware      = File.read(middleware_file).split(/\n/)
+  airbrake_index  = middleware.rindex("use Airbrake::Rails::Middleware")
+  middleware_index = middleware.rindex("use ActionDispatch::DebugExceptions") ||
+    middleware.rindex("use ActionDispatch::ShowExceptions")
+  (airbrake_index > middleware_index).should be_true
 end
 

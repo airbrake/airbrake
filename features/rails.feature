@@ -1,4 +1,3 @@
-@no-clobber
 Feature: Install the Gem in a Rails application
 
   Background:
@@ -252,7 +251,5 @@ Feature: Install the Gem in a Rails application
     And the Airbrake notification should contain the framework information
 
   Scenario: Middleware should be correctly placed
-    When I run `bundle exec rake middleware > middleware`
-    Then I should see "Airbrake::Rails::Middleware"
+    When I list the application's middleware and save it into a file
     Then the Airbrake middleware should be placed correctly
-
