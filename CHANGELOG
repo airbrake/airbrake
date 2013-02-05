@@ -1,3 +1,14 @@
+Version 3.1.8 - 2013-02-05 16:29:43 +0100
+===============================================================================
+
+Hrvoje Šimić (5):
+      rename SUPPORTED_RAILS_VERSIONS to TESTED_AGAINST
+      don't call id on nil - fixes #177
+      move our middleware right after exception middleware (#178)
+      implement tests for #178
+      be nice to older rails versions
+
+
 Version 3.1.7 - 2013-01-28 13:35:10 +0100
 ===============================================================================
 
@@ -1044,6 +1055,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
