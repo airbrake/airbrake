@@ -103,4 +103,4 @@ The names and logos for Airbrake, thoughtbot are trademarks of their respective 
 License
 -------
 
-Airbrake is Copyright © 2008-2012 Airbrake. 
+Airbrake is Copyright © 2008-2013 Airbrake. 
