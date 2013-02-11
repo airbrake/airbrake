@@ -20,7 +20,8 @@ module Airbrake
                    Net::HTTPBadResponse,
                    Net::HTTPHeaderSyntaxError,
                    Net::ProtocolError,
-                   Errno::ECONNREFUSED].freeze
+                   Errno::ECONNREFUSED,
+                   OpenSSL::SSL::SSLError].freeze
 
     def initialize(options = {})
       [ :proxy_host,
