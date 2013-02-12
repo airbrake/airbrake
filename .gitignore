@@ -17,3 +17,5 @@ pkg
 *.rbc
 *.plan
 gemfiles/*.lock
+.rbenv-version
+.rvmrc
