@@ -113,7 +113,7 @@ module Airbrake
 
     DEFAULT_PARAMS_FILTERS = %w(password password_confirmation).freeze
 
-    DEFAULT_USER_ATTRIBUTES = %w(id name username email).freeze
+    DEFAULT_USER_ATTRIBUTES = %w(id).freeze
 
     DEFAULT_BACKTRACE_FILTERS = [
       lambda { |line|
