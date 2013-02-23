@@ -20,7 +20,7 @@ Rails Installation
 
 Add the airbrake gem to your Gemfile.  In Gemfile:
 
-    gem "airbrake"
+    gem 'airbrake'
 
 Then from your project's RAILS_ROOT, and in your development environment, run:
 
