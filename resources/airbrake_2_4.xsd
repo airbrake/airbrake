@@ -38,7 +38,7 @@
         <xs:complexType>
           <xs:attribute name="file" type="xs:string" use="required"/>
           <xs:attribute name="number" type="xs:string" use="required"/>
-          <xs:attribute name="method" type="xs:string" use="optional"/>
+          <xs:attribute name="method_name" type="xs:string" use="optional"/>
         </xs:complexType>
       </xs:element>
     </xs:sequence>
