@@ -235,10 +235,7 @@ When /^I have set up authentication system in my app that uses "([^\"]*)"$/ do |
 end
 
 Then /^the Airbrake notification should contain user details$/ do
-  step %{I should see "Bender"}
-  step %{I should see "bender@beer.com"}
   step %{I should see "<id>1</id>"}
-  step %{I should see "b3nd0r"}
 end
 
 Then /^the Airbrake notification should contain the framework information$/ do
