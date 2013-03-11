@@ -26,8 +26,8 @@ module Airbrake
       Airbrake.configuration.framework = "Sinatra: #{::Sinatra::VERSION}"
     end 
 
-    def framework_exception
-      @env['sinatra.error']
+    def framework_exception(env)
+      env['sinatra.error']
     end
 
   end
