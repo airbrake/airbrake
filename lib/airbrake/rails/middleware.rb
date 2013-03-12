@@ -9,17 +9,15 @@ module Airbrake
       end
 
       def call(env)
-        @env = env
-
         begin
-          response = @app.call(@env)
+          response = @app.call(env)
         rescue Exception => exception
-          @env['airbrake.error_id'] = notify_airbrake(exception)
+          env['airbrake.error_id'] = notify_airbrake(env, exception)
           raise exception
         end
 
-        if framework_exception
-          @env["airbrake.error_id"] = notify_airbrake(framework_exception)
+        if framework_exception = env["action_dispatch.exception"]
+          env["airbrake.error_id"] = notify_airbrake(env, framework_exception)
         end
 
         response
@@ -27,38 +25,34 @@ module Airbrake
 
       private
 
-      def controller
-        @env["action_controller.instance"]
-      end
+      def after_airbrake_handler(env, exception)
+        if defined? env["action_controller.instance"].
+          rescue_action_in_public_without_airbrake
 
-      def after_airbrake_handler(exception)
-        if defined?(controller.rescue_action_in_public_without_airbrake)
-          controller.rescue_action_in_public_without_airbrake(exception)
+          env["action_controller.instance"].
+            rescue_action_in_public_without_airbrake(exception)
         end
       end
 
-      def notify_airbrake(exception)
-        unless ignored_user_agent?
-          error_id = Airbrake.notify_or_ignore(exception, request_data)
-          after_airbrake_handler(exception)
+      def notify_airbrake(env, exception)
+        unless ignored_user_agent? env
+          error_id = Airbrake.notify_or_ignore(exception, request_data(env))
+          after_airbrake_handler(env, exception)
           error_id
         end
       end
 
-      def request_data
-        controller.try(:airbrake_request_data) || {:rack_env => @env}
+      def request_data(env)
+        env["action_controller.instance"].try(:airbrake_request_data) ||
+          {:rack_env => @env}
       end
 
-      def ignored_user_agent?
+      def ignored_user_agent?(env)
         true if Airbrake.
           configuration.
           ignore_user_agent.
           flatten.
-          any? { |ua| ua === @env['HTTP_USER_AGENT'] }
-      end
-
-      def framework_exception
-        @env["action_dispatch.exception"]
+          any? { |ua| ua === env['HTTP_USER_AGENT'] }
       end
     end
   end
