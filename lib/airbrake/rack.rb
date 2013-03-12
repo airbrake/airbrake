@@ -40,23 +40,22 @@ module Airbrake
     end
 
     def call(env)
-      @env = env
       begin
-        response = @app.call(@env)
+        response = @app.call(env)
       rescue Exception => raised
-        @env['airbrake.error_id'] = notify_airbrake(raised, @env)
+        env['airbrake.error_id'] = notify_airbrake(raised, env)
         raise raised
       end
 
-      if framework_exception
-        @env['airbrake.error_id'] = notify_airbrake(framework_exception, @env)
+      if framework_exception(env)
+        env['airbrake.error_id'] = notify_airbrake(framework_exception(env), env)
       end
 
       response
     end
 
-    def framework_exception
-      @env['rack.exception']
+    def framework_exception(env)
+      env['rack.exception']
     end
 
   end
