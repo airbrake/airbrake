@@ -1,10 +1,19 @@
 require 'rails/generators'
 
 class AirbrakeGenerator < Rails::Generators::Base
+  desc "Creates the Airbrake initializer file at config/initializers/airbrake.rb"
 
-  class_option :api_key, :aliases => "-k", :type => :string, :desc => "Your Airbrake API key"
-  class_option :heroku, :type => :boolean, :desc => "Use the Heroku addon to provide your Airbrake API key"
-  class_option :app, :aliases => "-a", :type => :string, :desc => "Your Heroku app name (only required if deploying to >1 Heroku app)"
+  class_option :api_key, :aliases => "-k", :type => :string,
+    :desc => "Your Airbrake API key"
+
+  class_option :heroku, :type => :boolean,
+    :desc => "Use the Heroku addon to provide your Airbrake API key"
+
+  class_option :app, :aliases => "-a", :type => :string,
+    :desc => "Your Heroku app name (only required if deploying to >1 Heroku app)"
+
+  class_option :secure, :type => :boolean,
+    :desc => "Use SSL connection"
 
   def self.source_root
     @_airbrake_source_root ||= File.expand_path("../../../../../generators/airbrake/templates", __FILE__)
@@ -80,6 +89,10 @@ class AirbrakeGenerator < Rails::Generators::Base
     heroku_var("AIRBRAKE_API_KEY",options[:app]).split.find {|x| x unless x.blank?}
   end
 
+  def secure?
+    options[:secure]
+  end
+
   def heroku?
     options[:heroku] ||
       system("grep AIRBRAKE_API_KEY config/initializers/airbrake.rb") ||
@@ -96,5 +109,15 @@ class AirbrakeGenerator < Rails::Generators::Base
 
   def plugin_is_present?
     File.exists?('vendor/plugins/airbrake')
+  end
+
+  def configuration_output
+    output = <<-eos
+Airbrake.configure do |config|
+  config.api_key = #{api_key_expression}
+    eos
+
+    output << "  config.secure = true" if secure?
+    output << "\nend"
   end
 end

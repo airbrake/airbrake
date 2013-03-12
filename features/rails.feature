@@ -34,8 +34,15 @@ Feature: Install the Gem in a Rails application
     Then I should receive a Airbrake notification
 
   Scenario: Try to install without an api key
-    And I run `rails generate airbrake`
+    When I run `rails generate airbrake`
     Then I should see "Must pass --api-key or --heroku or create config/initializers/airbrake.rb"
+
+  Scenario: Generator should support the --secure option
+    When I run `rails generate airbrake -k myapikey --secure`
+    Then my Airbrake configuration should contain the following line:
+    """
+    config.secure = true
+    """
 
   Scenario: Configure and deploy using only installed gem
     When I run `capify .`
