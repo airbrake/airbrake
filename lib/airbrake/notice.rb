@@ -156,9 +156,11 @@ module Airbrake
           error.message(error_message)
           error.backtrace do |backtrace|
             self.backtrace.lines.each do |line|
-              backtrace.line(:number => line.number,
-                             :file   => line.file,
-                             :method => line.method)
+              backtrace.line(
+                :number      => line.number,
+                :file        => line.file,
+                :method_name => line.method_name
+              )
             end
           end
         end
@@ -223,7 +225,7 @@ module Airbrake
                 {
                   'file'     => line.file,
                   'line'     => line.number.to_i,
-                  'function' => line.method
+                  'function' => line.method_name
                 }
             end
           }],

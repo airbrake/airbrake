@@ -14,26 +14,26 @@ module Airbrake
       # The line number portion of the line
       attr_reader :number
 
-      # The method of the line (such as index)
-      attr_reader :method
+      # The method_name of the line (such as index)
+      attr_reader :method_name
 
       # Parses a single line of a given backtrace
       # @param [String] unparsed_line The raw line from +caller+ or some backtrace
       # @return [Line] The parsed backtrace line
       def self.parse(unparsed_line)
-        _, file, number, method = unparsed_line.match(INPUT_FORMAT).to_a
-        new(file, number, method)
+        _, file, number, method_name = unparsed_line.match(INPUT_FORMAT).to_a
+        new(file, number, method_name)
       end
 
-      def initialize(file, number, method)
+      def initialize(file, number, method_name)
         self.file   = file
         self.number = number
-        self.method = method
+        self.method_name = method_name
       end
 
       # Reconstructs the line in a readable fashion
       def to_s
-        "#{file}:#{number}:in `#{method}'"
+        "#{file}:#{number}:in `#{method_name}'"
       end
 
       def ==(other)
@@ -46,7 +46,7 @@ module Airbrake
 
       private
 
-      attr_writer :file, :number, :method
+      attr_writer :file, :number, :method_name
     end
 
     # holder for an Array of Backtrace::Line instances
