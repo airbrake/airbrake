@@ -351,7 +351,7 @@ class NoticeTest < Test::Unit::TestCase
 
       assert_valid_node(@document, "//error/backtrace/line/@number", @notice.backtrace.lines.first.number)
       assert_valid_node(@document, "//error/backtrace/line/@file", @notice.backtrace.lines.first.file)
-      assert_valid_node(@document, "//error/backtrace/line/@method", @notice.backtrace.lines.first.method)
+      assert_valid_node(@document, "//error/backtrace/line/@method_name", @notice.backtrace.lines.first.method_name)
 
       assert_valid_node(@document, "//request/url",        @notice.url)
       assert_valid_node(@document, "//request/component", @notice.controller)

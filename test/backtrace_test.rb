@@ -13,12 +13,12 @@ class BacktraceTest < Test::Unit::TestCase
     line = backtrace.lines.first
     assert_equal '13', line.number
     assert_equal 'app/models/user.rb', line.file
-    assert_equal 'magic', line.method
+    assert_equal 'magic', line.method_name
 
     line = backtrace.lines.last
     assert_equal '8', line.number
     assert_equal 'app/controllers/users_controller.rb', line.file
-    assert_equal 'index', line.method
+    assert_equal 'index', line.method_name
   end
 
   should "parse a windows backtrace into lines" do
@@ -32,12 +32,12 @@ class BacktraceTest < Test::Unit::TestCase
     line = backtrace.lines.first
     assert_equal '13', line.number
     assert_equal 'C:/Program Files/Server/app/models/user.rb', line.file
-    assert_equal 'magic', line.method
+    assert_equal 'magic', line.method_name
 
     line = backtrace.lines.last
     assert_equal '8', line.number
     assert_equal 'C:/Program Files/Server/app/controllers/users_controller.rb', line.file
-    assert_equal 'index', line.method
+    assert_equal 'index', line.method_name
   end
 
   should "be equal with equal lines" do
