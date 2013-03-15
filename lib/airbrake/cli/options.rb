@@ -1,6 +1,6 @@
 class Options
 
-  ATTRIBUTES = [:error, :message, :api_key, :host, :port, :auth_token, :name, :account, :rails_env]
+  ATTRIBUTES = [:error, :message, :api_key, :host, :port, :auth_token, :name, :account, :rails_env, :scm_revision]
 
   ATTRIBUTES.each do |attribute|
     attr_reader attribute
@@ -27,6 +27,7 @@ class Options
     self.name          = opts.delete("-n")  || opts.delete("--name")
     self.account       = opts.delete("-a")  || opts.delete("--account")    || ENV["AIRBRAKE_ACCOUNT"]
     self.rails_env     = opts.delete("-E")  || opts.delete("--rails-env")  || ENV["RAILS_ENV"] || "production"
+    self.scm_revision  = opts.delete("-r")  || opts.delete("--scm-revision")
     opts
   end
 
