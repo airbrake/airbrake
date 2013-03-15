@@ -27,7 +27,7 @@ class Options
     self.name          = opts.delete("-n")  || opts.delete("--name")
     self.account       = opts.delete("-a")  || opts.delete("--account")    || ENV["AIRBRAKE_ACCOUNT"]
     self.rails_env     = opts.delete("-E")  || opts.delete("--rails-env")  || ENV["RAILS_ENV"] || "production"
-    p self.scm_revision  = opts.delete("-r")  || opts.delete("--scm-revision")
+    self.scm_revision  = opts.delete("-r")  || opts.delete("--scm-revision")
     opts
   end
 
