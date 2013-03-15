@@ -1,6 +1,6 @@
 class Options
 
-  ATTRIBUTES = [:error, :message, :api_key, :host, :port, :auth_token, :name, :account, :rails_env]
+  ATTRIBUTES = [:error, :message, :api_key, :host, :port, :auth_token, :name, :account, :rails_env, :scm_revision]
 
   ATTRIBUTES.each do |attribute|
     attr_reader attribute
