@@ -88,6 +88,6 @@ namespace :airbrake do
 
     Rails.application.call(env)
 
-    wait_for_threads
+    wait_for_threads if defined? GirlFriday
   end
 end
