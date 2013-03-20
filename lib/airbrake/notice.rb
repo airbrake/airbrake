@@ -198,10 +198,9 @@ module Airbrake
         end
         unless user.blank?
           notice.tag!("current-user") do |u|
-            u.tag!("id",user[:id])
-            u.tag!("name",user[:name])
-            u.tag!("email",user[:email])
-            u.tag!("username",user[:username])
+            user.each do |attr, value|
+              u.tag!(attr.to_s, value)
+            end
           end
         end
         unless framework.blank?
