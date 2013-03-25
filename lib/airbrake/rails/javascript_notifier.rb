@@ -33,18 +33,22 @@ module Airbrake
 
         options = airbrake_javascript_notifier_options
 
-        res = if @template
-          @template.render(options)
-        else
-          render_to_string(options)
-        end
+        result  = airbrake_compile_template
 
-        if res.respond_to?(:html_safe)
-          res.html_safe
+        if result.respond_to?(:html_safe)
+          result.html_safe
         else
-          res
+          result
         end
+      end
 
+      def airbrake_compile_template
+        case @template
+        when ActionView::Template
+          @template.render airbrake_javascript_notifier_options
+        else
+          render_to_string airbrake_javascript_notifier_options
+        end
       end
     end
   end
