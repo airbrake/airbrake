@@ -1,3 +1,38 @@
+Version 3.1.9 - 2013-03-25 20:06:10 +0100
+===============================================================================
+
+Bartosz Knapik (2):
+      .rbenv-version should be in gitignore
+      replace current_release with release_path
+
+Chas Lemley (1):
+      correctly use config.user_attributes=
+
+Hrvoje Šimić (6):
+      Update year in README
+      thread safety fix
+      add the secure option to the generator
+      fix the broken generator method call
+      be more careful with @template in javascript notifier 
+      update tested rails versions
+
+Marko Šiftar (2):
+      just collect id by default
+      update test suite (user details)
+
+Robert Glaser (1):
+      log failed certicate verifications
+
+Thilo-Alexander Ginkel (1):
+      Partial thread-safety fix
+
+Thom Mahoney (1):
+      Airbake::Backtrace::Line#method => #method_name
+
+jokerswanted (1):
+      Update README.md
+
+
 Version 3.1.8 - 2013-02-05 16:29:43 +0100
 ===============================================================================
 
@@ -1055,6 +1090,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
