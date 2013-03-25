@@ -1,15 +1,15 @@
 appraise "rails-3.0" do
-  gem "rails", "~> 3.0.19"
+  gem "rails", "~> 3.0.20"
   gem "airbrake", :path => "../"
 end
 
 appraise "rails-3.1" do
-  gem "rails", "~> 3.1.10"
+  gem "rails", "~> 3.1.12"
   gem "airbrake", :path => "../"
 end
 
 appraise "rails-3.2" do
-  gem "rails", "~> 3.2.11"
+  gem "rails", "~> 3.2.13"
   gem "airbrake", :path => "../"
 end
 
