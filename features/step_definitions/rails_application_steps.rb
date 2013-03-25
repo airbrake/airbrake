@@ -227,11 +227,18 @@ When /^I have set up authentication system in my app that uses "([^\"]*)"$/ do |
 
     # this is the ultimate authentication system, devise is history
     def #{current_user}
-      Struct.new(:id, :name, :email, :username).new(1, 'Bender', 'bender@beer.com', 'b3nd0r')
+      Struct.new(:id, :name, :email, :username, :class_name).new(1, 'Bender', 'bender@beer.com', 'b3nd0r', 'User')
     end
   end
   """
   File.open(application_controller, "w") {|file| file.puts definition }
+end
+
+Then /^the Airbrake notification should contain the custom user details$/ do
+  step %{I should see "<name>Bender</name>"}
+  step %{I should see "<email>bender@beer.com</email>"}
+  step %{I should see "<username>b3nd0r</username>"}
+  step %{I should see "<class_name>User</class_name>"}
 end
 
 Then /^the Airbrake notification should contain user details$/ do

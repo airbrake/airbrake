@@ -225,6 +225,24 @@ Feature: Install the Gem in a Rails application
     Then I should receive a Airbrake notification
     And the Airbrake notification should contain user details
 
+  Scenario: It should also send custom user attributes
+    When I configure the Airbrake shim
+    And I configure the notifier to use the following configuration lines:
+      """
+         config.api_key = "myapikey"
+         config.logger = Logger.new STDOUT
+         config.user_attributes = [:id, :name, :email, :username, :class_name]
+      """
+    And I define a response for "TestController#index":
+      """
+      raise RuntimeError, "some message"
+      """
+    And I route "/test/index" to "test#index"
+    And I have set up authentication system in my app that uses "current_user"
+    And I perform a request to "http://example.com:123/test/index" in the "production" environment
+    Then I should receive a Airbrake notification
+    And the Airbrake notification should contain the custom user details
+
   Scenario: It should log the notice when failure happens
     When Airbrake server is not responding
     And I configure the notifier to use the following configuration lines:
