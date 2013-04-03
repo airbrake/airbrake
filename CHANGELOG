@@ -1,3 +1,10 @@
+Version 3.1.10 - 2013-04-03 15:41:13 +0200
+===============================================================================
+
+Mark J. Titorenko (1):
+      Use env rather than @env when constructing fallback request data.
+
+
 Version 3.1.9 - 2013-03-25 20:06:10 +0100
 ===============================================================================
 
@@ -1090,6 +1097,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
