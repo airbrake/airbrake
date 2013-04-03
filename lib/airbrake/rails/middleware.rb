@@ -44,7 +44,7 @@ module Airbrake
 
       def request_data(env)
         env["action_controller.instance"].try(:airbrake_request_data) ||
-          {:rack_env => @env}
+          {:rack_env => env}
       end
 
       def ignored_user_agent?(env)
