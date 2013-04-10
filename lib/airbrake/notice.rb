@@ -159,7 +159,7 @@ module Airbrake
               backtrace.line(
                 :number      => line.number,
                 :file        => line.file,
-                :method_name => line.method_name
+                :method      => line.method_name
               )
             end
           end
