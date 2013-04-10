@@ -123,7 +123,7 @@ LOCAL_GEM_ROOT = File.join(GEM_ROOT, 'tmp', 'local_gems').freeze
 # various gemfiles. We don't want to, for instance, test sinatra features when 
 # using the rails gemfile and vice versa.
 def cucumber_opts
-  opts = "--tags ~@wip --format progress "
+  opts = "--tags ~@wip "
 
   opts << ENV["FEATURE"] and return if ENV["FEATURE"]
 
