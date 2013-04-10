@@ -19,3 +19,4 @@ pkg
 gemfiles/*.lock
 .rbenv-version
 .rvmrc
+resources/notice.xml

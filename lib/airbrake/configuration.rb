@@ -8,7 +8,8 @@ module Airbrake
         :ignore_user_agent, :notifier_name, :notifier_url, :notifier_version,
         :params_filters, :project_root, :port, :protocol, :proxy_host,
         :proxy_pass, :proxy_port, :proxy_user, :secure, :use_system_ssl_cert_chain,
-        :framework, :user_information, :rescue_rake_exceptions, :rake_environment_filters].freeze
+        :framework, :user_information, :rescue_rake_exceptions, :rake_environment_filters,
+        :test_mode].freeze
 
     # The API key for your project, found on the project edit form.
     attr_accessor :api_key
@@ -110,6 +111,10 @@ module Airbrake
     # Only used for JSON API
     attr_accessor :project_id
 
+    # Setting this to true will use the CollectingSender instead of
+    # the default one which will cause storing the last notice locally
+    attr_accessor :test_mode
+    alias_method :test_mode?, :test_mode
 
     DEFAULT_PARAMS_FILTERS = %w(password password_confirmation).freeze
 

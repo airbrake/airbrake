@@ -52,7 +52,7 @@ module Airbrake
 
     # Prints out the response body from Airbrake for debugging help
     def report_response_body(response)
-      write_verbose_log("Notice details: \n#{Response.pretty_format(response)}")
+      write_verbose_log("Response from Airbrake: \n#{Response.pretty_format(response)}")
     end
 
     # Prints out the details about the notice that wasn't sent to server
@@ -86,7 +86,12 @@ module Airbrake
     #   end
     def configure(silent = false)
       yield(configuration)
-      self.sender = Sender.new(configuration)
+      self.sender = if configuration.test_mode?
+                      CollectingSender.new(configuration)
+                    else
+                      Sender.new(configuration)
+                    end
+
       report_ready unless silent
       self.sender
     end

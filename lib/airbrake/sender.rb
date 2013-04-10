@@ -177,4 +177,30 @@ module Airbrake
         project_id.present?
     end
   end
+
+  class CollectingSender < Sender
+    # Used when test mode is enabled, to store the last XML notice locally
+
+    attr_writer :last_notice_path
+
+    def last_notice
+      File.read last_notice_path
+    end
+
+    def last_notice_path
+      File.expand_path(File.join("..", "..", "..", "resources", "notice.xml"), __FILE__)
+    end
+
+    def send_to_airbrake(notice)
+      data = prepare_notice(notice)
+
+      notices_file = File.open(last_notice_path, "w") do |file|
+        file.puts data
+      end
+
+      super(notice)
+    ensure
+      notices_file.close if notices_file
+    end
+  end
 end
