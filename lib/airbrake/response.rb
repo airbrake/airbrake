@@ -2,6 +2,8 @@ module Airbrake
   class Response
     def self.pretty_format(xml_body)
       new(xml_body)
+    rescue
+      xml_body
     end
 
     def to_s
