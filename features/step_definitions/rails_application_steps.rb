@@ -43,6 +43,7 @@ end
 When /^I configure the notifier to use the following configuration lines:$/ do |configuration_lines|
   initializer_code = <<-EOF
     Airbrake.configure do |config|
+      config.test_mode = true
       #{configuration_lines}
     end
   EOF
@@ -234,19 +235,38 @@ When /^I have set up authentication system in my app that uses "([^\"]*)"$/ do |
   File.open(application_controller, "w") {|file| file.puts definition }
 end
 
+Then /^the Airbrake notification should contain "([^\"]*)"$/ do |content|
+  step %{the last notice sent should contain "#{content}"}
+end
+
+Then /^the Airbrake notification should not contain "([^\"]*)"$/ do |content|
+  step %{the last notice sent should not contain "#{content}"}
+end
+
 Then /^the Airbrake notification should contain the custom user details$/ do
-  step %{I should see "<name>Bender</name>"}
-  step %{I should see "<email>bender@beer.com</email>"}
-  step %{I should see "<username>b3nd0r</username>"}
-  step %{I should see "<class_name>User</class_name>"}
+  step %{the last notice sent should contain "<name>Bender</name>"}
+  step %{the last notice sent should contain "<email>bender@beer.com</email>"}
+  step %{the last notice sent should contain "<username>b3nd0r</username>"}
+  step %{the last notice sent should contain "<class_name>User</class_name>"}
 end
 
 Then /^the Airbrake notification should contain user details$/ do
-  step %{I should see "<id>1</id>"}
+  step %{the last notice sent should contain "<id>1</id>"}
 end
 
+Then /^the last notice sent should contain "([^\"]*)"$/ do |data|
+  last_notice = File.read(LAST_NOTICE)
+  last_notice.should match(%r{#{data}})
+end
+
+Then /^the last notice sent should not contain "([^\"]*)"$/ do |data|
+  last_notice = File.read(LAST_NOTICE)
+  last_notice.should_not match(%r{#{data}})
+end
+
+
 Then /^the Airbrake notification should contain the framework information$/ do
-  step %{the output should contain "Rails: #{ENV["RAILS_VERSION"]}"}
+  step %{the last notice sent should contain "Rails: #{ENV["RAILS_VERSION"]}"}
 end
 
 When /^I list the application's middleware and save it into a file$/ do
@@ -261,4 +281,3 @@ Then /^the Airbrake middleware should be placed correctly$/ do
     middleware.rindex("use ActionDispatch::ShowExceptions")
   (airbrake_index > middleware_index).should be_true
 end
-

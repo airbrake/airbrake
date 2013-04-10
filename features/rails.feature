@@ -6,7 +6,7 @@ Feature: Install the Gem in a Rails application
 
   Scenario: Use the gem without vendoring the gem in a Rails application
     When I configure the Airbrake shim
-    And I run `rails generate airbrake -k myapikey`
+    And I run `rails generate airbrake -k myapikey -t`
     Then I should receive a Airbrake notification
     And I should see the Rails version
 
@@ -18,7 +18,7 @@ Feature: Install the Gem in a Rails application
 
   Scenario: Configuration within initializer isn't overridden by Railtie
     When I configure the Airbrake shim
-    And I run `rails generate airbrake -k myapikey`
+    And I run `rails generate airbrake -k myapikey -t`
     And I configure the notifier to use the following configuration lines:
       """
       config.api_key = "myapikey"
@@ -26,7 +26,6 @@ Feature: Install the Gem in a Rails application
       """
     And I define a response for "TestController#index":
       """
-      session[:value] = "test"
       raise RuntimeError, "some message"
       """
     And I route "/test/index" to "test#index"
@@ -47,7 +46,7 @@ Feature: Install the Gem in a Rails application
   Scenario: Configure and deploy using only installed gem
     When I run `capify .`
     And I configure the Airbrake shim
-    And I run `rails generate airbrake -k myapikey`
+    And I run `rails generate airbrake -k myapikey -t`
     And I run `cap -T`
     Then I should see "airbrake:deploy"
 
@@ -60,20 +59,18 @@ Feature: Install the Gem in a Rails application
 
   Scenario: Rescue an exception in a controller
     When I configure the Airbrake shim
-    And I run `rails generate airbrake -k myapikey`
+    And I run `rails generate airbrake -k myapikey -t`
     And I define a response for "TestController#index":
       """
-      session[:value] = "test"
       raise RuntimeError, "some message"
       """
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index?param=value"
     Then I should receive a Airbrake notification
-    Then I should see "test"
 
   Scenario: The gem should not be considered a framework gem
     When I configure the Airbrake shim
-    And I run `rails generate airbrake -k myapikey`
+    And I run `rails generate airbrake -k myapikey -t`
     And I run `rake gems`
     Then I should see that "airbrake" is not considered a framework gem
 
@@ -87,7 +84,7 @@ Feature: Install the Gem in a Rails application
   @wip
   Scenario: Support the Heroku addon in the generator
     When I configure the Airbrake shim
-    And I run `rails generate airbrake -k myapikey`
+    And I run `rails generate airbrake -k myapikey -t`
     And I configure the Heroku shim with "myapikey"
     And I successfully run `rails generate airbrake --heroku`
     Then I should receive a Airbrake notification
@@ -101,7 +98,7 @@ Feature: Install the Gem in a Rails application
   Scenario: Support the --app option for the Heroku addon in the generator
     When I configure the Airbrake shim
     And I configure the Heroku shim with "myapikey" and multiple app support
-    And I run `rails generate airbrake --heroku -a myapp`
+    And I run `rails generate airbrake --heroku -a myapp -t`
     Then I should receive a Airbrake notification
     And I should see the Rails version
     And my Airbrake configuration should contain the following line:
@@ -111,7 +108,7 @@ Feature: Install the Gem in a Rails application
 
   Scenario: Filtering parameters in a controller
     When I configure the Airbrake shim
-    And I run `rails generate airbrake -k myapikey`
+    And I run `rails generate airbrake -k myapikey -t`
     When I configure the notifier to use the following configuration lines:
       """
       config.api_key = "myapikey"
@@ -128,13 +125,13 @@ Feature: Install the Gem in a Rails application
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index?param=value" in the "production" environment
     Then I should receive a Airbrake notification
-    Then I should not see "red23"
-    Then I should not see "blue42"
-    And I should see "FILTERED"
+    And the Airbrake notification should not contain "red23"
+    And the Airbrake notification should not contain "blue42"
+    And the Airbrake notification should contain "FILTERED"
 
   Scenario: Filtering session and params based on Rails parameter filters
     When I configure the Airbrake shim
-    And I run `rails generate airbrake -k myapikey`
+    And I run `rails generate airbrake -k myapikey -t`
     When I configure the notifier to use the following configuration lines:
       """
       config.logger = Logger.new STDOUT
@@ -149,23 +146,23 @@ Feature: Install the Gem in a Rails application
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index" in the "production" environment
     Then I should receive a Airbrake notification
-    And I should not see "red23"
-    And I should not see "blue42"
-    And I should see "FILTERED"
+    And the Airbrake notification should not contain "red23"
+    And the Airbrake notification should not contain "blue42"
+    And the Airbrake notification should contain "FILTERED"
 
   Scenario: Notify airbrake within the controller
     When I configure the Airbrake shim
-    And I run `rails generate airbrake -k myapikey`
+    And I run `rails generate airbrake -k myapikey -t`
     And I define a response for "TestController#index":
       """
-      session[:value] = "test"
+      session[:value] = "unicorn"
       notify_airbrake(RuntimeError.new("some message"))
       render :nothing => true
       """
     And I route "/test/index" to "test#index"
     And I perform a request to "http://example.com:123/test/index?param=value" in the "production" environment
     Then I should receive a Airbrake notification
-    And I should see "test"
+    And the Airbrake notification should contain "unicorn"
 
   Scenario: Reporting 404s should be disabled by default
     When I configure the Airbrake shim
@@ -179,7 +176,7 @@ Feature: Install the Gem in a Rails application
 
   Scenario: Reporting 404s should work when configured properly
     When I configure the Airbrake shim
-    And I run `rails generate airbrake -k myapikey`
+    And I run `rails generate airbrake -k myapikey -t`
     When I configure the notifier to use the following configuration lines:
       """
       config.ignore_only = []
@@ -191,7 +188,7 @@ Feature: Install the Gem in a Rails application
   @wip
   Scenario: reporting over SSL with utf8 check should work
     When I configure the Airbrake shim
-    And I run `rails generate airbrake -k myapikey`
+    And I run `rails generate airbrake -k myapikey -t`
     When I configure the notifier to use the following configuration lines:
       """
       config.secure = true

@@ -122,10 +122,9 @@ module RailsHelpers
     File.open(rakefile_path, 'wb') { |file| file.write(content) }
   end
 
-def perform_request(uri, environment = 'production')
+  def perform_request(uri, environment = 'production')
       request_script = <<-SCRIPT
         require File.expand_path('../config/environment', __FILE__)
-
 
         env      = Rack::MockRequest.env_for(#{uri.inspect})
         response = RailsRoot::Application.call(env)

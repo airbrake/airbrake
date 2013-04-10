@@ -7,6 +7,7 @@ PROJECT_ROOT     = File.expand_path(File.join(File.dirname(__FILE__), '..', '..'
 TEMP_DIR         = File.join(PROJECT_ROOT, 'tmp').freeze
 LOCAL_RAILS_ROOT = File.join(TEMP_DIR, 'rails_root').freeze
 RACK_FILE        = File.join(TEMP_DIR, 'rack_app.rb').freeze
+LAST_NOTICE      = File.join(PROJECT_ROOT, 'resources', 'notice.xml')
 
 Before do
   FileUtils.rm_rf(LOCAL_RAILS_ROOT)
