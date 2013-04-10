@@ -34,9 +34,9 @@ The generator creates a file under `config/initializers/airbrake.rb` configuring
 The default behaviour of the gem is to only operate in Rails environments that are NOT **development**, **test** & **cucumber**. 
 
 You can change this by altering this array:
-    
+
     config.development_environments = ["development", "test", "cucumber", "custom"]
-    
+
 Set it to empty array and it will report errors on all environments.
 
 
@@ -45,7 +45,7 @@ Set it to empty array and it will report errors on all environments.
 Add the airbrake gem to your app. In config/environment.rb:
 
     config.gem 'airbrake'
-    
+
 or if you are using bundler:
 
     gem 'airbrake', :require => 'airbrake/rails'
@@ -88,6 +88,19 @@ After this, you're ready to run the suite with:
     bundle exec rake
 
 This will include cucumber features we use to fully test the integration.
+
+Maintainers
+-----------
+
+Make sure all tests are passing before pushing the new version. Also, make sure integration
+test is passing. You can run it with:
+
+    ./script/integration_test.rb <api_key> <host>
+
+After this is passing, change the version inside *lib/airbrake/version.rb* and
+push the new version with Changeling:
+
+    rake changeling:change
 
 Credits
 -------
