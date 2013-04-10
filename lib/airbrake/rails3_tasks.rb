@@ -1,6 +1,16 @@
 require 'airbrake'
 require File.join(File.dirname(__FILE__), 'shared_tasks')
 
+# Override error handling in Rack so we don't clutter STDERR
+# with unnecesarry stack trace
+Rake.application.instance_eval do
+  class << self
+    def display_error_message(exception)
+      puts exception
+    end
+  end
+end
+
 namespace :airbrake do
   desc "Verify your gem installation by sending a test exception to the airbrake service"
   task :test => [:environment] do
@@ -27,6 +37,7 @@ namespace :airbrake do
     end
 
     # Override Rails exception middleware, so we stop cluttering STDOUT
+    # with stack trace from Rails
     class ActionDispatch::DebugExceptions; def call(env); @app.call(env); end; end
     class ActionDispatch::ShowExceptions; def call(env); @app.call(env); end; end
 
