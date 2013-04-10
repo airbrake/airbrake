@@ -15,6 +15,9 @@ class AirbrakeGenerator < Rails::Generators::Base
   class_option :secure, :type => :boolean,
     :desc => "Use SSL connection"
 
+  class_option :test_mode, :aliases => "-t", :type => :boolean,
+    :desc => "Use Airbrake in test mode"
+
   def self.source_root
     @_airbrake_source_root ||= File.expand_path("../../../../../generators/airbrake/templates", __FILE__)
   end
@@ -93,6 +96,10 @@ class AirbrakeGenerator < Rails::Generators::Base
     options[:secure]
   end
 
+  def test_mode?
+    options[:test_mode]
+  end
+
   def heroku?
     options[:heroku] ||
       system("grep AIRBRAKE_API_KEY config/initializers/airbrake.rb") ||
@@ -117,7 +124,8 @@ Airbrake.configure do |config|
   config.api_key = #{api_key_expression}
     eos
 
-    output << "  config.secure = true" if secure?
-    output << "\nend"
+    output << "  config.secure = true\n" if secure?
+    output << "  config.test_mode = true\n" if test_mode?
+    output << "end"
   end
 end
