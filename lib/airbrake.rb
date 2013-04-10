@@ -19,6 +19,7 @@ require 'airbrake/version'
 require 'airbrake/configuration'
 require 'airbrake/notice'
 require 'airbrake/sender'
+require 'airbrake/response'
 require 'airbrake/backtrace'
 require 'airbrake/rack'
 require 'airbrake/sinatra'
@@ -51,7 +52,7 @@ module Airbrake
 
     # Prints out the response body from Airbrake for debugging help
     def report_response_body(response)
-      write_verbose_log("Response from Airbrake: \n#{response}")
+      write_verbose_log("Notice details: \n#{Response.pretty_format(response)}")
     end
 
     # Prints out the details about the notice that wasn't sent to server
