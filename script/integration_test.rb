@@ -13,8 +13,8 @@ require 'airbrake'
 fail "Please supply an API Key as the first argument" if ARGV.empty?
 
 host = ARGV[1] || "api.airbrake.io"
-port = ARGV[2] || 3000
-secure = (ARGV[2] == "secure")
+port = ARGV[2] || 80
+secure = (ARGV[3] == "secure")
 exception = RuntimeError.new "Testing airbrake notifier with secure = #{secure}. If you can see this, it works."
 
 Airbrake.configure do |config|
