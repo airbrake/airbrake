@@ -1,3 +1,32 @@
+Version 3.1.11 - 2013-04-11 12:44:09 +0200
+===============================================================================
+
+Eric Jensen (1):
+      add --scm-revision option to cli
+
+Hrvoje Šimić (10):
+      update tested rails versions
+      reverting parts of 8768b1 that caused broken XML
+      update integration test
+      stop cluttering STDERR from rake airbrake:test
+      test coverage for Airbrake::Response
+      introduce configurable test mode
+      add the test mode option to the generator
+      update the test suite to use the test mode accordingly
+      stop using the 'progress' format when running features
+      fix defaults in integration test
+
+Kenneth Kalmer (2):
+      Wrap the JS notifier configuration in a try..catch, since the notifier JS might have failed to load
+      Set a noop window.onerror in the event Airbrake is not available
+
+Mark J. Titorenko (1):
+      Use env rather than @env when constructing fallback request data.
+
+Marko Šiftar (1):
+      pretty formatting of notice details
+
+
 Version 3.1.10 - 2013-04-03 15:41:13 +0200
 ===============================================================================
 
@@ -1097,6 +1126,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
