@@ -74,7 +74,8 @@ module Airbrake
 
     # Look for the Rails logger currently defined
     def logger
-      self.configuration.logger
+      self.configuration.logger ||
+        Logger.new(RUBY_PLATFORM =~ /(mingw|bccwin|wince|mswin32)/i ? 'NUL:' : '/dev/null')
     end
 
     # Call this method to modify defaults in your initializers.
