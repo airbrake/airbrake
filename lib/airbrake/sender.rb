@@ -137,7 +137,7 @@ module Airbrake
     end
 
     def log(opts = {})
-      opts[:logger].send opts[:level], LOG_PREFIX + opts[:message] if opts[:logger]
+      (opts[:logger] || logger).send(opts[:level], LOG_PREFIX + opts[:message])
       Airbrake.report_environment_info
       Airbrake.report_response_body(opts[:response].body) if opts[:response] && opts[:response].respond_to?(:body)
       Airbrake.report_notice(opts[:notice]) if opts[:notice]
