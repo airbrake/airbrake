@@ -104,6 +104,7 @@ module Airbrake
     # Should Airbrake catch exceptions from Rake tasks?
     # (boolean or nil; set to nil to catch exceptions when rake isn't running from a terminal; default is nil)
     attr_accessor :rescue_rake_exceptions
+    alias_method :rescue_rake_exceptions?, :rescue_rake_exceptions
 
     # User attributes that are being captured
     attr_accessor :user_attributes

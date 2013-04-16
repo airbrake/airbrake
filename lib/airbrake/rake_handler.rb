@@ -8,19 +8,22 @@ module Airbrake::RakeHandler
     end
   end
 
-  def display_error_message_with_airbrake(ex)
+  def display_error_message_with_airbrake(exception)
     if Airbrake.sender && Airbrake.configuration &&
         (Airbrake.configuration.rescue_rake_exceptions ||
           (Airbrake.configuration.rescue_rake_exceptions===nil && !self.tty_output?))
 
-      Airbrake.notify_or_ignore(ex, :component => 'rake', :action => reconstruct_command_line, :cgi_data => environment_info)
+      Airbrake.notify_or_ignore(exception,
+                                :component => 'rake',
+                                :action => reconstruct_command_line,
+                                :cgi_data => environment_info)
     end
 
-    display_error_message_without_airbrake(ex)
+    display_error_message_without_airbrake(exception)
   end
 
   def reconstruct_command_line
-    ARGV.join( ' ' )
+    ARGV.join(' ')
   end
 
   def environment_info

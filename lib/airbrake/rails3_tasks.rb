@@ -1,12 +1,27 @@
 require 'airbrake'
 require File.join(File.dirname(__FILE__), 'shared_tasks')
 
-# Override error handling in Rack so we don't clutter STDERR
-# with unnecesarry stack trace
-Rake.application.instance_eval do
-  class << self
-    def display_error_message(exception)
-      puts exception
+def stub_rake_exception_handling!
+  # Override error handling in Rack so we don't clutter STDERR
+  # with unnecesarry stack trace
+  Rake.application.instance_eval do
+    class << self
+      def display_error_message_silent(exception)
+        puts exception
+      end
+      alias_method :display_error_message_old, :display_error_message
+      alias_method :display_error_message, :display_error_message_silent
+    end
+  end
+end
+
+def unstub_rake_exception_handling!
+  # Turns Rake exception handling back to normal
+  Rake.application.instance_eval do
+    class << self
+      def display_error_message_silent(exception)
+        display_error_message_old(exception)
+      end
     end
   end
 end
@@ -14,6 +29,9 @@ end
 namespace :airbrake do
   desc "Verify your gem installation by sending a test exception to the airbrake service"
   task :test => [:environment] do
+
+    stub_rake_exception_handling!
+
     Rails.logger = defined?(ActiveSupport::TaggedLogging) ?
       ActiveSupport::TaggedLogging.new(Logger.new(STDOUT)) :
       Logger.new(STDOUT)
@@ -100,5 +118,8 @@ namespace :airbrake do
     Rails.application.call(env)
 
     wait_for_threads if defined? GirlFriday
+
+    unstub_rake_exception_handling!
   end
 end
+
