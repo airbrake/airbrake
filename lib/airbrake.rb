@@ -6,6 +6,7 @@ end
 require 'net/http'
 require 'net/https'
 require 'rubygems'
+require 'logger'
 
 begin
   require 'active_support/core_ext/object/blank'
