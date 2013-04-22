@@ -8,7 +8,7 @@ module Airbrake
       private
 
       def airbrake_javascript_notifier_options
-        path = File.join File.dirname(__FILE__), '..', '..', 'templates', 'javascript_notifier.erb'
+        path = File.join File.dirname(__FILE__), '..', '..', 'templates', 'javascript_notifier'
         host = Airbrake.configuration.host.dup
         port = Airbrake.configuration.port
         host << ":#{port}" unless [80, 443].include?(port)
