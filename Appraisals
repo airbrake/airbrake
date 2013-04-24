@@ -13,11 +13,10 @@ appraise "rails-3.2" do
   gem "airbrake", :path => "../"
 end
 
-# soon
-# appraise "rails-edge" do
-#  gem "rails", :git => "git://github.com/rails/rails.git"
-#  gem "airbrake", :path => "../"
-# end
+appraise "rails-4.0" do
+ gem "rails", "~> 4.0.0.beta1"
+ gem "airbrake", :path => "../"
+end
 
 appraise "sinatra" do
   gem "sinatra"

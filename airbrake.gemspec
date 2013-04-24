@@ -23,13 +23,14 @@ Gem::Specification.new do |s|
   s.add_development_dependency("nokogiri",      "~> 1.5.0")
   s.add_development_dependency("rspec",         "~> 2.6.0")
   s.add_development_dependency("sham_rack",     "~> 1.3.0")
-  s.add_development_dependency("shoulda",      "~> 2.11.3")
   s.add_development_dependency("capistrano")
   s.add_development_dependency("aruba")
   s.add_development_dependency("appraisal")
   s.add_development_dependency("rspec-rails")
   s.add_development_dependency("girl_friday")
   s.add_development_dependency("json-schema")
+  s.add_development_dependency("shoulda-matchers")
+  s.add_development_dependency("shoulda-context")
 
   s.authors = ["Airbrake"]
   s.email   = %q{support@airbrake.io}

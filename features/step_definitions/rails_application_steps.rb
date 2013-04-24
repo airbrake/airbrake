@@ -84,7 +84,7 @@ end
 
 When /^I perform a request to "([^\"]*)"$/ do |uri|
   perform_request(uri)
-  step %{I run `bundle exec ./script/rails runner request.rb`}
+  step %{I run `bundle exec rails runner request.rb`}
 end
 
 When /^I perform a request to "([^\"]*)" in the "([^\"]*)" environment$/ do |uri, environment|
