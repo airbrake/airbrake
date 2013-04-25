@@ -1,5 +1,8 @@
 require File.expand_path '../helper', __FILE__
 
+XSD_SCHEMA_PATH  = "http://airbrake.io/airbrake_#{Airbrake::API_VERSION.tr(".","_")}.xsd"
+FakeWeb.allow_net_connect = %r{#{XSD_SCHEMA_PATH}}
+
 class NoticeTest < Test::Unit::TestCase
 
   include DefinesConstants
@@ -61,8 +64,8 @@ class NoticeTest < Test::Unit::TestCase
   end
 
   def assert_valid_notice_document(document)
-    xsd_path = File.expand_path(File.join(File.dirname(__FILE__),"..", "resources", "airbrake_2_4.xsd"))
-    schema = Nokogiri::XML::Schema.new(IO.read(xsd_path))
+    xsd_path = URI(XSD_SCHEMA_PATH)
+    schema = Nokogiri::XML::Schema.new(Net::HTTP.get(xsd_path))
     errors = schema.validate(document)
     assert errors.empty?, errors.collect{|e| e.message }.join
   end
