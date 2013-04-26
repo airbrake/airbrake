@@ -228,7 +228,7 @@ Feature: Install the Gem in a Rails application
       """
          config.api_key = "myapikey"
          config.logger = Logger.new STDOUT
-         config.user_attributes = [:id, :name, :email, :username, :class_name]
+         config.user_attributes = [:id, :name, :email, :username]
       """
     And I define a response for "TestController#index":
       """
@@ -239,6 +239,18 @@ Feature: Install the Gem in a Rails application
     And I perform a request to "http://example.com:123/test/index" in the "production" environment
     Then I should receive a Airbrake notification
     And the Airbrake notification should contain the custom user details
+
+  Scenario: It should warn the user that she's using unsupported attributes for
+    current user
+    When I configure the Airbrake shim
+    And I configure the notifier to use the following configuration lines:
+      """
+         config.api_key = "myapikey"
+         config.logger = Logger.new STDOUT
+         config.user_attributes = [:id, :name, :email, :username, :shoe_size]
+      """
+    And I run `rails s`
+    Then I should see "Unsupported user attribute: 'shoe_size'"
 
   Scenario: It should log the notice when failure happens
     When Airbrake server is not responding
