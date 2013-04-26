@@ -249,7 +249,7 @@ Feature: Install the Gem in a Rails application
          config.logger = Logger.new STDOUT
          config.user_attributes = [:id, :name, :email, :username, :shoe_size]
       """
-    And I run `rails s`
+    And I run `rails runner config/boot.rb`
     Then I should see "Unsupported user attribute: 'shoe_size'"
 
   Scenario: It should log the notice when failure happens
