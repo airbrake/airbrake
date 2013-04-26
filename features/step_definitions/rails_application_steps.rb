@@ -247,7 +247,6 @@ Then /^the Airbrake notification should contain the custom user details$/ do
   step %{the last notice sent should contain "<name>Bender</name>"}
   step %{the last notice sent should contain "<email>bender@beer.com</email>"}
   step %{the last notice sent should contain "<username>b3nd0r</username>"}
-  step %{the last notice sent should contain "<class_name>User</class_name>"}
 end
 
 Then /^the Airbrake notification should contain user details$/ do
