@@ -1,3 +1,23 @@
+Version 3.1.12 - 2013-04-29 18:48:40 +0200
+===============================================================================
+
+Arvind Kunday (1):
+      Removing the .erb template handler
+
+Hrvoje Šimić (8):
+      introducing null logger for fallback
+      add missing logger requirement
+      being careful with silencing of rake backtrace in the airbrake:test task
+      support for Rails 4.0
+      start using remote XSD file when verifying XML in tests
+      throw a warning for unsupported user attributes
+      updating outdated step definition for current user feature
+      speeding up the test by using 'runner' instead of 'server'
+
+knapo (1):
+      Fix Airbrake::Sender#log to log messages when logger is not passed to options.
+
+
 Version 3.1.11 - 2013-04-11 12:44:09 +0200
 ===============================================================================
 
@@ -1126,6 +1146,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
