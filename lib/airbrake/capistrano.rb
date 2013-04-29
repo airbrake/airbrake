@@ -20,7 +20,7 @@ module Airbrake
             local_user = ENV['USER'] || ENV['USERNAME']
             executable = RUBY_PLATFORM.downcase.include?('mswin') ? fetch(:rake, 'rake.bat') : fetch(:rake, 'rake')
             directory = configuration.release_path
-            notify_command = "cd #{directory}; #{executable} RAILS_ENV=#{rails_env} airbrake:deploy TO=#{airbrake_env} REVISION=#{current_revision} REPO=#{repository} USER=#{local_user}"
+            notify_command = "cd #{directory}; bundle exec rake RAILS_ENV=#{rails_env} airbrake:deploy TO=#{airbrake_env} REVISION=#{current_revision} REPO=#{repository} USER=#{local_user}"
             notify_command << " DRY_RUN=true" if dry_run
             notify_command << " API_KEY=#{ENV['API_KEY']}" if ENV['API_KEY']
             logger.info "Notifying Airbrake of Deploy (#{notify_command})"
