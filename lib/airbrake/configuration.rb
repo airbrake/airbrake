@@ -328,11 +328,13 @@ module Airbrake
     end
 
     def validate_user_attributes(user_attributes)
-      user_attributes.each do |attribute|
-        next if VALID_USER_ATTRIBUTES.include? attribute.to_s
-        warn "[AIRBRAKE] Unsupported user attribute: '#{attribute}'. "\
-          "This attribute will not be shown in the Airbrake UI. "\
-          "Check http://git.io/h6YRpA for more info."
+      user_attributes.reject do |attribute|
+        unless VALID_USER_ATTRIBUTES.include? attribute.to_s
+          warn "[AIRBRAKE] Unsupported user attribute: '#{attribute}'. "\
+            "This attribute will not be shown in the Airbrake UI. "\
+            "Check http://git.io/h6YRpA for more info."
+          true
+        end
       end
     end
   end

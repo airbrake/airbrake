@@ -200,6 +200,12 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_kind_of Airbrake::Configuration, Airbrake.configuration
   end
 
+  should 'reject invalid user attributes' do
+    config = Airbrake::Configuration.new
+    config.user_attributes = %w(id foo)
+    assert_equal %w(id), config.user_attributes
+  end
+
   def assert_config_default(option, default_value, config = nil)
     config ||= Airbrake::Configuration.new
     assert_equal default_value, config.send(option)
