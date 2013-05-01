@@ -251,6 +251,7 @@ Feature: Install the Gem in a Rails application
       """
     And I run `rails runner config/boot.rb`
     Then I should see "Unsupported user attribute: 'shoe_size'"
+    And I should not see "Unsupported user attribute: 'id'"
 
   Scenario: It should log the notice when failure happens
     When Airbrake server is not responding
