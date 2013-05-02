@@ -98,6 +98,7 @@ module Airbrake
     attr_writer :lines
 
     def self.split_multiline_backtrace(backtrace)
+      backtrace = [backtrace] unless backtrace.respond_to?(:to_a)
       if backtrace.to_a.size == 1
         backtrace.to_a.first.split(/\n\s*/)
       else

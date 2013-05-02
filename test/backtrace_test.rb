@@ -21,6 +21,25 @@ class BacktraceTest < Test::Unit::TestCase
     assert_equal 'index', line.method_name
   end
 
+  should "parse a string backtrace" do
+    string = [
+      "app/models/user.rb:13:in `magic'",
+      "app/controllers/users_controller.rb:8:in `index'"
+    ].join("\n")
+
+    backtrace = Airbrake::Backtrace.parse(string)
+
+    line = backtrace.lines.first
+    assert_equal '13', line.number
+    assert_equal 'app/models/user.rb', line.file
+    assert_equal 'magic', line.method_name
+
+    line = backtrace.lines.last
+    assert_equal '8', line.number
+    assert_equal 'app/controllers/users_controller.rb', line.file
+    assert_equal 'index', line.method_name
+  end
+
   should "parse a windows backtrace into lines" do
     array = [
       "C:/Program Files/Server/app/models/user.rb:13:in `magic'",
