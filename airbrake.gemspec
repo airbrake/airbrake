@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency("json-schema")
   s.add_development_dependency("shoulda-matchers")
   s.add_development_dependency("shoulda-context")
+  s.add_development_dependency("activerecord")
 
   s.authors = ["Airbrake"]
   s.email   = %q{support@airbrake.io}
