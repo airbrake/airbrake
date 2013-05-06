@@ -201,9 +201,19 @@ class ConfigurationTest < Test::Unit::TestCase
   end
 
   should 'reject invalid user attributes' do
+    silence_warnings
     config = Airbrake::Configuration.new
     config.user_attributes = %w(id foo)
     assert_equal %w(id), config.user_attributes
+  end
+
+  should "warn about invalid attributes" do
+    stub_warnings
+    config = Airbrake::Configuration.new
+    config.user_attributes = %w(id foo bar baz)
+    %w(foo bar baz).each do |attr|
+      assert_match /Unsupported user attribute: '#{attr}'/, Kernel.warnings
+    end
   end
 
   def assert_config_default(option, default_value, config = nil)
@@ -238,4 +248,23 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_equal [new_value], config.send(option)
   end
 
+  # monkeypatches Kernel.warn so we can read warnings from
+  # Kernel.warnings
+  def stub_warnings
+    Kernel.class_eval do
+      @@warnings = []
+
+      def warn(*messages)
+        @@warnings += messages
+      end
+
+      def self.warnings
+        @@warnings.join("\n")
+      end
+    end
+  end
+
+  def silence_warnings
+    Kernel.class_eval { def warn(*args); end }
+  end
 end
