@@ -11,8 +11,6 @@ require 'abstract_controller'
 require 'action_controller'
 require 'action_dispatch'
 require 'active_support/dependencies'
-require 'active_model'
-require 'active_record'
 require 'active_support/core_ext/kernel/reporting'
 
 require 'nokogiri'
