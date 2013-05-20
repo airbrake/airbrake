@@ -22,12 +22,19 @@ module Airbrake
 
     def initialize(app)
       super
-      Airbrake.configuration.environment_name = "#{app.settings.environment}"
-      Airbrake.configuration.framework = "Sinatra: #{::Sinatra::VERSION}"
+      Airbrake.configuration.environment_name ||= environment_name(app)
+      Airbrake.configuration.framework        = "Sinatra: #{::Sinatra::VERSION}"
     end
 
     def framework_exception(env)
       env['sinatra.error']
+    end
+
+    def environment_name(app)
+      "#{app.settings.environment}"
+    rescue
+      ENV["RACK_ENV"] || warn("[Airbrake] Couldn't determine environment name automatically. "\
+        "Please set your environment name manually by setting 'config.environment_name='.")
     end
   end
 end
