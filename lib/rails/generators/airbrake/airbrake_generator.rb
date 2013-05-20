@@ -61,7 +61,7 @@ class AirbrakeGenerator < Rails::Generators::Base
     s = if options[:api_key]
       "'#{options[:api_key]}'"
     elsif options[:heroku]
-      "ENV['AIRBRAKE_API_KEY']"
+      heroku_api_key
     end
   end
 
@@ -79,7 +79,7 @@ class AirbrakeGenerator < Rails::Generators::Base
       exit 1
     else
       puts "... Done."
-      puts "Heroku's Airbrake API Key is '#{ENV['AIRBRAKE_API_KEY']}'"
+      puts "Heroku's Airbrake API Key is #{ENV['AIRBRAKE_API_KEY']}"
     end
   end
 
@@ -89,7 +89,7 @@ class AirbrakeGenerator < Rails::Generators::Base
   end
 
   def heroku_api_key
-    heroku_var("AIRBRAKE_API_KEY",options[:app]).split.find {|x| x unless x.blank?}
+    "'#{`heroku config:get AIRBRAKE_API_KEY`.gsub("\n","")}'"
   end
 
   def secure?
@@ -101,9 +101,7 @@ class AirbrakeGenerator < Rails::Generators::Base
   end
 
   def heroku?
-    options[:heroku] ||
-      system("grep AIRBRAKE_API_KEY config/initializers/airbrake.rb") ||
-      system("grep AIRBRAKE_API_KEY config/environment.rb")
+    options[:heroku] || heroku_api_key.length == 32
   end
 
   def api_key_configured?
@@ -111,7 +109,7 @@ class AirbrakeGenerator < Rails::Generators::Base
   end
 
   def test_airbrake
-    puts run("rake airbrake:test")
+    puts run("airbrake raise")
   end
 
   def plugin_is_present?
