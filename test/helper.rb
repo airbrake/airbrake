@@ -5,7 +5,7 @@ $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
 
 require 'thread'
 
-require 'mocha'
+require 'mocha/setup'
 
 require 'abstract_controller'
 require 'action_controller'
