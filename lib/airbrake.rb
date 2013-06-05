@@ -66,6 +66,7 @@ module Airbrake
       info = "[Ruby: #{RUBY_VERSION}]"
       info << " [#{configuration.framework}]" if configuration.framework
       info << " [Env: #{configuration.environment_name}]" if configuration.environment_name
+      info
     end
 
     # Writes out the given message to the #logger
