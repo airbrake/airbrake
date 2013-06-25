@@ -65,8 +65,11 @@ module Airbrake
     # Empty by default and used only in rake handler
     attr_reader :rake_environment_filters
 
-    # A list of exception classes to ignore. The array can be appended to.
+    # A list of exception classes to ignore during server requests. The array can be appended to.
     attr_reader :ignore
+
+    # A list of exception classes to ignore during Rake tasks. The array can be appended to.
+    attr_reader :ignore_rake
 
     # A list of user agents that are being ignored. The array can be appended to.
     attr_reader :ignore_user_agent
@@ -162,8 +165,9 @@ module Airbrake
       @http_read_timeout        = 5
       @params_filters           = DEFAULT_PARAMS_FILTERS.dup
       @backtrace_filters        = DEFAULT_BACKTRACE_FILTERS.dup
-      @ignore_by_filters        = []
+      @ignore_by_filters        = []  # These filters are applied to both server requests and Rake tasks
       @ignore                   = IGNORE_DEFAULT.dup
+      @ignore_rake              = []  # Rake tasks don't ignore any exception classes by default
       @ignore_user_agent        = []
       @development_environments = %w(development test cucumber)
       @development_lookup       = true
@@ -211,6 +215,13 @@ module Airbrake
     # @param [Array<Exception>] names A list of exceptions to ignore.
     def ignore_only=(names)
       @ignore = [names].flatten
+    end
+
+    # Overrides the list of default ignored errors during Rake tasks.
+    #
+    # @param [Array<Exception>] names A list of rake exceptions to ignore.
+    def ignore_rake_only=(names)
+      @ignore_rake = [names].flatten
     end
 
     # Overrides the list of default ignored user agents

@@ -161,6 +161,18 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_replaces(:ignore, :ignore_only=)
   end
 
+  should "allow ignored rake exceptions to be appended" do
+    config = Airbrake::Configuration.new
+    original_filters = config.ignore_rake.dup
+    new_filter = 'hello'
+    config.ignore_rake << new_filter
+    assert_same_elements original_filters + [new_filter], config.ignore_rake
+  end
+
+  should "allow ignored rake exceptions to be replaced" do
+    assert_replaces(:ignore_rake, :ignore_rake_only=)
+  end
+
   should "allow ignored user agents to be replaced" do
     assert_replaces(:ignore_user_agent, :ignore_user_agent_only=)
   end
