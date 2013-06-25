@@ -20,3 +20,4 @@ gemfiles/*.lock
 .rbenv-version
 .rvmrc
 resources/notice.xml
+Gemfile.lock
