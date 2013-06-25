@@ -3,6 +3,10 @@ Feature: Use the Gem to catch errors in a Rake application
   Background:
     Given I've prepared the Rakefile
 
+  Scenario: Ignoring exceptions
+    When I run rake with airbrake ignored
+    Then Airbrake should not catch the exception
+
   Scenario: Catching exceptions in Rake
     When I run rake with airbrake
     Then Airbrake should catch the exception

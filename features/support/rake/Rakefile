@@ -5,7 +5,10 @@ require 'rubygems'
 require 'airbrake'
 require 'airbrake/rake_handler'
 
+class IgnoredException < StandardError; end
+
 Airbrake.configure do |c|
+  c.ignore_rake_only = ["IgnoredException"]
 end
 
 # Should catch exception
@@ -20,6 +23,13 @@ task :airbrake_disabled do
   Airbrake.configuration.rescue_rake_exceptions = false
   stub_tty_output(true)
   raise_exception 
+end
+
+# Should ignore the exception
+task :airbrake_ignored do
+  Airbrake.configuration.rescue_rake_exceptions = true
+  stub_tty_output(true)
+  raise_exception(IgnoredException)
 end
 
 # Should not catch exception as tty_output is true
@@ -44,8 +54,8 @@ task :airbrake_not_yet_configured do
 end
 
 module Airbrake
-  def self.notify_or_ignore(*args)
-    $stderr.puts "[airbrake] #{args[1][:component]}"
+  def self.send_notice(notice)
+    $stderr.puts "[airbrake] #{notice.component}"
   end
 end
 
@@ -62,6 +72,6 @@ def stub_tty_output(value)
   end
 end
 
-def raise_exception
-  raise 'TEST'
+def raise_exception(exception_class = StandardError)
+  raise exception_class.new('TEST')
 end
