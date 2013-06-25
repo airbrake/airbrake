@@ -174,7 +174,7 @@ module Airbrake
 
     def json_api_enabled?
       !!(host =~ /collect.airbrake.io/) &&
-        project_id.present?
+        project_id =~ /\S/
     end
   end
 

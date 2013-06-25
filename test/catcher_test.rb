@@ -36,7 +36,7 @@ class ActionControllerCatcherTest < ActionDispatch::IntegrationTest
   def assert_sent_hash(hash, xpath)
     hash.each do |key, value|
       next if key.match(/^airbrake\./) || # We added this key.
-        hash[key].blank?
+        hash[key] !~ /\S/
 
       element_xpath = "#{xpath}/var[@key = '#{key}']"
       if value.respond_to?(:to_hash)

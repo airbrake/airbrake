@@ -124,7 +124,7 @@ module Airbrake
       self.action              = args[:action] || parameters['action']
 
       self.environment_name = args[:environment_name]
-      self.cgi_data         = args[:cgi_data] || args[:rack_env]
+      self.cgi_data         = args[:cgi_data] || args[:rack_env] || {}
       self.backtrace        = Backtrace.parse(exception_attribute(:backtrace, caller), :filters => self.backtrace_filters)
       self.error_class      = exception_attribute(:error_class) {|exception| exception.class.name }
       self.error_message    = exception_attribute(:error_message, 'Notification') do |exception|
@@ -132,7 +132,7 @@ module Airbrake
       end
 
       self.hostname        = local_hostname
-      self.user = args[:user]
+      self.user = args[:user] || {}
 
       also_use_rack_params_filters
       find_session_data
@@ -164,27 +164,22 @@ module Airbrake
             end
           end
         end
-        if url ||
-            controller ||
-            action ||
-            !parameters.blank? ||
-            !cgi_data.blank? ||
-            !session_data.blank?
+        if request_present?
           notice.request do |request|
             request.url(url)
             request.component(controller)
             request.action(action)
-            unless parameters.blank?
+            unless parameters.empty?
               request.params do |params|
                 xml_vars_for(params, parameters)
               end
             end
-            unless session_data.blank?
+            unless session_data.empty?
               request.session do |session|
                 xml_vars_for(session, session_data)
               end
             end
-            unless cgi_data.blank?
+            unless cgi_data.empty?
               request.tag!("cgi-data") do |cgi_datum|
                 xml_vars_for(cgi_datum, cgi_data)
               end
@@ -196,14 +191,14 @@ module Airbrake
           env.tag!("environment-name", environment_name)
           env.tag!("hostname", hostname)
         end
-        unless user.blank?
+        unless user.empty?
           notice.tag!("current-user") do |u|
             user.each do |attr, value|
               u.tag!(attr.to_s, value)
             end
           end
         end
-        unless framework.blank?
+        if framework =~ /\S/
           notice.tag!("framework", framework)
         end
       end
@@ -229,7 +224,7 @@ module Airbrake
             end
           }],
          'context' => {}.tap do |hash|
-            if url || controller || action || !parameters.blank? || !cgi_data.blank? || !session_data.blank?
+            if request_present?
               hash['url']           = url
               hash['component']     = controller
               hash['action']        = action
@@ -237,7 +232,7 @@ module Airbrake
               hash['environment']   = environment_name
             end
            end.tap do |hash|
-            next if user.blank?
+            next if user.empty?
 
             hash['userId']    = user[:id]
             hash['userName']  = user[:name]
@@ -245,9 +240,9 @@ module Airbrake
           end
 
       }.tap do |hash|
-          hash['environment'] = cgi_data     unless cgi_data.blank?
-          hash['params']      = parameters   unless parameters.blank?
-          hash['session']     = session_data unless session_data.blank?
+          hash['environment'] = cgi_data     unless cgi_data.empty?
+          hash['params']      = parameters   unless parameters.empty?
+          hash['session']     = session_data unless session_data.empty?
       end.to_json
     end
 
@@ -274,6 +269,14 @@ module Airbrake
 
     private
 
+    def request_present?
+      url ||
+        controller ||
+        action ||
+        !parameters.empty? ||
+        !cgi_data.empty? ||
+        !session_data.empty?
+    end
 
     # Gets a property named +attribute+ of an exception, either from an actual
     # exception or a hash.

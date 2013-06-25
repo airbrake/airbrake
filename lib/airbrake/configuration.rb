@@ -113,7 +113,7 @@ module Airbrake
     attr_reader :user_attributes
 
     # Only used for JSON API
-    attr_accessor :project_id
+    attr_reader :project_id
 
     # Setting this to true will use the CollectingSender instead of
     # the default one which will cause storing the last notice locally
@@ -313,6 +313,10 @@ module Airbrake
 
     def local_cert_path
       File.expand_path(File.join("..", "..", "..", "resources", "ca-bundle.crt"), __FILE__)
+    end
+
+    def project_id=(project_id)
+      @project_id = "#{project_id}"
     end
 
   private

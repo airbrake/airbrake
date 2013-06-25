@@ -72,14 +72,14 @@ class AirbrakeGenerator < Rails::Generators::Base
   def determine_api_key
     puts "Attempting to determine your API Key from Heroku..."
     ENV['AIRBRAKE_API_KEY'] = heroku_api_key
-    if ENV['AIRBRAKE_API_KEY'].blank?
+    if ENV['AIRBRAKE_API_KEY'] =~ /\S/
+      puts "... Done."
+      puts "Heroku's Airbrake API Key is '#{ENV['AIRBRAKE_API_KEY']}'"
+    else
       puts "... Failed."
       puts "WARNING: We were unable to detect the Airbrake API Key from your Heroku environment."
       puts "Your Heroku application environment may not be configured correctly."
       exit 1
-    else
-      puts "... Done."
-      puts "Heroku's Airbrake API Key is '#{ENV['AIRBRAKE_API_KEY']}'"
     end
   end
 
@@ -89,7 +89,7 @@ class AirbrakeGenerator < Rails::Generators::Base
   end
 
   def heroku_api_key
-    heroku_var("AIRBRAKE_API_KEY",options[:app]).split.find {|x| x unless x.blank?}
+    heroku_var("AIRBRAKE_API_KEY",options[:app]).split.find {|x| x if x =~ /\S/}
   end
 
   def secure?

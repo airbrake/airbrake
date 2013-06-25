@@ -14,7 +14,6 @@ Gem::Specification.new do |s|
   s.test_files    = Dir.glob("{test,spec,features}/**/*")
 
   s.add_runtime_dependency("builder")
-  s.add_runtime_dependency("activesupport")
   s.add_runtime_dependency("json")
 
   s.add_development_dependency("bourne",        "~> 1.4.0")

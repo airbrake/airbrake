@@ -15,12 +15,12 @@ module AirbrakeTasks
   # @option opts [String] :local_username Who is deploying
   def self.deploy(opts = {})
     api_key = opts.delete(:api_key) || Airbrake.configuration.api_key
-    if api_key.blank?
+    unless api_key =~ /\S/
       puts "I don't seem to be configured with an API key.  Please check your configuration."
       return false
     end
 
-    if opts[:rails_env].blank?
+    unless opts[:rails_env] =~ /\S/
       puts "I don't know to which Rails environment you are deploying (use the TO=production option)."
       return false
     end
