@@ -27,18 +27,7 @@ Then from your project's RAILS_ROOT, and in your development environment, run:
     bundle install
     rails generate airbrake --api-key your_key_here
 
-That's it!
-
 The generator creates a file under `config/initializers/airbrake.rb` configuring Airbrake with your API key. This file should be checked into your version control system so that it is deployed to your staging and production environments.
-
-The default behaviour of the gem is to only operate in Rails environments that are NOT **development**, **test** & **cucumber**. 
-
-You can change this by altering this array:
-
-    config.development_environments = ["development", "test", "cucumber", "custom"]
-
-Set it to empty array and it will report errors on all environments.
-
 
 ### Rails 2.x
 
@@ -60,6 +49,34 @@ As always, if you choose not to vendor the airbrake gem, make sure
 every server you deploy to has the gem installed or your application won't start.
 
 The generator creates a file under `config/initializers/airbrake.rb` configuring Airbrake with your API key. This file should be checked into your version control system so that it is deployed to your staging and production environments.
+
+Ignored exceptions
+------------------------
+
+Exceptions raised from Rails environments named **development**, **test** or **cucumber** will be ignored by default. 
+
+You can clear the list of ignored environments with this setting:
+
+    config.development_environments = []
+
+List of ignored exception classes includes:
+    
+    ActiveRecord::RecordNotFound
+    ActionController::RoutingError
+    ActionController::InvalidAuthenticityToken
+    CGI::Session::CookieStore::TamperedWithCookie
+    ActionController::UnknownHttpMethod
+    ActionController::UnknownAction
+    AbstractController::ActionNotFound
+    Mongoid::Errors::DocumentNotFound
+
+You can alter this list with
+
+    config.ignore_only = []
+    
+which will cause none of the exception classes to be ignored.
+
+Check the [wiki](https://github.com/airbrake/airbrake/wiki/Customizing-your-airbrake.rb) for more customization options.
 
 Supported frameworks
 ------------------------
