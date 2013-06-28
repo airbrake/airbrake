@@ -14,7 +14,7 @@ appraise "rails-3.2" do
 end
 
 appraise "rails-4.0" do
- gem "rails", "~> 4.0.0.beta1"
+ gem "rails", "~> 4.0.0"
  gem "airbrake", :path => "../"
 end
 
