@@ -22,6 +22,7 @@ module Runner
         c.api_key = options.api_key
         c.host    = options.host if options.host
         c.port    = options.port if options.port
+        c.secure  = options.port.to_i == 443
       end
       exception_id = Airbrake.notify(:error_class   => options.error,
                                      :error_message => "#{options.error}: #{options.message}",
