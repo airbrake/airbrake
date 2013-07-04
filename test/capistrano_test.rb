@@ -24,7 +24,7 @@ class CapistranoTest < Test::Unit::TestCase
   should "log when calling airbrake:deploy task" do
     @configuration.set(:current_revision, '084505b1c0e0bcf1526e673bb6ac99fbcb18aecc')
     @configuration.set(:repository, 'repository')
-    @configuration.set(:release_path, '/home/deploy/rails_app/hoptoad')
+    @configuration.set(:current_path, '/home/deploy/rails_app/hoptoad')
     io = StringIO.new
     logger = Capistrano::Logger.new(:output => io)
     logger.level = Capistrano::Logger::MAX_LEVEL
