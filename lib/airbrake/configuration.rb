@@ -3,7 +3,7 @@ module Airbrake
   class Configuration
 
     OPTIONS = [:api_key, :js_api_key, :backtrace_filters, :development_environments,
-        :development_lookup, :environment_name, :host,
+        :development_lookup, :environment_name, :host, :path,
         :http_open_timeout, :http_read_timeout, :ignore, :ignore_by_filters,
         :ignore_user_agent, :notifier_name, :notifier_url, :notifier_version,
         :params_filters, :project_root, :port, :protocol, :proxy_host,
@@ -22,6 +22,9 @@ module Airbrake
 
     # The host to connect to (defaults to airbrake.io).
     attr_accessor :host
+
+    # The path to to notifier.js to (defaults to /javascripts).
+    attr_accessor :path
 
     # The port on which your Airbrake server runs (defaults to 443 for secure
     # connections, 80 for insecure connections).
@@ -161,6 +164,7 @@ module Airbrake
       @secure                   = false
       @use_system_ssl_cert_chain= false
       @host                     = 'api.airbrake.io'
+      @path                     = '/javascripts'
       @http_open_timeout        = 2
       @http_read_timeout        = 5
       @params_filters           = DEFAULT_PARAMS_FILTERS.dup

@@ -41,6 +41,7 @@ module Airbrake
 
         def _airbrake_render_part(path, locals={})
           locals[:host] = _airbrake_host
+          locals[:path] = Airbrake.configuration.path
 
           options              = {
             :file              => path,
