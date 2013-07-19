@@ -10,7 +10,7 @@ module Airbrake
       private
 
         def airbrake_javascript_notifier
-          airbrake_javascript_loader + airbrake_javascript_configuration
+          airbrake_javascript_loader.to_s + airbrake_javascript_configuration.to_s
         end
 
         def airbrake_javascript_loader
