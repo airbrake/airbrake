@@ -10,7 +10,7 @@ module Airbrake
       private
 
         def airbrake_javascript_notifier
-          airbrake_javascript_loader + airbrake_javascript_configuration
+          airbrake_javascript_loader.to_s + airbrake_javascript_configuration.to_s
         end
 
         def airbrake_javascript_loader
@@ -41,6 +41,7 @@ module Airbrake
 
         def _airbrake_render_part(path, locals={})
           locals[:host] = _airbrake_host
+          locals[:path] = Airbrake.configuration.path
 
           options              = {
             :file              => path,
