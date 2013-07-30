@@ -10,6 +10,16 @@ class TestController
   end
 end
 
+class NoSessionTestController
+  include Airbrake::Rails::ControllerMethods
+
+  def session
+    nil
+  end
+end
+
+
+
 class ControllerMethodsTest < Test::Unit::TestCase
   context "#airbrake_current_user" do
     setup do
@@ -34,4 +44,16 @@ class ControllerMethodsTest < Test::Unit::TestCase
       assert_equal false, NilClass.called
     end
   end
+
+  context '#airbrake_session_data' do
+    setup do
+      @controller = NoSessionTestController
+    end
+    should 'not call session if no session' do
+      no_session = @controller.send(:airbrake_session_data)
+      assert_equal no_session, {:session => 'no session found'}
+    end
+  end
+
 end
+
