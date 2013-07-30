@@ -47,7 +47,7 @@ class ControllerMethodsTest < Test::Unit::TestCase
 
   context '#airbrake_session_data' do
     setup do
-      @controller = NoSessionTestController
+      @controller = NoSessionTestController.new
     end
     should 'not call session if no session' do
       no_session = @controller.send(:airbrake_session_data)
