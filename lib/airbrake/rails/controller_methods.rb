@@ -55,15 +55,14 @@ module Airbrake
 
       def airbrake_session_data
         if session
-        if session.respond_to?(:to_hash)
-          session.to_hash
-        else
-          session.data
-        end
+          if session.respond_to?(:to_hash)
+            session.to_hash
+          else
+            session.data
+          end
         else
           {:session => 'no session found'}
         end
-
       end
 
       def airbrake_request_url
