@@ -124,7 +124,7 @@ module Airbrake
       self.action              = args[:action] || parameters['action']
 
       self.environment_name = args[:environment_name]
-      self.cgi_data         = args[:cgi_data] || args[:rack_env] || {}
+      self.cgi_data         = args[:cgi_data].dup || args[:rack_env] || {}
       self.backtrace        = Backtrace.parse(exception_attribute(:backtrace, caller), :filters => self.backtrace_filters)
       self.error_class      = exception_attribute(:error_class) {|exception| exception.class.name }
       self.error_message    = exception_attribute(:error_message, 'Notification') do |exception|
