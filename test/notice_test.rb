@@ -215,6 +215,12 @@ class NoticeTest < Test::Unit::TestCase
     assert_equal data, notice.cgi_data, "should take CGI data from a hash"
   end
 
+  should "not crash without CGI data" do
+    assert_nothing_raised do
+      build_notice()
+    end
+  end
+
   should "accept notifier information" do
     params = { :notifier_name    => 'a name for a notifier',
                :notifier_version => '1.0.5',
