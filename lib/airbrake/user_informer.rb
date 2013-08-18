@@ -22,7 +22,7 @@ module Airbrake
           new_body << chunk.gsub("<!-- AIRBRAKE ERROR -->", replace)
         end
         body.close if body.respond_to?(:close)
-        headers['Content-Length'] = new_body.sum(&:bytesize).to_s
+        headers['Content-Length'] = new_body.inject(0){|sum, x| sum + x.bytesize}.to_s
         body = new_body
       end
 

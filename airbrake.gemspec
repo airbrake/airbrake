@@ -30,9 +30,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency("girl_friday")
   s.add_development_dependency("shoulda-matchers")
   s.add_development_dependency("shoulda-context")
-
-  s.add_development_dependency("actionpack")
-  s.add_development_dependency("activesupport")
+  s.add_development_dependency("pry")
 
   s.authors = ["Airbrake"]
   s.email   = %q{support@airbrake.io}

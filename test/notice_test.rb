@@ -217,7 +217,7 @@ class NoticeTest < Test::Unit::TestCase
 
   should "not crash without CGI data" do
     assert_nothing_raised do
-      build_notice()
+      build_notice
     end
   end
 
