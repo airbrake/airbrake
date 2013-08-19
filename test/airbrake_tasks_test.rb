@@ -135,11 +135,11 @@ class AirbrakeTasksTest < Test::Unit::TestCase
       end
 
       context "on deploy(:rails_env => 'staging')" do
-        setup { @output = AirbrakeTasks.deploy(:rails_env => "staging") }
+        setup { @output    = AirbrakeTasks.deploy(:rails_env => "staging") }
 
         before_should "post to the custom host" do
           @post             = stub("post",     :set_form_data => nil)
-          @http_proxy       = stub("proxy",    :request => @response)
+          @http_proxy       = stub("proxy",    :request => stub("response",    :body => "stub body"))
 
           @http_proxy_class = stub("proxy_class", :new => @http_proxy)
           @http_proxy_class.expects(:new).with("custom.host", 80).returns(@http_proxy)

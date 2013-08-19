@@ -172,7 +172,7 @@ class NoticeTest < Test::Unit::TestCase
     exception.set_backtrace(backtrace_array)
     Airbrake::Backtrace.expects(:parse).with(backtrace_array, {:filters => 'foo'})
 
-    notice = Airbrake::Notice.new({:exception => exception, :backtrace_filters => 'foo'})
+    Airbrake::Notice.new({:exception => exception, :backtrace_filters => 'foo'})
   end
 
   should "set the error class from an exception or hash" do
@@ -418,7 +418,7 @@ class NoticeTest < Test::Unit::TestCase
   should "not ignore an exception not matching ignore filters" do
     notice = build_notice(:error_class       => 'ArgumentError',
                           :ignore            => ['Argument'],
-                          :ignore_by_filters => [lambda { |notice| false }])
+                          :ignore_by_filters => [lambda { |n| false }])
     assert !notice.ignore?
   end
 

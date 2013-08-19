@@ -87,7 +87,7 @@ module Airbrake
     # Details about the user who experienced the error
     attr_reader :user
 
-    private
+    protected
 
     # Private writers for all the attributes
     attr_writer :exception, :api_key, :backtrace, :error_class, :error_message,

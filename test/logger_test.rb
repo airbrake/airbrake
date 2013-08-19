@@ -25,13 +25,13 @@ class LoggerTest < Test::Unit::TestCase
   should "report that notifier is ready when configured" do
     stub_verbose_log
     configure
-    assert_logged /Notifier (.*) ready/
+    assert_logged(/Notifier (.*) ready/)
   end
 
   should "not report that notifier is ready when internally configured" do
     stub_verbose_log
     Airbrake.configure(true) { |config| }
-    assert_not_logged /.*/
+    assert_not_logged(/.*/)
   end
 
   should "print environment info a successful notification without a body" do
@@ -39,8 +39,8 @@ class LoggerTest < Test::Unit::TestCase
     stub_verbose_log
     stub_http(Net::HTTPSuccess)
     send_notice
-    assert_logged /Environment Info:/
-    assert_not_logged /Response from Airbrake:/
+    assert_logged(/Environment Info:/)
+    assert_not_logged(/Response from Airbrake:/)
   end
 
   should "print environment info on a failed notification without a body" do
@@ -48,8 +48,8 @@ class LoggerTest < Test::Unit::TestCase
     stub_verbose_log
     stub_http(Net::HTTPError)
     send_notice
-    assert_logged /Environment Info:/
-    assert_not_logged /Response from Airbrake:/
+    assert_logged(/Environment Info:/)
+    assert_not_logged(/Response from Airbrake:/)
   end
 
   should "print environment info and response on a success with a body" do
@@ -57,8 +57,8 @@ class LoggerTest < Test::Unit::TestCase
     stub_verbose_log
     stub_http(Net::HTTPSuccess, 'test')
     send_notice
-    assert_logged /Environment Info:/
-    assert_logged /Response from Airbrake:/
+    assert_logged(/Environment Info:/)
+    assert_logged(/Response from Airbrake:/)
   end
 
   should "print environment info and response on a failure with a body" do
@@ -66,14 +66,14 @@ class LoggerTest < Test::Unit::TestCase
     stub_verbose_log
     stub_http(Net::HTTPError, 'test')
     send_notice
-    assert_logged /Environment Info:/
-    assert_logged /Response from Airbrake:/
+    assert_logged(/Environment Info:/)
+    assert_logged(/Response from Airbrake:/)
   end
 
   should "print information about the notice when Airbrake server fails" do
     stub_verbose_log
     stub_http(Net::HTTPError, "test")
     send_notice
-    assert_logged /Notice details:/
+    assert_logged(/Notice details:/)
   end
 end

@@ -83,7 +83,7 @@ class NotifierTest < Test::Unit::TestCase
 
   should "not pass the hash as an exception when sending a notice for it" do
     set_public_env
-    notice = stub_notice!
+    stub_notice!
     notice_args = { :error_message => 'uh oh' }
     stub_sender!
 
@@ -147,7 +147,7 @@ class NotifierTest < Test::Unit::TestCase
       end
     end
     exception = build_exception
-    sender = stub_sender!
+    stub_sender!
     notice = stub_notice!
 
     Airbrake.notify(exception)
@@ -162,7 +162,7 @@ class NotifierTest < Test::Unit::TestCase
       config.async {|notice| received_notice = notice}
     end
     exception = build_exception
-    sender = stub_sender!
+    stub_sender!
     notice = stub_notice!
 
     Airbrake.notify(exception)
@@ -173,7 +173,7 @@ class NotifierTest < Test::Unit::TestCase
   should "deliver an ignored exception when notifying manually" do
     set_public_env
     exception = build_exception
-    sender = stub_sender!
+    stub_sender!
     notice = stub_notice!
     notice.stubs(:ignore? => true)
 
@@ -185,7 +185,7 @@ class NotifierTest < Test::Unit::TestCase
   should "pass config to created notices" do
     exception = build_exception
     config_opts = { 'one' => 'two', 'three' => 'four' }
-    notice = stub_notice!
+    stub_notice!
     stub_sender!
     Airbrake.configuration = stub('config', :merge => config_opts, :public? => true,:async? => nil)
 
@@ -216,7 +216,7 @@ class NotifierTest < Test::Unit::TestCase
     end
 
     should "set file" do
-      assert_match /test\/helper\.rb$/, @hash[:file]
+      assert_match(/test\/helper\.rb$/, @hash[:file])
     end
 
     should "set rails_env to production" do

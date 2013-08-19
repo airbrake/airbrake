@@ -25,7 +25,7 @@ module Airbrake
 
     # The port on which your Airbrake server runs (defaults to 443 for secure
     # connections, 80 for insecure connections).
-    attr_accessor :port
+    attr_writer :port
 
     # +true+ for https connections, +false+ for http connections.
     attr_accessor :secure
@@ -137,8 +137,8 @@ module Airbrake
       lambda { |line| line.gsub(/^\.\//, "") },
       lambda { |line|
         if defined?(Gem)
-          Gem.path.inject(line) do |line, path|
-            line.gsub(/#{path}/, "[GEM_ROOT]")
+          Gem.path.inject(line) do |l, path|
+            l.gsub(/#{path}/, "[GEM_ROOT]")
           end
         end
       },
@@ -158,9 +158,11 @@ module Airbrake
     alias_method :use_system_ssl_cert_chain?, :use_system_ssl_cert_chain
 
     def initialize
+      @js_api_key               = nil
       @secure                   = false
       @use_system_ssl_cert_chain= false
       @host                     = 'api.airbrake.io'
+      @port                     = nil
       @http_open_timeout        = 2
       @http_read_timeout        = 5
       @params_filters           = DEFAULT_PARAMS_FILTERS.dup
@@ -179,6 +181,7 @@ module Airbrake
       @rescue_rake_exceptions   = nil
       @user_attributes          = DEFAULT_USER_ATTRIBUTES.dup
       @rake_environment_filters = []
+      @async                    = nil
     end
 
     # Takes a block and adds it to the list of backtrace filters. When the filters

@@ -14,16 +14,23 @@ require './lib/airbrake/version'
 
 task :default do
   exec 'rake test'\
-    '&& TEST=test/catcher_test.rb rake appraisal:rails-3.2 test'\
-    '&& TEST=test/catcher_test.rb rake appraisal:rails-3.1 test'\
-    '&& TEST=test/catcher_test.rb rake appraisal:rails-3.0 test'\
+    '&& rake appraisal:rails-3.2 integration_test'\
+    '&& rake appraisal:rails-3.1 integration_test'\
+    '&& rake appraisal:rails-3.0 integration_test'\
     '&& rake appraisal cucumber'
 end
 
 desc 'Test the airbrake gem.'
 Rake::TestTask.new(:test) do |t|
   t.libs << 'lib'
-  t.pattern = 'test/**/*_test.rb'
+  t.pattern = 'test/*_test.rb'
+  t.verbose = true
+end
+
+desc "Test the integration of airbrake gem with Rails."
+Rake::TestTask.new(:integration_test) do |t|
+  t.libs << 'lib'
+  t.pattern = 'test/integration.rb'
   t.verbose = true
 end
 
@@ -144,4 +151,3 @@ Cucumber::Rake::Task.new(:cucumber) do |t|
   t.fork = true
   t.cucumber_opts = cucumber_opts
 end
-

@@ -1,13 +1,5 @@
-require File.expand_path '../helper', __FILE__
 require 'airbrake/rails/javascript_notifier'
 require 'ostruct'
-
-unless defined?(ActionView)
-  module ActionView
-    module Template
-    end
-  end
-end
 
 class JavascriptNotifierTest < Test::Unit::TestCase
   module FakeRenderer

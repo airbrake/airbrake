@@ -38,6 +38,7 @@ module Airbrake
         end
 
       protected
+        attr_reader :template
 
         def _airbrake_render_part(path, locals={})
           locals[:host] = _airbrake_host
@@ -60,9 +61,9 @@ module Airbrake
         end
 
         def _airbrake_render_template(options)
-          case @template
+          case template
           when ActionView::Template
-            @template.render options
+            template.render options
           else
             render_to_string options
           end

@@ -1,25 +1,39 @@
-require 'test/unit'
-require 'rubygems'
+$VERBOSE = ENV["VERBOSE"]
+
+module Kernel
+  def silence_warnings
+    with_warnings(nil) { yield }
+  end
+
+  def with_warnings(flag)
+    old_verbose, $VERBOSE = $VERBOSE, flag
+    yield
+  ensure
+    $VERBOSE = old_verbose
+  end
+end
+
+silence_warnings do
+  require 'test/unit'
+  require 'rubygems'
+
+  require 'thread'
+
+  require 'mocha/setup'
+  require 'nokogiri'
+  require 'rack'
+  require 'bourne'
+  require 'sham_rack'
+  require 'json-schema'
+  require "shoulda-matchers"
+  require "shoulda-context"
+  begin require 'redgreen'; rescue LoadError; end
+end
 
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
 
-require 'thread'
-
-require 'mocha/setup'
-
-require 'nokogiri'
-require 'rack'
-require 'bourne'
-require 'sham_rack'
-require 'json-schema'
 
 require "airbrake"
-
-require "shoulda-matchers"
-require "shoulda-context"
-
-begin require 'redgreen'; rescue LoadError; end
-
 
 module TestMethods
   def rescue_action e

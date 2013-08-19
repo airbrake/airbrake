@@ -26,9 +26,9 @@ module Airbrake
       end
 
       def initialize(file, number, method_name)
-        self.file   = file
-        self.number = number
-        self.method_name = method_name
+        @file   = file
+        @number = number
+        @method_name = method_name
       end
 
       # Reconstructs the line in a readable fashion
@@ -43,10 +43,6 @@ module Airbrake
       def inspect
         "<Line:#{to_s}>"
       end
-
-      private
-
-      attr_writer :file, :number, :method_name
     end
 
     # holder for an Array of Backtrace::Line instances
@@ -57,8 +53,8 @@ module Airbrake
 
       filters = opts[:filters] || []
       filtered_lines = ruby_lines.to_a.map do |line|
-        filters.inject(line) do |line, proc|
-          proc.call(line)
+        filters.inject(line) do |l, proc|
+          proc.call(l)
         end
       end.compact
 
@@ -66,11 +62,11 @@ module Airbrake
         Line.parse(unparsed_line)
       end
 
-      instance = new(lines)
+      new(lines)
     end
 
     def initialize(lines)
-      self.lines = lines
+      @lines = lines
     end
 
     def inspect
@@ -94,8 +90,6 @@ module Airbrake
     end
 
     private
-
-    attr_writer :lines
 
     def self.split_multiline_backtrace(backtrace)
       backtrace = [backtrace] unless backtrace.respond_to?(:to_a)

@@ -1,6 +1,6 @@
 require File.expand_path '../helper', __FILE__
 
-require 'capistrano/configuration'
+silence_warnings { require 'capistrano/configuration' }
 require 'airbrake/capistrano'
 
 class CapistranoTest < Test::Unit::TestCase

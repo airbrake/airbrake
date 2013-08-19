@@ -224,7 +224,7 @@ class ConfigurationTest < Test::Unit::TestCase
     config = Airbrake::Configuration.new
     config.user_attributes = %w(id foo bar baz)
     %w(foo bar baz).each do |attr|
-      assert_match /Unsupported user attribute: '#{attr}'/, Kernel.warnings
+      assert_match(/Unsupported user attribute: '#{attr}'/, Kernel.warnings)
     end
   end
 
@@ -242,9 +242,9 @@ class ConfigurationTest < Test::Unit::TestCase
   def assert_appends_value(option, &block)
     config = Airbrake::Configuration.new
     original_values = config.send(option).dup
-    block ||= lambda do |config|
+    block ||= lambda do |conf|
       new_value = 'hello'
-      config.send(option) << new_value
+      conf.send(option) << new_value
       new_value
     end
     new_value = block.call(config)
