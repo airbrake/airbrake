@@ -87,52 +87,40 @@ module Airbrake
     # Details about the user who experienced the error
     attr_reader :user
 
-    protected
-
-    # Private writers for all the attributes
-    attr_writer :exception, :api_key, :backtrace, :error_class, :error_message,
-      :backtrace_filters, :parameters, :params_filters,
-      :session_data, :project_root, :url, :ignore,
-      :ignore_by_filters, :notifier_name, :notifier_url, :notifier_version,
-      :component, :action, :cgi_data, :environment_name, :hostname, :user
-
-    # Arguments given in the initializer
-    attr_accessor :args
-
     public
 
     def initialize(args)
-      self.args         = args
-      self.exception    = args[:exception]
-      self.api_key      = args[:api_key]
-      self.project_root = args[:project_root]
-      self.url          = args[:url] || rack_env(:url)
+      @args             = args
+      @exception        = args[:exception]
+      @api_key          = args[:api_key]
+      @project_root     = args[:project_root]
+      @url              = args[:url] || rack_env(:url)
 
-      self.notifier_name    = args[:notifier_name]
-      self.notifier_version = args[:notifier_version]
-      self.notifier_url     = args[:notifier_url]
+      @notifier_name    = args[:notifier_name]
+      @notifier_version = args[:notifier_version]
+      @notifier_url     = args[:notifier_url]
 
-      self.ignore              = args[:ignore]              || []
-      self.ignore_by_filters   = args[:ignore_by_filters]   || []
-      self.backtrace_filters   = args[:backtrace_filters]   || []
-      self.params_filters      = args[:params_filters]      || []
-      self.parameters          = args[:parameters] ||
+      @ignore              = args[:ignore]              || []
+      @ignore_by_filters   = args[:ignore_by_filters]   || []
+      @backtrace_filters   = args[:backtrace_filters]   || []
+      @params_filters      = args[:params_filters]      || []
+      @parameters          = args[:parameters] ||
                                    action_dispatch_params ||
                                    rack_env(:params) ||
                                    {}
-      self.component           = args[:component] || args[:controller] || parameters['controller']
-      self.action              = args[:action] || parameters['action']
+      @component           = args[:component] || args[:controller] || parameters['controller']
+      @action              = args[:action] || parameters['action']
 
-      self.environment_name = args[:environment_name]
-      self.cgi_data         = (args[:cgi_data] && args[:cgi_data].dup) || args[:rack_env] || {}
-      self.backtrace        = Backtrace.parse(exception_attribute(:backtrace, caller), :filters => self.backtrace_filters)
-      self.error_class      = exception_attribute(:error_class) {|exception| exception.class.name }
-      self.error_message    = exception_attribute(:error_message, 'Notification') do |exception|
+      @environment_name = args[:environment_name]
+      @cgi_data         = (args[:cgi_data] && args[:cgi_data].dup) || args[:rack_env] || {}
+      @backtrace        = Backtrace.parse(exception_attribute(:backtrace, caller), :filters => @backtrace_filters)
+      @error_class      = exception_attribute(:error_class) {|exception| exception.class.name }
+      @error_message    = exception_attribute(:error_message, 'Notification') do |exception|
         "#{exception.class.name}: #{args[:error_message] || exception.message}"
       end
 
-      self.hostname        = local_hostname
-      self.user = args[:user] || {}
+      @hostname        = local_hostname
+      @user = args[:user] || {}
 
       also_use_rack_params_filters
       find_session_data
@@ -286,7 +274,7 @@ module Airbrake
     #
     # If no exception or hash key is available, +default+ will be used.
     def exception_attribute(attribute, default = nil, &block)
-      (exception && from_exception(attribute, &block)) || args[attribute] || default
+      (exception && from_exception(attribute, &block)) || @args[attribute] || default
     end
 
     # Gets a property named +attribute+ from an exception.
@@ -308,7 +296,7 @@ module Airbrake
     # Removes non-serializable data from the given attribute.
     # See #clean_unserializable_data
     def clean_unserializable_data_from(attribute)
-      self.send(:"#{attribute}=", clean_unserializable_data(send(attribute)))
+      self.instance_variable_set("@#{attribute}", clean_unserializable_data(send(attribute)))
     end
 
     # Removes non-serializable data. Allowed data types are strings, arrays,
@@ -371,8 +359,8 @@ module Airbrake
     end
 
     def find_session_data
-      self.session_data = args[:session_data] || args[:session] || rack_session || {}
-      self.session_data = session_data[:data] if session_data[:data]
+      @session_data = @args[:session_data] || @args[:session] || rack_session || {}
+      @session_data = session_data[:data] if session_data[:data]
     end
 
     # Converts the mixed class instances and class names into just names
@@ -404,17 +392,17 @@ module Airbrake
     end
 
     def rack_request
-      @rack_request ||= if args[:rack_env]
-        ::Rack::Request.new(args[:rack_env])
+      @rack_request ||= if @args[:rack_env]
+        ::Rack::Request.new(@args[:rack_env])
       end
     end
 
     def action_dispatch_params
-      args[:rack_env]['action_dispatch.request.parameters'] if args[:rack_env]
+      @args[:rack_env]['action_dispatch.request.parameters'] if @args[:rack_env]
     end
 
     def rack_session
-      args[:rack_env]['rack.session'] if args[:rack_env]
+      @args[:rack_env]['rack.session'] if @args[:rack_env]
     end
 
     def also_use_rack_params_filters
