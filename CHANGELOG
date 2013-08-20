@@ -1,3 +1,63 @@
+Version 3.1.13 - 2013-08-20 09:39:41 +0200
+===============================================================================
+
+Anton Minin (1):
+      Fix notice crash on empty cgi_data
+
+Cedric Brancourt (2):
+      fixes #231 When no session in controller , airbrake_session_data returns {:session => "no session found"}
+      fixes airbrake/airbrake#233 duplicate cgi_data in Notice params
+
+Chris Gunther (2):
+      Coerce user attributes to strings before checking that they are valid.
+      Reject invalid user attributes on assignment
+
+Hongli Lai (Phusion) (1):
+      Add support for SSL in the command line tool.
+
+Hrvoje Šimić (22):
+      better explanation of ignored environments and classes
+      add test for warnings about user attributes
+      remove unnecessary active record requirements
+      remove platform checks from nil logger initialization
+      update bourne dependency to fix test-running issues with ruby 2.0.0
+      test against ruby 2.0.0 on a CI server
+      remove mocha deprecation warnings
+      be more careful when reading sinatra environment name
+      wrap the js configuration in try-catch
+      ignore Gemfile.lock
+      lock json-schema to 1.0.12
+      add a scenario for ignoring rake exceptions [#223]
+      get rid of activesupport once and for all
+      fully support Rails 4.0
+      stop using appraisals for unit tests
+      fix formatting of airbrake_session_data
+      fix test for no session controller [#232]
+      include actionpack and activesupport in gemspec for tests
+      cleaning up tests
+      cleaning the codebase from warnings issued in ruby verbose mode
+      remove private writers and use instance variables to remove warnings
+      fixing changeling's version sorting
+
+Jason Petersen (1):
+      Escape user name in Airbrake notify command
+
+Konstantin Zub (1):
+      return environment_info unless environment_name
+
+Kris Kemper (1):
+      Allow backtrace to be a String
+
+Nathan Broadbent (1):
+      Use a separate (blank) array of ignored exceptions for Rake tasks
+
+Subhash Chandra (1):
+      split javascript notifier into loader and configuration
+
+Tony Spore (1):
+      use 'bundle exec' in capistrano task
+
+
 Version 3.1.12 - 2013-04-29 18:48:40 +0200
 ===============================================================================
 
@@ -1146,6 +1206,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
