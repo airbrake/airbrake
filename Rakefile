@@ -82,7 +82,7 @@ EOF
 Version #{version} - #{Time.now}
 ===============================================================================
 
-#{`git log $(git tag | grep -v rc | tail -1)..HEAD | git shortlog`}
+#{`git log $(git tag | grep -v rc | sort --version-sort | tail -1)..HEAD | git shortlog`}
 #{old}
 EOF
     end
