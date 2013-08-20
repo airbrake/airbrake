@@ -1,6 +1,7 @@
 Airbrake
 ========
 
+[![Code Climate](https://codeclimate.com/github/airbrake/airbrake.png)](https://codeclimate.com/github/airbrake/airbrake)
 [![Coverage Status](https://coveralls.io/repos/airbrake/airbrake/badge.png?branch=master)](https://coveralls.io/r/airbrake/airbrake?branch=master)
 [![Dependency Status](https://gemnasium.com/airbrake/airbrake.png)](https://gemnasium.com/airbrake/airbrake)
 
