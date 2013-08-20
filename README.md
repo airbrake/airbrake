@@ -2,6 +2,7 @@ Airbrake
 ========
 
 [![Coverage Status](https://coveralls.io/repos/airbrake/airbrake/badge.png?branch=master)](https://coveralls.io/r/airbrake/airbrake?branch=master)
+[![Dependency Status](https://gemnasium.com/airbrake/airbrake.png)](https://gemnasium.com/airbrake/airbrake)
 
 This is the notifier gem for integrating apps with [Airbrake](http://airbrake.io).
 
