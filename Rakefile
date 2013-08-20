@@ -3,6 +3,7 @@ require "bundler/setup"
 require 'appraisal'
 require 'rake'
 require 'rake/testtask'
+require 'coveralls/rake/task'
 require 'rubygems/package_task'
 begin
   require 'cucumber/rake/task'
@@ -12,19 +13,26 @@ rescue LoadError
 end
 require './lib/airbrake/version'
 
-task :default do
-  exec 'rake test'\
-    '&& rake appraisal:rails-3.2 integration_test'\
-    '&& rake appraisal:rails-3.1 integration_test'\
-    '&& rake appraisal:rails-3.0 integration_test'\
-    '&& rake appraisal cucumber'
-end
+Coveralls::RakeTask.new
+
+task :default => [:test, "test:integration", "coveralls:push"]
+
 
 desc 'Test the airbrake gem.'
 Rake::TestTask.new(:test) do |t|
   t.libs << 'lib'
   t.pattern = 'test/*_test.rb'
   t.verbose = true
+end
+
+namespace :test do
+  desc "Test the integration of airbrake gem with Rails."
+  task :integration do
+    system 'INTEGRATION=true rake appraisal:rails-3.2 integration_test'\
+    '&& INTEGRATION=true rake appraisal:rails-3.1 integration_test'\
+    '&& INTEGRATION=true rake appraisal:rails-3.0 integration_test'\
+    '&& INTEGRATION=true rake appraisal cucumber'
+  end
 end
 
 desc "Test the integration of airbrake gem with Rails."

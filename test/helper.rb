@@ -1,3 +1,17 @@
+require "simplecov" 
+
+if ENV["INTEGRATION"] then SimpleCov.command_name "test:integration"
+else SimpleCov.command_name "test:units"
+end
+
+SimpleCov.merge_timeout 3600 
+SimpleCov.start
+
+if ENV["CI"]
+  require "coveralls"
+  Coveralls.wear_merged!
+end
+
 $VERBOSE = ENV["VERBOSE"]
 
 module Kernel
@@ -27,13 +41,19 @@ silence_warnings do
   require 'json-schema'
   require "shoulda-matchers"
   require "shoulda-context"
+  require "fakeweb"
+
   begin require 'redgreen'; rescue LoadError; end
 end
 
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
 
-
 require "airbrake"
+
+XSD_SCHEMA_PATH    = "http://airbrake.io/airbrake_#{Airbrake::API_VERSION.tr(".","_")}.xsd"
+COVERALLS_API_URL  = "https://coveralls.io/api/v1"
+
+FakeWeb.allow_net_connect = %r{#{XSD_SCHEMA_PATH}|#{COVERALLS_API_URL}}
 
 module TestMethods
   def rescue_action e

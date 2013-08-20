@@ -1,7 +1,5 @@
 require File.expand_path '../helper', __FILE__
 
-XSD_SCHEMA_PATH  = "http://airbrake.io/airbrake_#{Airbrake::API_VERSION.tr(".","_")}.xsd"
-FakeWeb.allow_net_connect = %r{#{XSD_SCHEMA_PATH}}
 
 class NoticeTest < Test::Unit::TestCase
 

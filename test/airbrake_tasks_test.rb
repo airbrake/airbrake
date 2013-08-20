@@ -2,9 +2,6 @@ require File.expand_path '../helper', __FILE__
 require 'rubygems'
 
 require File.dirname(__FILE__) + '/../lib/airbrake_tasks'
-require 'fakeweb'
-
-FakeWeb.allow_net_connect = false
 
 class AirbrakeTasksTest < Test::Unit::TestCase
   def successful_response(body = "")

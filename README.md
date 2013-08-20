@@ -1,6 +1,8 @@
 Airbrake
 ========
 
+[![Coverage Status](https://coveralls.io/repos/airbrake/airbrake/badge.png?branch=master)](https://coveralls.io/r/airbrake/airbrake?branch=master)
+
 This is the notifier gem for integrating apps with [Airbrake](http://airbrake.io).
 
 When an uncaught exception occurs, Airbrake will POST the relevant data
