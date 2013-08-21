@@ -42,25 +42,6 @@ class NoticeTest < Test::Unit::TestCase
                  "#{attribute} was not correctly set from a hash"
   end
 
-  def assert_serializes_hash(attribute)
-    [File.open(__FILE__), Proc.new { puts "boo!" }, Module.new].each do |object|
-      hash = {
-        :strange_object => object,
-        :sub_hash => {
-          :sub_object => object
-        },
-        :array => [object]
-      }
-      notice = build_notice(attribute => hash)
-      hash = notice.send(attribute)
-      assert_equal object.to_s, hash[:strange_object], "objects should be serialized"
-      assert_kind_of Hash, hash[:sub_hash], "subhashes should be kept"
-      assert_equal object.to_s, hash[:sub_hash][:sub_object], "subhash members should be serialized"
-      assert_kind_of Array, hash[:array], "arrays should be kept"
-      assert_equal object.to_s, hash[:array].first, "array members should be serialized"
-    end
-  end
-
   def assert_valid_notice_document(document)
     xsd_path = URI(XSD_SCHEMA_PATH)
     schema = Nokogiri::XML::Schema.new(Net::HTTP.get(xsd_path))
@@ -72,22 +53,6 @@ class NoticeTest < Test::Unit::TestCase
     json_schema = File.expand_path(File.join(File.dirname(__FILE__),"..", "resources", "airbrake_3_0.json"))
     errors = JSON::Validator.fully_validate(json_schema, notice)
     assert errors.empty?, errors.join
-  end
-
-  def assert_filters_hash(attribute)
-    filters  = ["abc", :def]
-    original = { 'abc' => "123", 'def' => "456", 'ghi' => "789", 'nested' => { 'abc' => '100' },
-      'something_with_abc' => 'match the entire string'}
-    filtered = { 'abc'    => "[FILTERED]",
-                 'def'    => "[FILTERED]",
-                 'something_with_abc' => "match the entire string",
-                 'ghi'    => "789",
-                 'nested' => { 'abc' => '[FILTERED]' } }
-
-    notice = build_notice(:params_filters => filters, attribute => original)
-
-    assert_equal(filtered,
-                 notice.send(attribute))
   end
 
   def build_backtrace_array
@@ -102,6 +67,12 @@ class NoticeTest < Test::Unit::TestCase
   def user
     Struct.new(:email,:id,:name).
       new("darth@vader.com",1,"Anakin Skywalker")
+  end
+
+  should "call the cleaner on initialization" do
+    cleaner = stub
+    cleaner.expects(:clean).returns(stub(:parameters => {}, :cgi_data => {}, :session_data => {}))
+    Airbrake::Notice.new(:cleaner => cleaner)
   end
 
   should "set the api key" do
@@ -245,43 +216,6 @@ class NoticeTest < Test::Unit::TestCase
     notice = build_notice(:exception => StandardError.new('error'), :backtrace => nil)
 
     assert_array_starts_with backtrace.lines, notice.backtrace.lines
-  end
-
-  should "convert unserializable objects to strings" do
-    assert_serializes_hash(:parameters)
-    assert_serializes_hash(:cgi_data)
-    assert_serializes_hash(:session_data)
-  end
-
-  should "filter parameters" do
-    assert_filters_hash(:parameters)
-  end
-
-  should "filter cgi data" do
-    assert_filters_hash(:cgi_data)
-  end
-
-  should "filter session" do
-    assert_filters_hash(:session_data)
-  end
-  
-  should "should always remove a Rails application's secret token" do
-    original = {
-      "action_dispatch.secret_token" => "abc123xyz456",
-      "abc" => "123"
-    }
-    notice = build_notice(:cgi_data => original)
-    assert_equal({"abc" => "123"}, notice.cgi_data)
-  end
-
-  should "remove rack.request.form_vars" do
-    original = {
-      "rack.request.form_vars" => "story%5Btitle%5D=The+TODO+label",
-      "abc" => "123"
-    }
-
-    notice = build_notice(:cgi_data => original)
-    assert_equal({"abc" => "123"}, notice.cgi_data)
   end
 
   context "a Notice turned into JSON" do

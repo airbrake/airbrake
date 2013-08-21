@@ -9,6 +9,7 @@ require 'rubygems'
 require 'logger'
 
 require 'airbrake/version'
+require 'airbrake/utils/params_cleaner'
 require 'airbrake/configuration'
 require 'airbrake/notice'
 require 'airbrake/sender'

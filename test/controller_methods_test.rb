@@ -54,6 +54,5 @@ class ControllerMethodsTest < Test::Unit::TestCase
       assert_equal no_session, {:session => 'no session found'}
     end
   end
-
 end
 

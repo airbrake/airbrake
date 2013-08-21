@@ -87,6 +87,9 @@ module Airbrake
     # Details about the user who experienced the error
     attr_reader :user
 
+    # Instance that's used for cleaning out data that should be filtered out, should respond to #clean
+    attr_accessor :cleaner
+
     public
 
     def initialize(args)
@@ -120,12 +123,17 @@ module Airbrake
       end
 
       @hostname        = local_hostname
-      @user = args[:user] || {}
+      @user            = args[:user] || {}
+
 
       also_use_rack_params_filters
       find_session_data
-      clean_params
-      clean_rack_request_data
+
+      @cleaner = args[:cleaner] || 
+        Airbrake::Utils::ParamsCleaner.new(:filters => params_filters,
+                                           :to_clean => data_to_clean)
+
+      clean_data!
     end
 
     # Converts the given notice to XML
@@ -293,69 +301,19 @@ module Airbrake
       end
     end
 
-    # Removes non-serializable data from the given attribute.
-    # See #clean_unserializable_data
-    def clean_unserializable_data_from(attribute)
-      self.instance_variable_set("@#{attribute}", clean_unserializable_data(send(attribute)))
-    end
-
-    # Removes non-serializable data. Allowed data types are strings, arrays,
-    # and hashes. All other types are converted to strings.
-    # TODO: move this onto Hash
-    def clean_unserializable_data(data, stack = [])
-      return "[possible infinite recursion halted]" if stack.any?{|item| item == data.object_id }
-
-      if data.respond_to?(:to_hash)
-        data.to_hash.inject({}) do |result, (key, value)|
-          result.merge(key => clean_unserializable_data(value, stack + [data.object_id]))
-        end
-      elsif data.respond_to?(:to_ary)
-        data.to_ary.collect do |value|
-          clean_unserializable_data(value, stack + [data.object_id])
-        end
-      else
-        data.to_s
-      end
-    end
-
     # Replaces the contents of params that match params_filters.
-    # TODO: extract this to a different class
-    def clean_params
-      clean_unserializable_data_from(:parameters)
-      filter(parameters)
-      if cgi_data
-        clean_unserializable_data_from(:cgi_data)
-        filter(cgi_data)
-      end
-      if session_data
-        clean_unserializable_data_from(:session_data)
-        filter(session_data)
+    def clean_data!
+      cleaner.clean.tap do |c|
+        @parameters   = c.parameters
+        @cgi_data     = c.cgi_data
+        @session_data = c.session_data
       end
     end
 
-    def clean_rack_request_data
-      if cgi_data
-        cgi_data.delete("rack.request.form_vars")
-        cgi_data.delete("action_dispatch.secret_token")
-      end
-    end
-
-    def filter(hash)
-      if params_filters
-        hash.each do |key, value|
-          if filter_key?(key)
-            hash[key] = "[FILTERED]"
-          elsif value.respond_to?(:to_hash)
-            filter(hash[key])
-          end
-        end
-      end
-    end
-
-    def filter_key?(key)
-      params_filters.any? do |filter|
-        key.to_s.eql?(filter.to_s)
-      end
+    def data_to_clean
+      {:parameters    => parameters,
+        :cgi_data     => cgi_data,
+        :session_data => session_data}
     end
 
     def find_session_data
