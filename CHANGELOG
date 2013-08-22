@@ -1,3 +1,14 @@
+Version 3.1.14 - 2013-08-22 09:03:14 +0200
+===============================================================================
+
+Hrvoje Šimić (5):
+      use Coveralls for code coverage
+      use Gemnasium for dependency monitoring
+      use Code Climate for code analysis
+      extract ParamsCleaner class
+      being more careful with javascript_notifier and non-public requests
+
+
 Version 3.1.13 - 2013-08-20 09:39:41 +0200
 ===============================================================================
 
@@ -1206,6 +1217,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
