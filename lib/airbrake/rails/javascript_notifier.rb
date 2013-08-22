@@ -10,31 +10,33 @@ module Airbrake
       private
 
         def airbrake_javascript_notifier
-          airbrake_javascript_loader + airbrake_javascript_configuration
+          if Airbrake.configuration.public?
+            airbrake_javascript_loader + airbrake_javascript_configuration
+          end
         end
 
         def airbrake_javascript_loader
-          return unless Airbrake.configuration.public?
+          if Airbrake.configuration.public?
+            path = File.join File.dirname(__FILE__), '..', '..', 'templates', 'javascript_notifier_loader'
 
-          path = File.join File.dirname(__FILE__), '..', '..', 'templates', 'javascript_notifier_loader'
-
-          _airbrake_render_part path
+            _airbrake_render_part path
+          end
         end
 
         def airbrake_javascript_configuration
-          return unless Airbrake.configuration.public?
+          if Airbrake.configuration.public?
+            path = File.join File.dirname(__FILE__), '..', '..', 'templates', 'javascript_notifier_configuration'
 
-          path = File.join File.dirname(__FILE__), '..', '..', 'templates', 'javascript_notifier_configuration'
+            options              = {
+              :api_key         => Airbrake.configuration.js_api_key,
+              :environment     => Airbrake.configuration.environment_name,
+              :action_name     => action_name,
+              :controller_name => controller_name,
+              :url             => request.url
+            }
 
-          options              = {
-            :api_key         => Airbrake.configuration.js_api_key,
-            :environment     => Airbrake.configuration.environment_name,
-            :action_name     => action_name,
-            :controller_name => controller_name,
-            :url             => request.url
-          }
-
-          _airbrake_render_part path, options
+            _airbrake_render_part path, options
+          end
         end
 
       protected

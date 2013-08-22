@@ -47,4 +47,10 @@ class JavascriptNotifierTest < Test::Unit::TestCase
     assert controller.send(:airbrake_javascript_notifier)['"ESCbad_javascriptESC"']
     assert ! controller.send(:airbrake_javascript_notifier)['"bad_javascript"']
   end
+
+  should "not raise exceptions for the non-public requests" do
+    Airbrake::Configuration.any_instance.stubs(:public? => false)
+    controller = FakeController.new
+    assert_nothing_raised { controller.send(:airbrake_javascript_notifier) }
+  end
 end
