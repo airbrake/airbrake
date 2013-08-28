@@ -90,7 +90,7 @@ module Airbrake
               clean_unserializable_data(value, stack + [data.object_id])
             end
           else
-            data.to_s
+            data.nil? ? nil : data.to_s
           end
         end
     end
