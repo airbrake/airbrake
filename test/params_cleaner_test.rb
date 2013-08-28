@@ -9,7 +9,7 @@ class ParamsCleanerTest < Test::Unit::TestCase
   end
 
   def assert_serializes_hash(attribute)
-    [File.open(__FILE__), Proc.new { puts "boo!" }, Module.new].each do |object|
+    [File.open(__FILE__), Proc.new { puts "boo!" }, Module.new, nil].each do |object|
       hash = {
         :strange_object => object,
         :sub_hash => {
@@ -19,11 +19,12 @@ class ParamsCleanerTest < Test::Unit::TestCase
       }
       clean_params = clean(attribute => hash)
       hash = clean_params.send(attribute)
-      assert_equal object.to_s, hash[:strange_object], "objects should be serialized"
+      object_serialized = object.nil? ? nil : object.to_s
+      assert_equal object_serialized, hash[:strange_object], "objects should be serialized"
       assert_kind_of Hash, hash[:sub_hash], "subhashes should be kept"
-      assert_equal object.to_s, hash[:sub_hash][:sub_object], "subhash members should be serialized"
+      assert_equal object_serialized, hash[:sub_hash][:sub_object], "subhash members should be serialized"
       assert_kind_of Array, hash[:array], "arrays should be kept"
-      assert_equal object.to_s, hash[:array].first, "array members should be serialized"
+      assert_equal object_serialized, hash[:array].first, "array members should be serialized"
     end
   end
 
