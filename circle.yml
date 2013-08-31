@@ -4,8 +4,11 @@ machine:
 
 ## Customize dependencies
 dependencies:
+  pre:
+    - gem install bundler --pre
+
   override:
-    - bundle
+    - bundle install -j10
     - bundle exec rake appraisal:install
 
 ## Customize test commands
