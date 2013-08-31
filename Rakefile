@@ -15,27 +15,25 @@ require './lib/airbrake/version'
 
 Coveralls::RakeTask.new
 
-task :default => [:test, "test:integration", "coveralls:push"]
-
-
-desc 'Test the airbrake gem.'
-Rake::TestTask.new(:test) do |t|
-  t.libs << 'lib'
-  t.pattern = 'test/*_test.rb'
-  t.verbose = true
-end
+task :default => ["test:unit", "test:integration"]
 
 namespace :test do
-  desc "Test the integration of airbrake gem with Rails."
+  Rake::TestTask.new(:unit) do |t|
+    t.libs << 'lib'
+    t.pattern = 'test/*_test.rb'
+    t.verbose = true
+  end
+
+  desc "Integration tests for all versions of Rails."
   task :integration do
     system 'INTEGRATION=true rake appraisal:rails-3.2 integration_test'\
     '&& INTEGRATION=true rake appraisal:rails-3.1 integration_test'\
     '&& INTEGRATION=true rake appraisal:rails-3.0 integration_test'\
+    '&& rake coveralls:push'\
     '&& INTEGRATION=true rake appraisal cucumber'
   end
 end
 
-desc "Test the integration of airbrake gem with Rails."
 Rake::TestTask.new(:integration_test) do |t|
   t.libs << 'lib'
   t.pattern = 'test/integration.rb'

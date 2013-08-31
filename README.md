@@ -101,7 +101,7 @@ Development
 For running unit tests, you should run
 
     bundle
-    bundle exec rake test
+    bundle exec rake test:unit
 
 If you wish to run the entire suite, which checks the different framework
 integrations with cucumber, you should run the following commands
