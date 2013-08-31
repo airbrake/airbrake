@@ -1,6 +1,7 @@
 Airbrake
 ========
 
+[![Circle CI](https://circleci.com/gh/airbrake/airbrake/tree/master.png?circle_token=66cb9cfc6d20f550a2dbde522f5f0f9f81bd653b)](https://circleci.com/gh/airbrake/airbrake)
 [![Code Climate](https://codeclimate.com/github/airbrake/airbrake.png)](https://codeclimate.com/github/airbrake/airbrake)
 [![Coverage Status](https://coveralls.io/repos/airbrake/airbrake/badge.png?branch=master)](https://coveralls.io/r/airbrake/airbrake?branch=master)
 [![Dependency Status](https://gemnasium.com/airbrake/airbrake.png)](https://gemnasium.com/airbrake/airbrake)
