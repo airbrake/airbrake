@@ -21,7 +21,7 @@ For **SSL** verification see the [Resources](https://github.com/airbrake/airbrak
 Rails Installation
 ------------------
 
-### Rails 3.x
+### Rails 3.x/4.x
 
 Add the airbrake gem to your Gemfile.  In Gemfile:
 
