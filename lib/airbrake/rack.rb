@@ -55,7 +55,7 @@ module Airbrake
     end
 
     def framework_exception(env)
-      env['rack.exception']
+      env['rack.exception'] || env['sinatra.error']
     end
 
   end
