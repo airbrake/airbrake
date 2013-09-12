@@ -35,24 +35,28 @@ class RackTest < Test::Unit::TestCase
     end
   end
 
-  should "deliver an exception in rack.exception" do
-    Airbrake.stubs(:notify_or_ignore)
-    exception = build_exception
-    environment = { 'key' => 'value' }
+  %w(rack.exception sinatra.error).each do |ex|
 
-    response = [200, {}, ['okay']]
-    app = lambda do |env|
-      env['rack.exception'] = exception
-      response
+    should "deliver an exception in #{ex}" do
+      Airbrake.stubs(:notify_or_ignore)
+      exception = build_exception
+      environment = { 'key' => 'value' }
+
+      response = [200, {}, ['okay']]
+      app = lambda do |env|
+        env[ex] = exception
+        response
+      end
+      stack = Airbrake::Rack.new(app)
+
+      actual_response = stack.call(environment)
+
+      assert_equal response, actual_response
+      assert_received(Airbrake, :notify_or_ignore) do |expect|
+        expect.with(exception, :rack_env => environment)
+      end
     end
-    stack = Airbrake::Rack.new(app)
 
-    actual_response = stack.call(environment)
-
-    assert_equal response, actual_response
-    assert_received(Airbrake, :notify_or_ignore) do |expect|
-      expect.with(exception, :rack_env => environment)
-    end
   end
 
 end
