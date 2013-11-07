@@ -53,7 +53,7 @@ module Airbrake
 
     # A list of parameters that should be filtered out of what is sent to Airbrake.
     # By default, all "password" attributes will have their contents replaced.
-    attr_reader :params_filters
+    attr_accessor :params_filters
 
     # A list of filters for cleaning and pruning the backtrace. See #filter_backtrace.
     attr_reader :backtrace_filters
