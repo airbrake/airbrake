@@ -88,6 +88,7 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_overridable :logger
     assert_config_overridable :async
     assert_config_overridable :project_id
+    assert_config_overridable :params_filters
   end
 
   should "have an api key" do
