@@ -42,6 +42,7 @@ silence_warnings do
   require "shoulda-matchers"
   require "shoulda-context"
   require "fakeweb"
+  require "pry"
 
   begin require 'redgreen'; rescue LoadError; end
 end
