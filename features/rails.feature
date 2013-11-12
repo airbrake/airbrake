@@ -150,6 +150,20 @@ Feature: Install the Gem in a Rails application
     And the Airbrake notification should not contain "blue42"
     And the Airbrake notification should contain "FILTERED"
 
+  Scenario: Filtering sensitive Rack variables
+    When I configure the Airbrake shim
+    And I run `rails generate airbrake -k myapikey -t`
+    When I configure the notifier to use the following configuration lines:
+      """
+      config.logger = Logger.new STDOUT
+      """
+    And I define a response for "TestController#index":
+      """
+      raise RuntimeError
+      """
+    Then I should receive a Airbrake notification
+    And the Airbrake notification should not contain any of the sensitive Rack variables
+
   Scenario: Notify airbrake within the controller
     When I configure the Airbrake shim
     And I run `rails generate airbrake -k myapikey -t`

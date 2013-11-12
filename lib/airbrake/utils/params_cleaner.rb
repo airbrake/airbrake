@@ -55,8 +55,9 @@ module Airbrake
 
         def clean_rack_request_data
           if @cgi_data
-            @cgi_data.delete("rack.request.form_vars")
-            @cgi_data.delete("action_dispatch.secret_token")
+            Airbrake::FILTERED_RACK_VARS.each do |var|
+              @cgi_data.delete var
+            end
           end
         end
 
