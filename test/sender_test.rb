@@ -13,9 +13,10 @@ class SenderTest < Test::Unit::TestCase
   end
 
   def send_exception(args = {})
+    with_error = args.delete(:with_error_id) || false
     notice = args.delete(:notice) || build_notice_data
     sender = args.delete(:sender) || build_sender(args)
-    sender.send_to_airbrake(notice)
+    sender.send_to_airbrake(notice, with_error)
   end
 
   def stub_http(options = {})
@@ -62,6 +63,11 @@ class SenderTest < Test::Unit::TestCase
   should "return the created group's id on successful posting" do
     http = stub_http(:body => '<_id>3799307</_id>')
     assert_equal "3799307", send_exception(:secure => false)
+  end
+
+  should "return also the err-id if asked to" do
+    http = stub_http(:body => '<_id>3799307</_id><err-id>12345</err-id>')
+    assert_equal ["3799307", "12345"], send_exception(:secure => false, :with_error_id => true)
   end
 
   context "when encountering exceptions: " do

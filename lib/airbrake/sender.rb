@@ -1,7 +1,7 @@
 module Airbrake
   # Sends out the notice to Airbrake
   class Sender
-    
+
     NOTICES_URI = '/notifier_api/v2/notices/'.freeze
     HTTP_ERRORS = [Timeout::Error,
                    Errno::EINVAL,
@@ -32,7 +32,7 @@ module Airbrake
     # Sends the notice data off to Airbrake for processing.
     #
     # @param [String] data The XML notice to be sent off
-    def send_to_airbrake(data)
+    def send_to_airbrake(data, with_error_id=false)
       http = setup_http_connection
 
       response = begin
@@ -50,8 +50,14 @@ module Airbrake
       end
 
       if response && response.respond_to?(:body)
-        error_id = response.body.match(%r{<_id[^>]*>(.*?)</_id>})
-        error_id[1] if error_id
+        notice_id = response.body.match(%r{<_id[^>]*>(.*?)</_id>})
+        error_id = response.body.match(%r{<err-id[^>]*>(.*?)</err-id>})
+
+        if with_error_id
+          return notice_id.try(:[], 1), error_id.try(:[], 1)
+        else
+          return notice_id.try(:[], 1)
+        end
       end
     rescue => e
       log :error, "[Airbrake::Sender#send_to_airbrake] Cannot send notification. Error: #{e.class} - #{e.message}\nBacktrace:\n#{e.backtrace.join("\n\t")}"
@@ -72,7 +78,7 @@ module Airbrake
 
     alias_method :secure?, :secure
     alias_method :use_system_ssl_cert_chain?, :use_system_ssl_cert_chain
-    
+
   private
 
     def url
@@ -88,7 +94,7 @@ module Airbrake
     def logger
       Airbrake.logger
     end
-    
+
     def setup_http_connection
       http =
         Net::HTTP::Proxy(proxy_host, proxy_port, proxy_user, proxy_pass).
@@ -105,12 +111,11 @@ module Airbrake
       else
         http.use_ssl     = false
       end
-      
+
       http
     rescue => e
       log :error, "[Airbrake::Sender#setup_http_connection] Failure initializing the HTTP connection.\nError: #{e.class} - #{e.message}\nBacktrace:\n#{e.backtrace.join("\n\t")}"
       raise e
     end
-
   end
 end
