@@ -1,0 +1,1 @@
+load File.expand_path('../tasks/airbrake.cap', __FILE__)
