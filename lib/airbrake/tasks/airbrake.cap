@@ -15,11 +15,11 @@ namespace :airbrake do
       
       notify_command = "cd #{directory}; #{executable} RAILS_ENV=#{rails_env} airbrake:deploy TO=#{airbrake_env} REVISION=#{current_revision} REPO=#{repository} USER=#{Airbrake::Capistrano::shellescape(local_user)}"
       notify_command << " API_KEY=#{ENV['API_KEY']}" if ENV['API_KEY']
-      logger.info "Notifying Airbrake of Deploy (#{notify_command})"
+      info "Notifying Airbrake of Deploy (#{notify_command})"
       result = ""
       run(notify_command, :once => true) { |ch, stream, data| result << data }
       # TODO: Check if SSL is active on account via result content.
-      logger.info "Airbrake Notification Complete."
+      info "Airbrake Notification Complete."
     end
   end
 end
