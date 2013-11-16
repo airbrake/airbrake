@@ -17,7 +17,7 @@ namespace :airbrake do
       notify_command << " API_KEY=#{ENV['API_KEY']}" if ENV['API_KEY']
       info "Notifying Airbrake of Deploy (#{notify_command})"
       result = ""
-      run(notify_command, :once => true) { |ch, stream, data| result << data }
+      execute(notify_command, :once => true) { |ch, stream, data| result << data }
       # TODO: Check if SSL is active on account via result content.
       info "Airbrake Notification Complete."
     end
