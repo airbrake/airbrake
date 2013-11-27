@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency("appraisal")
   s.add_development_dependency("rspec-rails")
   s.add_development_dependency("girl_friday")
+  s.add_development_dependency("sucker_punch")
   s.add_development_dependency("shoulda-matchers")
   s.add_development_dependency("shoulda-context")
   s.add_development_dependency("pry")

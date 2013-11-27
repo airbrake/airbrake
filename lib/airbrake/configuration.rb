@@ -336,13 +336,17 @@ module Airbrake
 
     # Async notice delivery defaults to girl friday
     def default_async_processor
-      queue = GirlFriday::WorkQueue.new(nil, :size => 3) do |notice|
-        Airbrake.sender.send_to_airbrake(notice)
+      if defined?(SuckerPunch)
+        lambda {|notice| SendJob.new.async.perform(notice)}
+      elsif defined?(GirlFriday)
+        queue = GirlFriday::WorkQueue.new(nil, :size => 3) do |notice|
+          Airbrake.sender.send_to_airbrake(notice)
+        end
+        lambda {|notice| queue << notice}
+      else
+        warn "[AIRBRAKE] You can't use the default async handler without sucker_punch or girl_friday."\
+        " Please make sure you have sucker_punch or girl_friday installed (sucker_punch is recommended)."
       end
-      lambda {|notice| queue << notice}
-    rescue NameError
-      warn "[AIRBRAKE] You can't use the default async handler without girl_friday."\
-        " Please make sure you have girl_friday installed."
     end
 
     def validate_user_attributes(user_attributes)
