@@ -3,12 +3,18 @@ begin
 rescue LoadError
 end
 
+begin
+  require "sucker_punch"
+rescue LoadError
+end
+
 require 'net/http'
 require 'net/https'
 require 'rubygems'
 require 'logger'
 
 require 'airbrake/version'
+require 'airbrake/jobs/send_job'
 require 'airbrake/utils/rack_filters'
 require 'airbrake/utils/params_cleaner'
 require 'airbrake/configuration'

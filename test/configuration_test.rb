@@ -34,7 +34,7 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_default :project_id, nil
   end
 
-  should "set GirlFriday-callable for async=true" do
+  should "set GirlFriday/SuckerPunch-callable for async=true" do
     config = Airbrake::Configuration.new
     config.async = true
     assert config.async.respond_to?(:call)
