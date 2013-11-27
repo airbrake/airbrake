@@ -44,7 +44,7 @@ module AirbrakeTasks
     if Airbrake.configuration.secure?
       http.use_ssl      = true
       http.ca_file      = Airbrake.configuration.ca_bundle_path
-      http.verify_mode  = OpenSSL::SSL::VERIFY_PEER
+      http.verify_mode  = Airbrake.configuration.ssl_verify_mode
     end
 
     post = Net::HTTP::Post.new("/deploys.txt")

@@ -159,7 +159,7 @@ module Airbrake
         http.use_ssl     = true
 
         http.ca_file      = Airbrake.configuration.ca_bundle_path
-        http.verify_mode  = OpenSSL::SSL::VERIFY_PEER
+        http.verify_mode  = Airbrake.configuration.ssl_verify_mode
       else
         http.use_ssl     = false
       end

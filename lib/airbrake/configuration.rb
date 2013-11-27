@@ -9,7 +9,7 @@ module Airbrake
         :params_filters, :project_root, :port, :protocol, :proxy_host,
         :proxy_pass, :proxy_port, :proxy_user, :secure, :use_system_ssl_cert_chain,
         :framework, :user_information, :rescue_rake_exceptions, :rake_environment_filters,
-        :test_mode].freeze
+        :test_mode, :ssl_verify_mode].freeze
 
     # The API key for your project, found on the project edit form.
     attr_accessor :api_key
@@ -120,6 +120,10 @@ module Airbrake
     attr_accessor :test_mode
     alias_method :test_mode?, :test_mode
 
+    # Used for set verification mode of SSL stack when SSL is used for connection to server
+    # Note that changing it to anything else than default value is security flaw
+    attr_accessor :ssl_verify_mode
+
     DEFAULT_PARAMS_FILTERS  = %w(password password_confirmation).freeze
 
     DEFAULT_USER_ATTRIBUTES = %w(id).freeze
@@ -182,6 +186,7 @@ module Airbrake
       @user_attributes          = DEFAULT_USER_ATTRIBUTES.dup
       @rake_environment_filters = []
       @async                    = nil
+      @ssl_verify_mode          = OpenSSL::SSL::VERIFY_PEER
     end
 
     # Takes a block and adds it to the list of backtrace filters. When the filters
