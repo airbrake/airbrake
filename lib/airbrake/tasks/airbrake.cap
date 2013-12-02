@@ -9,7 +9,6 @@ namespace :airbrake do
       airbrake_env = fetch(:airbrake_env, fetch(:rails_env, "production"))
       local_user = ENV['USER'] || ENV['USERNAME']
       executable = RUBY_PLATFORM.downcase.include?('mswin') ? fetch(:rake, 'rake.bat') : fetch(:rake, 'bundle exec rake ')
-      directory = release_path
       current_revision = capture("cd #{repo_path} && git rev-parse HEAD")
       repository = ENV['REPO'] || ENV['REPONAME']
 
@@ -17,8 +16,10 @@ namespace :airbrake do
       notify_command << " API_KEY=#{ENV['API_KEY']}" if ENV['API_KEY']
       info "Notifying Airbrake of Deploy (#{notify_command})"
       result = ""
-      execute :rake, notify_command, :once => true do |ch, stream, data| 
-        result << data
+      within release_path do
+        execute :rake, notify_command, :once => true do |ch, stream, data| 
+          result << data
+        end
       end
       # TODO: Check if SSL is active on account via result content.
       info "Airbrake Notification Complete."
