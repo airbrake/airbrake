@@ -3,6 +3,7 @@ begin
 rescue LoadError
 end
 
+require 'openssl'
 require 'net/http'
 require 'net/https'
 require 'rubygems'
