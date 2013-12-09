@@ -63,7 +63,12 @@ module Airbrake
 
         def filter_key?(key)
           @filters.any? do |filter|
-            key.to_s.eql?(filter.to_s)
+            case filter
+            when Regexp
+              filter.match(key)
+            else
+              key.to_s.eql?(filter.to_s)
+            end
           end
         end
 
