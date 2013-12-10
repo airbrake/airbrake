@@ -30,7 +30,7 @@ module Client
 
   def create_deploy
     uri = URI.parse "http://airbrake.io"\
-    "/projects/1/deploys.xml"
+    "/deploys.txt"
     http = Net::HTTP.new(uri.host,uri.port)
     request = Net::HTTP::Post.new(uri.request_uri)
     opts = {'deploy[rails_env]' => options.rails_env,"api_key" => options.api_key}
