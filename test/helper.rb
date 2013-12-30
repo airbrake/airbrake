@@ -30,6 +30,7 @@ end
 silence_warnings do
   require 'test/unit'
   require 'rubygems'
+  require 'json'
 
   require 'thread'
 
