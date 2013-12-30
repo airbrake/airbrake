@@ -19,8 +19,8 @@ module Airbrake
       end
     end
 
-    # The exception that caused this notice, if any
-    attr_reader :exception
+    # The exception(s) that caused this notice, if any
+    attr_reader :exceptions
 
     # The API key for the project to which this notice should be sent
     attr_reader :api_key
@@ -94,7 +94,6 @@ module Airbrake
 
     def initialize(args)
       @args             = args
-      @exception        = args[:exception]
       @api_key          = args[:api_key]
       @project_root     = args[:project_root]
       @url              = args[:url] || rack_env(:url)
@@ -116,15 +115,22 @@ module Airbrake
 
       @environment_name = args[:environment_name]
       @cgi_data         = (args[:cgi_data] && args[:cgi_data].dup) || args[:rack_env] || {}
-      @backtrace        = Backtrace.parse(exception_attribute(:backtrace, caller), :filters => @backtrace_filters)
-      @error_class      = exception_attribute(:error_class) {|exception| exception.class.name }
-      @error_message    = exception_attribute(:error_message, 'Notification') do |exception|
-        "#{exception.class.name}: #{args[:error_message] || exception.message}"
+
+      @exceptions = flatten_exceptions(args[:exception]).map do |ex|
+        ExceptionWrapper.new ex, @backtrace_filters, args
       end
+
+      if @exceptions == []
+        @exceptions = [ExceptionWrapper.new(nil, @backtrace_filters, args)]
+      end
+
+      # TODO: refactor away the need for these
+      @backtrace      = @exceptions.first.backtrace
+      @error_class    = @exceptions.first.error_class
+      @error_message  = @exceptions.first.error_message
 
       @hostname        = local_hostname
       @user            = args[:user] || {}
-
 
       also_use_rack_params_filters
       find_session_data
@@ -148,10 +154,10 @@ module Airbrake
           notifier.url(notifier_url)
         end
         notice.error do |error|
-          error.tag!('class', error_class)
-          error.message(error_message)
+          error.tag!('class', self.exceptions.first.error_class)
+          error.message(self.exceptions.first.error_message)
           error.backtrace do |backtrace|
-            self.backtrace.lines.each do |line|
+            self.exceptions.first.backtrace.lines.each do |line|
               backtrace.line(
                 :number      => line.number,
                 :file        => line.file,
@@ -201,6 +207,13 @@ module Airbrake
       xml.to_s
     end
 
+    def flatten_exceptions(ex, acc = [])
+      return [] unless ex
+      (acc << ex).tap do |acc|
+        flatten_exceptions(ex.cause, acc) if ex.respond_to?(:cause) && ex.cause
+      end
+    end
+
     def to_json
       {
         'notifier' => {
@@ -208,17 +221,7 @@ module Airbrake
           'version' => Airbrake::VERSION,
           'url'     => 'https://github.com/airbrake/airbrake'
           },
-        'errors' => [{
-            'type'       => error_class,
-            'message'    => error_message,
-            'backtrace'  => backtrace.lines.map do |line|
-                {
-                  'file'     => line.file,
-                  'line'     => line.number.to_i,
-                  'function' => line.method_name
-                }
-            end
-          }],
+        'errors' => @exceptions.map(&:to_hash),
          'context' => {}.tap do |hash|
             if request_present?
               hash['url']           = url
@@ -244,8 +247,8 @@ module Airbrake
 
     # Determines if this notice should be ignored
     def ignore?
-      ignored_class_names.include?(error_class) ||
-        ignore_by_filters.any? {|filter| filter.call(self) }
+      ignored_class_names.include?(self.exceptions.first.error_class) ||
+      ignore_by_filters.any? {|filter| filter.call(self) }
     end
 
     # Allows properties to be accessed using a hash-like syntax
