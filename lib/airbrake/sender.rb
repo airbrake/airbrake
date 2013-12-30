@@ -49,14 +49,10 @@ module Airbrake
     def send_to_airbrake(notice)
       data = prepare_notice(notice)
       http = setup_http_connection
-
       response = begin
-                   http.post(url.respond_to?(:path) ? url.path : url,
-                             data,
-                             headers)
+                   http.post(url.respond_to?(:path) ? url.path : url, data, headers)
                  rescue *HTTP_ERRORS => e
-                   log :level => :error,
-                       :message => "Unable to contact the Airbrake server. HTTP Error=#{e}"
+                   log :message => "Unable to contact the Airbrake server. HTTP Error=#{e}", :level => :error
                    nil
                  end
 
@@ -80,7 +76,6 @@ module Airbrake
       log :level => :error,
         :message => "[Airbrake::Sender#send_to_airbrake] Cannot send notification. Error: #{e.class}" +
         " - #{e.message}\nBacktrace:\n#{e.backtrace.join("\n\t")}"
-
       nil
     end
 

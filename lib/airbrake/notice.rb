@@ -144,67 +144,69 @@ module Airbrake
 
     # Converts the given notice to XML
     def to_xml
-      builder = Builder::XmlMarkup.new
-      builder.instruct!
-      xml = builder.notice(:version => Airbrake::API_VERSION) do |notice|
-        notice.tag!("api-key", api_key)
-        notice.notifier do |notifier|
-          notifier.name(notifier_name)
-          notifier.version(notifier_version)
-          notifier.url(notifier_url)
-        end
-        notice.error do |error|
-          error.tag!('class', self.exceptions.first.error_class)
-          error.message(self.exceptions.first.error_message)
-          error.backtrace do |backtrace|
-            self.exceptions.first.backtrace.lines.each do |line|
-              backtrace.line(
-                :number      => line.number,
-                :file        => line.file,
-                :method      => line.method_name
-              )
-            end
+      @xml ||= begin
+        builder = Builder::XmlMarkup.new
+        builder.instruct!
+        xml = builder.notice(:version => Airbrake::API_VERSION) do |notice|
+          notice.tag!("api-key", api_key)
+          notice.notifier do |notifier|
+            notifier.name(notifier_name)
+            notifier.version(notifier_version)
+            notifier.url(notifier_url)
           end
-        end
-        if request_present?
-          notice.request do |request|
-            request.url(url)
-            request.component(controller)
-            request.action(action)
-            unless parameters.empty?
-              request.params do |params|
-                xml_vars_for(params, parameters)
-              end
-            end
-            unless session_data.empty?
-              request.session do |session|
-                xml_vars_for(session, session_data)
-              end
-            end
-            unless cgi_data.empty?
-              request.tag!("cgi-data") do |cgi_datum|
-                xml_vars_for(cgi_datum, cgi_data)
+          notice.error do |error|
+            error.tag!('class', self.exceptions.first.error_class)
+            error.message(self.exceptions.first.error_message)
+            error.backtrace do |backtrace|
+              self.exceptions.first.backtrace.lines.each do |line|
+                backtrace.line(
+                  :number      => line.number,
+                  :file        => line.file,
+                  :method      => line.method_name
+                )
               end
             end
           end
-        end
-        notice.tag!("server-environment") do |env|
-          env.tag!("project-root", project_root)
-          env.tag!("environment-name", environment_name)
-          env.tag!("hostname", hostname)
-        end
-        unless user.empty?
-          notice.tag!("current-user") do |u|
-            user.each do |attr, value|
-              u.tag!(attr.to_s, value)
+          if request_present?
+            notice.request do |request|
+              request.url(url)
+              request.component(controller)
+              request.action(action)
+              unless parameters.empty?
+                request.params do |params|
+                  xml_vars_for(params, parameters)
+                end
+              end
+              unless session_data.empty?
+                request.session do |session|
+                  xml_vars_for(session, session_data)
+                end
+              end
+              unless cgi_data.empty?
+                request.tag!("cgi-data") do |cgi_datum|
+                  xml_vars_for(cgi_datum, cgi_data)
+                end
+              end
             end
           end
+          notice.tag!("server-environment") do |env|
+            env.tag!("project-root", project_root)
+            env.tag!("environment-name", environment_name)
+            env.tag!("hostname", hostname)
+          end
+          unless user.empty?
+            notice.tag!("current-user") do |u|
+              user.each do |attr, value|
+                u.tag!(attr.to_s, value)
+              end
+            end
+          end
+          if framework =~ /\S/
+            notice.tag!("framework", framework)
+          end
         end
-        if framework =~ /\S/
-          notice.tag!("framework", framework)
-        end
+        xml.to_s.freeze
       end
-      xml.to_s
     end
 
     def flatten_exceptions(ex, acc = [])
@@ -215,34 +217,36 @@ module Airbrake
     end
 
     def to_json
-      {
-        'notifier' => {
-          'name'    => 'airbrake',
-          'version' => Airbrake::VERSION,
-          'url'     => 'https://github.com/airbrake/airbrake'
-          },
-        'errors' => @exceptions.map(&:to_hash),
-         'context' => {}.tap do |hash|
-            if request_present?
-              hash['url']           = url
-              hash['component']     = controller
-              hash['action']        = action
-              hash['rootDirectory'] = File.dirname(project_root)
-              hash['environment']   = environment_name
+      @json ||= begin
+        {
+          'notifier' => {
+            'name'    => 'airbrake',
+            'version' => Airbrake::VERSION,
+            'url'     => 'https://github.com/airbrake/airbrake'
+            },
+          'errors' => @exceptions.map(&:to_hash),
+           'context' => {}.tap do |hash|
+              if request_present?
+                hash['url']           = url
+                hash['component']     = controller
+                hash['action']        = action
+                hash['rootDirectory'] = File.dirname(project_root)
+                hash['environment']   = environment_name
+              end
+             end.tap do |hash|
+              next if user.empty?
+
+              hash['userId']    = user[:id]
+              hash['userName']  = user[:name]
+              hash['userEmail'] = user[:email]
             end
-           end.tap do |hash|
-            next if user.empty?
 
-            hash['userId']    = user[:id]
-            hash['userName']  = user[:name]
-            hash['userEmail'] = user[:email]
-          end
-
-      }.tap do |hash|
-          hash['environment'] = cgi_data     unless cgi_data.empty?
-          hash['params']      = parameters   unless parameters.empty?
-          hash['session']     = session_data unless session_data.empty?
-      end.to_json
+        }.tap do |hash|
+            hash['environment'] = cgi_data     unless cgi_data.empty?
+            hash['params']      = parameters   unless parameters.empty?
+            hash['session']     = session_data unless session_data.empty?
+        end.to_json.freeze
+      end
     end
 
     # Determines if this notice should be ignored
