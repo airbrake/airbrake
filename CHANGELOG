@@ -1,3 +1,41 @@
+Version 3.1.15 - 2014-01-03 14:37:38 +0100
+===============================================================================
+
+Ahmad Sherif (1):
+      Don't serialize nil to an empty string
+
+Damon Morgan (1):
+      Support sucker_punch for async processor
+
+David Palm (1):
+      Give params_filter a setter so it can be *set* (not only appended to)
+
+Hrvoje Šimić (14):
+      add Rails 4 to README.md
+      use Coveralls for code coverage
+      use Gemnasium for dependency monitoring
+      use Code Climate for code analysis
+      extract ParamsCleaner class
+      being more careful with javascript_notifier and non-public requests
+      Bumping to version 3.1.14
+      add Circle CI badge
+      rename :test task to 'test:unit'
+      use parallel gem installation on CI server
+      enable pry debugging in tests
+      add test for #251
+      enable filtering of sensitive Rack vars by default
+      start using MultiJson
+
+Marko Šiftar (1):
+      fix deploy uri
+
+Marten Veldthuis (1):
+      Airbrake rakefile is not compatible with Capistrano v3
+
+Rodrigo Saito (1):
+      Handle error when variable sinatra.error is present
+
+
 Version 3.1.14 - 2013-08-22 09:03:14 +0200
 ===============================================================================
 
@@ -1217,6 +1255,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
