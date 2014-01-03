@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency("rspec",         "~> 2.6.0")
   s.add_development_dependency("sham_rack",     "~> 1.3.0")
   s.add_development_dependency("json-schema",   "~> 1.0.12")
-  s.add_development_dependency("capistrano")
+  s.add_development_dependency("capistrano",    "~> 2.0")
   s.add_development_dependency("aruba")
   s.add_development_dependency("appraisal")
   s.add_development_dependency("rspec-rails")
