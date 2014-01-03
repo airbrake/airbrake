@@ -1,5 +1,6 @@
 require 'builder'
 require 'socket'
+require 'multi_json'
 
 module Airbrake
   class Notice
@@ -202,7 +203,7 @@ module Airbrake
     end
 
     def to_json
-      {
+      MultiJson.dump({
         'notifier' => {
           'name'    => 'airbrake',
           'version' => Airbrake::VERSION,
@@ -239,7 +240,7 @@ module Airbrake
           hash['environment'] = cgi_data     unless cgi_data.empty?
           hash['params']      = parameters   unless parameters.empty?
           hash['session']     = session_data unless session_data.empty?
-      end.to_json
+      end)
     end
 
     # Determines if this notice should be ignored
