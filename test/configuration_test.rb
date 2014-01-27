@@ -183,6 +183,27 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_same_elements %w(development test cucumber), config.development_environments
   end
 
+  context "configured?" do
+    setup do
+      @config = Airbrake::Configuration.new
+    end
+
+    should "be true if given an api_key" do
+      @config.api_key = "1234"
+      assert @config.configured?
+    end
+
+    should "be false with a nil api_key" do
+      @config.api_key = nil
+      assert !@config.configured?
+    end
+
+    should "be false with a blank api_key" do
+      @config.api_key = ''
+      assert !@config.configured?
+    end
+  end
+
   should "be public in a public environment" do
     config = Airbrake::Configuration.new
     config.development_environments = %w(development)
