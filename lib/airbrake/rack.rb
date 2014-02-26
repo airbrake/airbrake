@@ -25,20 +25,6 @@ module Airbrake
       Airbrake.configuration.framework = "Rack: #{::Rack.release}"
     end
 
-    def ignored_user_agent?(env)
-      true if Airbrake.
-        configuration.
-        ignore_user_agent.
-        flatten.
-        any? { |ua| ua === env['HTTP_USER_AGENT'] }
-    end
-
-    def notify_airbrake(exception, env)
-      unless ignored_user_agent?(env)
-        Airbrake.notify_or_ignore(exception, :rack_env => env)
-      end
-    end
-
     def call(env)
       begin
         response = @app.call(env)
@@ -54,9 +40,36 @@ module Airbrake
       response
     end
 
+    protected
+
     def framework_exception(env)
       env['rack.exception'] || env['sinatra.error']
     end
 
+    def request_data(env)
+      {:rack_env => env}
+    end
+
+    def after_airbrake_handler(env, exception)
+      # Do nothing
+    end
+
+    private
+
+    def ignored_user_agent?(env)
+      true if Airbrake.
+        configuration.
+        ignore_user_agent.
+        flatten.
+        any? { |ua| ua === env['HTTP_USER_AGENT'] }
+    end
+
+    def notify_airbrake(exception, env)
+      unless ignored_user_agent? env
+        error_id = Airbrake.notify_or_ignore(exception, request_data(env))
+        after_airbrake_handler(env, exception)
+        error_id
+      end
+    end
   end
 end
