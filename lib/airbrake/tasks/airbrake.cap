@@ -1,0 +1,28 @@
+namespace :airbrake do
+  desc <<-DESC
+    Notify Airbrake of the deployment by running the notification on the REMOTE machine.
+      - Run remotely so we use remote API keys, environment, etc.
+  DESC
+  task :deploy do
+    on roles(:all) do |host|
+      rails_env = fetch(:rails_env, "production")
+      airbrake_env = fetch(:airbrake_env, fetch(:rails_env, "production"))
+      local_user = ENV['USER'] || ENV['USERNAME']
+      executable = RUBY_PLATFORM.downcase.include?('mswin') ? fetch(:rake, 'rake.bat') : fetch(:rake, 'bundle exec rake ')
+      current_revision = capture("cd #{repo_path} && git rev-parse HEAD")
+      repository = ENV['REPO'] || ENV['REPONAME']
+
+      notify_command = "airbrake:deploy TO=#{airbrake_env} REVISION=#{current_revision} REPO=#{repo_url} USER=#{Airbrake::Capistrano::shellescape(local_user)}"
+      notify_command << " API_KEY=#{ENV['API_KEY']}" if ENV['API_KEY']
+      info "Notifying Airbrake of Deploy (#{notify_command})"
+      result = ""
+      within release_path do
+        execute :rake, notify_command, :once => true do |ch, stream, data| 
+          result << data
+        end
+      end
+      # TODO: Check if SSL is active on account via result content.
+      info "Airbrake Notification Complete."
+    end
+  end
+end
