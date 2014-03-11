@@ -1,3 +1,3 @@
 module Airbrake
-  VERSION = "3.1.14"
+  VERSION = "3.1.16"
 end
