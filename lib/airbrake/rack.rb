@@ -9,6 +9,8 @@ module Airbrake
   #
   #   Airbrake.configure do |config|
   #     config.api_key = 'my_api_key'
+  #     #can also set the environment over here
+  #     config.environment_name = ENV['RACK_ENV'] || "development"
   #   end
   #
   #   app = Rack::Builder.app do
