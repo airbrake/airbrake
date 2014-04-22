@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency("builder")
   s.add_runtime_dependency("multi_json")
+  s.add_runtime_dependency("zip")
 
   s.add_development_dependency("bourne",        "~> 1.4.0")
   s.add_development_dependency("cucumber-rails","~> 1.1.1")
@@ -33,7 +34,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency("shoulda-context")
   s.add_development_dependency("pry")
   s.add_development_dependency("coveralls")
-  s.add_development_dependency("zip")
 
   s.authors = ["Airbrake"]
   s.email   = %q{support@airbrake.io}
