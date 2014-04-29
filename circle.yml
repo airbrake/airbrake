@@ -9,9 +9,24 @@ dependencies:
 
   override:
     - bundle install -j10
-    - bundle exec rake appraisal:install
+    - rake appraisal:install
 
 ## Customize test commands
 test:
   override:
-    - bundle exec rake
+    - case $CIRCLE_NODE_INDEX in 0) rake test:unit ;; 1) rake test:integration:rake ;; esac:
+        parallel: true
+    - case $CIRCLE_NODE_INDEX in 0) rake test:integration:rails_4_0 ;; 1) rake test:integration:rails_3_2 ;; esac:
+        parallel: true
+    - case $CIRCLE_NODE_INDEX in 0) rake test:integration:rails_3_1 ;; 1) rake test:integration:rails_3_0 ;; esac:
+        parallel: true
+    - case $CIRCLE_NODE_INDEX in 0) rake test:integration:rack ;; 1) rake test:integration:sinatra ;; esac:
+        parallel: true
+    - case $CIRCLE_NODE_INDEX in 0) rake test:cucumber:rails_4_0 ;; 1) rake test:cucumber:rails_3_2 ;; esac:
+        parallel: true
+    - case $CIRCLE_NODE_INDEX in 0) rake test:cucumber:rails_3_1 ;; 1) rake test:cucumber:rails_3_0 ;; esac:
+        parallel: true
+    - case $CIRCLE_NODE_INDEX in 0) rake test:cucumber:sinatra ;; 1) rake test:cucumber:rake ;; esac:
+        parallel: true
+    - rake test:cucumber:rack
+    - rake coveralls:push
