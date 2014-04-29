@@ -131,6 +131,7 @@ end
 class ActionControllerCatcherTest < ActionDispatch::IntegrationTest
 
   include DefinesConstants
+  include TestHelpers
 
   def setup
     super
