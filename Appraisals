@@ -10,11 +10,13 @@ end
 
 appraise "rails-3.2" do
   gem "rails", "~> 3.2.13"
+  gem "sqlite3"
   gem "airbrake", :path => "../"
 end
 
 appraise "rails-4.0" do
  gem "rails", "~> 4.0.0"
+ gem "sqlite3"
  gem "airbrake", :path => "../"
 end
 
