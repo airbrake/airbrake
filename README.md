@@ -1,9 +1,6 @@
 Airbrake
 ========
 
-<img scr="http://f.cl.ly/items/142j0Z2u0R1Y2L0L3D26/ruby.jpg" width=800px;>
-
-
 [![Circle CI](https://circleci.com/gh/airbrake/airbrake/tree/master.png?circle-token=66cb9cfc6d20f550a2dbde522f5f0f9f81bd653b)](https://circleci.com/gh/airbrake/airbrake)
 [![Code Climate](https://codeclimate.com/github/airbrake/airbrake.png)](https://codeclimate.com/github/airbrake/airbrake)
 [![Coverage Status](https://coveralls.io/repos/airbrake/airbrake/badge.png?branch=master)](https://coveralls.io/r/airbrake/airbrake?branch=master)
@@ -13,6 +10,8 @@ This is the notifier gem for integrating apps with [Airbrake](http://airbrake.io
 
 When an uncaught exception occurs, Airbrake will POST the relevant data
 to the Airbrake server specified in your environment.
+
+<img scr="http://f.cl.ly/items/142j0Z2u0R1Y2L0L3D26/ruby.jpg" width=800px;>
 
 Help
 ----
