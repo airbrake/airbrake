@@ -3,6 +3,6 @@
 source "http://rubygems.org"
 
 gem "rails", "~> 3.0.20"
-gem "airbrake", :path=>"../"
+gem "airbrake", :path => "../"
 
-gemspec :path=>"../"
+gemspec :path => "../"

@@ -1,5 +1,5 @@
 require 'rubygems'
-require "bundler/setup"
+require 'bundler/setup'
 require 'appraisal'
 require 'rake'
 require 'rake/testtask'
@@ -15,7 +15,11 @@ require './lib/airbrake/version'
 
 Coveralls::RakeTask.new
 
-task :default => ["test:unit", "test:integration"]
+appraisal_environments = %w(rails-4.0 rails-3.2 rails-3.1 rails-3.0 rake sinatra rack)
+task default: %w( test:unit coveralls:push) +
+  appraisal_environments.map {|ae| "test:integration:#{ae.gsub(/[\-\.]/, '_')}"} +
+  appraisal_environments.map {|ae| "test:cucumber:#{ae.gsub(/[\-\.]/, '_')}"}
+
 
 namespace :test do
   Rake::TestTask.new(:unit) do |t|
@@ -24,13 +28,24 @@ namespace :test do
     t.verbose = true
   end
 
-  desc "Integration tests for all versions of Rails."
-  task :integration do
-    system 'INTEGRATION=true rake appraisal:rails-3.2 integration_test'\
-    '&& INTEGRATION=true rake appraisal:rails-3.1 integration_test'\
-    '&& INTEGRATION=true rake appraisal:rails-3.0 integration_test'\
-    '&& rake coveralls:push'\
-    '&& INTEGRATION=true rake appraisal cucumber'
+  desc "Integration tests Rake, Sinatra, Rack and for all versions of Rails"
+  namespace :integration do
+    appraisal_environments.each do |appraisal_env|
+      task appraisal_env.gsub(/[\-\.]/, '_').to_sym do
+        ENV['INTEGRATION'] = 'true'
+        system "appraisal #{appraisal_env} rake integration_test" or exit!(1)
+      end
+    end
+  end
+
+  desc "Cucumber tests Rake, Sinatra, Rack and for all versions of Rails"
+  namespace :cucumber do
+    appraisal_environments.each do |appraisal_env|
+      task appraisal_env.gsub(/[\-\.]/, '_').to_sym do
+        ENV['INTEGRATION'] = 'true'
+        system "appraisal #{appraisal_env} rake cucumber" or exit!(1)
+      end
+    end
   end
 end
 
