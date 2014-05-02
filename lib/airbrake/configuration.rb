@@ -256,6 +256,10 @@ module Airbrake
       to_hash.merge(hash)
     end
 
+    def configured?
+      !api_key.nil? && !api_key.empty?
+    end
+
     # Determines if the notifier will send notices.
     # @return [Boolean] Returns +false+ if in a development environment, +true+ otherwise.
     def public?

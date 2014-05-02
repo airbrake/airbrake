@@ -270,6 +270,13 @@ class ActionControllerCatcherTest < ActionDispatch::IntegrationTest
     assert_caught_and_not_sent
   end
 
+  def test_not_deliver_notices_from_exceptions_with_no_api_key
+    Airbrake.configuration.api_key = nil
+    @app = AirbrakeTestController.action(:boom)
+    get '/'
+    assert_caught_and_not_sent
+  end
+
   def test_not_deliver_notices_from_actions_that_dont_raise
     @app = AirbrakeTestController.action(:hello)
     get '/'
