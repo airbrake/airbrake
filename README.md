@@ -6,6 +6,8 @@ Airbrake
 [![Coverage Status](https://coveralls.io/repos/airbrake/airbrake/badge.png?branch=master)](https://coveralls.io/r/airbrake/airbrake?branch=master)
 [![Dependency Status](https://gemnasium.com/airbrake/airbrake.png)](https://gemnasium.com/airbrake/airbrake)
 
+<img src="http://f.cl.ly/items/3Q163w1r2K1J1b030k0g/ruby%2009.19.32.jpg" width=800px>
+
 This is the notifier gem for integrating apps with [Airbrake](http://airbrake.io).
 
 When an uncaught exception occurs, Airbrake will POST the relevant data
