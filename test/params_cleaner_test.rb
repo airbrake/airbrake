@@ -64,6 +64,17 @@ class ParamsCleanerTest < Test::Unit::TestCase
     assert_equal({"abc" => "123"}, clean_params.cgi_data)
   end
 
+  should "remove secrets from cgi_data" do
+    original = {
+      "aws_secret_key"   => "secret",
+      "service_password" => "password",
+      "abc" => "123"
+    }
+
+    clean_params = clean(:cgi_data => original)
+    assert_equal({"abc" => "123"}, clean_params.cgi_data)
+  end
+
   should "filter parameters" do
     assert_filters_hash(:parameters)
   end
