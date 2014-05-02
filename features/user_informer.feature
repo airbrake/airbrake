@@ -22,6 +22,7 @@ Feature: Inform the user of the airbrake notice that was just created
   Scenario: Rescue an exception in a controller with a custom error string
     When I configure the notifier to use the following configuration lines:
     """
+    config.api_key = "myapikey"
     config.user_information = 'Error #{{ error_id }}'
     """
     And I run `rails generate airbrake -k myapikey`

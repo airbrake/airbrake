@@ -4,6 +4,7 @@ Feature: Rescue errors in Rails middleware
     And I cd to "rails_root"
     And I configure the notifier to use the following configuration lines:
     """
+      config.api_key = "myapikey"
       config.logger = Logger.new STDOUT
     """
     And I configure the Airbrake shim
