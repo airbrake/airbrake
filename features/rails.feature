@@ -134,6 +134,7 @@ Feature: Install the Gem in a Rails application
     And I run `rails generate airbrake -k myapikey -t`
     When I configure the notifier to use the following configuration lines:
       """
+      config.api_key = "myapikey"
       config.logger = Logger.new STDOUT
       """
     And I configure the application to filter parameter "secret"
