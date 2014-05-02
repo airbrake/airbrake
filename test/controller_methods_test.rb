@@ -54,5 +54,24 @@ class ControllerMethodsTest < Test::Unit::TestCase
       assert_equal no_session, {:session => 'no session found'}
     end
   end
-end
 
+  context "Rails 3" do
+    setup do
+      @controller = TestController.new
+      ::Rails = Object.new
+      ::Rails.stubs(:version).returns("3.2.17")
+    end
+    should "respond to rails3? with true" do
+      assert @controller.send(:rails3?)
+    end
+    should "call filter_rails3_parameters" do
+      hash = {:a => "b"}
+      filtered_hash = {:c => "d"}
+
+      @controller.expects(:filter_rails3_parameters).with(hash).
+        returns(filtered_hash)
+      assert_equal filtered_hash,
+        @controller.send(:airbrake_filter_if_filtering, hash)
+    end
+  end
+end
