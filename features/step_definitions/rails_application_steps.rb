@@ -255,9 +255,9 @@ end
 
 Then /^the Airbrake notification should not contain any of the sensitive Rack variables$/ do
   sensitive_rack_data_regex = FILTERED_RACK_VARS.map do |var|
-    Regexp.quote(var)
+    var.instance_of?(Regexp) ? var : Regexp.quote(var)
   end.join("|")
-  step %{the last notice sent should not contain "#{sensitive_rack_data_regex}"}
+  step %{the last notice sent should not contain "#{'key\=\"('+sensitive_rack_data_regex+')\"'}"}
 end
 
 Then /^the last notice sent should contain "([^\"]*)"$/ do |data|
@@ -265,7 +265,7 @@ Then /^the last notice sent should contain "([^\"]*)"$/ do |data|
   last_notice.should match(%r{#{data}})
 end
 
-Then /^the last notice sent should not contain "([^\"]*)"$/ do |data|
+Then /^the last notice sent should not contain "(.*)"$/ do |data|
   last_notice = File.read(LAST_NOTICE)
   last_notice.should_not match(%r{#{data}})
 end
