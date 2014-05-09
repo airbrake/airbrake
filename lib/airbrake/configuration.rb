@@ -6,7 +6,7 @@ module Airbrake
         :development_lookup, :environment_name, :host,
         :http_open_timeout, :http_read_timeout, :ignore, :ignore_by_filters,
         :ignore_user_agent, :notifier_name, :notifier_url, :notifier_version,
-        :params_filters, :project_root, :port, :protocol, :proxy_host,
+        :params_filters, :params_whitelist_filters, :project_root, :port, :protocol, :proxy_host,
         :proxy_pass, :proxy_port, :proxy_user, :secure, :use_system_ssl_cert_chain,
         :framework, :user_information, :rescue_rake_exceptions, :rake_environment_filters,
         :test_mode].freeze
@@ -54,6 +54,11 @@ module Airbrake
     # A list of parameters that should be filtered out of what is sent to Airbrake.
     # By default, all "password" attributes will have their contents replaced.
     attr_accessor :params_filters
+
+    # A list of whitelisted parameters that will be sent to Airbrake.
+    # All other parameters will be filtered and their content replaced.
+    # By default this list is empty (all parameters are whitelisted).
+    attr_accessor :params_whitelist_filters
 
     # A list of filters for cleaning and pruning the backtrace. See #filter_backtrace.
     attr_reader :backtrace_filters
@@ -121,6 +126,7 @@ module Airbrake
     alias_method :test_mode?, :test_mode
 
     DEFAULT_PARAMS_FILTERS  = %w(password password_confirmation).freeze
+    DEFAULT_PARAMS_WHITELIST_FILTERS = [].freeze
 
     DEFAULT_USER_ATTRIBUTES = %w(id).freeze
 
@@ -166,6 +172,7 @@ module Airbrake
       @http_open_timeout        = 2
       @http_read_timeout        = 5
       @params_filters           = DEFAULT_PARAMS_FILTERS.dup
+      @params_whitelist_filters = DEFAULT_PARAMS_WHITELIST_FILTERS.dup
       @backtrace_filters        = DEFAULT_BACKTRACE_FILTERS.dup
       @ignore_by_filters        = []  # These filters are applied to both server requests and Rake tasks
       @ignore                   = IGNORE_DEFAULT.dup

@@ -10,7 +10,8 @@ module Airbrake
       #        :filters - The Array of param keys that should be filtered
       #        :to_clean - The Hash of unfiltered params
       def initialize(opts = {})
-        @filters     = opts[:filters] || {}
+        @blacklist_filters     = opts[:blacklist_filters] || {}
+        @whitelist_filters     = opts[:whitelist_filters] || {}
         @to_clean    = opts[:to_clean]
       end
       
@@ -64,6 +65,10 @@ module Airbrake
         end
 
         def filter_key?(key, filters)
+          blacklist_key?(key, filters) || !whitelist_key?(key)
+        end
+
+        def blacklist_key?(key, filters)
           filters.any? do |filter|
             case filter
             when Regexp
@@ -74,9 +79,16 @@ module Airbrake
           end
         end
 
+        def whitelist_key?(key)
+          return true if @whitelist_filters.empty?
+          @whitelist_filters.any? do |filter|
+            key.to_s.eql?(filter.to_s)
+          end
+        end
+
         def filter(hash)
           hash.each do |key, value|
-            if filter_key?(key, @filters)
+            if filter_key?(key, @blacklist_filters)
               hash[key] = "[FILTERED]"
             elsif value.respond_to?(:to_hash)
               filter(hash[key])

@@ -3,8 +3,9 @@ require File.expand_path '../helper', __FILE__
 class ParamsCleanerTest < Test::Unit::TestCase
 
   def clean(opts = {})
-    cleaner = Airbrake::Utils::ParamsCleaner.new(:filters  => opts.delete(:params_filters),
-                                               :to_clean => opts)
+    cleaner = Airbrake::Utils::ParamsCleaner.new(:blacklist_filters  => opts.delete(:params_filters),
+                                                  :whitelist_filters  => opts.delete(:whitelist_params_filters),
+                                                  :to_clean => opts)
     cleaner.clean
   end
 
@@ -77,6 +78,23 @@ class ParamsCleanerTest < Test::Unit::TestCase
 
   should "filter parameters" do
     assert_filters_hash(:parameters)
+  end
+
+  should "whitelist filter parameters" do
+    whitelist_filters  = ["abc", :def]
+    original = { 'abc' => "123", 'def' => "456", 'ghi' => "789", 'nested' => { 'abc' => '100' },
+      'something_with_abc' => 'match the entire string'}
+    filtered = { 'abc'    => "123",
+      'def'    => "456",
+      'something_with_abc' => "[FILTERED]",
+      'ghi'    => "[FILTERED]",
+      'nested' => "[FILTERED]" }
+
+    clean_params = clean(:whitelist_params_filters => whitelist_filters,
+                    :parameters => original)
+
+    assert_equal(filtered,
+                 clean_params.send(:parameters))
   end
 
   should "filter cgi data" do
