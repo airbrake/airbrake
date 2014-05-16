@@ -302,6 +302,13 @@ module Airbrake
         use_default_or_this
     end
 
+    def rescue_rake_exceptions=(val)
+      if val && !defined?(Airbrake::RakeHandler)
+        raise LoadError, "you must require 'airbrake/rake_handler' to rescue from rake exceptions"
+      end
+      @rescue_rake_exceptions = val
+    end
+
     def js_api_key
       @js_api_key || self.api_key
     end

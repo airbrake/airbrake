@@ -40,6 +40,11 @@ class ConfigurationTest < Test::Unit::TestCase
     assert config.async.respond_to?(:call)
   end
 
+  should "raise error for rake integration if rake handler isn't loaded" do
+    config = Airbrake::Configuration.new
+    assert_raises(LoadError) { config.rescue_rake_exceptions = true }
+  end
+
   should "set provided-callable for async {}" do
     config = Airbrake::Configuration.new
     config.async {|notice| :ok}
