@@ -256,6 +256,8 @@ module Airbrake
       to_hash.merge(hash)
     end
 
+    # Determines if the notifier will send notices.
+    # @return [Boolean] Returns +true+ if an api string exists, +false+ otherwise.
     def configured?
       !api_key.nil? && !api_key.empty?
     end
