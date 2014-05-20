@@ -61,6 +61,12 @@ module Airbrake
       write_verbose_log("Notice details: \n#{notice}")
     end
 
+    def report_notice_not_sent_for_configuration
+      write_verbose_log("Notice was not sent due to configuration: \
+        \n  Environment Monitored? #{configuration.public?} \
+        \n  API key set? #{configuration.configured?}")
+    end
+
     # Returns the Ruby version, Rails version, and current Rails environment
     def environment_info
       info = "[Ruby: #{RUBY_VERSION}]"
@@ -154,6 +160,8 @@ module Airbrake
         else
           sender.send_to_airbrake(notice)
         end
+      else
+        report_notice_not_sent_for_configuration
       end
     end
 
