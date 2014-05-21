@@ -158,7 +158,7 @@ def cucumber_opts
 
   case ENV["BUNDLE_GEMFILE"]
   when /rails/
-    opts << "features/rails.feature features/rails_with_js_notifier.feature features/metal.feature features/user_informer.feature"
+    opts << "features/rails.feature features/metal.feature features/user_informer.feature"
   when /rack/
     opts << "features/rack.feature"
   when /sinatra/
