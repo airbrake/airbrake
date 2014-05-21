@@ -41,12 +41,6 @@ module Airbrake
 
         include Airbrake::Rails::ControllerMethods
       end
-
-      if defined?(::ActionController::Base)
-        require 'airbrake/rails/javascript_notifier'
-
-        ::ActionController::Base.send(:include, Airbrake::Rails::JavascriptNotifier)
-      end
     end
   end
 end
