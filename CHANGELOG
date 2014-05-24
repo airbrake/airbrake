@@ -1,3 +1,12 @@
+Version 3.2.0 - 2014-05-23 17:37:35 -0700
+===============================================================================
+
+Ali Faiz (4):
+      Remove JS notifier from templates and libraries
+      Cleanup references to JS notifier in tests
+      Merge pull request #297 from airbrake/remove-js-notifier
+
+
 Version 3.1.17 - 2014-05-20 21:00:25 -0700
 ===============================================================================
 
@@ -260,7 +269,7 @@ Hrvoje Šimić (6):
       thread safety fix
       add the secure option to the generator
       fix the broken generator method call
-      be more careful with @template in javascript notifier 
+      be more careful with @template in javascript notifier
       update tested rails versions
 
 Marko Šiftar (2):
@@ -1337,6 +1346,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
