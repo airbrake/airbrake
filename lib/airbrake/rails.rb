@@ -2,7 +2,6 @@ require 'airbrake'
 require 'airbrake/rails/controller_methods'
 require 'airbrake/rails/action_controller_catcher'
 require 'airbrake/rails/error_lookup'
-require 'airbrake/rails/javascript_notifier'
 
 module Airbrake
   module Rails
@@ -11,7 +10,6 @@ module Airbrake
         ActionController::Base.send(:include, Airbrake::Rails::ActionControllerCatcher)
         ActionController::Base.send(:include, Airbrake::Rails::ErrorLookup)
         ActionController::Base.send(:include, Airbrake::Rails::ControllerMethods)
-        ActionController::Base.send(:include, Airbrake::Rails::JavascriptNotifier)
       end
 
       rails_logger = if defined?(::Rails.logger)
