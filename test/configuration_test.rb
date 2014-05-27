@@ -127,6 +127,14 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_appends_value :rake_environment_filters
   end
 
+  should "warn when attempting to write js_notifier" do
+    config = Airbrake::Configuration.new
+    config.
+      expects(:warn).
+      with(regexp_matches(/deprecated/i))
+    config.js_notifier = true
+  end
+
   should "allow ignored user agents to be appended" do
     assert_appends_value :ignore_user_agent
   end
