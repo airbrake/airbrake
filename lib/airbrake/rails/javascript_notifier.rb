@@ -10,6 +10,8 @@ module Airbrake
       private
 
         def airbrake_javascript_notifier
+          warn '[DEPRECATION] `airbrake_javascript_notifier` is deprecated and will no longer be supported in v4.0.0. /
+            Please use the official Airbrake JavaScript Notifier - https://github.com/airbrake/airbrake-js'
           if Airbrake.configuration.public?
             airbrake_javascript_loader + airbrake_javascript_configuration
           end
