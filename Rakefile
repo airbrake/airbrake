@@ -69,6 +69,10 @@ namespace :changeling do
     end
 
     case args[:part]
+    when /major/
+      major += 1
+      minor = 0
+      patch = 0
     when /minor/
       minor += 1
       patch = 0
@@ -112,6 +116,12 @@ EOF
           "git commit -aqm '#{message}'",
           "git tag -a -m '#{message}' v#{version}",
           "echo '\n\n\033[32mMarked v#{version} /' `git show-ref -s refs/heads/master` 'for release. Run: rake changeling:push\033[0m\n\n'"].join(' && ')
+  end
+
+  desc "Bump by a major version (1.2.3 => 2.0.0)"
+  task :major do |t|
+    Rake::Task['changeling:bump'].invoke(t.name)
+    Rake::Task['changeling:change'].invoke
   end
 
   desc "Bump by a minor version (1.2.3 => 1.3.0)"
