@@ -17,8 +17,10 @@ namespace :airbrake do
       info "Notifying Airbrake of Deploy (#{notify_command})"
       result = ""
       within release_path do
-        execute :rake, notify_command, :once => true do |ch, stream, data| 
-          result << data
+        with rails_env: rails_env do
+          execute :rake, notify_command, :once => true do |ch, stream, data|
+            result << data
+          end
         end
       end
       # TODO: Check if SSL is active on account via result content.
