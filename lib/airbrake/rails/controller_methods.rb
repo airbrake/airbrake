@@ -62,7 +62,7 @@ module Airbrake
 
       def airbrake_session_data
         if session
-          if session.respond_to?(:to_hash)
+          if session.respond_to?(:to_hash) && !session.is_a?(String)
             session.to_hash
           else
             session.data
