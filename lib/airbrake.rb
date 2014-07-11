@@ -26,6 +26,11 @@ require 'airbrake/rack'
 require 'airbrake/sinatra'
 require 'airbrake/user_informer'
 
+begin
+  require 'airbrake/sidekiq'
+rescue LoadError
+end
+
 require 'airbrake/railtie' if defined?(Rails::Railtie)
 
 module Airbrake
