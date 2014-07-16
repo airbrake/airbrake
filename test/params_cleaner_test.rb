@@ -29,20 +29,27 @@ class ParamsCleanerTest < Test::Unit::TestCase
   end
 
   def assert_filters_hash(attribute)
-    filters  = ["abc", :def]
-    original = { 'abc' => "123", 'def' => "456", 'ghi' => "789", 'nested' => { 'abc' => '100' },
-      'something_with_abc' => 'match the entire string'}
-    filtered = { 'abc'    => "[FILTERED]",
-      'def'    => "[FILTERED]",
-      'something_with_abc' => "match the entire string",
-      'ghi'    => "789",
-      'nested' => { 'abc' => '[FILTERED]' } }
+    filters  = ['abc', :def]
+    original = {
+      'abc' => '123',
+      'def' => '456',
+      'ghi' => '789',
+      'something_with_abc' => 'match the entire string',
+      'nested_hash' => { 'abc' => '100', 'ghi' => '789' },
+      'nested_array' => [{ 'abc' => '100' }, { 'ghi' => '789' }, 'xyz']
+    }
+    filtered = {
+      'abc' => '[FILTERED]',
+      'def' => '[FILTERED]',
+      'ghi' => '789',
+      'something_with_abc' => 'match the entire string',
+      'nested_hash' => { 'abc' => '[FILTERED]', 'ghi' => '789' },
+      'nested_array' => [{ 'abc' => '[FILTERED]' }, { 'ghi' => '789' }, 'xyz']
+    }
 
-    clean_params = clean(:params_filters => filters,
-                    attribute => original)
+    clean_params = clean(:params_filters => filters, attribute => original)
 
-    assert_equal(filtered,
-                 clean_params.send(attribute))
+    assert_equal(filtered, clean_params.send(attribute))
   end
 
   should "should always remove a Rails application's secret token" do
