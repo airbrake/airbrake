@@ -80,10 +80,6 @@ module Airbrake
               hash[key] = "[FILTERED]"
             elsif value.respond_to?(:to_hash)
               filter(hash[key])
-            elsif value.is_a?(Array)
-              hash[key] = value.inject(Array.new) do |result, item|
-                result.push(filter(item))
-              end
             end
           end
         end
