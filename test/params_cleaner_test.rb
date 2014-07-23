@@ -3,8 +3,10 @@ require File.expand_path '../helper', __FILE__
 class ParamsCleanerTest < Test::Unit::TestCase
 
   def clean(opts = {})
-    cleaner = Airbrake::Utils::ParamsCleaner.new(:filters  => opts.delete(:params_filters),
-                                               :to_clean => opts)
+    cleaner = Airbrake::Utils::ParamsCleaner.new(
+      :filters  => opts.delete(:params_filters),
+      :to_clean => opts
+    )
     cleaner.clean
   end
 
@@ -15,16 +17,18 @@ class ParamsCleanerTest < Test::Unit::TestCase
         :sub_hash => {
           :sub_object => object
         },
-        :array => [object]
+        :array => [object],
+        :array_of_hashes => [{:key_one => object, :key_two => (object && object.to_s)}]
       }
       clean_params = clean(attribute => hash)
       hash = clean_params.send(attribute)
       object_serialized = object.nil? ? nil : object.to_s
-      assert_equal object_serialized, hash[:strange_object], "objects should be serialized"
-      assert_kind_of Hash, hash[:sub_hash], "subhashes should be kept"
-      assert_equal object_serialized, hash[:sub_hash][:sub_object], "subhash members should be serialized"
+      assert_equal object_serialized, hash[:strange_object], "objects are serialized"
+      assert_kind_of Hash, hash[:sub_hash], "subhashes are kept"
+      assert_equal object_serialized, hash[:sub_hash][:sub_object], "subhash members are serialized"
       assert_kind_of Array, hash[:array], "arrays should be kept"
-      assert_equal object_serialized, hash[:array].first, "array members should be serialized"
+      assert_equal object_serialized, hash[:array].first, "array members are stringified"
+      assert_equal object_serialized, hash[:array_of_hashes].first[:key_one], "arrays of hashes are stringified"
     end
   end
 
