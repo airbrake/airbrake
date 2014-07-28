@@ -256,6 +256,12 @@ class NotifierTest < Test::Unit::TestCase
         @hash = Airbrake.build_lookup_hash_for(@exception)
         assert_equal "NotifierTest::OriginalException", @hash[:error_class]
       end
+
+      should "keep exception if #original_exception is nil" do
+        @exception.stubs(:original_exception).returns(nil)
+        @hash = Airbrake.build_lookup_hash_for(@exception)
+        assert_equal "BacktracedException", @hash[:error_class]
+      end
     end
 
     context "when an exception that provides #continued_exception is raised" do
@@ -270,6 +276,12 @@ class NotifierTest < Test::Unit::TestCase
       should "unwrap exceptions that provide #continued_exception" do
         @hash = Airbrake.build_lookup_hash_for(@exception)
         assert_equal "NotifierTest::ContinuedException", @hash[:error_class]
+      end
+
+      should "keep exception if #continued_exception is nil" do
+        @exception.stubs(:continued_exception).returns(nil)
+        @hash = Airbrake.build_lookup_hash_for(@exception)
+        assert_equal "BacktracedException", @hash[:error_class]
       end
     end
   end
