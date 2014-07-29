@@ -62,14 +62,14 @@ The generator creates a file under `config/initializers/airbrake.rb` configuring
 Ignored exceptions
 ------------------------
 
-Exceptions raised from Rails environments named **development**, **test** or **cucumber** will be ignored by default. 
+Exceptions raised from Rails environments named **development**, **test** or **cucumber** will be ignored by default.
 
 You can clear the list of ignored environments with this setting:
 
     config.development_environments = []
 
 List of ignored exception classes includes:
-    
+
     ActiveRecord::RecordNotFound
     ActionController::RoutingError
     ActionController::InvalidAuthenticityToken
@@ -78,11 +78,12 @@ List of ignored exception classes includes:
     ActionController::UnknownAction
     AbstractController::ActionNotFound
     Mongoid::Errors::DocumentNotFound
+    ActionController::UnknownFormat
 
 You can alter this list with
 
     config.ignore_only = []
-    
+
 which will cause none of the exception classes to be ignored.
 
 Check the [wiki](https://github.com/airbrake/airbrake/wiki/Customizing-your-airbrake.rb) for more customization options.
@@ -114,7 +115,7 @@ integrations with cucumber, you should run the following commands
     bundle exec rake appraisal:install
     bundle exec rake
 
-We use [Appraisals](https://github.com/thoughtbot/appraisal) to run the integration 
+We use [Appraisals](https://github.com/thoughtbot/appraisal) to run the integration
 tests.
 
 Maintainers
@@ -144,4 +145,4 @@ The names and logos for Airbrake, thoughtbot are trademarks of their respective 
 License
 -------
 
-Airbrake is Copyright © 2008-2013 Airbrake. 
+Airbrake is Copyright © 2008-2013 Airbrake.
