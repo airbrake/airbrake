@@ -6,6 +6,7 @@ Gem::Specification.new do |s|
   s.name        = %q{airbrake}
   s.version     = Airbrake::VERSION.dup
   s.summary     = %q{Send your application errors to our hosted service and reclaim your inbox.}
+  s.license     = %q{MIT}
 
   s.require_paths = ["lib"]
   s.executables   << "airbrake"
