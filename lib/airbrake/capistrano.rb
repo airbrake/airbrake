@@ -71,12 +71,13 @@ module Airbrake
               - Run remotely so we use remote API keys, environment, etc.
           DESC
           task :deploy, :except => { :no_release => true } do
+            rack_env = fetch(:rack_env, "production")
             rails_env = fetch(:rails_env, "production")
-            airbrake_env = fetch(:airbrake_env, fetch(:rails_env, "production"))
+            airbrake_env = fetch(:airbrake_env, rack_env || rails_env)
             local_user = ENV['USER'] || ENV['USERNAME']
             executable = RUBY_PLATFORM.downcase.include?('mswin') ? fetch(:rake, 'rake.bat') : fetch(:rake, 'bundle exec rake ')
             directory = configuration.release_path
-            notify_command = "cd #{directory}; #{executable} RAILS_ENV=#{rails_env} airbrake:deploy TO=#{airbrake_env} REVISION=#{current_revision} REPO=#{repository} USER=#{Airbrake::Capistrano::shellescape(local_user)}"
+            notify_command = "cd #{directory}; #{executable} RACK_ENV=#{rack_env} RAILS_ENV=#{rails_env} airbrake:deploy TO=#{airbrake_env} REVISION=#{current_revision} REPO=#{repository} USER=#{Airbrake::Capistrano::shellescape(local_user)}"
             notify_command << " DRY_RUN=true" if dry_run
             notify_command << " API_KEY=#{ENV['API_KEY']}" if ENV['API_KEY']
             logger.info "Notifying Airbrake of Deploy (#{notify_command})"
