@@ -130,7 +130,7 @@ module Airbrake
       also_use_rack_params_filters
       find_session_data
 
-      @cleaner = args[:cleaner] || 
+      @cleaner = args[:cleaner] ||
         Airbrake::Utils::ParamsCleaner.new(:filters => params_filters,
                                            :to_clean => data_to_clean)
 
@@ -336,7 +336,7 @@ module Airbrake
 
     def xml_vars_for(builder, hash)
       hash.each do |key, value|
-        if value.respond_to?(:to_hash)
+        if value.respond_to?(:to_hash) && !value.is_a?(String)
           builder.var(:key => key){|b| xml_vars_for(b, value.to_hash) }
         else
           builder.var(value.to_s, :key => key)

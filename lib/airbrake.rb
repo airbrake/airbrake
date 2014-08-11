@@ -173,7 +173,9 @@ module Airbrake
     def build_notice_for(exception, opts = {})
       exception = unwrap_exception(exception)
       opts = opts.merge(:exception => exception) if exception.is_a?(Exception)
-      opts = opts.merge(exception.to_hash) if exception.respond_to?(:to_hash)
+      if exception.respond_to?(:to_hash) && !exception.is_a?(String)
+        opts = opts.merge(exception.to_hash)
+      end
       Notice.new(configuration.merge(opts))
     end
 
