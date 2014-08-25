@@ -11,7 +11,7 @@ namespace :airbrake do
       - Run remotely so we use remote API keys, environment, etc.
   DESC
   task :deploy do
-    if fetch(:airbrake_stages).nil? || fetch(:airbrake_stages).include? fetch(:stage)
+    if fetch(:airbrake_stages).nil? || fetch(:airbrake_stages).include?(fetch(:stage))
       # update scm state to get the repository information
       invoke "#{scm}:update"
       on roles(fetch(:airbrake_role)) do
