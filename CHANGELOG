@@ -1,3 +1,60 @@
+Version 4.1.0 - 2014-09-04 23:16:08 +0200
+===============================================================================
+
+Benjamin Fleischer (1):
+      Add license to gemspec, is MIT
+
+Chun-wei Kuo (1):
+      Add missing RAILS_ENV to the deploy notification task for Capistrano 3
+
+David (1):
+      Merge pull request #306 from kiela/master
+
+Giovanni Cappellotto (1):
+      Add support for Sidekiq > 3
+
+Kamil Kieliszczyk (2):
+      Add ability to filter arrays
+      Add ability to filter arrays
+
+Kelley Reynolds (1):
+      Ignore ActionController::UnknownFormat for Rails 4+ which is now handled by middleware
+
+Marko Šiftar (11):
+      Revert "Add ability to filter arrays"
+      Merge pull request #307 from airbrake/revert-306-master
+      Merge pull request #305 from Domon/fix-capistrano3-task
+      Merge pull request #302 from gregory/remove_unused_controller
+      Merge pull request #310 from kiela/master
+      Merge pull request #271 from rykov/master
+      Merge pull request #275 from kreynolds/rails-4-unknown-format
+      Merge pull request #312 from bf4/add_license_to_gemspe
+      Merge pull request #304 from pitchtarget/sidekiq-support
+      Merge pull request #273 from meetme2meat/master
+      Merge pull request #300 from chute/master
+
+Michael Rykov (1):
+      Keep passed exception if original_exception is nil
+
+Petr Bela (1):
+      Add RACK_ENV to rake task for non-Rails apps
+
+Sami Haahtinen (1):
+      Update capistrano v3 support
+
+Viren Negi (1):
+      Added a comment to how to add specify environment when use with rack app
+
+gregory (1):
+      remove unused controller
+
+shifi (4):
+      update capistrano test to make sure we set RAILS_ENV when using rake task
+      Update ignored exceptions by default in Readme
+      fix conflicts in airbrake.cap
+      Merge branch 'ressu-capistrano3'
+
+
 Version 4.0.0 - 2014-05-27 16:32:26 -0700
 ===============================================================================
 
@@ -1361,6 +1418,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
