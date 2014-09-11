@@ -184,8 +184,8 @@ When /^I configure the application to filter parameter "([^\"]*)"$/ do |paramete
   application_definition_line       = application_lines.detect { |line| line =~ /Application/ }
   application_definition_line_index = application_lines.index(application_definition_line)
 
-  application_lines.insert(application_definition_line_index + 1,
-                           "    config.filter_parameters += [#{parameter.inspect}]")
+  parameter = (parameter == "block" ? "lambda { |x,y| x }" : parameter.inspect)
+  application_lines.insert(application_definition_line_index + 1, "    config.filter_parameters += [#{parameter}]")
 
   File.open(application_filename, "w") do |file|
     file.puts application_lines.join("\n")

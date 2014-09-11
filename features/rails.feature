@@ -165,6 +165,25 @@ Feature: Install the Gem in a Rails application
     Then I should receive a Airbrake notification
     And the Airbrake notification should not contain any of the sensitive Rack variables
 
+  Scenario: Filtering vs symbols
+    When I configure the Airbrake shim
+    And I run `rails generate airbrake -k myapikey -t`
+    When I configure the notifier to use the following configuration lines:
+      """
+      config.api_key = "myapikey"
+      config.logger = Logger.new STDOUT
+      """
+    And I configure the application to filter parameter "block"
+    And I define a response for "TestController#index":
+      """
+      request.env["foo"] = {:foo => "bar"}
+      raise RuntimeError, "some message"
+      """
+    And I route "/test/index" to "test#index"
+    And I perform a request to "http://example.com:123/test/index" in the "production" environment
+    Then I should receive a Airbrake notification
+    And the Airbrake notification should contain "some message"
+
   Scenario: Notify airbrake within the controller
     When I configure the Airbrake shim
     And I run `rails generate airbrake -k myapikey -t`
