@@ -57,7 +57,14 @@ module Airbrake
 
       def filter_rails3_parameters(hash)
         ActionDispatch::Http::ParameterFilter.new(
-          ::Rails.application.config.filter_parameters).filter(hash)
+          ::Rails.application.config.filter_parameters
+        ).filter(recursive_stringify_keys(hash))
+      end
+
+      def recursive_stringify_keys(hash)
+        hash = hash.stringify_keys
+        hash.each {|k,v| hash[k] = recursive_stringify_keys(v) if v.is_a?(Hash) && v.respond_to?(:stringify_keys) } # Rack::Session::Abstract::SessionHash has a stringify_keys method we should not call
+        hash
       end
 
       def airbrake_session_data
