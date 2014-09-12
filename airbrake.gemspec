@@ -1,14 +1,11 @@
-# -*- encoding: utf-8 -*-
-$:.push File.expand_path("../lib", __FILE__)
-require "airbrake/version"
+require "./lib/airbrake/version"
 
 Gem::Specification.new do |s|
-  s.name        = %q{airbrake}
+  s.name        = "airbrake"
   s.version     = Airbrake::VERSION.dup
-  s.summary     = %q{Send your application errors to our hosted service and reclaim your inbox.}
-  s.license     = %q{MIT}
+  s.summary     = "Send your application errors to our hosted service and reclaim your inbox."
+  s.license     = "MIT"
 
-  s.require_paths = ["lib"]
   s.executables   << "airbrake"
   s.files         = Dir["{generators/**/*,lib/**/*,rails/**/*,resources/*,script/*}"]  +
     %w(airbrake.gemspec CHANGELOG Gemfile Guardfile INSTALL LICENSE Rakefile README_FOR_HEROKU_ADDON.md README.md TESTED_AGAINST install.rb)
@@ -37,8 +34,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency("minitest", ["~> 4.0"])
 
   s.authors = ["Airbrake"]
-  s.email   = %q{support@airbrake.io}
+  s.email   = "support@airbrake.io"
   s.homepage = "http://www.airbrake.io"
-
-  s.platform = Gem::Platform::RUBY
 end

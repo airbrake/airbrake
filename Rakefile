@@ -1,16 +1,11 @@
-require 'rubygems'
+require 'rubygems' unless RUBY_VERSION > "1.8"
 require 'bundler/setup'
 require 'appraisal'
 require 'rake'
 require 'rake/testtask'
 require 'coveralls/rake/task'
 require 'rubygems/package_task'
-begin
-  require 'cucumber/rake/task'
-rescue LoadError
-  $stderr.puts "Please install cucumber: `gem install cucumber`"
-  exit 1
-end
+require 'cucumber/rake/task'
 require './lib/airbrake/version'
 
 Coveralls::RakeTask.new
