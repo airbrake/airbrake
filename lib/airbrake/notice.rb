@@ -109,6 +109,7 @@ module Airbrake
       @backtrace_filters   = args[:backtrace_filters]   || []
       @params_filters      = args[:params_filters]      || []
       @parameters          = args[:parameters] ||
+                                   args[:params] ||
                                    action_dispatch_params ||
                                    rack_env(:params) ||
                                    {}
