@@ -44,15 +44,15 @@ module Airbrake
 
         if respond_to?(:filter_parameters) # Rails 2
           filter_parameters(hash)
-        elsif rails3?
+        elsif rails_3_or_4?
           filter_rails3_parameters(hash)
         else
           hash
         end
       end
 
-      def rails3?
-        defined?(::Rails.version) && ::Rails.version =~ /\A3/
+      def rails_3_or_4?
+        defined?(::Rails.version) && ::Rails.version =~ /\A[34]/
       end
 
       def filter_rails3_parameters(hash)

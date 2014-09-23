@@ -61,9 +61,17 @@ class ControllerMethodsTest < Test::Unit::TestCase
       ::Rails = Object.new
       ::Rails.stubs(:version).returns("3.2.17")
     end
-    should "respond to rails3? with true" do
-      assert @controller.send(:rails3?)
+
+    should "respond to rails_3_or_4? with true" do
+      assert @controller.send(:rails_3_or_4?)
     end
+
+    should 'be true when running Rails 4.x' do
+      ::Rails.stubs(:version).returns("4.6.1.2.3")
+
+      assert @controller.send(:rails_3_or_4?)
+    end
+
     should "call filter_rails3_parameters" do
       hash = {:a => "b"}
       filtered_hash = {:c => "d"}
