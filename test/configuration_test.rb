@@ -40,6 +40,11 @@ class ConfigurationTest < Test::Unit::TestCase
     assert config.async.respond_to?(:call)
   end
 
+  should "raise error for rake integration if rake handler isn't loaded" do
+    config = Airbrake::Configuration.new
+    assert_raises(LoadError) { config.rescue_rake_exceptions = true }
+  end
+
   should "set provided-callable for async {}" do
     config = Airbrake::Configuration.new
     config.async {|notice| :ok}
@@ -122,14 +127,6 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_appends_value :rake_environment_filters
   end
 
-  should "warn when attempting to write js_notifier" do
-    config = Airbrake::Configuration.new
-    config.
-      expects(:warn).
-      with(regexp_matches(/deprecated/i))
-    config.js_notifier = true
-  end
-
   should "allow ignored user agents to be appended" do
     assert_appends_value :ignore_user_agent
   end
@@ -181,6 +178,27 @@ class ConfigurationTest < Test::Unit::TestCase
   should "use development and test as development environments by default" do
     config = Airbrake::Configuration.new
     assert_same_elements %w(development test cucumber), config.development_environments
+  end
+
+  context "configured?" do
+    setup do
+      @config = Airbrake::Configuration.new
+    end
+
+    should "be true if given an api_key" do
+      @config.api_key = "1234"
+      assert @config.configured?
+    end
+
+    should "be false with a nil api_key" do
+      @config.api_key = nil
+      assert !@config.configured?
+    end
+
+    should "be false with a blank api_key" do
+      @config.api_key = ''
+      assert !@config.configured?
+    end
   end
 
   should "be public in a public environment" do

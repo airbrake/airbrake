@@ -131,6 +131,7 @@ end
 class ActionControllerCatcherTest < ActionDispatch::IntegrationTest
 
   include DefinesConstants
+  include TestHelpers
 
   def setup
     super
@@ -264,6 +265,13 @@ class ActionControllerCatcherTest < ActionDispatch::IntegrationTest
   def test_not_deliver_notices_from_exceptions_in_development_environments
     Airbrake.configuration.development_environments = ["test"]
     Airbrake.configuration.environment_name = "test"
+    @app = AirbrakeTestController.action(:boom)
+    get '/'
+    assert_caught_and_not_sent
+  end
+
+  def test_not_deliver_notices_from_exceptions_with_no_api_key
+    Airbrake.configuration.api_key = nil
     @app = AirbrakeTestController.action(:boom)
     get '/'
     assert_caught_and_not_sent

@@ -33,6 +33,7 @@ class CapistranoTest < Test::Unit::TestCase
     @configuration.find_and_execute_task('airbrake:deploy')
 
     assert io.string.include?('** Notifying Airbrake of Deploy')
+    assert io.string.include?('RAILS_ENV=production')
     assert io.string.include?('** Airbrake Notification Complete')
     assert io.string.include?(%q[D\'Angelo\ \"D\"\ Barksdale])
   end

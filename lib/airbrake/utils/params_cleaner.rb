@@ -55,24 +55,36 @@ module Airbrake
 
         def clean_rack_request_data
           if @cgi_data
-            Airbrake::FILTERED_RACK_VARS.each do |var|
-              @cgi_data.delete var
+            @cgi_data.keys.each do |key|
+              if filter_key?(key, Airbrake::FILTERED_RACK_VARS)
+                @cgi_data.delete key
+              end
             end
           end
         end
 
-        def filter_key?(key)
-          @filters.any? do |filter|
-            key.to_s.eql?(filter.to_s)
+        def filter_key?(key, filters)
+          filters.any? do |filter|
+            case filter
+            when Regexp
+              filter.match(key)
+            else
+              key.to_s.eql?(filter.to_s)
+            end
           end
         end
 
         def filter(hash)
           hash.each do |key, value|
-            if filter_key?(key)
+            if filter_key?(key, @filters)
               hash[key] = "[FILTERED]"
             elsif value.respond_to?(:to_hash)
               filter(hash[key])
+            elsif value.is_a?(Array)
+              hash[key] = value.inject(Array.new) do |result, item|
+                item = filter(item) if item.is_a?(Enumerable)
+                result.push(item)
+              end
             end
           end
         end

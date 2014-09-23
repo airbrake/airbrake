@@ -3,6 +3,6 @@
 source "http://rubygems.org"
 
 gem "rack"
-gem "airbrake", :path=>"../"
+gem "airbrake", :path => "../"
 
-gemspec :path=>"../"
+gemspec :path => "../"

@@ -81,30 +81,30 @@ Feature: Install the Gem in a Rails application
     And I run `rails generate airbrake -k myapikey`
     Then "config/deploy.rb" should not contain "capistrano"
 
-  @wip
-  Scenario: Support the Heroku addon in the generator
-    When I configure the Airbrake shim
-    And I run `rails generate airbrake -k myapikey -t`
-    And I configure the Heroku shim with "myapikey"
-    And I successfully run `rails generate airbrake --heroku`
-    Then I should receive a Airbrake notification
-    And I should see the Rails version
-    And my Airbrake configuration should contain the following line:
-      """
-      config.api_key = ENV['HOPTOAD_API_KEY']
-      """
+  # @wip
+  # Scenario: Support the Heroku addon in the generator
+  #   When I configure the Airbrake shim
+  #   And I run `rails generate airbrake -k myapikey -t`
+  #   And I configure the Heroku shim with "myapikey"
+  #   And I successfully run `rails generate airbrake --heroku`
+  #   Then I should receive a Airbrake notification
+  #   And I should see the Rails version
+  #   And my Airbrake configuration should contain the following line:
+  #     """
+  #     config.api_key = ENV['HOPTOAD_API_KEY']
+  #     """
 
-  @wip
-  Scenario: Support the --app option for the Heroku addon in the generator
-    When I configure the Airbrake shim
-    And I configure the Heroku shim with "myapikey" and multiple app support
-    And I run `rails generate airbrake --heroku -a myapp -t`
-    Then I should receive a Airbrake notification
-    And I should see the Rails version
-    And my Airbrake configuration should contain the following line:
-      """
-      config.api_key = ENV['HOPTOAD_API_KEY']
-      """
+  # @wip
+  # Scenario: Support the --app option for the Heroku addon in the generator
+  #   When I configure the Airbrake shim
+  #   And I configure the Heroku shim with "myapikey" and multiple app support
+  #   And I run `rails generate airbrake --heroku -a myapp -t`
+  #   Then I should receive a Airbrake notification
+  #   And I should see the Rails version
+  #   And my Airbrake configuration should contain the following line:
+  #     """
+  #     config.api_key = ENV['HOPTOAD_API_KEY']
+  #     """
 
   Scenario: Filtering parameters in a controller
     When I configure the Airbrake shim
@@ -134,6 +134,7 @@ Feature: Install the Gem in a Rails application
     And I run `rails generate airbrake -k myapikey -t`
     When I configure the notifier to use the following configuration lines:
       """
+      config.api_key = "myapikey"
       config.logger = Logger.new STDOUT
       """
     And I configure the application to filter parameter "secret"
@@ -199,21 +200,21 @@ Feature: Install the Gem in a Rails application
     Then I should see "The page you were looking for doesn't exist"
     And I should receive a Airbrake notification
 
-  @wip
-  Scenario: reporting over SSL with utf8 check should work
-    When I configure the Airbrake shim
-    And I run `rails generate airbrake -k myapikey -t`
-    When I configure the notifier to use the following configuration lines:
-      """
-      config.secure = true
-      """
-    And I define a response for "TestController#index":
-      """
-      raise RuntimeError, "some message"
-      """
-    And I route "/test/index" to "test#index"
-    And I perform a request to "http://example.com:123/test/index?utf8=✓"
-    Then I should receive a Airbrake notification
+  # @wip
+  # Scenario: reporting over SSL with utf8 check should work
+  #   When I configure the Airbrake shim
+  #   And I run `rails generate airbrake -k myapikey -t`
+  #   When I configure the notifier to use the following configuration lines:
+  #     """
+  #     config.secure = true
+  #     """
+  #   And I define a response for "TestController#index":
+  #     """
+  #     raise RuntimeError, "some message"
+  #     """
+  #   And I route "/test/index" to "test#index"
+  #   And I perform a request to "http://example.com:123/test/index?utf8=✓"
+  #   Then I should receive a Airbrake notification
 
   Scenario: It should also send the user details
     When I configure the Airbrake shim

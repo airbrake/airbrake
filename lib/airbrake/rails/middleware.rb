@@ -25,12 +25,13 @@ module Airbrake
 
       private
 
-      def after_airbrake_handler(env, exception)
-        if defined? env["action_controller.instance"].
-          rescue_action_in_public_without_airbrake
+      def controller(env)
+        env["action_controller.instance"]
+      end
 
-          env["action_controller.instance"].
-            rescue_action_in_public_without_airbrake(exception)
+      def after_airbrake_handler(env, exception)
+        if controller(env).respond_to?(:rescue_action_in_public_without_airbrake)
+          controller(env).rescue_action_in_public_without_airbrake(exception)
         end
       end
 
@@ -43,8 +44,11 @@ module Airbrake
       end
 
       def request_data(env)
-        env["action_controller.instance"].try(:airbrake_request_data) ||
+        if controller(env).respond_to?(:airbrake_request_data)
+          controller(env).airbrake_request_data
+        else
           {:rack_env => env}
+        end
       end
 
       def ignored_user_agent?(env)

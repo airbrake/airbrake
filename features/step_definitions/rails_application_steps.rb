@@ -192,32 +192,6 @@ When /^I configure the application to filter parameter "([^\"]*)"$/ do |paramete
   end
 end
 
-Then /^I should see the notifier JavaScript for the following:$/ do |table|
-  hash = table.hashes.first
-  host        = hash['host']        || 'api.airbrake.io'
-  secure      = hash['secure']      || false
-  api_key     = hash['api_key']
-  environment = hash['environment'] || 'production'
-
-  steps %{
-    Then the output should contain "#{host}/javascripts/notifier.js"
-    And the output should contain "Airbrake.setKey('#{api_key}');"
-    And the output should contain "Airbrake.setHost('#{host}');"
-    And the output should contain "Airbrake.setEnvironment('#{environment}');"
-  }
-end
-
-Then /^the notifier JavaScript should provide the following errorDefaults:$/ do |table|
-  hash = table.hashes.first
-  hash.each do |key, value|
-    assert_matching_output("Airbrake\.setErrorDefaults.*#{key}: \"#{value}\"",all_output)
-  end
-end
-
-Then /^I should not see notifier JavaScript$/ do
-  step %{the output should not contain "script[type='text/javascript'][src$='/javascripts/notifier.js']"}
-end
-
 When /^I have set up authentication system in my app that uses "([^\"]*)"$/ do |current_user|
   application_controller = File.join(rails_root, 'app', 'controllers', "application_controller.rb")
   definition =
@@ -255,9 +229,9 @@ end
 
 Then /^the Airbrake notification should not contain any of the sensitive Rack variables$/ do
   sensitive_rack_data_regex = FILTERED_RACK_VARS.map do |var|
-    Regexp.quote(var)
+    var.instance_of?(Regexp) ? var : Regexp.quote(var)
   end.join("|")
-  step %{the last notice sent should not contain "#{sensitive_rack_data_regex}"}
+  step %{the last notice sent should not contain keys with "#{sensitive_rack_data_regex}"}
 end
 
 Then /^the last notice sent should contain "([^\"]*)"$/ do |data|
@@ -268,6 +242,11 @@ end
 Then /^the last notice sent should not contain "([^\"]*)"$/ do |data|
   last_notice = File.read(LAST_NOTICE)
   last_notice.should_not match(%r{#{data}})
+end
+
+Then /^the last notice sent should not contain keys with "([^\"]*)"$/ do |data|
+  last_notice = File.read(LAST_NOTICE)
+  last_notice.should_not match(%r{key\=\"(#{data})\"})
 end
 
 Then /^the Airbrake notification should contain the framework information$/ do

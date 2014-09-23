@@ -89,7 +89,7 @@ module TestMethods
   end
 end
 
-class Test::Unit::TestCase
+module TestHelpers
   def stub_sender
     stub('sender', :send_to_airbrake => nil)
   end
@@ -182,6 +182,10 @@ class Test::Unit::TestCase
       expect.with {|actual| actual =~ expected }.never
     end
   end
+end
+
+class Test::Unit::TestCase
+  include ::TestHelpers
 end
 
 module DefinesConstants

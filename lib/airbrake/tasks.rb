@@ -6,9 +6,7 @@ namespace :airbrake do
   task :test => ['airbrake:log_stdout', :environment] do
     RAILS_DEFAULT_LOGGER.level = Logger::DEBUG
 
-    require 'action_controller/test_process'
-
-    Dir["app/controllers/application*.rb"].each { |file| require(File.expand_path(file)) } 
+    Dir["app/controllers/application*.rb"].each { |file| require(File.expand_path(file)) }
 
     class AirbrakeTestingException < RuntimeError; end
 

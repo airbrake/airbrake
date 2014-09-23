@@ -1,3 +1,204 @@
+Version 4.1.0 - 2014-09-04 23:16:08 +0200
+===============================================================================
+
+Benjamin Fleischer (1):
+      Add license to gemspec, is MIT
+
+Chun-wei Kuo (1):
+      Add missing RAILS_ENV to the deploy notification task for Capistrano 3
+
+David (1):
+      Merge pull request #306 from kiela/master
+
+Giovanni Cappellotto (1):
+      Add support for Sidekiq > 3
+
+Kamil Kieliszczyk (2):
+      Add ability to filter arrays
+      Add ability to filter arrays
+
+Kelley Reynolds (1):
+      Ignore ActionController::UnknownFormat for Rails 4+ which is now handled by middleware
+
+Marko Šiftar (11):
+      Revert "Add ability to filter arrays"
+      Merge pull request #307 from airbrake/revert-306-master
+      Merge pull request #305 from Domon/fix-capistrano3-task
+      Merge pull request #302 from gregory/remove_unused_controller
+      Merge pull request #310 from kiela/master
+      Merge pull request #271 from rykov/master
+      Merge pull request #275 from kreynolds/rails-4-unknown-format
+      Merge pull request #312 from bf4/add_license_to_gemspe
+      Merge pull request #304 from pitchtarget/sidekiq-support
+      Merge pull request #273 from meetme2meat/master
+      Merge pull request #300 from chute/master
+
+Michael Rykov (1):
+      Keep passed exception if original_exception is nil
+
+Petr Bela (1):
+      Add RACK_ENV to rake task for non-Rails apps
+
+Sami Haahtinen (1):
+      Update capistrano v3 support
+
+Viren Negi (1):
+      Added a comment to how to add specify environment when use with rack app
+
+gregory (1):
+      remove unused controller
+
+shifi (4):
+      update capistrano test to make sure we set RAILS_ENV when using rake task
+      Update ignored exceptions by default in Readme
+      fix conflicts in airbrake.cap
+      Merge branch 'ressu-capistrano3'
+
+
+Version 4.0.0 - 2014-05-27 16:32:26 -0700
+===============================================================================
+
+Ali Faiz (2):
+      Remove the Airbrake JS notifier for the major release.
+
+
+Version 3.2.1 - 2014-05-27 15:58:24 -0700
+===============================================================================
+
+Ali Faiz (3):
+      Revert "Merge pull request #297 from airbrake/remove-js-notifier"
+      Add deprecation warning when using  .
+
+
+Version 3.2.0 - 2014-05-23 17:37:35 -0700
+===============================================================================
+
+Ali Faiz (4):
+      Remove JS notifier from templates and libraries
+      Cleanup references to JS notifier in tests
+      Merge pull request #297 from airbrake/remove-js-notifier
+
+
+Version 3.1.17 - 2014-05-20 21:00:25 -0700
+===============================================================================
+
+Alex Tomlins (1):
+      Only send notices if configured with api_key
+
+Ali Faiz (22):
+      Add tasks specific for using appraisal to test different versions
+      Ensure that integration tests can use the same helpers as unit tests
+      Fix errors causing features to fail
+      Add sqlite3 for Rails 3.2 & 4.0 appraisal gems
+      Fix integrations with Rails 3.0 by locking sucker_punch to v1.0.2.
+      Update README.md
+      Merge pull request #285 from airbrake/adjust-ci-integration
+      Merge pull request #281 from jhawthorn/fix_actioncontroller_metal
+      Merge pull request #268 from alphagov/disable_unless_configured
+      Merge pull request #287 from itolmach/master
+      Add apikey to certain cucumber tests for changes for configured
+      Merge pull request #288 from airbrake/fix-apikey-related-tests
+      Merge pull request #277 from polleverywhere/rails3_filter_parameters
+      Merge pull request #262 from roqua/mv-regex-filters
+      Fix filtering checks in cucumber tests by checking for 'key=' instead of blind check
+      Make separate step for the cucumber test that checks for filtered keys
+      Merge pull request #289 from airbrake/fix-regex-filtering
+      Write verbose output when configuration prevents sending notices to Airbrake.
+      Merge pull request #294 from Nitrodist/ensure-rake-integration
+      Merge pull request #295 from airbrake/add-context-when-notice-not-sent
+      Merge pull request #293 from Nitrodist/use-minitest-4
+      Use tag date instead of trying to sort on tag name
+
+Ivan Tolmachev (3):
+      added airbrakeman notifier ruby illustration
+      illustration added, take 2
+      Added Airbrakeman Notifier Illustration
+
+John Hawthorn (1):
+      fix middleware for AC::Metal on rails 3.2
+
+Version 3.1.16 - 2014-03-11 13:34:51 -0700
+===============================================================================
+
+Joseph Silvashy (5):
+      Merge pull request #267 from nberger/fix-typo-in-rails3-tasks
+      Update license for Rackspace
+      Merge pull request #255 from viperdezigns/capistrano3
+      Bump to 3.1.14
+      Bump to 3.1.16
+
+Mark Campbell (2):
+      Add minitest 4.x as an explicit dependency
+      Ensure rake integration is enabled when rescue_rake_exceptions is true
+
+Marten Veldthuis (3):
+      Add support for regexp filters
+      Refactor cgi_data filtering to use `filter_key?`
+      Add a default rack env filter for variables matching "secret" or "password".
+
+Mike Foley (2):
+      Add backwards compatibility for filter_parameters in Rails3
+      Add tests, minor refactor for Rails 3 functionality
+
+Nicolas Berger (1):
+      Fix typo: Rack -> Rake
+
+Richard Pernikoff (3):
+      execute instead of run
+      get full revision hash and send correct repo url
+      execute the rake task within the release_path instead of running cd release_path.
+
+ViperDezigns (1):
+      Merge pull request #2 from tunespeak/capistrano3
+
+spodlecki (7):
+      adding capistrano 3
+      attempting err fixes
+      release_path
+      making repo name a env var
+      adding airbrake escape user method
+      logger.info doesn't exist, seems Cap uses info() now
+      execute instead of run
+
+
+Version 3.1.15 - 2014-01-03 14:37:38 +0100
+===============================================================================
+
+Ahmad Sherif (1):
+      Don't serialize nil to an empty string
+
+Damon Morgan (1):
+      Support sucker_punch for async processor
+
+David Palm (1):
+      Give params_filter a setter so it can be *set* (not only appended to)
+
+Hrvoje Šimić (14):
+      add Rails 4 to README.md
+      use Coveralls for code coverage
+      use Gemnasium for dependency monitoring
+      use Code Climate for code analysis
+      extract ParamsCleaner class
+      being more careful with javascript_notifier and non-public requests
+      Bumping to version 3.1.14
+      add Circle CI badge
+      rename :test task to 'test:unit'
+      use parallel gem installation on CI server
+      enable pry debugging in tests
+      add test for #251
+      enable filtering of sensitive Rack vars by default
+      start using MultiJson
+
+Marko Šiftar (1):
+      fix deploy uri
+
+Marten Veldthuis (1):
+      Airbrake rakefile is not compatible with Capistrano v3
+
+Rodrigo Saito (1):
+      Handle error when variable sinatra.error is present
+
+
 Version 3.1.14 - 2013-08-22 09:03:14 +0200
 ===============================================================================
 
@@ -140,7 +341,7 @@ Hrvoje Šimić (6):
       thread safety fix
       add the secure option to the generator
       fix the broken generator method call
-      be more careful with @template in javascript notifier 
+      be more careful with @template in javascript notifier
       update tested rails versions
 
 Marko Šiftar (2):
@@ -1217,6 +1418,12 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
+
+
+
+
+
 
 
 

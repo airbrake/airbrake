@@ -1,21 +1,20 @@
-require 'rubygems'
-require "bundler/setup"
+require 'rubygems' unless RUBY_VERSION > "1.8"
+require 'bundler/setup'
 require 'appraisal'
 require 'rake'
 require 'rake/testtask'
 require 'coveralls/rake/task'
 require 'rubygems/package_task'
-begin
-  require 'cucumber/rake/task'
-rescue LoadError
-  $stderr.puts "Please install cucumber: `gem install cucumber`"
-  exit 1
-end
+require 'cucumber/rake/task'
 require './lib/airbrake/version'
 
 Coveralls::RakeTask.new
 
-task :default => ["test:unit", "test:integration"]
+appraisal_environments = %w(rails-4.0 rails-3.2 rails-3.1 rails-3.0 rake sinatra rack)
+task default: %w( test:unit coveralls:push) +
+  appraisal_environments.map {|ae| "test:integration:#{ae.gsub(/[\-\.]/, '_')}"} +
+  appraisal_environments.map {|ae| "test:cucumber:#{ae.gsub(/[\-\.]/, '_')}"}
+
 
 namespace :test do
   Rake::TestTask.new(:unit) do |t|
@@ -24,13 +23,24 @@ namespace :test do
     t.verbose = true
   end
 
-  desc "Integration tests for all versions of Rails."
-  task :integration do
-    system 'INTEGRATION=true rake appraisal:rails-3.2 integration_test'\
-    '&& INTEGRATION=true rake appraisal:rails-3.1 integration_test'\
-    '&& INTEGRATION=true rake appraisal:rails-3.0 integration_test'\
-    '&& rake coveralls:push'\
-    '&& INTEGRATION=true rake appraisal cucumber'
+  desc "Integration tests Rake, Sinatra, Rack and for all versions of Rails"
+  namespace :integration do
+    appraisal_environments.each do |appraisal_env|
+      task appraisal_env.gsub(/[\-\.]/, '_').to_sym do
+        ENV['INTEGRATION'] = 'true'
+        system "appraisal #{appraisal_env} rake integration_test" or exit!(1)
+      end
+    end
+  end
+
+  desc "Cucumber tests Rake, Sinatra, Rack and for all versions of Rails"
+  namespace :cucumber do
+    appraisal_environments.each do |appraisal_env|
+      task appraisal_env.gsub(/[\-\.]/, '_').to_sym do
+        ENV['INTEGRATION'] = 'true'
+        system "appraisal #{appraisal_env} rake cucumber" or exit!(1)
+      end
+    end
   end
 end
 
@@ -54,6 +64,10 @@ namespace :changeling do
     end
 
     case args[:part]
+    when /major/
+      major += 1
+      minor = 0
+      patch = 0
     when /minor/
       minor += 1
       patch = 0
@@ -88,7 +102,7 @@ EOF
 Version #{version} - #{Time.now}
 ===============================================================================
 
-#{`git log $(git tag | grep -v rc | sort --version-sort | tail -1)..HEAD | git shortlog`}
+#{`git log $(git for-each-ref --sort=taggerdate --format '%(tag)' refs/tags | tail -1)..HEAD | git shortlog`}
 #{old}
 EOF
     end
@@ -97,6 +111,12 @@ EOF
           "git commit -aqm '#{message}'",
           "git tag -a -m '#{message}' v#{version}",
           "echo '\n\n\033[32mMarked v#{version} /' `git show-ref -s refs/heads/master` 'for release. Run: rake changeling:push\033[0m\n\n'"].join(' && ')
+  end
+
+  desc "Bump by a major version (1.2.3 => 2.0.0)"
+  task :major do |t|
+    Rake::Task['changeling:bump'].invoke(t.name)
+    Rake::Task['changeling:change'].invoke
   end
 
   desc "Bump by a minor version (1.2.3 => 1.3.0)"
@@ -143,7 +163,7 @@ def cucumber_opts
 
   case ENV["BUNDLE_GEMFILE"]
   when /rails/
-    opts << "features/rails.feature features/rails_with_js_notifier.feature features/metal.feature features/user_informer.feature"
+    opts << "features/rails.feature features/metal.feature features/user_informer.feature"
   when /rack/
     opts << "features/rack.feature"
   when /sinatra/

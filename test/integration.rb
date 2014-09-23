@@ -11,5 +11,4 @@ silence_warnings do
   require "action_view"
 end
 
-require File.expand_path "../integration/javascript_notifier_test", __FILE__
 require File.expand_path "../integration/catcher_test", __FILE__

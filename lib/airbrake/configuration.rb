@@ -2,7 +2,7 @@ module Airbrake
   # Used to set up and modify settings for the notifier.
   class Configuration
 
-    OPTIONS = [:api_key, :js_api_key, :backtrace_filters, :development_environments,
+    OPTIONS = [:api_key, :backtrace_filters, :development_environments,
         :development_lookup, :environment_name, :host,
         :http_open_timeout, :http_read_timeout, :ignore, :ignore_by_filters,
         :ignore_user_agent, :notifier_name, :notifier_url, :notifier_version,
@@ -13,12 +13,6 @@ module Airbrake
 
     # The API key for your project, found on the project edit form.
     attr_accessor :api_key
-
-    # If you're using the Javascript notifier and would want to separate
-    # Javascript notifications into another Airbrake project, specify
-    # its APi key here.
-    # Defaults to #api_key (of the base project)
-    attr_writer :js_api_key
 
     # The host to connect to (defaults to airbrake.io).
     attr_accessor :host
@@ -152,13 +146,13 @@ module Airbrake
                       'ActionController::UnknownHttpMethod',
                       'ActionController::UnknownAction',
                       'AbstractController::ActionNotFound',
-                      'Mongoid::Errors::DocumentNotFound']
+                      'Mongoid::Errors::DocumentNotFound',
+                      'ActionController::UnknownFormat']
 
     alias_method :secure?, :secure
     alias_method :use_system_ssl_cert_chain?, :use_system_ssl_cert_chain
 
     def initialize
-      @js_api_key               = nil
       @secure                   = false
       @use_system_ssl_cert_chain= false
       @host                     = 'api.airbrake.io'
@@ -257,6 +251,12 @@ module Airbrake
     end
 
     # Determines if the notifier will send notices.
+    # @return [Boolean] Returns +true+ if an api string exists, +false+ otherwise.
+    def configured?
+      !api_key.nil? && !api_key.empty?
+    end
+
+    # Determines if the notifier will send notices.
     # @return [Boolean] Returns +false+ if in a development environment, +true+ otherwise.
     def public?
       !development_environments.include?(environment_name)
@@ -298,12 +298,11 @@ module Airbrake
         use_default_or_this
     end
 
-    def js_api_key
-      @js_api_key || self.api_key
-    end
-
-    def js_notifier=(*args)
-      warn '[AIRBRAKE] config.js_notifier has been deprecated and has no effect.  You should use <%= airbrake_javascript_notifier %> directly at the top of your layouts.  Be sure to place it before all other javascript.'
+    def rescue_rake_exceptions=(val)
+      if val && !defined?(Airbrake::RakeHandler)
+        raise LoadError, "you must require 'airbrake/rake_handler' to rescue from rake exceptions"
+      end
+      @rescue_rake_exceptions = val
     end
 
     def ca_bundle_path

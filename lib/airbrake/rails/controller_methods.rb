@@ -42,15 +42,22 @@ module Airbrake
       def airbrake_filter_if_filtering(hash)
         return hash if ! hash.is_a?(Hash)
 
-
         if respond_to?(:filter_parameters) # Rails 2
           filter_parameters(hash)
-        # elsif defined?(ActionDispatch::Http::ParameterFilter) # Rails 3
-        #   ActionDispatch::Http::ParameterFilter.new(::Rails.application.config.filter_parameters).filter(hash)
+        elsif rails3?
+          filter_rails3_parameters(hash)
         else
           hash
         end
+      end
 
+      def rails3?
+        defined?(::Rails.version) && ::Rails.version =~ /\A3/
+      end
+
+      def filter_rails3_parameters(hash)
+        ActionDispatch::Http::ParameterFilter.new(
+          ::Rails.application.config.filter_parameters).filter(hash)
       end
 
       def airbrake_session_data

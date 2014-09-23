@@ -1,15 +1,19 @@
 Airbrake
 ========
 
-[![Circle CI](https://circleci.com/gh/airbrake/airbrake/tree/master.png?circle_token=66cb9cfc6d20f550a2dbde522f5f0f9f81bd653b)](https://circleci.com/gh/airbrake/airbrake)
+[![Circle CI](https://circleci.com/gh/airbrake/airbrake/tree/master.png?circle-token=66cb9cfc6d20f550a2dbde522f5f0f9f81bd653b)](https://circleci.com/gh/airbrake/airbrake)
 [![Code Climate](https://codeclimate.com/github/airbrake/airbrake.png)](https://codeclimate.com/github/airbrake/airbrake)
 [![Coverage Status](https://coveralls.io/repos/airbrake/airbrake/badge.png?branch=master)](https://coveralls.io/r/airbrake/airbrake?branch=master)
 [![Dependency Status](https://gemnasium.com/airbrake/airbrake.png)](https://gemnasium.com/airbrake/airbrake)
+
+<img src="http://f.cl.ly/items/3Q163w1r2K1J1b030k0g/ruby%2009.19.32.jpg" width=800px>
 
 This is the notifier gem for integrating apps with [Airbrake](http://airbrake.io).
 
 When an uncaught exception occurs, Airbrake will POST the relevant data
 to the Airbrake server specified in your environment.
+
+<img scr="http://f.cl.ly/items/142j0Z2u0R1Y2L0L3D26/ruby.jpg" width=800px;>
 
 Help
 ----
@@ -58,14 +62,14 @@ The generator creates a file under `config/initializers/airbrake.rb` configuring
 Ignored exceptions
 ------------------------
 
-Exceptions raised from Rails environments named **development**, **test** or **cucumber** will be ignored by default. 
+Exceptions raised from Rails environments named **development**, **test** or **cucumber** will be ignored by default.
 
 You can clear the list of ignored environments with this setting:
 
     config.development_environments = []
 
 List of ignored exception classes includes:
-    
+
     ActiveRecord::RecordNotFound
     ActionController::RoutingError
     ActionController::InvalidAuthenticityToken
@@ -74,11 +78,12 @@ List of ignored exception classes includes:
     ActionController::UnknownAction
     AbstractController::ActionNotFound
     Mongoid::Errors::DocumentNotFound
+    ActionController::UnknownFormat
 
 You can alter this list with
 
     config.ignore_only = []
-    
+
 which will cause none of the exception classes to be ignored.
 
 Check the [wiki](https://github.com/airbrake/airbrake/wiki/Customizing-your-airbrake.rb) for more customization options.
@@ -110,7 +115,7 @@ integrations with cucumber, you should run the following commands
     bundle exec rake appraisal:install
     bundle exec rake
 
-We use [Appraisals](https://github.com/thoughtbot/appraisal) to run the integration 
+We use [Appraisals](https://github.com/thoughtbot/appraisal) to run the integration
 tests.
 
 Maintainers
@@ -140,4 +145,4 @@ The names and logos for Airbrake, thoughtbot are trademarks of their respective 
 License
 -------
 
-Airbrake is Copyright © 2008-2013 Airbrake. 
+Airbrake is Copyright © 2008-2013 Airbrake.

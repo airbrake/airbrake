@@ -27,6 +27,11 @@ require 'airbrake/rack'
 require 'airbrake/sinatra'
 require 'airbrake/user_informer'
 
+begin
+  require 'airbrake/sidekiq'
+rescue LoadError
+end
+
 require 'airbrake/railtie' if defined?(Rails::Railtie)
 
 module Airbrake
@@ -60,6 +65,12 @@ module Airbrake
     # Prints out the details about the notice that wasn't sent to server
     def report_notice(notice)
       write_verbose_log("Notice details: \n#{notice}")
+    end
+
+    def report_notice_not_sent_for_configuration
+      write_verbose_log("Notice was not sent due to configuration: \
+        \n  Environment Monitored? #{configuration.public?} \
+        \n  API key set? #{configuration.configured?}")
     end
 
     # Returns the Ruby version, Rails version, and current Rails environment
@@ -148,13 +159,15 @@ module Airbrake
     private
 
     def send_notice(notice)
-      if configuration.public?
+      if configuration.configured? && configuration.public?
         if configuration.async?
           configuration.async.call(notice)
           nil # make sure we never set env["airbrake.error_id"] for async notices
         else
           sender.send_to_airbrake(notice)
         end
+      else
+        report_notice_not_sent_for_configuration
       end
     end
 
@@ -170,9 +183,7 @@ module Airbrake
         exception.original_exception
       elsif exception.respond_to?(:continued_exception)
         exception.continued_exception
-      else
-        exception
-      end
+      end || exception
     end
   end
 end

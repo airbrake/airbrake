@@ -2,7 +2,7 @@ require 'airbrake'
 require File.join(File.dirname(__FILE__), 'shared_tasks')
 
 def stub_rake_exception_handling!
-  # Override error handling in Rack so we don't clutter STDERR
+  # Override error handling in Rake so we don't clutter STDERR
   # with unnecesarry stack trace
   Rake.application.instance_eval do
     class << self

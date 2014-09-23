@@ -123,33 +123,32 @@ module RailsHelpers
   end
 
   def perform_request(uri, environment = 'production')
-      request_script = <<-SCRIPT
-        require File.expand_path('../config/environment', __FILE__)
+    request_script = <<-SCRIPT
+require File.expand_path('../config/environment', __FILE__)
 
-        env      = Rack::MockRequest.env_for(#{uri.inspect})
-        response = RailsRoot::Application.call(env)
+env      = Rack::MockRequest.env_for(#{uri.inspect})
+response = RailsRoot::Application.call(env)
 
+response = response.last if response.last.is_a?(ActionDispatch::Response)
 
-        response = response.last if response.last.is_a?(ActionDispatch::Response)
-
-        if response.is_a?(Array)
-          puts "Status: " + response.first.to_s
-          puts "Headers: " + response.second.to_s
-          if response.last.respond_to?(:each)
-            # making it work even with Rack::BodyProxy
-            body = ""
-            response.last.each do |chunk|
-              body << chunk
-            end
-            response.pop
-            response << body
-          end
-          puts "Body: " + response.last.to_s
-        else
-          puts response.body
-        end
-      SCRIPT
-      File.open(File.join(rails_root, 'request.rb'), 'w') { |file| file.write(request_script) }
+if response.is_a?(Array)
+  puts "Status: " + response.first.to_s
+  puts "Headers: " + response.second.to_s
+  if response.last.respond_to?(:each)
+    # making it work even with Rack::BodyProxy
+    body = ""
+    response.last.each do |chunk|
+      body << chunk
+    end
+    response.pop
+    response << body
+  end
+  puts "Body: " + response.last.to_s
+else
+  puts response.body
+end
+    SCRIPT
+    File.open(File.join(rails_root, 'request.rb'), 'w') { |file| file.write(request_script) }
   end
 
 end
