@@ -1,47 +1,106 @@
 require File.expand_path '../helper', __FILE__
 
 require 'airbrake/rails/controller_methods'
-
 class TestController
   include Airbrake::Rails::ControllerMethods
 
+  def params; {}; end
+  def session; nil; end
+  def request
+    OpenStruct.new(:port=> 80, :protocol => 'http://', host: 'example.com', :fullpath => '/', :env => [])
+  end
+end
+
+class NilUserTestController < TestController
   def current_user
     nil
   end
 end
 
-class NoSessionTestController
-  include Airbrake::Rails::ControllerMethods
+class CurrentUserTestController < TestController
+  def current_user
+    OpenStruct.new(:id => 123, :name => 'tape')
+  end
+end
 
+class CurrentMemberTestController < TestController
+  def current_member
+    OpenStruct.new(:id => 321, :name => 'mamba')
+  end
+end
+
+
+class NoSessionTestController < TestController
   def session
     nil
   end
 end
 
-
-
 class ControllerMethodsTest < Test::Unit::TestCase
+  include DefinesConstants
+
   context "#airbrake_current_user" do
-    setup do
+    context "without a logged in user" do
+      setup do
 
-      NilClass.class_eval do
-        @@called = false
+        NilClass.class_eval do
+          @@called = false
 
-        def self.called
-          !! @@called
+          def self.called
+            !! @@called
+          end
+
+          def id
+            @@called = true
+          end
         end
 
-        def id
-          @@called = true
-        end
+        @controller = NilUserTestController.new
       end
 
-      @controller = TestController.new
+      should "not call #id on NilClass" do
+        @controller.send(:airbrake_current_user)
+        assert_equal false, NilClass.called
+      end
     end
 
-    should "not call #id on NilClass" do
-      @controller.send(:airbrake_current_user)
-      assert_equal false, NilClass.called
+    context "with a logged in User" do
+      teardown do
+        Object.__send__(:remove_const, :ActiveRecord) if defined?(ActiveRecord)
+        Object.__send__(:remove_const, :POOL) if defined?(POOL)
+      end
+      should 'include user info in the data sent to Ab' do
+        Airbrake.configuration.user_attributes = %w(id)
+        controller = CurrentUserTestController.new
+        ab_data = controller.airbrake_request_data
+
+        assert_equal( {:id => 123},  ab_data[:user])
+      end
+
+      should 'include more info if asked to, discarding unknown attributes' do
+        Airbrake.configuration.user_attributes = %w(id name collar-size)
+
+        controller = CurrentUserTestController.new
+        ab_data = controller.airbrake_request_data
+
+        assert_equal( {:id => 123, :name => 'tape'},  ab_data[:user])
+      end
+
+      should 'work with a "current_member" method too' do
+        Airbrake.configuration.user_attributes = %w(id)
+        controller = CurrentMemberTestController.new
+        ab_data = controller.airbrake_request_data
+
+        assert_equal( {:id => 321},  ab_data[:user])
+      end
+
+      should "release DB connections" do
+        ::POOL = Object.new
+        module ::ActiveRecord; class Base; def self.connection_pool; ::POOL; end; end; end
+        ::POOL.expects(:release_connection)
+
+        CurrentUserTestController.new.airbrake_request_data
+      end
     end
   end
 
@@ -57,7 +116,7 @@ class ControllerMethodsTest < Test::Unit::TestCase
 
   context "Rails 3" do
     setup do
-      @controller = TestController.new
+      @controller = NilUserTestController.new
       ::Rails = Object.new
       ::Rails.stubs(:version).returns("3.2.17")
     end
