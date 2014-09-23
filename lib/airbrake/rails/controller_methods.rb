@@ -87,7 +87,7 @@ module Airbrake
         user = fetch_user
         
         if user
-          Airbrake.configuration.user_attributes.map(&:to_sym).inject do |hsh, attr|
+          Airbrake.configuration.user_attributes.map(&:to_sym).inject({}) do |hsh, attr|
             hsh[attr.to_sym] = user.send(attr) if user.respond_to? attr
             hsh
           end
