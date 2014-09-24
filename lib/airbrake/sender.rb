@@ -70,7 +70,7 @@ module Airbrake
 
       if response && response.respond_to?(:body)
         error_id = response.body.match(%r{<id[^>]*>(.*?)</id>})
-        error_id[1] if error_id
+        (error_id && error_id[1]) || response.body
       end
     rescue => e
       log :level => :error,
@@ -100,11 +100,15 @@ module Airbrake
 
     def prepare_notice(notice)
       if json_api_enabled?
-        begin
-          JSON.parse(notice)
-          notice
-        rescue
-          notice.to_json
+        if notice.is_a?(String)
+          begin
+            JSON.parse(notice)
+            notice
+          rescue JSON::ParserError => e
+            notice.to_json
+          end
+        else
+          notice.respond_to?(:to_json) ? notice.to_json : notice
         end
       else
         notice.respond_to?(:to_xml) ? notice.to_xml : notice
