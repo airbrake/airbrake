@@ -86,12 +86,12 @@ Feature: Install the Gem in a Rails application
   #   When I configure the Airbrake shim
   #   And I run `rails generate airbrake -k myapikey -t`
   #   And I configure the Heroku shim with "myapikey"
-  #   And I successfully run `rails generate airbrake --heroku`
+  #   And I run `rails generate airbrake --heroku`
   #   Then I should receive a Airbrake notification
   #   And I should see the Rails version
   #   And my Airbrake configuration should contain the following line:
   #     """
-  #     config.api_key = ENV['HOPTOAD_API_KEY']
+  #     config.api_key = 'myapikey'
   #     """
 
   # @wip
@@ -103,7 +103,7 @@ Feature: Install the Gem in a Rails application
   #   And I should see the Rails version
   #   And my Airbrake configuration should contain the following line:
   #     """
-  #     config.api_key = ENV['HOPTOAD_API_KEY']
+  #     config.api_key = 'myapikey'
   #     """
 
   Scenario: Filtering parameters in a controller

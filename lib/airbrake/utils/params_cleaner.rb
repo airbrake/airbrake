@@ -10,7 +10,8 @@ module Airbrake
       #        :filters - The Array of param keys that should be filtered
       #        :to_clean - The Hash of unfiltered params
       def initialize(opts = {})
-        @filters     = opts[:filters] || {}
+        @filters     = opts[:filters] || []
+        @filters.map!{|f| f.is_a?(Symbol) ? f.to_s : f }
         @to_clean    = opts[:to_clean]
       end
       
@@ -33,50 +34,52 @@ module Airbrake
       private
 
         def clean_parameters
-          if params = @to_clean[:parameters]
-            @parameters = clean_unserializable_data(params)
-            @parameters = filter @parameters
+          return unless @to_clean[:parameters]
+
+          @parameters = if @filters.any?
+            filter(clean_unserializable_data(@to_clean[:parameters]))
+          else
+            clean_unserializable_data(@to_clean[:parameters])
           end
         end
 
         def clean_cgi_data
-          if params = @to_clean[:cgi_data]
-            @cgi_data = clean_unserializable_data params
-            @cgi_data = filter @cgi_data
+          return unless @to_clean[:cgi_data]
+
+          @cgi_data = if @filters.any?
+            filter(clean_unserializable_data(@to_clean[:cgi_data]))
+          else
+            clean_unserializable_data(@to_clean[:cgi_data])
           end
-        end
+        end        
 
         def clean_session_data
-          if params = @to_clean[:session_data]
-            @session_data = clean_unserializable_data params
-            @session_data = filter @session_data
+          return unless @to_clean[:session_data]
+
+          @session_data = if @filters.any?
+            filter(clean_unserializable_data(@to_clean[:session_data]))
+          else
+            clean_unserializable_data(@to_clean[:session_data])
           end
         end
 
         def clean_rack_request_data
           if @cgi_data
-            @cgi_data.keys.each do |key|
-              if filter_key?(key, Airbrake::FILTERED_RACK_VARS)
-                @cgi_data.delete key
-              end
+            @cgi_data.reject! do |key, val|
+              Airbrake::FILTERED_RACK_VARS.include?(key) || Airbrake::SENSITIVE_ENV_VARS.any?{|re| re.match(key)}
             end
           end
         end
 
-        def filter_key?(key, filters)
-          filters.any? do |filter|
-            case filter
-            when Regexp
-              filter.match(key)
-            else
-              key.to_s.eql?(filter.to_s)
-            end
+        def filter_key?(key)
+          @filters.any? do |filter|
+            key == filter || filter.is_a?(Regexp) && filter.match(key)
           end
         end
 
         def filter(hash)
           hash.each do |key, value|
-            if filter_key?(key, @filters)
+            if filter_key?(key)
               hash[key] = "[FILTERED]"
             elsif value.respond_to?(:to_hash)
               filter(hash[key])
@@ -93,16 +96,25 @@ module Airbrake
         # and hashes. All other types are converted to strings.
         def clean_unserializable_data(data, stack = [])
           return "[possible infinite recursion halted]" if stack.any?{|item| item == data.object_id }
-
-          if data.respond_to?(:to_hash)
-            data.to_hash.inject({}) do |result, (key, value)|
-              result.merge(key => clean_unserializable_data(value, stack + [data.object_id]))
+          if data.is_a?(String)
+            data
+          elsif data.is_a?(Hash)
+            data.inject({}) do |result, (key, value)|
+              result.merge!(key => clean_unserializable_data(value, stack + [data.object_id]))
             end
-          elsif data.respond_to?(:to_ary)
-            data.to_ary.collect do |value|
+          elsif data.respond_to?(:to_hash)
+            data.to_hash.inject({}) do |result, (key, value)|
+              result.merge!(key => clean_unserializable_data(value, stack + [data.object_id]))
+            end
+          elsif data.respond_to?(:collect!)
+            data.collect! do |value|
               clean_unserializable_data(value, stack + [data.object_id])
             end
-          else
+          elsif data.respond_to?(:to_ary)
+            data.to_ary.collect! do |value|
+              clean_unserializable_data(value, stack + [data.object_id])
+            end
+          elsif data.respond_to?(:to_s)
             data.nil? ? nil : data.to_s
           end
         end

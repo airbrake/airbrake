@@ -61,9 +61,11 @@ class ControllerMethodsTest < Test::Unit::TestCase
       ::Rails = Object.new
       ::Rails.stubs(:version).returns("3.2.17")
     end
-    should "respond to rails3? with true" do
-      assert @controller.send(:rails3?)
+
+    should "respond to rails_3_or_4? with true" do
+      assert @controller.send(:rails_3_or_4?)
     end
+
     should "call filter_rails3_parameters" do
       hash = {:a => "b"}
       filtered_hash = {:c => "d"}
@@ -74,4 +76,27 @@ class ControllerMethodsTest < Test::Unit::TestCase
         @controller.send(:airbrake_filter_if_filtering, hash)
     end
   end
+
+  context "Rails 4.x" do
+    setup do
+      @controller = TestController.new
+      ::Rails = Object.new
+      ::Rails.stubs(:version).returns("4.5.6.7")
+    end
+
+    should 'be true when running Rails 4.x' do
+      assert @controller.send(:rails_3_or_4?)
+    end
+
+    should "call filter_rails3_parameters" do
+      hash = {:a => "b"}
+      filtered_hash = {:c => "d"}
+
+      @controller.expects(:filter_rails3_parameters).with(hash).
+        returns(filtered_hash)
+      assert_equal filtered_hash,
+        @controller.send(:airbrake_filter_if_filtering, hash)
+    end
+  end
+
 end
