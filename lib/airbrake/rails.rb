@@ -34,5 +34,3 @@ module Airbrake
     end
   end
 end
-
-Airbrake::Rails.initialize
