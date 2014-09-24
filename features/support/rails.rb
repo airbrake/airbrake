@@ -58,15 +58,15 @@ module RailsHelpers
   end
 
   def rails_manages_gems?
-    rails_version =~ /^2\.[123]/
+    rails_version =~ /\A2\.[123]/
   end
 
   def rails_supports_initializers?
-    rails_3_or_4? || rails_version =~ /^2\./
+    rails_3_or_4? || rails_version =~ /\A2\./
   end
 
   def rails_finds_generators_in_gems?
-    rails_3_or_4? || rails_version =~ /^2\./
+    rails_3_or_4? || rails_version =~ /\A2\./
   end
 
   def version_string

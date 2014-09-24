@@ -57,7 +57,8 @@ module Airbrake
 
       def filter_rails3_parameters(hash)
         ActionDispatch::Http::ParameterFilter.new(
-          ::Rails.application.config.filter_parameters).filter(hash)
+          ::Rails.application.config.filter_parameters
+        ).filter(hash)
       end
 
       def airbrake_session_data
