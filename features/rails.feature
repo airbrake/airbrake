@@ -200,21 +200,21 @@ Feature: Install the Gem in a Rails application
     Then I should see "The page you were looking for doesn't exist"
     And I should receive a Airbrake notification
 
-  @wip
-  Scenario: reporting over SSL with utf8 check should work
-    When I configure the Airbrake shim
-    And I run `rails generate airbrake -k myapikey -t`
-    When I configure the notifier to use the following configuration lines:
-      """
-      config.secure = true
-      """
-    And I define a response for "TestController#index":
-      """
-      raise RuntimeError, "some message"
-      """
-    And I route "/test/index" to "test#index"
-    And I perform a request to "http://example.com:123/test/index?utf8=✓"
-    Then I should receive a Airbrake notification
+  # @wip
+  # Scenario: reporting over SSL with utf8 check should work
+  #   When I configure the Airbrake shim
+  #   And I run `rails generate airbrake -k myapikey -t`
+  #   When I configure the notifier to use the following configuration lines:
+  #     """
+  #     config.secure = true
+  #     """
+  #   And I define a response for "TestController#index":
+  #     """
+  #     raise RuntimeError, "some message"
+  #     """
+  #   And I route "/test/index" to "test#index"
+  #   And I perform a request to "http://example.com:123/test/index?utf8=✓"
+  #   Then I should receive a Airbrake notification
 
   Scenario: It should also send the user details
     When I configure the Airbrake shim

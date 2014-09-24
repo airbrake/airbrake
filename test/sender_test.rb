@@ -20,7 +20,7 @@ class SenderTest < Test::Unit::TestCase
   end
 
   def stub_http(options = {})
-    response = stub(:body => options[:body] || 'body')
+    response = stub(:body => options[:body] || 'body<id>1234</id>')
     http = stub(:post          => response,
                 :read_timeout= => nil,
                 :open_timeout= => nil,
@@ -95,9 +95,9 @@ class SenderTest < Test::Unit::TestCase
 
   end
 
-  context "when using new JSON API" do
-    should "post to Airbrake with JSON passed" do
-      json_notice = Airbrake::Notice.new(:error_class => "FooBar", :error_message => "Foo Bar").to_json
+  context "when using the JSON API" do
+    should "posts to Airbrake with JSON string" do
+      json_notice = Airbrake::Notice.new(:error_class => "FooBar", :error_message => "Foo Bar", :backtrace => ['somefile']).to_json
 
       http = stub_http
 
@@ -110,8 +110,12 @@ class SenderTest < Test::Unit::TestCase
 
     end
 
-    should "post to Airbrake with notice passed" do
-      notice = Airbrake::Notice.new(:error_class => "FooBar", :error_message => "Foo Bar")
+    should "posts to Airbrake with a Notice" do
+      notice = Airbrake::Notice.new(
+        :error_class => "FooBar", 
+        :error_message => "Foo Bar", 
+        :backtrace => ['somefile']
+      )
 
       http = stub_http
 

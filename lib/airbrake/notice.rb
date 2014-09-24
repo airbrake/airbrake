@@ -1,6 +1,5 @@
 require 'builder'
 require 'socket'
-require 'multi_json'
 
 module Airbrake
   class Notice
@@ -20,8 +19,8 @@ module Airbrake
       end
     end
 
-    # The exception that caused this notice, if any
-    attr_reader :exception
+    # The exception(s) that caused this notice, if any
+    attr_reader :exceptions
 
     # The API key for the project to which this notice should be sent
     attr_reader :api_key
@@ -95,7 +94,6 @@ module Airbrake
 
     def initialize(args)
       @args             = args
-      @exception        = args[:exception]
       @api_key          = args[:api_key]
       @project_root     = args[:project_root]
       @url              = args[:url] || rack_env(:url)
@@ -117,15 +115,22 @@ module Airbrake
 
       @environment_name = args[:environment_name]
       @cgi_data         = (args[:cgi_data] && args[:cgi_data].dup) || args[:rack_env] || {}
-      @backtrace        = Backtrace.parse(exception_attribute(:backtrace, caller), :filters => @backtrace_filters)
-      @error_class      = exception_attribute(:error_class) {|exception| exception.class.name }
-      @error_message    = exception_attribute(:error_message, 'Notification') do |exception|
-        "#{exception.class.name}: #{args[:error_message] || exception.message}"
+
+      @exceptions = flatten_exceptions(args[:exception]).map do |ex|
+        ExceptionWrapper.new ex, @backtrace_filters, args
       end
+
+      if @exceptions == []
+        @exceptions = [ExceptionWrapper.new(nil, @backtrace_filters, args)]
+      end
+
+      # TODO: refactor away the need for these
+      @backtrace      = @exceptions.first.backtrace
+      @error_class    = @exceptions.first.error_class
+      @error_message  = @exceptions.first.error_message
 
       @hostname        = local_hostname
       @user            = args[:user] || {}
-
 
       also_use_rack_params_filters
       find_session_data
@@ -139,88 +144,88 @@ module Airbrake
 
     # Converts the given notice to XML
     def to_xml
-      builder = Builder::XmlMarkup.new
-      builder.instruct!
-      xml = builder.notice(:version => Airbrake::API_VERSION) do |notice|
-        notice.tag!("api-key", api_key)
-        notice.notifier do |notifier|
-          notifier.name(notifier_name)
-          notifier.version(notifier_version)
-          notifier.url(notifier_url)
-        end
-        notice.error do |error|
-          error.tag!('class', error_class)
-          error.message(error_message)
-          error.backtrace do |backtrace|
-            self.backtrace.lines.each do |line|
-              backtrace.line(
-                :number      => line.number,
-                :file        => line.file,
-                :method      => line.method_name
-              )
-            end
+      @xml ||= begin
+        builder = Builder::XmlMarkup.new
+        builder.instruct!
+        xml = builder.notice(:version => Airbrake::API_VERSION) do |notice|
+          notice.tag!("api-key", api_key)
+          notice.notifier do |notifier|
+            notifier.name(notifier_name)
+            notifier.version(notifier_version)
+            notifier.url(notifier_url)
           end
-        end
-        if request_present?
-          notice.request do |request|
-            request.url(url)
-            request.component(controller)
-            request.action(action)
-            unless parameters.empty?
-              request.params do |params|
-                xml_vars_for(params, parameters)
-              end
-            end
-            unless session_data.empty?
-              request.session do |session|
-                xml_vars_for(session, session_data)
-              end
-            end
-            unless cgi_data.empty?
-              request.tag!("cgi-data") do |cgi_datum|
-                xml_vars_for(cgi_datum, cgi_data)
+          notice.error do |error|
+            error.tag!('class', self.exceptions.first.error_class)
+            error.message(self.exceptions.first.error_message)
+            error.backtrace do |backtrace|
+              self.exceptions.first.backtrace.lines.each do |line|
+                backtrace.line(
+                  :number      => line.number,
+                  :file        => line.file,
+                  :method      => line.method_name
+                )
               end
             end
           end
-        end
-        notice.tag!("server-environment") do |env|
-          env.tag!("project-root", project_root)
-          env.tag!("environment-name", environment_name)
-          env.tag!("hostname", hostname)
-        end
-        unless user.empty?
-          notice.tag!("current-user") do |u|
-            user.each do |attr, value|
-              u.tag!(attr.to_s, value)
+          if request_present?
+            notice.request do |request|
+              request.url(url)
+              request.component(controller)
+              request.action(action)
+              unless parameters.empty?
+                request.params do |params|
+                  xml_vars_for(params, parameters)
+                end
+              end
+              unless session_data.empty?
+                request.session do |session|
+                  xml_vars_for(session, session_data)
+                end
+              end
+              unless cgi_data.empty?
+                request.tag!("cgi-data") do |cgi_datum|
+                  xml_vars_for(cgi_datum, cgi_data)
+                end
+              end
             end
           end
+          notice.tag!("server-environment") do |env|
+            env.tag!("project-root", project_root)
+            env.tag!("environment-name", environment_name)
+            env.tag!("hostname", hostname)
+          end
+          unless user.empty?
+            notice.tag!("current-user") do |u|
+              user.each do |attr, value|
+                u.tag!(attr.to_s, value)
+              end
+            end
+          end
+          if framework =~ /\S/
+            notice.tag!("framework", framework)
+          end
         end
-        if framework =~ /\S/
-          notice.tag!("framework", framework)
-        end
+        xml.to_s
       end
-      xml.to_s
+    end
+
+    def flatten_exceptions(ex, acc = [])
+      return [] unless ex
+      (acc << ex).tap do |acc|
+        flatten_exceptions(ex.cause, acc) if ex.respond_to?(:cause) && ex.cause
+      end
     end
 
     def to_json
-      MultiJson.dump({
-        'notifier' => {
-          'name'    => 'airbrake',
-          'version' => Airbrake::VERSION,
-          'url'     => 'https://github.com/airbrake/airbrake'
-          },
-        'errors' => [{
-            'type'       => error_class,
-            'message'    => error_message,
-            'backtrace'  => backtrace.lines.map do |line|
-                {
-                  'file'     => line.file,
-                  'line'     => line.number.to_i,
-                  'function' => line.method_name
-                }
-            end
-          }],
-         'context' => {}.tap do |hash|
+      @json ||= begin
+        {
+          'notifier' => {
+            'name'    => 'airbrake',
+            'version' => Airbrake::VERSION,
+            'url'     => 'https://github.com/airbrake/airbrake'
+           },
+          'errors' => @exceptions.map(&:to_hash),
+          'context' => {}.tap do |hash|
             if request_present?
               hash['url']           = url
               hash['component']     = controller
@@ -228,25 +233,25 @@ module Airbrake
               hash['rootDirectory'] = File.dirname(project_root)
               hash['environment']   = environment_name
             end
-           end.tap do |hash|
+          end.tap do |hash|
             next if user.empty?
 
             hash['userId']    = user[:id]
             hash['userName']  = user[:name]
             hash['userEmail'] = user[:email]
           end
-
-      }.tap do |hash|
+        }.tap do |hash|
           hash['environment'] = cgi_data     unless cgi_data.empty?
           hash['params']      = parameters   unless parameters.empty?
           hash['session']     = session_data unless session_data.empty?
-      end)
+        end.to_json
+      end
     end
 
     # Determines if this notice should be ignored
     def ignore?
-      ignored_class_names.include?(error_class) ||
-        ignore_by_filters.any? {|filter| filter.call(self) }
+      ignored_class_names.include?(self.exceptions.first.error_class) ||
+      ignore_by_filters.any? {|filter| filter.call(self) }
     end
 
     # Allows properties to be accessed using a hash-like syntax
