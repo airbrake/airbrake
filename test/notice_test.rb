@@ -189,6 +189,19 @@ class NoticeTest < Test::Unit::TestCase
       build_notice
     end
   end
+  
+  should "accept any object that responds to :to_hash as CGI data" do
+    hashlike_obj = Object.new
+    hashlike_obj.instance_eval do
+      def to_hash
+        {:i => 'am a hash'}
+      end
+    end
+    assert hashlike_obj.respond_to?(:to_hash)
+
+    notice = build_notice(:cgi_data => hashlike_obj)
+    assert_equal({:i => 'am a hash'}, notice.cgi_data, "should take CGI data from any hash-like object")
+  end
 
   should "accept notifier information" do
     params = { :notifier_name    => 'a name for a notifier',

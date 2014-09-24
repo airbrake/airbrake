@@ -116,7 +116,7 @@ module Airbrake
       @action              = args[:action] || parameters['action']
 
       @environment_name = args[:environment_name]
-      @cgi_data         = (args[:cgi_data] && args[:cgi_data].dup) || args[:rack_env] || {}
+      @cgi_data         = (args[:cgi_data].respond_to?(:to_hash) && args[:cgi_data].to_hash.dup) || args[:rack_env] || {}
       @backtrace        = Backtrace.parse(exception_attribute(:backtrace, caller), :filters => @backtrace_filters)
       @error_class      = exception_attribute(:error_class) {|exception| exception.class.name }
       @error_message    = exception_attribute(:error_message, 'Notification') do |exception|
