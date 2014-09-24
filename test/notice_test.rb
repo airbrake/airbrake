@@ -408,7 +408,7 @@ class NoticeTest < Test::Unit::TestCase
 
   should "ensure #to_ary is called on objects that support it" do
     assert_nothing_raised do
-      build_notice(:session => { :object => stub(:to_ary => {}) })
+      build_notice(:session => { :object => stub(:to_ary => []) })
     end
   end
 

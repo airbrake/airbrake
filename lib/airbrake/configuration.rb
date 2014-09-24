@@ -259,7 +259,7 @@ module Airbrake
     # Determines if the notifier will send notices.
     # @return [Boolean] Returns +false+ if in a development environment, +true+ otherwise.
     def public?
-      !development_environments.include?(environment_name)
+      @public ||= !development_environments.include?(environment_name)
     end
 
     def port
