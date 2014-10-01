@@ -3,15 +3,19 @@ module Airbrake
     module ControllerMethods
 
       def airbrake_request_data
-        {
-          :parameters       => airbrake_filter_if_filtering(params.to_hash),
-          :session_data     => airbrake_filter_if_filtering(airbrake_session_data),
-          :controller       => params[:controller],
-          :action           => params[:action],
-          :url              => airbrake_request_url,
-          :cgi_data         => airbrake_filter_if_filtering(request.env),
-          :user             => airbrake_current_user
-        }
+        r = nil
+        ActiveRecord::Base.connection_pool.with_connection do
+          r = {
+            :parameters       => airbrake_filter_if_filtering(params.to_hash),
+            :session_data     => airbrake_filter_if_filtering(airbrake_session_data),
+            :controller       => params[:controller],
+            :action           => params[:action],
+            :url              => airbrake_request_url,
+            :cgi_data         => airbrake_filter_if_filtering(request.env),
+            :user             => airbrake_current_user
+          }
+        end
+        r
       end
 
       private
