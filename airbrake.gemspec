@@ -32,6 +32,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency("pry")
   s.add_development_dependency("coveralls")
   s.add_development_dependency("minitest", ["~> 4.0"])
+  s.add_development_dependency("test-unit")
+  
 
   s.authors = ["Airbrake"]
   s.email   = "support@airbrake.io"

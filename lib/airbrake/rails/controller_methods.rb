@@ -10,7 +10,7 @@ module Airbrake
           :action           => params[:action],
           :url              => airbrake_request_url,
           :cgi_data         => airbrake_filter_if_filtering(request.env),
-          :user             => airbrake_current_user
+          :user             => airbrake_current_user || {}
         }
       end
 
@@ -91,15 +91,30 @@ module Airbrake
       end
 
       def airbrake_current_user
-        user = begin current_user rescue current_member end
-        h = {}
-        return h if user.nil?
-        Airbrake.configuration.user_attributes.map(&:to_sym).each do |attr|
-          h[attr.to_sym] = user.send(attr) if user.respond_to? attr
+        user = fetch_user
+        
+        if user
+          Airbrake.configuration.user_attributes.map(&:to_sym).inject({}) do |hsh, attr|
+            hsh[attr.to_sym] = user.send(attr) if user.respond_to? attr
+            hsh
+          end
         end
-        h
-      rescue NoMethodError, NameError
-        {}
+      end
+      
+      def fetch_user
+        if defined?(current_user)
+          current_user
+        elsif defined?(current_member)
+          current_member
+        else
+          nil
+        end
+      ensure
+        # The Airbrake middleware is first in the chain, before ActiveRecord::ConnectionAdapters::ConnectionManagement
+        # kicks in to do its thing. This can cause the connection pool to run out of connections.
+        if defined?(ActiveRecord) && ActiveRecord::Base.respond_to?(:connection_pool)
+          ActiveRecord::Base.connection_pool.release_connection
+        end
       end
     end
   end
