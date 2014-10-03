@@ -63,7 +63,11 @@ module Airbrake
 
       def recursive_stringify_keys(hash)
         hash = hash.stringify_keys
-        hash.each {|k,v| hash[k] = recursive_stringify_keys(v) if v.is_a?(Hash) && v.respond_to?(:stringify_keys) } # Rack::Session::Abstract::SessionHash has a stringify_keys method we should not call
+        hash.each do |k, v|
+          if v.is_a?(Hash)
+            hash[k] = v.respond_to?(:stringify_keys) ? recursive_stringify_keys(v) : nil # Rack::Session::Abstract::SessionHash has a stringify_keys method we should not call
+          end
+        end
         hash
       end
 
