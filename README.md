@@ -38,6 +38,14 @@ Then from your project's RAILS_ROOT, and in your development environment, run:
 
 The generator creates a file under `config/initializers/airbrake.rb` configuring Airbrake with your API key. This file should be checked into your version control system so that it is deployed to your staging and production environments.
 
+#### Enabling the v3 JSON api
+
+Airbrake provides two APIs for notifiers to submit notices. The classic API, currently at v2.4, uses XML docs to transmit errors to airbrake. This is the default API.
+To enable the JSON-based v3 of the API, add the following in the config block of your Airbrake configuration (`config/initializers/airbrake.rb`):
+
+    config.api_version = 3
+    config.project_id = <YOUR AIRBRAKE PROJECT ID>
+
 ### Rails 2.x
 
 Add the airbrake gem to your app. In config/environment.rb:
@@ -136,7 +144,7 @@ Credits
 
 ![thoughtbot](https://secure.gravatar.com/avatar/a95a04df2dae60397c38c9bd04492c53)
 
-Airbrake is maintained and funded by [airbrake.io](http://airbrake.io).
+Airbrake is maintained and funded by [airbrake.io](https://airbrake.io).
 
 Thank you to all [the contributors](https://github.com/airbrake/airbrake/contributors)!
 
@@ -145,4 +153,4 @@ The names and logos for Airbrake, thoughtbot are trademarks of their respective 
 License
 -------
 
-Airbrake is Copyright © 2008-2013 Airbrake.
+Airbrake is Copyright © 2008-2014 Airbrake.

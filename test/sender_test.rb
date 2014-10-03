@@ -101,7 +101,7 @@ class SenderTest < Test::Unit::TestCase
 
       http = stub_http
 
-      sender = build_sender(:project_id => "PROJECT_ID", :host => "collect.airbrake.io")
+      sender = build_sender(:api_version => 3, :project_id => "PROJECT_ID")
       sender.send_to_airbrake(json_notice)
 
       assert_received(http, :post) do |expect|
@@ -115,7 +115,7 @@ class SenderTest < Test::Unit::TestCase
 
       http = stub_http
 
-      sender = build_sender(:project_id => "PROJECT_ID", :host => "collect.airbrake.io")
+      sender = build_sender(:api_version => 3, :project_id => "PROJECT_ID")
       sender.send_to_airbrake(notice)
 
       assert_received(http, :post) do |expect|

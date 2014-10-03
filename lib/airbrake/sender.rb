@@ -173,8 +173,7 @@ module Airbrake
     end
 
     def json_api_enabled?
-      !!(host =~ /collect.airbrake.io/) &&
-        project_id =~ /\S/
+      Airbrake.configuration.api_version > 2.4 && project_id =~ /\S/
     end
   end
 
