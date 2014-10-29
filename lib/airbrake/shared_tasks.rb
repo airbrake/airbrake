@@ -18,6 +18,7 @@ namespace :airbrake do
                          :scm_repository => ENV['REPO'],
                          :local_username => ENV['USER'],
                          :api_key        => ENV['API_KEY'],
+                         :message        => ENV['DEPLOY_MESSAGE'],
                          :dry_run        => ENV['DRY_RUN'])
   end
 
