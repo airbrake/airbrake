@@ -146,3 +146,29 @@ License
 -------
 
 Airbrake is Copyright © 2008-2013 Airbrake.
+
+
+Install guide for projects (using this fork - with 'message' sending to ErrBit on deploy )
+-------
+
+Gemfile file
+    
+    gem 'airbrake', git: "https://github.com/astikans/airbrake.git" # with 'message' sending to ErrBit on deploy
+    
+Then run
+
+    bundle install
+    rails generate airbrake --api-key your_key_here
+
+Copy config from deploy.rb to Capfile (use airbrake/capistrano3 config)
+    
+    require 'airbrake/capistrano3'
+    require './config/boot'
+
+Add airbrake:deploy to deploy.rb 
+    
+    after 'deploy:publishing', 'airbrake:deploy'
+    
+For message sending to ErrBit add lines to deploy.rb e.g.
+    
+    ENV['DEPLOY_MESSAGE'] = "'stage - #{fetch(:stage)}'"
