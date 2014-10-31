@@ -153,7 +153,7 @@ Install guide for projects (using this fork - with 'message' sending to ErrBit o
 
 Gemfile file
     
-    gem 'airbrake', git: "https://github.com/astikans/airbrake.git" # with 'message' sending to ErrBit on deploy
+    gem 'airbrake', git: "https://github.com/astikans/airbrake.git"
     
 Then run
 
