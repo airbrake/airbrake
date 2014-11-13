@@ -21,7 +21,7 @@ module Airbrake
       if defined?(::Rails.configuration) && ::Rails.configuration.respond_to?(:middleware)
         ::Rails.configuration.middleware.insert_after 'ActionController::Failsafe',
                                                       Airbrake::Rack
-        ::Rails.configuration.middleware.insert_after 'Rack::Lock',
+        ::Rails.configuration.middleware.insert_before 'Rack::Runtime',
                                                       Airbrake::UserInformer
       end
 
