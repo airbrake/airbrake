@@ -112,6 +112,7 @@ module Airbrake
                                    action_dispatch_params ||
                                    rack_env(:params) ||
                                    {}
+      @parameters          = parameters.merge(exception.airbrake_parameters) if exception.respond_to?(:airbrake_parameters)
       @component           = args[:component] || args[:controller] || parameters['controller']
       @action              = args[:action] || parameters['action']
 

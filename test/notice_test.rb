@@ -129,6 +129,26 @@ class NoticeTest < Test::Unit::TestCase
                  "backtrace was not correctly set from a hash"
   end
 
+  should "accept parameters from an exception" do
+    exception = build_exception
+    def exception.airbrake_parameters
+      {:extra_context => "for Airbrake"}
+    end
+    notice_from_exception = build_notice(:exception => exception)
+
+    assert_equal "for Airbrake", notice_from_exception.parameters[:extra_context]
+  end
+
+  should "merge parameters from an exception with those from a hash" do
+    exception = build_exception
+    def exception.airbrake_parameters
+      {"one" => 1}
+    end
+    notice_from_exception = build_notice(:exception => exception, :parameters => {"two" => 2})
+
+    assert_equal %w{one two}, notice_from_exception.parameters.keys.sort
+  end
+
   should "accept user" do
     assert_equal user.id, build_notice(:user => user).user.id
     assert_equal user.email, build_notice(:user => user).user.email
