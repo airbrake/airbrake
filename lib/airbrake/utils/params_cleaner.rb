@@ -106,11 +106,11 @@ module Airbrake
             data.to_hash.inject({}) do |result, (key, value)|
               result.merge!(key => clean_unserializable_data(value, stack + [data.object_id]))
             end
-          elsif data.respond_to?(:collect!)
+          elsif data.respond_to?(:collect!) && !data.frozen?
             data.collect! do |value|
               clean_unserializable_data(value, stack + [data.object_id])
             end
-          elsif data.respond_to?(:to_ary)
+          elsif data.respond_to?(:to_ary) && !data.frozen?
             data.to_ary.collect! do |value|
               clean_unserializable_data(value, stack + [data.object_id])
             end
