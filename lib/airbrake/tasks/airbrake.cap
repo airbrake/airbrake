@@ -19,6 +19,7 @@ namespace :airbrake do
           notify_command << " USER=#{local_user.strip.shellescape}"
           notify_command << " API_KEY=#{ENV['API_KEY']}" if ENV['API_KEY']
           notify_command << " DEPLOY_MESSAGE=#{ENV['DEPLOY_MESSAGE']}" if ENV['DEPLOY_MESSAGE']
+          notify_command << " RAILS_ENV=#{fetch(:rails_env)}"
 
           info "Notifying Airbrake of Deploy (#{notify_command})"
           execute :rake, notify_command
