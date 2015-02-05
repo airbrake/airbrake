@@ -68,6 +68,7 @@ module Airbrake::RakeHandler
   end
 end
 
+require 'rake'
 Rake.application.instance_eval do
   class << self
     include Airbrake::RakeHandler
