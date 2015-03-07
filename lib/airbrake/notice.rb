@@ -91,6 +91,9 @@ module Airbrake
     # Instance that's used for cleaning out data that should be filtered out, should respond to #clean
     attr_accessor :cleaner
 
+    # An array of the exception classes for this error (including wrapped ones)
+    attr_reader :exception_classes
+
     public
 
     def initialize(args)
@@ -99,7 +102,6 @@ module Airbrake
       @api_key          = args[:api_key]
       @project_root     = args[:project_root]
       @url              = args[:url] || rack_env(:url)
-
       @notifier_name    = args[:notifier_name]
       @notifier_version = args[:notifier_version]
       @notifier_url     = args[:notifier_url]
@@ -126,11 +128,19 @@ module Airbrake
       @hostname        = local_hostname
       @user            = args[:user] || {}
 
+      @exception_classes= Array(args[:exception_classes])
+      if @exception
+        @exception_classes << @exception.class
+      end
+      if @error_class
+        @exception_classes << @error_class
+      end
+
 
       also_use_rack_params_filters
       find_session_data
 
-      @cleaner = args[:cleaner] || 
+      @cleaner = args[:cleaner] ||
         Airbrake::Utils::ParamsCleaner.new(:filters => params_filters,
                                            :to_clean => data_to_clean)
 
@@ -245,8 +255,13 @@ module Airbrake
 
     # Determines if this notice should be ignored
     def ignore?
-      ignored_class_names.include?(error_class) ||
-        ignore_by_filters.any? {|filter| filter.call(self) }
+      exception_classes.each do |klass|
+        if ignored_class_names.include?(klass)
+          return true
+        end
+      end
+
+      ignore_by_filters.any? {|filter| filter.call(self) }
     end
 
     # Allows properties to be accessed using a hash-like syntax

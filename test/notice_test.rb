@@ -189,7 +189,7 @@ class NoticeTest < Test::Unit::TestCase
       build_notice
     end
   end
-  
+
   should "accept any object that responds to :to_hash as CGI data" do
     hashlike_obj = Object.new
     hashlike_obj.instance_eval do
@@ -365,6 +365,13 @@ class NoticeTest < Test::Unit::TestCase
                           :ignore            => ['Argument'],
                           :ignore_by_filters => [lambda { |n| false }])
     assert !notice.ignore?
+  end
+
+  should "ignore an wrapped exception matching ignore filters" do
+    notice = build_notice(error_class: "NotIgnored",
+                          exception_classes: ["Ignored", "NotIgnored"],
+                          ignore: ["Ignored"])
+    assert notice.ignore?
   end
 
   should "ignore an exception with a matching error class" do
