@@ -82,6 +82,15 @@ class ParamsCleanerTest < Test::Unit::TestCase
     assert_equal({"abc" => "123"}, clean_params.cgi_data)
   end
 
+  should "handle frozen objects" do
+    params = {
+      'filter_me' => ['a', 'b', 'c', 'd'].freeze
+    }
+
+    clean_params = clean({:params_filters => ['filter_me'], :parameters => params})
+    assert_equal({'filter_me' => '[FILTERED]'}, clean_params.parameters)
+  end
+
   should "filter parameters" do
     assert_filters_hash(:parameters)
   end

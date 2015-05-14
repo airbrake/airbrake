@@ -5,7 +5,7 @@ module Airbrake
       attr_reader :parameters, :cgi_data, :session_data
 
       # Public: Initialize a new Airbrake::Utils::ParamsCleaner
-      #   
+      #
       # opts - The Hash options that contain filters and params (default: {}):
       #        :filters - The Array of param keys that should be filtered
       #        :to_clean - The Hash of unfiltered params
@@ -14,7 +14,7 @@ module Airbrake
         @filters.map!{|f| f.is_a?(Symbol) ? f.to_s : f }
         @to_clean    = opts[:to_clean]
       end
-      
+
       # Public: Takes the params to_clean passed in an initializer
       #         and filters them out by filters passed.
       #
@@ -24,7 +24,7 @@ module Airbrake
       # could be extracted
       def clean
         clean_parameters
-        clean_session_data 
+        clean_session_data
         clean_cgi_data
         clean_rack_request_data
 
@@ -51,7 +51,7 @@ module Airbrake
           else
             clean_unserializable_data(@to_clean[:cgi_data])
           end
-        end        
+        end
 
         def clean_session_data
           return unless @to_clean[:session_data]
@@ -106,7 +106,7 @@ module Airbrake
             data.to_hash.inject({}) do |result, (key, value)|
               result.merge!(key => clean_unserializable_data(value, stack + [data.object_id]))
             end
-          elsif data.respond_to?(:collect) and not data.is_a?(IO)
+          elsif data.respond_to?(:collect) and !data.is_a?(IO)
             data = data.collect do |value|
               clean_unserializable_data(value, stack + [data.object_id])
             end
