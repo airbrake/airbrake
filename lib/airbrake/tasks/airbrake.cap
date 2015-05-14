@@ -6,7 +6,7 @@ namespace :airbrake do
   task :deploy do
     # update scm state to get the repository information
     invoke "#{scm}:update"
-    on roles(:app) do
+    on roles(:all) do
       within release_path do
         # XXX: Invoking deploy:set_rails_env would set :rails_env to proper
         # value, but that would make us depend on capistrano-rails
