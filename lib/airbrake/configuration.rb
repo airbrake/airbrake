@@ -9,7 +9,12 @@ module Airbrake
         :params_filters, :project_root, :port, :protocol, :proxy_host,
         :proxy_pass, :proxy_port, :proxy_user, :secure, :use_system_ssl_cert_chain,
         :framework, :user_information, :rescue_rake_exceptions, :rake_environment_filters,
-        :test_mode].freeze
+        :test_mode, :api_version].freeze
+
+    # The Airbrake API version to use. Defaults to 2.4, which is XML based.
+    # Version 3 (current) is JSON based; when using this version the :project_id
+    # must be set.
+    attr_accessor :api_version
 
     # The API key for your project, found on the project edit form.
     attr_accessor :api_key
@@ -157,6 +162,7 @@ module Airbrake
       @use_system_ssl_cert_chain= false
       @host                     = 'api.airbrake.io'
       @port                     = nil
+      @api_version              = Airbrake::API_VERSION.to_f
       @http_open_timeout        = 2
       @http_read_timeout        = 5
       @params_filters           = DEFAULT_PARAMS_FILTERS.dup

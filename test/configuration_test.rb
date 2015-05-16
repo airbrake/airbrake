@@ -32,6 +32,7 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_default :framework, 'Standalone'
     assert_config_default :async, nil
     assert_config_default :project_id, nil
+    assert_config_default :api_version, 2.4
   end
 
   should "set GirlFriday/SuckerPunch-callable for async=true" do
@@ -93,6 +94,7 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_overridable :logger
     assert_config_overridable :async
     assert_config_overridable :project_id
+    assert_config_overridable :api_version
     assert_config_overridable :params_filters
   end
 
@@ -108,7 +110,7 @@ class ConfigurationTest < Test::Unit::TestCase
      :http_read_timeout, :ignore, :ignore_by_filters, :ignore_user_agent,
      :notifier_name, :notifier_url, :notifier_version, :params_filters,
      :project_root, :port, :protocol, :proxy_host, :proxy_pass, :proxy_port,
-     :proxy_user, :secure, :development_lookup, :async].each do |option|
+     :proxy_user, :secure, :development_lookup, :async, :api_version].each do |option|
       assert_equal config[option], hash[option], "Wrong value for #{option}"
     end
   end
