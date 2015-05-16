@@ -90,13 +90,12 @@ module Airbrake
           url << ":#{request.port}"
         end
 
-        url << request.fullpath
-        url
+        URI.join(url, request.fullpath).to_s
       end
 
       def airbrake_current_user
         user = fetch_user
-        
+
         if user
           Airbrake.configuration.user_attributes.map(&:to_sym).inject({}) do |hsh, attr|
             hsh[attr.to_sym] = user.send(attr) if user.respond_to? attr
@@ -104,7 +103,7 @@ module Airbrake
           end
         end
       end
-      
+
       def fetch_user
         if defined?(current_user)
           current_user

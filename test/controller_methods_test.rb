@@ -7,7 +7,7 @@ class TestController
   def params; {}; end
   def session; nil; end
   def request
-    OpenStruct.new(:port=> 80, :protocol => 'http://', host: 'example.com', :fullpath => '/', :env => [])
+    OpenStruct.new(:port=> 80, :protocol => 'http://', host: 'example.com', :fullpath => 'path', :env => [])
   end
 end
 
@@ -111,6 +111,16 @@ class ControllerMethodsTest < Test::Unit::TestCase
     should 'not call session if no session' do
       no_session = @controller.send(:airbrake_session_data)
       assert_equal no_session, {:session => 'no session found'}
+    end
+  end
+
+  context "#airbrake_request_url" do
+    setup do
+      @controller = NoSessionTestController.new
+    end
+    should "return correct request url" do
+      request_url = @controller.send(:airbrake_request_url)
+      assert_equal request_url, "http://example.com/path"
     end
   end
 
