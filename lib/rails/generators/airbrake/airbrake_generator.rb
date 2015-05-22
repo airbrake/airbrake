@@ -25,7 +25,7 @@ class AirbrakeGenerator < Rails::Generators::Base
   def install
     ensure_api_key_was_configured
     ensure_plugin_is_not_present
-    append_capistrano_hook
+    append_capistrano_hook if capistrano_present?
     generate_initializer unless api_key_configured?
     determine_api_key if heroku?
     test_airbrake
@@ -47,18 +47,42 @@ class AirbrakeGenerator < Rails::Generators::Base
     end
   end
 
-  def append_capistrano_hook
-    if File.exists?('config/deploy.rb') && File.exists?('Capfile')
-      append_file('config/deploy.rb', <<-HOOK)
+  def capistrano_present?
+    !Gem.loaded_specs['capistrano'].nil? &&
+      File.exists?('config/deploy.rb') &&
+      File.exists?('Capfile')
+  end
 
-        require './config/boot'
-        require 'airbrake/capistrano'
-      HOOK
+  def append_capistrano_hook
+    if capistrano_version < Gem::Version.new('3')
+      append_file('config/deploy.rb', capistrano2_hook)
+    else
+      append_file('config/deploy.rb', capistrano3_hook)
     end
   end
 
+  def capistrano_version
+    Gem.loaded_specs['capistrano'].version
+  end
+
+  def capistrano2_hook
+    <<-HOOK
+
+require './config/boot'
+require 'airbrake/capistrano'
+    HOOK
+  end
+
+  def capistrano3_hook
+    <<-HOOK
+
+require 'airbrake/capistrano3'
+after "deploy:finished", "airbrake:deploy"
+    HOOK
+  end
+
   def api_key_expression
-    s = if options[:api_key]
+    if options[:api_key]
       "'#{options[:api_key]}'"
     elsif options[:heroku]
       "ENV['AIRBRAKE_API_KEY']"
