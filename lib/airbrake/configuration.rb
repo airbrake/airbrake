@@ -131,7 +131,7 @@ module Airbrake
       lambda { |line| line.gsub(/^\.\//, "") },
       lambda { |line|
         if defined?(Gem)
-          Gem.path.inject(line) do |l, path|
+          Gem.path.reject(&:empty?).inject(line) do |l, path|
             l.gsub(/#{path}/, "[GEM_ROOT]")
           end
         end
