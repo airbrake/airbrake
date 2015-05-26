@@ -130,11 +130,8 @@ module Airbrake
       },
       lambda { |line| line.gsub(/^\.\//, "") },
       lambda { |line|
-        if defined?(Gem)
-          Gem.path.inject(line) do |l, path|
-            l.gsub(/#{path}/, "[GEM_ROOT]")
-          end
-        end
+        Gem.path.each{ |path| line.sub!(/#{path}/, "[GEM_ROOT]") unless path.to_s.strip.empty? } if defined?(Gem)
+        line
       },
       lambda { |line| line if line !~ %r{lib/airbrake} }
     ].freeze
