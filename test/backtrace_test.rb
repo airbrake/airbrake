@@ -75,6 +75,40 @@ class BacktraceTest < Test::Unit::TestCase
     assert_equal expected_backtrace, original_backtrace
   end
 
+  context "with a gem root" do
+    setup do
+      @gem_root = '/root/to/gem'
+      Gem.path << @gem_root
+    end
+
+    should "filter out the gem root" do
+      backtrace_with_gem_root = Airbrake::Backtrace.parse(
+        ["#{@gem_root}/some/gem.rb:9:in `test'",
+         "#{@gem_root}/path/to/awesome_gem.rb:13:in `awesome'",
+         "/test/something.rb:55:in `hack'"],
+        :filters => default_filters)
+      backtrace_without_gem_root = Airbrake::Backtrace.parse(
+        ["[GEM_ROOT]/some/gem.rb:9:in `test'",
+         "[GEM_ROOT]/path/to/awesome_gem.rb:13:in `awesome'",
+         "/test/something.rb:55:in `hack'"])
+
+      assert_equal backtrace_without_gem_root, backtrace_with_gem_root
+    end
+
+    should "ignore empty gem paths" do
+      Gem.path << ""
+      backtrace_with_gem_root = Airbrake::Backtrace.parse(
+        ["#{@gem_root}/some/gem.rb:9:in `test'",
+         "/test/something.rb:55:in `hack'"],
+        :filters => default_filters)
+      backtrace_without_gem_root = Airbrake::Backtrace.parse(
+        ["[GEM_ROOT]/some/gem.rb:9:in `test'",
+         "/test/something.rb:55:in `hack'"])
+
+      assert_equal backtrace_without_gem_root, backtrace_with_gem_root
+    end
+  end
+
   context "with a project root" do
     setup do
       @project_root = '/some/path'
