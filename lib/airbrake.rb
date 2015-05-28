@@ -127,6 +127,7 @@ module Airbrake
     # @option opts [String] :rack_env The Rack environment.
     # @option opts [String] :session The contents of the user's session.
     # @option opts [String] :environment_name The application environment name.
+    # @option opts [String] :parameters Additional parameters.
     def notify(exception, opts = {})
       send_notice(build_notice_for(exception, opts))
     end
