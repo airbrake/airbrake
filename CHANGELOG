@@ -50,7 +50,7 @@ grosser (3):
 halida (1):
       fix rails request.fullpath behavior change in 4.1.6 -- no longer has leading /
 
-shifi (17):
+shifi (16):
       add test for filtering frozen objects
       Merge branch 'Promptus-issue_369_frozen_array_issue'
       update Appraisals file
