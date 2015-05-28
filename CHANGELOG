@@ -1,3 +1,74 @@
+Version 4.2.0 - 2015-05-27 19:05:32 -0500
+===============================================================================
+
+Abdelkader Boudih (1):
+      Update sidekiq.rb
+
+Adam King (1):
+      Fix DEFAULT_BACKTRACE_FILTERS bug that caused backtrace to not show up in certain contexts. See https://github.com/airbrake/airbrake/issues/343.
+
+David (8):
+      Merge pull request #329 from grosser/grosser/gemspec
+      Merge pull request #335 from airbrake/fix/cucumber-suite
+      Merge pull request #327 from airbrake/feature/faster-params-cleaning
+      Merge pull request #337 from airbrake/fix/rails4-is-here
+      Merge pull request #326 from airbrake/fix/cast-ENV-to-Hash
+      Merge pull request #328 from grosser/grosser/dup
+      Merge pull request #334 from airbrake/fix/user-info-consumes-db-connections
+      Merge pull request #340 from grosser/grosser/dup
+
+David Palm (9):
+      Cast CGI data to hash, as that's what the code really expects
+      Speed up notice generation by avoiding copying data and putting most common cases on top
+      Refactor #airbrake_current_user
+      Typo
+      Add comment explaining why we release connections
+      Comment out @wip scenarios to facilitate running parts of the suite
+      Add 4 to version sniffing code
+      PR feedback
+      Clone to ensure we do not mess with the provided data
+
+Eero Raun (1):
+      Ignore RACK_ENV if it is empty (capistrano deploy), fixes #341.
+
+Jonathan Worek (1):
+      Assumption of existence of :app role may not be valid
+
+Marko Šiftar (3):
+      Merge pull request #354 from wojobucco/patch-1
+      Merge pull request #342 from oree/341
+      Merge pull request #382 from airbrake/fix/use-proper-capistrano-hook
+
+Martin Tepper (1):
+      This should fix #369
+
+grosser (3):
+      cleanup gemspec
+      fix having symbols in the environment blows up filter_parameters with blocks
+      If we cannot stringify then at least rescue the dup exceptions ...
+
+halida (1):
+      fix rails request.fullpath behavior change in 4.1.6 -- no longer has leading /
+
+shifi (17):
+      add test for filtering frozen objects
+      Merge branch 'Promptus-issue_369_frozen_array_issue'
+      update Appraisals file
+      Merge branch 'master' of https://github.com/halida/airbrake into halida-master
+      remove whitespaces
+      add test for airbrake_request_url
+      Merge branch 'halida-master'
+      update year in license and readme
+      use proper capistrano hook depending on capistrano version
+      set localhost IP to satisfy web console when testing in development
+      Merge branch 'patch-1' of https://github.com/seuros/airbrake into seuros-patch-1
+      fix syntax error in Sidekiq configuration
+      Merge branch 'seuros-patch-1'
+      Merge branch 'master' of https://github.com/developwithvelocity/airbrake into developwithvelocity-master
+      tests for backtrace default filters - gem paths
+      Merge branch 'developwithvelocity-master'
+
+
 Version 4.1.0 - 2014-09-04 23:16:08 +0200
 ===============================================================================
 
@@ -1418,6 +1489,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
