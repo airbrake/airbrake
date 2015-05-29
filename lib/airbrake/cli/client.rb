@@ -1,3 +1,4 @@
+require 'pry'
 require File.expand_path( "../runner", __FILE__)
 
 module Client
@@ -29,15 +30,21 @@ module Client
   end
 
   def create_deploy
-    uri = URI.parse "http://airbrake.io"\
-    "/deploys.txt"
+    uri = URI.parse "http://airbrake.io/deploys.txt"
     http = Net::HTTP.new(uri.host,uri.port)
     request = Net::HTTP::Post.new(uri.request_uri)
-    opts = {'deploy[rails_env]' => options.rails_env,"api_key" => options.api_key}
-    opts.merge!('deploy[scm_revision]' => options.scm_revision) if options.scm_revision
+    opts = { 'api_key' => options.api_key }.merge!(deploy_opts)
     request.set_form_data(opts)
     response = http.request(request)
-    puts response.body
+    puts response.message if response.respond_to?(:message)
+  end
+
+  def deploy_opts
+    opts = {}
+    ['rails_env', 'scm_revision', 'scm_repository', 'local_username'].each do |attr|
+      opts.merge!("deploy[#{attr}]" => options.send(attr))
+    end
+    opts
   end
 
   def print_projects
