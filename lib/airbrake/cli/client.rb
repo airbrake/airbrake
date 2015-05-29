@@ -1,4 +1,3 @@
-require 'pry'
 require File.expand_path( "../runner", __FILE__)
 
 module Client
