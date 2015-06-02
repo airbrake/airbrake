@@ -23,8 +23,8 @@ module Airbrake
           ::Rails.configuration.middleware
             .insert_after 'ActionController::Failsafe', Airbrake::Rack
         end
-        ::Rails.configuration.middleware.insert_after 'Rack::Lock',
-                                                      Airbrake::UserInformer
+        ::Rails.configuration.middleware
+          .insert_before 'Rack::Runtime', Airbrake::UserInformer
       end
 
       Airbrake.configure(true) do |config|
