@@ -1,3 +1,30 @@
+Version 4.2.1 - 2015-06-01 22:12:49 -0500
+===============================================================================
+
+Marko Šiftar (3):
+      Merge pull request #384 from biske/improve-notify-documentation
+      Merge pull request #385 from arrtchiu/patch-2
+      Merge pull request #386 from airbrake/fix/check-if-failsafe-middleware-is-defined
+
+Phuong Nguyen (1):
+      Insert UserInformer middleware before Rack::Runtime since Rack::Lock may not be available for app with websocket-rails
+
+arrtchiu (1):
+      Support Rails 4 without ActiveRecord
+
+shifi (7):
+      typo in changelog
+      add more args in deploy CLI - fixes #296
+      update CLI help info
+      do not require pry - fix typo
+      check if failsafe middleware is defined - fixes #379
+      fix conflicts
+      Merge branch 'phuongnd08-master'
+
+Иван Бишевац (1):
+      Improves documentation for notify method
+
+
 Version 4.2.0 - 2015-05-27 19:05:32 -0500
 ===============================================================================
 
@@ -1489,6 +1516,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
