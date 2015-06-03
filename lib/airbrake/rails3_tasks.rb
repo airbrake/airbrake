@@ -59,6 +59,11 @@ namespace :airbrake do
     class ActionDispatch::DebugExceptions; def call(env); @app.call(env); end; end
     class ActionDispatch::ShowExceptions; def call(env); @app.call(env); end; end
 
+    # Override BetterErrors middleware if present
+    if defined?(BetterErrors::Middleware)
+      class BetterErrors::Middleware; def call(env); @app.call(env); end; end
+    end
+
     require './app/controllers/application_controller'
 
     class AirbrakeTestingException < RuntimeError; end
