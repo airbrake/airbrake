@@ -19,12 +19,17 @@ module Airbrake
                      end
 
       if defined?(::Rails.configuration) && ::Rails.configuration.respond_to?(:middleware)
-        if defined?(ActionController::Failsafe)
-          ::Rails.configuration.middleware
-            .insert_after 'ActionController::Failsafe', Airbrake::Rack
+        if defined?(::ActionController::Failsafe)
+          ::Rails.configuration.middleware.insert_after 'ActionController::Failsafe',
+                                                        Airbrake::Rack
         end
-        ::Rails.configuration.middleware
-          .insert_before 'Rack::Runtime', Airbrake::UserInformer
+        if defined?(::Rack::Lock)
+          ::Rails.configuration.middleware.insert_after 'Rack::Lock',
+                                                        Airbrake::UserInformer
+        else
+          ::Rails.configuration.middleware.insert_before 'Rack::Runtime',
+                                                         Airbrake::UserInformer
+        end
       end
 
       Airbrake.configure(true) do |config|
