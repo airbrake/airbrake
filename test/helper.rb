@@ -1,10 +1,10 @@
-require "simplecov" 
+require "simplecov"
 
 if ENV["INTEGRATION"] then SimpleCov.command_name "test:integration"
 else SimpleCov.command_name "test:units"
 end
 
-SimpleCov.merge_timeout 3600 
+SimpleCov.merge_timeout 3600
 SimpleCov.start
 
 if ENV["CI"]
