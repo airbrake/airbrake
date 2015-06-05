@@ -1,5 +1,4 @@
 require File.expand_path '../helper', __FILE__
-require 'better_errors'
 
 class BetterErrorsTest < Test::Unit::TestCase
   context "when exception occurs" do

@@ -43,6 +43,7 @@ silence_warnings do
   require "shoulda-context"
   require "fakeweb"
   require "pry"
+  require 'better_errors'
 
   begin require 'redgreen'; rescue LoadError; end
 end
