@@ -1,6 +1,11 @@
 require 'better_errors'
 
 module BetterErrors
+  # Better Errors' error handling middleware with Airbrake support. Including
+  # this in your middleware stack will report uncatched exceptions to Airbrake
+  # and show a Better Errors error page for exceptions raised below this
+  # middleware.
+  #
   class Middleware
     alias_method :show_error_page_original, :show_error_page
 
@@ -27,8 +32,8 @@ module BetterErrors
       if controller(env).respond_to?(:airbrake_request_data)
         controller(env).airbrake_request_data
       else
-        {:rack_env => env}
       end
+        {:rack_env => env}
     end
 
     def controller(env)

@@ -59,7 +59,8 @@ namespace :airbrake do
     class ActionDispatch::DebugExceptions; def call(env); @app.call(env); end; end
     class ActionDispatch::ShowExceptions; def call(env); @app.call(env); end; end
 
-    # Override BetterErrors middleware if present
+    # Override BetterErrors middleware if present, so we don't display
+    # additional stack trace or any other info
     if defined?(BetterErrors::Middleware)
       class BetterErrors::Middleware; def call(env); @app.call(env); end; end
     end
