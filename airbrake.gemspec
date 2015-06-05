@@ -33,9 +33,10 @@ Gem::Specification.new do |s|
   s.add_development_dependency("coveralls")
   s.add_development_dependency("minitest", ["~> 4.0"])
   s.add_development_dependency("test-unit")
-  
+  s.add_development_dependency("better_errors")
+
 
   s.authors = ["Airbrake"]
   s.email   = "support@airbrake.io"
-  s.homepage = "http://www.airbrake.io"
+  s.homepage = "https://www.airbrake.io"
 end
