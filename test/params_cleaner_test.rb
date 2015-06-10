@@ -3,8 +3,9 @@ require File.expand_path '../helper', __FILE__
 class ParamsCleanerTest < Test::Unit::TestCase
 
   def clean(opts = {})
-    cleaner = Airbrake::Utils::ParamsCleaner.new(:filters  => opts.delete(:params_filters),
-                                               :to_clean => opts)
+    cleaner = Airbrake::Utils::ParamsCleaner.new(:blacklist_filters  => opts.delete(:params_filters) || [],
+                                                 :whitelist_filters  => opts.delete(:whitelist_params_filters) || [],
+                                                 :to_clean => opts)
     cleaner.clean
   end
 
@@ -93,6 +94,61 @@ class ParamsCleanerTest < Test::Unit::TestCase
 
   should "filter parameters" do
     assert_filters_hash(:parameters)
+  end
+
+  should "whitelist filter parameters" do
+    whitelist_filters  = ["abc", :def]
+    original = { 'abc' => "123", 'def' => "456", 'ghi' => "789", 'nested' => { 'abc' => '100' },
+      'something_with_abc' => 'match the entire string'}
+    filtered = { 'abc'    => "123",
+      'def'    => "456",
+      'something_with_abc' => "[FILTERED]",
+      'ghi'    => "[FILTERED]",
+      'nested' => "[FILTERED]" }
+
+    clean_params = clean(:whitelist_params_filters => whitelist_filters,
+                         :parameters => original)
+
+    assert_equal(filtered,
+                 clean_params.send(:parameters))
+  end
+
+  should "not filter everything if whitelist filters are empty" do
+    whitelist_filters  = []
+    original = { 'abc' => '123' }
+    clean_params = clean(:whitelist_params_filters => whitelist_filters,
+                         :parameters => original)
+    assert_equal(original, clean_params.send(:parameters))
+  end
+
+  should "not care if filters are defined in nested array" do
+    filters  = [[/crazy/, :foo, ["bar", ["too"]]]]
+    original = {
+      'this_is_crazy' => 'yes_it_is',
+      'I_am_good' => 'yes_you_are',
+      'foo' => '1212',
+      'too' => '2121',
+      'bar' => 'secret'
+    }
+    filtered = {
+      'this_is_crazy' => '[FILTERED]',
+      'I_am_good' => 'yes_you_are',
+      'foo' => '[FILTERED]',
+      'too' => '[FILTERED]',
+      'bar' => '[FILTERED]'
+    }
+    clean_params = clean(:params_filters => filters,
+                         :parameters => original)
+    assert_equal(filtered, clean_params.send(:parameters))
+  end
+
+  should "filter key if it is defined as blacklist and whitelist" do
+    original = { 'filter_me' => 'secret' }
+    filtered = { 'filter_me' => '[FILTERED]' }
+    clean_params = clean(:params_filters => [:filter_me],
+                         :params_whitelist_filters => [:filter_me],
+                         :parameters => original)
+    assert_equal(filtered, clean_params.send(:parameters))
   end
 
   should "filter cgi data" do

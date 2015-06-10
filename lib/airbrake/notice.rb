@@ -47,6 +47,9 @@ module Airbrake
     # See Configuration#params_filters
     attr_reader :params_filters
 
+    # See Configuration#params_whitelist_filters
+    attr_reader :params_whitelist_filters
+
     # A hash of parameters from the query string or post body.
     attr_reader :parameters
     alias_method :params, :parameters
@@ -104,10 +107,12 @@ module Airbrake
       @notifier_version = args[:notifier_version]
       @notifier_url     = args[:notifier_url]
 
-      @ignore              = args[:ignore]              || []
-      @ignore_by_filters   = args[:ignore_by_filters]   || []
-      @backtrace_filters   = args[:backtrace_filters]   || []
-      @params_filters      = args[:params_filters]      || []
+      @ignore                   = args[:ignore]                   || []
+      @ignore_by_filters        = args[:ignore_by_filters]        || []
+      @backtrace_filters        = args[:backtrace_filters]        || []
+      @params_filters           = args[:params_filters]           || []
+      @params_whitelist_filters = args[:params_whitelist_filters] || []
+
       @parameters          = args[:parameters] ||
                                    action_dispatch_params ||
                                    rack_env(:params) ||
@@ -130,8 +135,9 @@ module Airbrake
       also_use_rack_params_filters
       find_session_data
 
-      @cleaner = args[:cleaner] || 
-        Airbrake::Utils::ParamsCleaner.new(:filters => params_filters,
+      @cleaner = args[:cleaner] ||
+        Airbrake::Utils::ParamsCleaner.new(:blacklist_filters => params_filters,
+                                           :whitelist_filters => params_whitelist_filters,
                                            :to_clean => data_to_clean)
 
       clean_data!

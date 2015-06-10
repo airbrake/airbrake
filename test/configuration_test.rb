@@ -23,6 +23,8 @@ class ConfigurationTest < Test::Unit::TestCase
     assert_config_default :ignore_user_agent,   []
     assert_config_default :params_filters,
                           Airbrake::Configuration::DEFAULT_PARAMS_FILTERS
+    assert_config_default :params_whitelist_filters,
+                          Airbrake::Configuration::DEFAULT_PARAMS_WHITELIST_FILTERS
     assert_config_default :backtrace_filters,
                           Airbrake::Configuration::DEFAULT_BACKTRACE_FILTERS
     assert_config_default :rake_environment_filters, []
