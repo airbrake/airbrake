@@ -1,18 +1,22 @@
 module Airbrake
   module Utils
     class ParamsCleaner
-      attr_writer :filters, :to_clean
+      attr_writer :blacklist_filters, :whitelist_filters, :to_clean
       attr_reader :parameters, :cgi_data, :session_data
 
       # Public: Initialize a new Airbrake::Utils::ParamsCleaner
       #
       # opts - The Hash options that contain filters and params (default: {}):
-      #        :filters - The Array of param keys that should be filtered
+      #        :blacklist_filters - The Array of param keys that should be filtered
+      #        :whitelist_filters - The Array of param keys that shouldn't be filtered
       #        :to_clean - The Hash of unfiltered params
+      #        :blacklist_filters take precedence over the :whitelist_filters
       def initialize(opts = {})
-        @filters     = opts[:filters] || []
-        @filters.map!{|f| f.is_a?(Symbol) ? f.to_s : f }
-        @to_clean    = opts[:to_clean]
+        @blacklist_filters = (opts[:blacklist_filters] || []).flatten
+        @blacklist_filters.map!{|f| f.is_a?(Symbol) ? f.to_s : f }
+        @whitelist_filters = (opts[:whitelist_filters] || []).flatten
+        @whitelist_filters.map!{|f| f.is_a?(Symbol) ? f.to_s : f }
+        @to_clean = opts[:to_clean]
       end
 
       # Public: Takes the params to_clean passed in an initializer
@@ -36,7 +40,7 @@ module Airbrake
         def clean_parameters
           return unless @to_clean[:parameters]
 
-          @parameters = if @filters.any?
+          @parameters = if any_filters?
             filter(clean_unserializable_data(@to_clean[:parameters]))
           else
             clean_unserializable_data(@to_clean[:parameters])
@@ -46,7 +50,7 @@ module Airbrake
         def clean_cgi_data
           return unless @to_clean[:cgi_data]
 
-          @cgi_data = if @filters.any?
+          @cgi_data = if any_filters?
             filter(clean_unserializable_data(@to_clean[:cgi_data]))
           else
             clean_unserializable_data(@to_clean[:cgi_data])
@@ -56,7 +60,7 @@ module Airbrake
         def clean_session_data
           return unless @to_clean[:session_data]
 
-          @session_data = if @filters.any?
+          @session_data = if any_filters?
             filter(clean_unserializable_data(@to_clean[:session_data]))
           else
             clean_unserializable_data(@to_clean[:session_data])
@@ -71,8 +75,23 @@ module Airbrake
           end
         end
 
+        def any_filters?
+          @blacklist_filters.any? || @whitelist_filters.any?
+        end
+
         def filter_key?(key)
-          @filters.any? do |filter|
+          blacklist_key?(key) || !whitelist_key?(key)
+        end
+
+        def blacklist_key?(key)
+          @blacklist_filters.any? do |filter|
+            key == filter || filter.is_a?(Regexp) && filter.match(key)
+          end
+        end
+
+        def whitelist_key?(key)
+          return true if @whitelist_filters.empty?
+          @whitelist_filters.any? do |filter|
             key == filter || filter.is_a?(Regexp) && filter.match(key)
           end
         end
