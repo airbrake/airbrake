@@ -2,6 +2,7 @@ module Airbrake
   SENSITIVE_RACK_VARS = %w(
       HTTP_X_CSRF_TOKEN
       HTTP_COOKIE
+      HTTP_AUTHORIZATION
 
       action_dispatch.request.unsigned_session_cookie
       action_dispatch.cookies
