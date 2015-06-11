@@ -38,7 +38,9 @@ module Airbrake
 
   SENSITIVE_ENV_VARS = [
       /secret/i,
-      /password/i
+      /password/i,
+      /auth/i,
+      /token/i
   ]
 
   FILTERED_RACK_VARS = SENSITIVE_RACK_VARS + SENSITIVE_ENV_VARS + RACK_VARS_CONTAINING_INSTANCES
