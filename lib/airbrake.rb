@@ -32,6 +32,7 @@ rescue LoadError
 end
 
 require 'airbrake/railtie' if defined?(Rails::Railtie)
+require 'airbrake/better_errors' if defined?(BetterErrors::Middleware)
 
 module Airbrake
   API_VERSION = "2.4"

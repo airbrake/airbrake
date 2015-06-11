@@ -1,10 +1,10 @@
-require "simplecov" 
+require "simplecov"
 
 if ENV["INTEGRATION"] then SimpleCov.command_name "test:integration"
 else SimpleCov.command_name "test:units"
 end
 
-SimpleCov.merge_timeout 3600 
+SimpleCov.merge_timeout 3600
 SimpleCov.start
 
 if ENV["CI"]
@@ -43,6 +43,7 @@ silence_warnings do
   require "shoulda-context"
   require "fakeweb"
   require "pry"
+  require 'better_errors'
 
   begin require 'redgreen'; rescue LoadError; end
 end
