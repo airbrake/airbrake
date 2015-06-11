@@ -1,10 +1,10 @@
 require 'better_errors'
 
 module BetterErrors
-  # Better Errors' error handling middleware with Airbrake support. Including
-  # this in your middleware stack will report uncatched exceptions to Airbrake
-  # and show a Better Errors error page for exceptions raised below this
-  # middleware.
+  # When using Better Errors' error handling middleware, this code will
+  # first report uncatched exceptions to Airbrake and then proceed with
+  # original method call, which will show a Better Errors error page for
+  # exceptions raised below this middleware.
   #
   class Middleware
     alias_method :show_error_page_original, :show_error_page
