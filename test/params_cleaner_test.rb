@@ -62,8 +62,25 @@ class ParamsCleanerTest < Test::Unit::TestCase
     assert_equal({"abc" => "123"}, clean_params.cgi_data)
   end
 
-  should "remove rack.request.form_vars" do
+  should "remove sensitive rack vars" do
     original = {
+      "HTTP_X_CSRF_TOKEN" => "remove_me",
+      "HTTP_COOKIE" => "remove_me",
+      "HTTP_AUTHORIZATION" => "remove_me",
+      "action_dispatch.request.unsigned_session_cookie" => "remove_me",
+      "action_dispatch.cookies" => "remove_me",
+      "action_dispatch.unsigned_session_cookie" => "remove_me",
+      "action_dispatch.secret_key_base" => "remove_me",
+      "action_dispatch.signed_cookie_salt" => "remove_me",
+      "action_dispatch.encrypted_cookie_salt" => "remove_me",
+      "action_dispatch.encrypted_signed_cookie_salt" => "remove_me",
+      "action_dispatch.http_auth_salt" => "remove_me",
+      "action_dispatch.secret_token" => "remove_me",
+      "rack.request.cookie_hash" => "remove_me",
+      "rack.request.cookie_string" => "remove_me",
+      "rack.request.form_vars" => "remove_me",
+      "rack.session" => "remove_me",
+      "rack.session.options" => "remove_me",
       "rack.request.form_vars" => "story%5Btitle%5D=The+TODO+label",
       "abc" => "123"
     }
