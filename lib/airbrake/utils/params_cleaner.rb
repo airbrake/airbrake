@@ -9,13 +9,18 @@ module Airbrake
       # opts - The Hash options that contain filters and params (default: {}):
       #        :blacklist_filters - The Array of param keys that should be filtered
       #        :whitelist_filters - The Array of param keys that shouldn't be filtered
+      #        :rack_vars_filters - The Array of rack vars that should be removed
       #        :to_clean - The Hash of unfiltered params
       #        :blacklist_filters take precedence over the :whitelist_filters
       def initialize(opts = {})
         @blacklist_filters = (opts[:blacklist_filters] || []).flatten
-        @blacklist_filters.map!{|f| f.is_a?(Symbol) ? f.to_s : f }
         @whitelist_filters = (opts[:whitelist_filters] || []).flatten
-        @whitelist_filters.map!{|f| f.is_a?(Symbol) ? f.to_s : f }
+        @rack_vars_filters = (opts[:rack_vars_filters] || []).flatten
+
+        [@blacklist_filters, @whitelist_filters, @rack_vars_filters].each do |filters|
+          filters.map!{ |f| f.is_a?(Symbol) ? f.to_s : f }
+        end
+
         @to_clean = opts[:to_clean]
       end
 
@@ -68,9 +73,9 @@ module Airbrake
         end
 
         def clean_rack_request_data
-          if @cgi_data
-            @cgi_data.reject! do |key, val|
-              Airbrake::FILTERED_RACK_VARS.include?(key) || Airbrake::SENSITIVE_ENV_VARS.any?{|re| re.match(key)}
+          if @cgi_data && @rack_vars_filters.any?
+            @cgi_data.reject! do |key|
+              remove_rack_var?(key)
             end
           end
         end
@@ -84,14 +89,20 @@ module Airbrake
         end
 
         def blacklist_key?(key)
-          @blacklist_filters.any? do |filter|
-            key == filter || filter.is_a?(Regexp) && filter.match(key)
-          end
+          filters_include_key?(@blacklist_filters, key)
         end
 
         def whitelist_key?(key)
           return true if @whitelist_filters.empty?
-          @whitelist_filters.any? do |filter|
+          filters_include_key?(@whitelist_filters, key)
+        end
+
+        def remove_rack_var?(key)
+          filters_include_key?(@rack_vars_filters, key)
+        end
+
+        def filters_include_key?(filters, key)
+          filters.any? do |filter|
             key == filter || filter.is_a?(Regexp) && filter.match(key)
           end
         end
