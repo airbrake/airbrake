@@ -27,6 +27,8 @@ class ConfigurationTest < Test::Unit::TestCase
                           Airbrake::Configuration::DEFAULT_PARAMS_WHITELIST_FILTERS
     assert_config_default :backtrace_filters,
                           Airbrake::Configuration::DEFAULT_BACKTRACE_FILTERS
+    assert_config_default :rack_vars_filters,
+                          Airbrake::Configuration::DEFAULT_RACK_VARS_FILTERS
     assert_config_default :rake_environment_filters, []
     assert_config_default :ignore,
                           Airbrake::Configuration::IGNORE_DEFAULT
@@ -127,6 +129,10 @@ class ConfigurationTest < Test::Unit::TestCase
 
   should "allow rake environment filters to be appended" do
     assert_appends_value :rake_environment_filters
+  end
+
+  should "allow rack vars filters to be appended" do
+    assert_appends_value :rack_vars_filters
   end
 
   should "allow ignored user agents to be appended" do

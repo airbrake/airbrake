@@ -50,6 +50,9 @@ module Airbrake
     # See Configuration#params_whitelist_filters
     attr_reader :params_whitelist_filters
 
+    # See Configuration#rack_vars_filters
+    attr_reader :rack_vars_filters
+
     # A hash of parameters from the query string or post body.
     attr_reader :parameters
     alias_method :params, :parameters
@@ -112,6 +115,7 @@ module Airbrake
       @backtrace_filters        = args[:backtrace_filters]        || []
       @params_filters           = args[:params_filters]           || []
       @params_whitelist_filters = args[:params_whitelist_filters] || []
+      @rack_vars_filters        = args[:rack_vars_filters]        || []
 
       @parameters          = args[:parameters] ||
                                    action_dispatch_params ||
@@ -138,6 +142,7 @@ module Airbrake
       @cleaner = args[:cleaner] ||
         Airbrake::Utils::ParamsCleaner.new(:blacklist_filters => params_filters,
                                            :whitelist_filters => params_whitelist_filters,
+                                           :rack_vars_filters => rack_vars_filters,
                                            :to_clean => data_to_clean)
 
       clean_data!
