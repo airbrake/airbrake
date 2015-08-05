@@ -167,7 +167,7 @@ module Airbrake
           sender.send_to_airbrake(notice)
         end
       else
-        report_notice_not_sent_for_configuration
+        report_notice_not_sent_for_configuration unless configuration.test_environment?
       end
     end
 
