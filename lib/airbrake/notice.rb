@@ -154,7 +154,7 @@ module Airbrake
           notifier.version(notifier_version)
           notifier.url(notifier_url)
         end
-        notice.error do |error|
+        notice.tag!('error') do |error|
           error.tag!('class', error_class)
           error.message(error_message)
           error.backtrace do |backtrace|
