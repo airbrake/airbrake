@@ -51,7 +51,7 @@ module Airbrake
       http = setup_http_connection
 
       response = begin
-                   http.post(url.respond_to?(:path) ? url.path : url,
+                   http.post(request_uri,
                              data,
                              headers)
                  rescue *HTTP_ERRORS => e
@@ -175,6 +175,13 @@ module Airbrake
     def json_api_enabled?
       !!(host =~ /collect.airbrake.io/) &&
         project_id =~ /\S/
+    end
+
+    # Use request_uri[0] to keep the query since it contains the API_KEY.
+    #
+    # [0] http://ruby-doc.org/stdlib-2.2.2/libdoc/uri/rdoc/URI/HTTP.html#method-i-request_uri
+    def request_uri
+      url.respond_to?(:request_uri) ? url.request_uri : url
     end
   end
 

@@ -107,7 +107,23 @@ class SenderTest < Test::Unit::TestCase
       assert_received(http, :post) do |expect|
         expect.with(anything, json_notice, Airbrake::Sender::HEADERS[:json])
       end
+    end
 
+    should "post to Airbrake keeping the apiKey in the URL" do
+      json_notice = Airbrake::Notice.new(:error_class => "FooBar", :error_message => "Foo Bar").to_json
+
+      http = stub_http
+
+      sender = build_sender(:project_id => "PROJECT_ID", :host => "collect.airbrake.io")
+      sender.send_to_airbrake(json_notice)
+
+      expected_url = format("%s/PROJECT_ID/notices?key=%s",
+        Airbrake::Sender::JSON_API_URI,
+        Airbrake.configuration[:api_key])
+
+      assert_received(http, :post) do |expect|
+        expect.with(expected_url, json_notice, Airbrake::Sender::HEADERS[:json])
+      end
     end
 
     should "post to Airbrake with notice passed" do
