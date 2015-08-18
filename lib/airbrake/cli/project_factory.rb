@@ -2,13 +2,11 @@ require File.expand_path( "../project", __FILE__)
 # Responsible for creating projects when needed.
 # Creates them from XML received.
 class ProjectFactory
+  attr_reader :project, :projects
+
   def initialize
     @project = Project.new
     @projects = []
-  end
-
-  def project
-    @project
   end
 
   def create_projects_from_xml(xml)
@@ -31,9 +29,5 @@ class ProjectFactory
       projects << @project
       @project = Project.new
     end
-  end
-
-  def projects
-    @projects
   end
 end
