@@ -76,7 +76,7 @@ class AirbrakeGenerator < Rails::Generator::Base
   end
 
   def use_initializer?
-    Rails::VERSION::MAJOR > 1
+    ::Rails::VERSION::MAJOR > 1
   end
 
   def api_key_configured?
