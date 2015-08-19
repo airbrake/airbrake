@@ -112,7 +112,7 @@ If you wish to run the entire suite, which checks the different framework
 integrations with cucumber, you should run the following commands
 
     bundle
-    bundle exec rake appraisal:install
+    bundle exec appraisal install
     bundle exec rake
 
 We use [Appraisals](https://github.com/thoughtbot/appraisal) to run the integration
