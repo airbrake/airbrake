@@ -1,7 +1,7 @@
 Airbrake Resources
 ==================
 
-Airbrake has an SSL mode available to paying plans. SSL Certificate Authority (CA) certificates are not kept current by default on many environments. When CA certs are stale, Airbrake cannot verify Airbrake's production SSL cert and error reports fail. To avoid this, we now package local CA certs. The production of these certs is detailed here.
+Airbrake has an SSL mode. SSL Certificate Authority (CA) certificates are not kept current by default on many environments. When CA certs are stale, Airbrake cannot verify Airbrake's production SSL cert and error reports fail. To avoid this, we now package local CA certs. The production of these certs is detailed here.
 
 Building ca-bundle.crt
 ----------------------
