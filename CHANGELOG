@@ -1,3 +1,35 @@
+Version 4.3.1 - 2015-08-24 21:10:19 -0500
+===============================================================================
+
+Edoardo Rossi (1):
+      Fix missing api_key when using V3 endpoint URL
+
+Igor Kapkov (2):
+      Use getters instead of handwriten methods
+      Update readme to fix appraisal deprecation
+
+Kyrylo Silin (5):
+      Merge pull request #404 from zeroed/master
+      Merge pull request #405 from igas/little-optimization
+      Merge pull request #408 from igas/update-readme-to-fix-appraisal-deprecation
+      Merge pull request #406 from Aupajo/fix/ambiguous-rails
+      Merge pull request #403 from lisovskyvlad/master
+
+Lisovsky Vlad (1):
+      Fix dumping notice object to xml for rails 2.3.10 and builder 2.1.2
+
+Mark Nadig (1):
+      capistrano task should handle symbols for env
+
+Pete Nicholls (1):
+      Use ::Rails namespace for Rails::VERSION
+
+shifi (3):
+      Merge branch 'issue_393' of https://github.com/KonaTeam/airbrake into KonaTeam-issue_393
+      Merge branch 'KonaTeam-issue_393'
+      add guidelines for contributing
+
+
 Version 4.3.0 - 2015-06-23 19:36:10 -0500
 ===============================================================================
 
@@ -1532,6 +1564,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
