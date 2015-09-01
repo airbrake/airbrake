@@ -4,7 +4,7 @@ module Airbrake
 
       def airbrake_request_data
         {
-          :parameters       => airbrake_filter_if_filtering(params.to_hash),
+          :parameters       => airbrake_filter_if_filtering(params.to_unsafe_h),
           :session_data     => airbrake_filter_if_filtering(airbrake_session_data),
           :controller       => params[:controller],
           :action           => params[:action],
