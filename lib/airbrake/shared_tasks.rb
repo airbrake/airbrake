@@ -17,7 +17,6 @@ namespace :airbrake do
                          :scm_revision   => ENV['REVISION'],
                          :scm_repository => ENV['REPO'],
                          :local_username => ENV['USER'],
-                         :api_key        => ENV['API_KEY'],
                          :dry_run        => ENV['DRY_RUN'])
   end
 
@@ -46,8 +45,8 @@ namespace :airbrake do
       repo             = `git config --get remote.origin.url` || ENV["REPO"]
 
       command = %Q(heroku addons:add deployhooks:http --url="http://airbrake.io/deploys.txt?api_key=#{heroku_api_key})
-      command << "&deploy[local_username]={{user}}"    
-      command << "&deploy[scm_revision]={{head_long}}" 
+      command << "&deploy[local_username]={{user}}"
+      command << "&deploy[scm_revision]={{head_long}}"
       command << "&deploy[rails_env]=#{heroku_rails_env}"  if heroku_rails_env
       command << "&deploy[scm_repository]=#{repo}"         if repo
       command << '"'
