@@ -4,7 +4,7 @@ module Airbrake
 
       def airbrake_request_data
         {
-          :parameters       => airbrake_filter_if_filtering(params.to_unsafe_h),
+          :parameters       => airbrake_filter_if_filtering(to_hash(params)),
           :session_data     => airbrake_filter_if_filtering(airbrake_session_data),
           :controller       => params[:controller],
           :action           => params[:action],
@@ -15,6 +15,14 @@ module Airbrake
       end
 
       private
+      
+      def to_hash(params)
+        # Rails <= 4
+        return params.to_hash if params.respond_to?(:to_hash)
+
+        # Rails >= 5
+        params.to_unsafe_h
+      end
 
       # This method should be used for sending manual notifications while you are still
       # inside the controller. Otherwise it works like Airbrake.notify.
