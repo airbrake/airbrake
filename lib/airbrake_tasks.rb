@@ -8,15 +8,13 @@ module AirbrakeTasks
   #
   # @param [Hash] opts Data about the deploy that is set to Airbrake
   #
-  # @option opts [String] :api_key Api key of you Airbrake application
   # @option opts [String] :rails_env Environment of the deploy (production, staging)
   # @option opts [String] :scm_revision The given revision/sha that is being deployed
   # @option opts [String] :scm_repository Address of your repository to help with code lookups
   # @option opts [String] :local_username Who is deploying
   def self.deploy(opts = {})
-    api_key = opts.delete(:api_key) || Airbrake.configuration.api_key
-    unless api_key =~ /\S/
-      puts "I don't seem to be configured with an API key.  Please check your configuration."
+    unless Airbrake.configuration.api_key =~ /\S/
+      puts "I don't seem to be configured with an API key. Please check your configuration."
       return false
     end
 
@@ -26,7 +24,7 @@ module AirbrakeTasks
     end
 
     dry_run = opts.delete(:dry_run)
-    params = {'api_key' => api_key}
+    params = {'api_key' => Airbrake.configuration.api_key}
     opts.each {|k,v| params["deploy[#{k}]"] = v }
 
     host = Airbrake.configuration.host || 'api.airbrake.io'
