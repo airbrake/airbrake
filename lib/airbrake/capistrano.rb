@@ -82,7 +82,6 @@ module Airbrake
             notify_command << " RAILS_ENV=#{rails_env}" if rails_env
             notify_command << " airbrake:deploy TO=#{airbrake_env} REVISION=#{current_revision} REPO=#{repository} USER=#{Airbrake::Capistrano::shellescape(local_user)}"
             notify_command << " DRY_RUN=true" if dry_run
-            notify_command << " API_KEY=#{ENV['API_KEY']}" if ENV['API_KEY']
             logger.info "Notifying Airbrake of Deploy (#{notify_command})"
             if configuration.dry_run
               logger.info "DRY RUN: Notification not actually run."
