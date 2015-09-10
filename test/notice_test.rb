@@ -1,6 +1,5 @@
 require File.expand_path '../helper', __FILE__
 
-
 class NoticeTest < Test::Unit::TestCase
 
   include DefinesConstants
@@ -43,8 +42,8 @@ class NoticeTest < Test::Unit::TestCase
   end
 
   def assert_valid_notice_document(document)
-    xsd_path = URI(XSD_SCHEMA_PATH)
-    schema = Nokogiri::XML::Schema.new(Net::HTTP.get(xsd_path))
+    xsd_path = File.expand_path(File.join(File.dirname(__FILE__),"..", "resources", "airbrake_2_4.xsd"))
+    schema = Nokogiri::XML::Schema.new(IO.read(xsd_path))
     errors = schema.validate(document)
     assert errors.empty?, errors.collect{|e| e.message }.join
   end
@@ -189,7 +188,7 @@ class NoticeTest < Test::Unit::TestCase
       build_notice
     end
   end
-  
+
   should "accept any object that responds to :to_hash as CGI data" do
     hashlike_obj = Object.new
     hashlike_obj.instance_eval do
