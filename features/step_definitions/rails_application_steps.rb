@@ -263,5 +263,5 @@ Then /^the Airbrake middleware should be placed correctly$/ do
   airbrake_index  = middleware.rindex("use Airbrake::Rails::Middleware")
   middleware_index = middleware.rindex("use ActionDispatch::DebugExceptions") ||
     middleware.rindex("use ActionDispatch::ShowExceptions")
-  (airbrake_index > middleware_index).should be_true
+  (airbrake_index < middleware_index).should be_true
 end

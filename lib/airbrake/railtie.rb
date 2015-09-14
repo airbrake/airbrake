@@ -20,7 +20,7 @@ module Airbrake
         "ActionDispatch::ShowExceptions"
       end
 
-      app.config.middleware.insert_after middleware,
+      app.config.middleware.insert_before middleware,
         "Airbrake::Rails::Middleware"
 
       app.config.middleware.insert 0, "Airbrake::UserInformer"
