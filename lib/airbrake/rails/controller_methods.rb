@@ -98,7 +98,7 @@ module Airbrake
           url << ":#{request.port}"
         end
 
-        URI.join(url, request.fullpath).to_s
+        url << "/" << request.fullpath
       end
 
       def airbrake_current_user
