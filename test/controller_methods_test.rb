@@ -57,6 +57,14 @@ class NoSessionTestController < TestController
   end
 end
 
+class ParamTestController < TestController
+  QUERY_PARAMS = { name: "|" } # URI parameter with invalid character
+  def request
+    query = QUERY_PARAMS.map { |k, v| "#{k}=#{v}"}.join("&")
+    OpenStruct.new(:port=> 80, :protocol => 'http://', host: 'example.com', :fullpath => "path?#{query}", :env => [])
+  end
+end
+
 class ControllerMethodsTest < Test::Unit::TestCase
   include DefinesConstants
 
@@ -168,6 +176,11 @@ class ControllerMethodsTest < Test::Unit::TestCase
     should "return correct request url" do
       request_url = @controller.send(:airbrake_request_url)
       assert_equal request_url, "http://example.com/path"
+    end
+
+    should "handle invalid character in param" do
+      request_url = ParamTestController.new.send(:airbrake_request_url)
+      assert_equal request_url, "http://example.com/path?name=|"
     end
   end
 
