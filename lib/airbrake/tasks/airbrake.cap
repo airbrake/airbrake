@@ -17,7 +17,6 @@ namespace :airbrake do
           notify_command << " TO=#{airbrake_env}"
           notify_command << " REVISION=#{fetch(:current_revision)} REPO=#{fetch(:repo_url)}"
           notify_command << " USER=#{local_user.strip.shellescape}"
-          notify_command << " API_KEY=#{ENV['API_KEY']}" if ENV['API_KEY']
 
           info "Notifying Airbrake of Deploy (#{notify_command})"
           execute :rake, notify_command

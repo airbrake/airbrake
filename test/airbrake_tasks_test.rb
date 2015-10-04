@@ -92,12 +92,6 @@ class AirbrakeTasksTest < Test::Unit::TestCase
             end
           end
 
-          before_should "use the :api_key param if it's passed in." do
-            @options[:api_key] = "value"
-            @post.expects(:set_form_data).
-              with(has_entries("api_key" => "value"))
-          end
-
           before_should "puts the response body on success" do
             AirbrakeTasks.expects(:puts).with("body")
             @http_proxy.expects(:request).with(any_parameters).returns(successful_response('body'))
@@ -125,7 +119,7 @@ class AirbrakeTasksTest < Test::Unit::TestCase
 
     context "in a configured project with custom host" do
       setup do
-        Airbrake.configure do |config| 
+        Airbrake.configure do |config|
           config.api_key = "1234123412341234"
           config.host = "custom.host"
         end
