@@ -181,4 +181,13 @@ class ParamsCleanerTest < Test::Unit::TestCase
     assert_serializes_hash(:cgi_data)
     assert_serializes_hash(:session_data)
   end
+
+  should "handle closed IO objects by converting them to strings" do
+    params = {
+      :files => [Tempfile.new('a').tap(&:close), IO.new(0).tap(&:close)]
+    }
+    clean_params = clean(:params_filters => ['files'], :parameters => params)
+    assert_match(/\A#<(Temp)?[Ff]ile:0x.+>\z/, clean_params.parameters[:files][0])
+    assert_match(/\A#<IO:0x.+>\z/, clean_params.parameters[:files][1])
+  end
 end
