@@ -39,7 +39,7 @@ end
 class ControllerMethodsTest < Test::Unit::TestCase
   include DefinesConstants
 
-  context "#airbrake_current_user" do
+  context "#airbrake_request_data" do
     context "without a logged in user" do
       setup do
 
@@ -59,7 +59,7 @@ class ControllerMethodsTest < Test::Unit::TestCase
       end
 
       should "not call #id on NilClass" do
-        @controller.send(:airbrake_current_user)
+        @controller.airbrake_request_data
         assert_equal false, NilClass.called
       end
     end
