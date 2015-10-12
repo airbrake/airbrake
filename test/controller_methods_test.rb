@@ -29,6 +29,27 @@ class CurrentMemberTestController < TestController
   end
 end
 
+class CurrentUserErrorTestController < TestController
+  def current_user
+    fail 'Testing broken implementation for #current_user'
+  end
+end
+
+class CurrentMemberErrorTestController < TestController
+  def current_member
+    fail 'Testing broken implementation for #current_member'
+  end
+end
+
+class CurrentUserAttributeErrorTestController < TestController
+  def current_user
+    user = OpenStruct.new(:id => 123)
+    def user.name
+      fail 'Testing attribute that raises error on #current_user'
+    end
+    user
+  end
+end
 
 class NoSessionTestController < TestController
   def session
@@ -100,6 +121,32 @@ class ControllerMethodsTest < Test::Unit::TestCase
         ::POOL.expects(:release_connection)
 
         CurrentUserTestController.new.airbrake_request_data
+      end
+    end
+
+    context 'when loading the user raises an error' do
+      should 'send empty user info to Ab when current_user fails' do
+        Airbrake.configuration.user_attributes = %w(id)
+        controller = CurrentUserErrorTestController.new
+        ab_data = controller.airbrake_request_data
+
+        assert_equal( { },  ab_data[:user] )
+      end
+
+      should 'send empty user info to Ab when current_member fails' do
+        Airbrake.configuration.user_attributes = %w(id)
+        controller = CurrentMemberErrorTestController.new
+        ab_data = controller.airbrake_request_data
+
+        assert_equal( { },  ab_data[:user] )
+      end
+
+      should 'exclude any user attributes that raise an error' do
+        Airbrake.configuration.user_attributes = %w(id name)
+        controller = CurrentUserAttributeErrorTestController.new
+        ab_data = controller.airbrake_request_data
+
+        assert_equal( {:id => 123},  ab_data[:user])
       end
     end
   end

@@ -10,12 +10,12 @@ module Airbrake
           :action           => params[:action],
           :url              => airbrake_request_url,
           :cgi_data         => airbrake_filter_if_filtering(request.env),
-          :user             => airbrake_current_user || {}
+          :user             => airbrake_current_user
         }
       end
 
       private
-      
+
       def to_hash(params)
         # Rails <= 4
         return params.to_hash if params.respond_to?(:to_hash)
@@ -106,9 +106,15 @@ module Airbrake
 
         if user
           Airbrake.configuration.user_attributes.map(&:to_sym).inject({}) do |hsh, attr|
-            hsh[attr.to_sym] = user.send(attr) if user.respond_to? attr
-            hsh
+            begin
+              hsh[attr] = user.send(attr) if user.respond_to? attr
+              hsh
+            rescue
+              hsh
+            end
           end
+        else
+          {}
         end
       end
 
@@ -120,6 +126,8 @@ module Airbrake
         else
           nil
         end
+      rescue
+        nil
       ensure
         # The Airbrake middleware is first in the chain, before ActiveRecord::ConnectionAdapters::ConnectionManagement
         # kicks in to do its thing. This can cause the connection pool to run out of connections.
