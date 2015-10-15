@@ -1,7 +1,6 @@
 require File.expand_path '../helper', __FILE__
 
 silence_warnings do
-  require 'abstract_controller'
   require 'action_controller'
   require 'action_dispatch'
   require 'active_support/dependencies'
