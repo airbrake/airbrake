@@ -2,6 +2,8 @@ module Airbrake
   module Rails
     module ControllerMethods
 
+      SLASH = "/"
+
       def airbrake_request_data
         {
           :parameters       => airbrake_filter_if_filtering(to_hash(params)),
@@ -98,7 +100,11 @@ module Airbrake
           url << ":#{request.port}"
         end
 
-        URI.join(url, request.fullpath).to_s
+        unless request.fullpath[0] == SLASH
+          url << SLASH
+        end
+
+        url << request.fullpath
       end
 
       def airbrake_current_user
