@@ -1,3 +1,51 @@
+Version 4.3.2 - 2015-10-16 21:24:49 -0500
+===============================================================================
+
+Alexis (3):
+      don't fail on request param containing |
+      [#419] | test
+      don't fail on request param containing |
+
+Andres Ivanov (5):
+      Remove API_KEY from capistrano tasks
+      Remove api_key variable sent by airbrake:deploy
+      Merge github.com:airbrake/airbrake
+      Remove api_key opt from AirbrakeTasks.deploy
+      Remove test that checks availability of passing api_key opt
+
+Iain Beeston (2):
+      Corrected ControllerMethods test that could never fail
+      Protected against errors while gathering user details
+
+Joe Roberts (1):
+      Fix readme, SSL is available to everyone.
+
+Kyrylo Silin (15):
+      Merge pull request #409 from airbrake/fix/readme-ssl
+      Merge pull request #411 from TangRufus/master
+      Revert "start using remote XSD file when verifying XML in tests"
+      Merge pull request #420 from alexis779/master
+      Revert "[#419] don't fail on request param containing |"
+      Merge pull request #424 from airbrake/revert-420-master
+      circle: update Ruby from 2.0.0-p0 to 2.2.3
+      Merge pull request #425 from airbrake/update-ruby
+      params_cleaner: do not attempt to "collect" closed IO objects
+      Merge pull request #426 from airbrake/396-closed-io-bug
+      Merge pull request #429 from iainbeeston/incorrect-controller-method-name
+      Merge pull request #430 from iainbeeston/protect-against-user-load-errors
+      test/integration: don't require abstract_controller
+      Merge pull request #431 from airbrake/do-not-require-abstract-controller
+      Merge pull request #427 from alexis779/master
+
+Marko Šiftar (2):
+      Merge pull request #412 from midN/master
+      Merge pull request #416 from airbrake/415-fix-build
+
+Tang Rufus (2):
+      Fix airbrake/airbrake#410
+      Backward compatible with Rails 4
+
+
 Version 4.3.1 - 2015-08-24 21:10:19 -0500
 ===============================================================================
 
@@ -1564,6 +1612,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
