@@ -175,7 +175,16 @@ module Airbrake
       exception = unwrap_exception(exception)
       opts = opts.merge(:exception => exception) if exception.is_a?(Exception)
       opts = opts.merge(exception.to_hash) if exception.respond_to?(:to_hash)
-      Notice.new(configuration.merge(opts))
+      is_java_exception = RUBY_PLATFORM == 'java' && e.kind_of?(java.lang.Throwable)
+      opts = opts.merge(:exception => exception) if is_java_exception
+      notice = Notice.new(configuration.merge(opts))
+      if is_java_exception
+        lines = e.stack_trace.map do |element|
+          Airbrake::Backtrace::element.new(element.file_name, element.line_number, "#{element.class_name}.#{element.method_name}")
+        end
+        notice.backtrace.lines.replace(lines)
+      end
+      notice
     end
 
     def unwrap_exception(exception)
