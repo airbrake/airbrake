@@ -98,7 +98,7 @@ module Airbrake
 
         def filter(hash)
           hash.each do |key, value|
-            if filter_key?(key)
+            if hash.is_a?(Hash) && filter_key?(key)
               hash[key] = "[FILTERED]"
             elsif value.respond_to?(:to_hash)
               filter(hash[key])
