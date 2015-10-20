@@ -366,6 +366,13 @@ class NoticeTest < Test::Unit::TestCase
     assert !notice.ignore?
   end
 
+  should "ignore an wrapped exception matching ignore filters" do
+    notice = build_notice(error_class: "NotIgnored",
+                          exception_classes: ["Ignored", "NotIgnored"],
+                          ignore: ["Ignored"])
+    assert notice.ignore?
+  end
+
   should "ignore an exception with a matching error class" do
     notice = build_notice(:error_class => 'ArgumentError',
                           :ignore      => [ArgumentError])
