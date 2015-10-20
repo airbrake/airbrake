@@ -190,4 +190,15 @@ class ParamsCleanerTest < Test::Unit::TestCase
     assert_match(/\A#<(Temp)?[Ff]ile:0x.+>\z/, clean_params.parameters[:files][0])
     assert_match(/\A#<IO:0x.+>\z/, clean_params.parameters[:files][1])
   end
+
+  should "not break on filtering multi-dimensional array as possible in action_dispatch.cookies" do
+    original = { 'cgi_cookies_to_filter' => [['any_cookie_key', 'some_cookie_value'], ['secret', 'some_secret_value']] }
+    clean_params = clean(:params_filters => [:secret],
+                         :params_whitelist_filters => [:secret],
+                         :parameters => original)
+    assert_nothing_raised do
+      clean_params.send(:parameters)
+    end
+  end
+
 end
