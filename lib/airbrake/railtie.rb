@@ -12,13 +12,16 @@ module Airbrake
 
     initializer "airbrake.middleware" do |app|
 
-      middleware = if defined?(ActionDispatch::DebugExceptions)
-        # Rails >= 3.2.0
-        "ActionDispatch::DebugExceptions"
-      else
-        # Rails < 3.2.0
-        "ActionDispatch::ShowExceptions"
-      end
+      middleware =
+        if !::Rails.env.production? && defined?(::BetterErrors::Middleware)
+          "BetterErrors::Middleware"
+        elsif defined?(::ActionDispatch::DebugExceptions)
+          # Rails >= 3.2.0
+          "ActionDispatch::DebugExceptions"
+        else
+          # Rails < 3.2.0
+          "ActionDispatch::ShowExceptions"
+        end
 
       app.config.middleware.insert_after middleware,
         "Airbrake::Rails::Middleware"
