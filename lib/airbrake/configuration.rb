@@ -270,6 +270,10 @@ module Airbrake
       @port || default_port
     end
 
+    def test_environment?
+      environment_name == 'test'
+    end
+
     # Determines whether protocol should be "http" or "https".
     # @return [String] Returns +"http"+ if you've set secure to +false+ in
     # configuration, and +"https"+ otherwise.
