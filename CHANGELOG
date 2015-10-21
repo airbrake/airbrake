@@ -1,3 +1,17 @@
+Version 4.3.3 - 2015-10-20 19:33:27 -0500
+===============================================================================
+
+Daniel Loy (1):
+      don't break `clean_params` when processing nested array (as seen in action_dispatch.cookies from cgi-data)
+
+Joe Van Dyk (1):
+      Add way to ignore all the exceptions
+
+Kyrylo Silin (2):
+      Merge pull request #432 from loybert/fix/dont-break-when-filtering-arrays-of-arrays
+      Merge pull request #433 from Tanga/ignore_exceptions
+
+
 Version 4.3.2 - 2015-10-16 21:24:49 -0500
 ===============================================================================
 
@@ -1612,6 +1626,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
