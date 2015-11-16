@@ -3,5 +3,6 @@ languages:
 exclude_paths:
   - "test/*"
   - lib/airbrake/notice/xml_builder.rb
+  - lib/airbrake/notice/json_builder.rb
   - .codeclimate.yml
 
