@@ -1,0 +1,7 @@
+languages:
+   Ruby: true
+exclude_paths:
+  - "test/*"
+  - lib/airbrake/notice/xml_builder.rb
+  - .codeclimate.yml
+
