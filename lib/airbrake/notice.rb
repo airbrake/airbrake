@@ -1,6 +1,6 @@
-require 'builder'
 require 'socket'
-require 'multi_json'
+require 'airbrake/notice/xml_builder'
+require 'airbrake/notice/json_builder'
 
 module Airbrake
   class Notice
@@ -100,163 +100,37 @@ module Airbrake
     public
 
     def initialize(args)
-      @args             = args
-      @exception        = args[:exception]
-      @api_key          = args[:api_key]
-      @project_root     = args[:project_root]
-      @url              = args[:url] || rack_env(:url)
-      @notifier_name    = args[:notifier_name]
-      @notifier_version = args[:notifier_version]
-      @notifier_url     = args[:notifier_url]
+      setup_instance_variables!(args)
+      @parameters ||= action_dispatch_params ||
+                      rack_env(:params) ||
+                      {}
 
-      @ignore                   = args[:ignore]                   || []
-      @ignore_by_filters        = args[:ignore_by_filters]        || []
-      @backtrace_filters        = args[:backtrace_filters]        || []
-      @params_filters           = args[:params_filters]           || []
-      @params_whitelist_filters = args[:params_whitelist_filters] || []
+      @component  ||= args[:controller] || parameters['controller']
+      @action     ||= parameters['action']
 
-      @parameters          = args[:parameters] ||
-                                   action_dispatch_params ||
-                                   rack_env(:params) ||
-                                   {}
-      @component           = args[:component] || args[:controller] || parameters['controller']
-      @action              = args[:action] || parameters['action']
-
-      @environment_name = args[:environment_name]
       @cgi_data         = (args[:cgi_data].respond_to?(:to_hash) && args[:cgi_data].to_hash.dup) || args[:rack_env] || {}
-      @backtrace        = Backtrace.parse(exception_attribute(:backtrace, caller), :filters => @backtrace_filters)
-      @error_class      = exception_attribute(:error_class) {|exception| exception.class.name }
-      @error_message    = exception_attribute(:error_message, 'Notification') do |exception|
-        "#{exception.class.name}: #{args[:error_message] || exception.message}"
-      end
+
+      setup_exception!(args)
 
       @hostname        = local_hostname
       @user            = args[:user] || {}
 
-      @exception_classes= Array(args[:exception_classes])
-      if @exception
-        @exception_classes << @exception.class
-      end
-      if @error_class
-        @exception_classes << @error_class
-      end
-
+      setup_exception_classes!(args)
 
       also_use_rack_params_filters
       find_session_data
 
-      @cleaner = args[:cleaner] ||
-        Airbrake::Utils::ParamsCleaner.new(:blacklist_filters => params_filters,
-                                           :whitelist_filters => params_whitelist_filters,
-                                           :to_clean => data_to_clean)
-
+      setup_cleaner!(args)
       clean_data!
     end
 
     # Converts the given notice to XML
     def to_xml
-      builder = Builder::XmlMarkup.new
-      builder.instruct!
-      xml = builder.notice(:version => Airbrake::API_VERSION) do |notice|
-        notice.tag!("api-key", api_key)
-        notice.notifier do |notifier|
-          notifier.name(notifier_name)
-          notifier.version(notifier_version)
-          notifier.url(notifier_url)
-        end
-        notice.tag!('error') do |error|
-          error.tag!('class', error_class)
-          error.message(error_message)
-          error.backtrace do |backtrace|
-            self.backtrace.lines.each do |line|
-              backtrace.line(
-                :number      => line.number,
-                :file        => line.file,
-                :method      => line.method_name
-              )
-            end
-          end
-        end
-        if request_present?
-          notice.request do |request|
-            request.url(url)
-            request.component(controller)
-            request.action(action)
-            unless parameters.empty?
-              request.params do |params|
-                xml_vars_for(params, parameters)
-              end
-            end
-            unless session_data.empty?
-              request.session do |session|
-                xml_vars_for(session, session_data)
-              end
-            end
-            unless cgi_data.empty?
-              request.tag!("cgi-data") do |cgi_datum|
-                xml_vars_for(cgi_datum, cgi_data)
-              end
-            end
-          end
-        end
-        notice.tag!("server-environment") do |env|
-          env.tag!("project-root", project_root)
-          env.tag!("environment-name", environment_name)
-          env.tag!("hostname", hostname)
-        end
-        unless user.empty?
-          notice.tag!("current-user") do |u|
-            user.each do |attr, value|
-              u.tag!(attr.to_s, value)
-            end
-          end
-        end
-        if framework =~ /\S/
-          notice.tag!("framework", framework)
-        end
-      end
-      xml.to_s
+      Notice::XmlBuilder.render(self)
     end
 
     def to_json
-      MultiJson.dump({
-        'notifier' => {
-          'name'    => 'airbrake',
-          'version' => Airbrake::VERSION,
-          'url'     => 'https://github.com/airbrake/airbrake'
-          },
-        'errors' => [{
-            'type'       => error_class,
-            'message'    => error_message,
-            'backtrace'  => backtrace.lines.map do |line|
-                {
-                  'file'     => line.file,
-                  'line'     => line.number.to_i,
-                  'function' => line.method_name
-                }
-            end
-          }],
-         'context' => {}.tap do |hash|
-            if request_present?
-              hash['url']           = url
-              hash['component']     = controller
-              hash['action']        = action
-              hash['rootDirectory'] = File.dirname(project_root)
-              hash['environment']   = environment_name
-            end
-           end.tap do |hash|
-            next if user.empty?
-
-            hash['userId']    = user[:id]
-            hash['userName']  = user[:name]
-            hash['userEmail'] = user[:email]
-          end
-
-      }.tap do |hash|
-          hash['environment'] = cgi_data     unless cgi_data.empty?
-          hash['params']      = parameters   unless parameters.empty?
-          hash['session']     = session_data unless session_data.empty?
-      end)
+      Notice::JsonBuilder.render(self)
     end
 
     # Determines if this notice should be ignored
@@ -286,6 +160,64 @@ module Airbrake
     end
 
     private
+
+    def setup_instance_variables!(args)
+      @args = args
+
+      initialize_as_array = %w(
+        ignore ignore_by_filters backtrace_filters
+      )
+
+      to_initialize = %w(
+        exception api_key project_root url
+        parameters
+        notifier_name notifier_version notifier_url
+        params_filters params_whitelist_filters
+        component action environment_name
+        cleaner
+      )
+
+      initialize_as_array.each do |attr|
+        instance_variable_set("@#{attr}", args[attr.to_sym] || [])
+      end
+
+      to_initialize.each do |attr|
+        instance_variable_set("@#{attr}", args[attr.to_sym])
+      end
+
+       @url ||= rack_env(:url)
+    end
+
+    def setup_exception!(args)
+      @backtrace        = Backtrace.parse(exception_attribute(:backtrace, caller), :filters => @backtrace_filters)
+      @error_class      = exception_attribute(:error_class) {|exception| exception.class.name }
+      @error_message    = exception_attribute(:error_message, 'Notification') do |exception|
+        "#{exception.class.name}: #{args[:error_message] || exception.message}"
+      end
+    end
+
+
+    def setup_exception_classes!(args)
+      @exception_classes = Array(args[:exception_classes])
+
+      if @exception
+        @exception_classes << @exception.class
+      end
+      if @error_class
+        @exception_classes << @error_class
+      end
+    end
+
+    def setup_cleaner!(args)
+      @cleaner ||=
+        Airbrake::Utils::ParamsCleaner.new(
+          :blacklist_filters => params_filters,
+          :whitelist_filters => params_whitelist_filters,
+          :to_clean => data_to_clean)
+    end
+
+
+
 
     def request_present?
       url ||
@@ -351,16 +283,6 @@ module Airbrake
           string_or_class.name
         else
           string_or_class
-        end
-      end
-    end
-
-    def xml_vars_for(builder, hash)
-      hash.each do |key, value|
-        if value.respond_to?(:to_hash)
-          builder.var(:key => key){|b| xml_vars_for(b, value.to_hash) }
-        else
-          builder.var(value.to_s, :key => key)
         end
       end
     end
