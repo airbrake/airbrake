@@ -1,4 +1,4 @@
-gem 'sidekiq', '~> 3.0'
+gem 'sidekiq', '>= 3.0'
 require 'sidekiq'
 
 Sidekiq.configure_server do |config|
