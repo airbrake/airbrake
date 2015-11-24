@@ -1,3 +1,13 @@
+Version 4.3.4 - 2015-11-24 10:19:23 +0200
+===============================================================================
+
+Abdelkader Boudih (1):
+      Relax sidekiq version dependency
+
+Kyrylo Silin (1):
+      Merge pull request #436 from seuros/patch-2
+
+
 Version 4.3.3 - 2015-10-20 19:33:27 -0500
 ===============================================================================
 
@@ -1626,6 +1636,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
