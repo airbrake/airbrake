@@ -31,13 +31,13 @@ DESC
 
   s.add_dependency 'airbrake-ruby', '~> 1.0.0.rc.1'
 
-  s.add_development_dependency 'rspec'
-  s.add_development_dependency 'rspec-wait'
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'pry'
-  s.add_development_dependency 'appraisal'
-  s.add_development_dependency 'rack'
-  s.add_development_dependency 'webmock'
-  s.add_development_dependency 'rack-test'
-  s.add_development_dependency 'sidekiq'
+  s.add_development_dependency 'rspec', '~> 3'
+  s.add_development_dependency 'rspec-wait', '~> 0'
+  s.add_development_dependency 'rake', '~> 10'
+  s.add_development_dependency 'pry', '~> 0'
+  s.add_development_dependency 'appraisal', '~> 2'
+  s.add_development_dependency 'rack', '~> 1'
+  s.add_development_dependency 'webmock', '~> 1'
+  s.add_development_dependency 'rack-test', '~> 0'
+  s.add_development_dependency 'sidekiq', '~> 4'
 end
