@@ -66,7 +66,7 @@ Installation
 Add the Airbrake gem to your Gemfile:
 
 ```ruby
-gem 'airbrake'
+gem 'airbrake', '~> 5.0.0.rc.1'
 ```
 
 ### Manual
@@ -74,7 +74,7 @@ gem 'airbrake'
 Invoke the following command from your terminal:
 
 ```bash
-gem install airbrake
+gem install airbrake --pre
 ```
 
 Configuration
