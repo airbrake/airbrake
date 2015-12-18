@@ -1,6 +1,10 @@
 Airbrake Changelog
 ==================
 
+### [v5.0.0][v5.0.0] (December 18, 2015)
+
+* Minor styling/docs tweaks. No bugs were discovered.
+
 ### [v5.0.0.rc.1][v5.0.0.rc.1] (December 11, 2015)
 
 * Version 5 is written from scratch. For the detailed review of the changes see
@@ -9,3 +13,4 @@ Airbrake Changelog
   [docs/CHANGELOG-pre-v5](docs/CHANGELOG-pre-v5.txt).
 
 [v5.0.0.rc.1]: https://github.com/airbrake/airbrake/releases/tag/v5.0.0.rc.1
+[v5.0.0]: https://github.com/airbrake/airbrake/releases/tag/v5.0.0
