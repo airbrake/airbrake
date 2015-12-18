@@ -3,6 +3,9 @@ Airbrake
 
 [![Build Status](https://circleci.com/gh/airbrake/airbrake-gem.png?circle-token=97d268fcbb02dacb817dbc01e91d119500c360f5&style=shield)](https://circleci.com/gh/airbrake/airbrake-gem)
 [![semver]](http://semver.org)
+[![Documentation Status](http://inch-ci.org/github/airbrake/airbrake.svg?branch=master)](http://inch-ci.org/github/airbrake/airbrake)
+[![PR Stats](http://issuestats.com/github/airbrake/airbrake/badge/pr?style=flat)](http://issuestats.com/github/airbrake/airbrake)
+[![Issue Stats](http://issuestats.com/github/airbrake/airbrake/badge/issue?style=flat)](http://issuestats.com/github/airbrake/airbrake)
 
 <img src="http://f.cl.ly/items/3Q163w1r2K1J1b030k0g/ruby%2009.19.32.jpg" width=800px>
 
