@@ -1,58 +1,84 @@
-If you want to open an issue, please use **ISSUE TEMPLATE** provided below.
-For any other questions, please open new support ticket [here](https://help.airbrake.io/discussion/new).
-Thank you!
+How to contribute
+=================
 
+Pull requests
+-------------
 
-###ISSUE TEMPLATE
-#### Issue Type:
+<img align="right" src="https://img-fotki.yandex.ru/get/15568/98991937.1f/0_b5d09_41234679_orig"/>
 
-What kind of issue this is?
+We love your contributions, thanks for taking the time to contribute!
 
-Please use one of the following:
- - Bug Report
- - Feature Idea
- - Documentation Report
+It's really easy to start contributing, just follow these simple steps:
 
-#### Airbrake Gem Version:
+1. [Fork][fork-article] the [repo][airbrake]:
 
-Let us know which version of Airbrake gem you are using.
+ ![Fork][fork]
 
-#### Ruby Version:
+2. Run the test suite to make sure the tests pass:
 
-Let us know which version of Ruby you are using.
+  ```shell
+  bundle exec rake
+  ```
 
-#### Framework Name/Version:
+3. [Create a separate branch][branch], commit your work and push it to your
+   fork. If you add comments, please make sure that they are compatible with
+   [YARD][yard]:
 
-Let us know which framework you are using and which version.
+  ```
+  git checkout -b my-branch
+  git commit -am
+  git push origin my-branch
+  ```
 
-#### Airbrake Configuration:
+4. Verify that your code doesn't offend Rubocop:
 
-Provide us with your Airbrake configuration and any other useful details regarding your setup.
-Remove `api_key` and any other sensitive data. Middleware stack and Gemfile would also help.
+  ```
+  bundle exec rubocop
+  ```
 
-#### Environment Name:
+5. Run the test suite again (new tests are always welcome):
 
-Please use one of the following:
- - Development
- - Production
- - Test
- - Custom
+  ```
+  bundle exec rake
+  ```
 
-#### Summary:
+6. [Make a pull request][pr]
 
-Please summarize your request and add enough detail so we can understand the request.
+Submitting issues
+-----------------
 
-#### Steps To Reproduce:
+Our [issue tracker][issues] is a perfect place for filing bug reports or
+discussing possible features. If you report a bug, consider using the following
+template (copy-paste friendly):
 
-If this is a bug ticket, please enter the steps you use to reproduce the problem. If this is a feature request, please enter the steps you would use to use the feature. You can also include example code if useful. Please use gist if you have longer code.
+```
+* Airbrake version: {YOUR VERSION}
+* Ruby version: {YOUR VERSION}
+* Framework name & version: {YOUR DATA}
 
-#### Expected Results:
+#### Airbrake config
 
-Please enter your expected results here.
+    # YOUR CONFIG
+    #
+    # Make sure to delete any sensitive information
+    # such as your project id and project key.
 
-#### Actual Results:
+#### Description
 
-Please enter your actual results here. You can also add example output if helpful. Please use gist if you have longer output.
+{We would be thankful if you provided steps to reproduce the issue, expected &
+actual results, any code snippets or even test repositories, so we could clone
+it and test}
+```
 
+<p align="center">
+  <img src="https://img-fotki.yandex.ru/get/4702/98991937.1f/0_b5d0a_ba0c0ee6_orig">
+  <b>Build Better Software</b>
+</p>
 
-###Thank you!
+[airbrake]: https://github.com/airbrake/airbrake
+[fork-article]: https://help.github.com/articles/fork-a-repo
+[fork]: https://img-fotki.yandex.ru/get/3800/98991937.1f/0_b5c39_839c8786_orig
+[branch]: https://help.github.com/articles/creating-and-deleting-branches-within-your-repository/
+[pr]: https://help.github.com/articles/using-pull-requests
+[issues]: https://github.com/airbrake/airbrake/issues
+[yard]: http://yardoc.org/

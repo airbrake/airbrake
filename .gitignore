@@ -21,3 +21,5 @@ gemfiles/*.lock
 .rvmrc
 resources/notice.xml
 Gemfile.lock
+.#*
+*.log

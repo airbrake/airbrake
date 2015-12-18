@@ -1,0 +1,60 @@
+# Explanations of all possible options:
+#   https://github.com/bbatsov/rubocop/blob/master/config/default.yml
+AllCops:
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+
+Lint/HandleExceptions:
+  Enabled: true
+
+Metrics/MethodLength:
+  Max: 25
+
+Style/SpaceInsideBrackets:
+  Enabled: true
+
+Metrics/LineLength:
+  Max: 90
+
+Style/AccessorMethodName:
+  Enabled: true
+
+Style/DotPosition:
+  EnforcedStyle: trailing
+
+# Details:
+#   http://c2.com/cgi/wiki?AbcMetric
+Metrics/AbcSize:
+  # The ABC size is a calculated magnitude, so this number can be a Fixnum or
+  # a Float.
+  Max: 20
+
+Style/StringLiterals:
+  Enabled: false
+
+Style/HashSyntax:
+  EnforcedStyle: ruby19
+
+Style/GuardClause:
+  Enabled: true
+
+Style/SpaceInsideHashLiteralBraces:
+  Enabled: true
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/ParallelAssignment:
+  Enabled: true
+
+Style/SpaceAroundOperators:
+  Enabled: true
+
+Style/SignalException:
+  EnforcedStyle: only_raise
+
+Style/RedundantSelf:
+  Enabled: true
+
+Style/SpaceInsideParens:
+  Enabled: true
