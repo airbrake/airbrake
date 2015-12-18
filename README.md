@@ -21,6 +21,15 @@ back to recent changes. The Airbrake dashboard provides easy categorization,
 searching, and prioritization of exceptions so that when errors occur, your team
 can quickly determine the root cause.
 
+Looking for the old version?
+----------------------------
+
+Airbrake V5 was released on 16th December 2015. Here is a guide for
+[migrating from v4 to v5][migration-guide].
+
+You can find the [V4 code
+here](https://github.com/airbrake/airbrake/tree/airbrake-v4).
+
 Key features
 ------------
 
