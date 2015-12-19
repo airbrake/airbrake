@@ -1,41 +1,43 @@
-require "./lib/airbrake/version"
+require './lib/airbrake/version'
 
 Gem::Specification.new do |s|
-  s.name        = "airbrake"
-  s.version     = Airbrake::VERSION.dup
-  s.summary     = "Send your application errors to our hosted service and reclaim your inbox."
-  s.license     = "MIT"
+  s.name        = 'airbrake'
+  s.version     = Airbrake::AIRBRAKE_VERSION.dup
+  s.date        = Time.now.strftime('%Y-%m-%d')
+  s.summary     = <<SUMMARY
+Airbrake is an online tool that provides robust exception tracking in any of
+your Ruby applications.
+SUMMARY
+  s.description = <<DESC
+Airbrake is an online tool that provides robust exception tracking in any of
+your Ruby applications. In doing so, it allows you to easily review errors, tie
+an error to an individual piece of code, and trace the cause back to recent
+changes. The Airbrake dashboard provides easy categorization, searching, and
+prioritization of exceptions so that when errors occur, your team can quickly
+determine the root cause.
 
-  s.executables   << "airbrake"
-  s.files         = Dir["{generators/**/*,lib/**/*,rails/**/*,resources/*,script/*}"]  +
-    %w(airbrake.gemspec CHANGELOG Gemfile Guardfile INSTALL LICENSE Rakefile README_FOR_HEROKU_ADDON.md README.md TESTED_AGAINST install.rb)
-  s.test_files    = Dir.glob("{test,spec,features}/**/*")
+Additionally, this gem includes integrations with such popular libraries and
+frameworks as Rails, Sinatra, Resque, Sidekiq, Delayed Job, ActiveJob and many
+more.
+DESC
+  s.author      = 'Airbrake Technologies, Inc.'
+  s.email       = 'support@airbrake.io'
+  s.homepage    = 'https://airbrake.io'
+  s.license     = 'MIT'
 
-  s.add_runtime_dependency("builder")
-  s.add_runtime_dependency("multi_json")
+  s.require_path = 'lib'
+  s.files        = ['lib/airbrake.rb', *Dir.glob('lib/**/*')]
+  s.test_files   = Dir.glob('spec/**/*')
 
-  s.add_development_dependency("bourne",        "~> 1.4.0")
-  s.add_development_dependency("cucumber-rails","~> 1.1.1")
-  s.add_development_dependency("fakeweb",       "~> 1.3.0")
-  s.add_development_dependency("nokogiri",      "~> 1.5.0")
-  s.add_development_dependency("rspec",         "~> 2.6.0")
-  s.add_development_dependency("sham_rack",     "~> 1.3.0")
-  s.add_development_dependency("json-schema",   "~> 1.0.12")
-  s.add_development_dependency("capistrano",    "~> 2.0")
-  s.add_development_dependency("aruba")
-  s.add_development_dependency("appraisal")
-  s.add_development_dependency("rspec-rails")
-  s.add_development_dependency("girl_friday")
-  s.add_development_dependency("sucker_punch",   "1.0.2")
-  s.add_development_dependency("shoulda-matchers")
-  s.add_development_dependency("shoulda-context")
-  s.add_development_dependency("pry")
-  s.add_development_dependency("coveralls")
-  s.add_development_dependency("minitest", ["~> 4.0"])
-  s.add_development_dependency("test-unit")
-  
+  s.add_dependency 'airbrake-ruby', '~> 1.0'
 
-  s.authors = ["Airbrake"]
-  s.email   = "support@airbrake.io"
-  s.homepage = "http://www.airbrake.io"
+  s.add_development_dependency 'rspec', '~> 3'
+  s.add_development_dependency 'rspec-wait', '~> 0'
+  s.add_development_dependency 'rake', '~> 10'
+  s.add_development_dependency 'pry', '~> 0'
+  s.add_development_dependency 'appraisal', '~> 2'
+  s.add_development_dependency 'rack', '~> 1'
+  s.add_development_dependency 'webmock', '~> 1'
+  s.add_development_dependency 'rack-test', '~> 0'
+  s.add_development_dependency 'sidekiq', '~> 4'
 end

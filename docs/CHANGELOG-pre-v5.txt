@@ -1,0 +1,1566 @@
+Version 4.3.1 - 2015-08-24 21:10:19 -0500
+===============================================================================
+
+Edoardo Rossi (1):
+      Fix missing api_key when using V3 endpoint URL
+
+Igor Kapkov (2):
+      Use getters instead of handwriten methods
+      Update readme to fix appraisal deprecation
+
+Kyrylo Silin (5):
+      Merge pull request #404 from zeroed/master
+      Merge pull request #405 from igas/little-optimization
+      Merge pull request #408 from igas/update-readme-to-fix-appraisal-deprecation
+      Merge pull request #406 from Aupajo/fix/ambiguous-rails
+      Merge pull request #403 from lisovskyvlad/master
+
+Lisovsky Vlad (1):
+      Fix dumping notice object to xml for rails 2.3.10 and builder 2.1.2
+
+Mark Nadig (1):
+      capistrano task should handle symbols for env
+
+Pete Nicholls (1):
+      Use ::Rails namespace for Rails::VERSION
+
+shifi (3):
+      Merge branch 'issue_393' of https://github.com/KonaTeam/airbrake into KonaTeam-issue_393
+      Merge branch 'KonaTeam-issue_393'
+      add guidelines for contributing
+
+
+Version 4.3.0 - 2015-06-23 19:36:10 -0500
+===============================================================================
+
+Omer Gazit (1):
+      Add ability to define whitelist filters for parameters
+
+shifi (7):
+      use top level namespace and stay compatible with Rails 2.x - fixes #388
+      update to match new changes
+      support whitelist and blacklist approach for params filters and support nested filter arrays
+      add more tests for params cleaner
+      Merge branch 'feature/whitelist-params-filters'
+      add HTTP_AUTHORIZATION to rack filters
+      make sure we remove all sensitive rack vars
+
+
+Version 4.2.1 - 2015-06-01 22:12:49 -0500
+===============================================================================
+
+Marko Šiftar (3):
+      Merge pull request #384 from biske/improve-notify-documentation
+      Merge pull request #385 from arrtchiu/patch-2
+      Merge pull request #386 from airbrake/fix/check-if-failsafe-middleware-is-defined
+
+Phuong Nguyen (1):
+      Insert UserInformer middleware before Rack::Runtime since Rack::Lock may not be available for app with websocket-rails
+
+arrtchiu (1):
+      Support Rails 4 without ActiveRecord
+
+shifi (7):
+      typo in changelog
+      add more args in deploy CLI - fixes #296
+      update CLI help info
+      do not require pry - fix typo
+      check if failsafe middleware is defined - fixes #379
+      fix conflicts
+      Merge branch 'phuongnd08-master'
+
+Иван Бишевац (1):
+      Improves documentation for notify method
+
+
+Version 4.2.0 - 2015-05-27 19:05:32 -0500
+===============================================================================
+
+Abdelkader Boudih (1):
+      Update sidekiq.rb
+
+Adam King (1):
+      Fix DEFAULT_BACKTRACE_FILTERS bug that caused backtrace to not show up in certain contexts. See https://github.com/airbrake/airbrake/issues/343.
+
+David (8):
+      Merge pull request #329 from grosser/grosser/gemspec
+      Merge pull request #335 from airbrake/fix/cucumber-suite
+      Merge pull request #327 from airbrake/feature/faster-params-cleaning
+      Merge pull request #337 from airbrake/fix/rails4-is-here
+      Merge pull request #326 from airbrake/fix/cast-ENV-to-Hash
+      Merge pull request #328 from grosser/grosser/dup
+      Merge pull request #334 from airbrake/fix/user-info-consumes-db-connections
+      Merge pull request #340 from grosser/grosser/dup
+
+David Palm (9):
+      Cast CGI data to hash, as that's what the code really expects
+      Speed up notice generation by avoiding copying data and putting most common cases on top
+      Refactor #airbrake_current_user
+      Typo
+      Add comment explaining why we release connections
+      Comment out @wip scenarios to facilitate running parts of the suite
+      Add 4 to version sniffing code
+      PR feedback
+      Clone to ensure we do not mess with the provided data
+
+Eero Raun (1):
+      Ignore RACK_ENV if it is empty (capistrano deploy), fixes #341.
+
+Jonathan Worek (1):
+      Assumption of existence of :app role may not be valid
+
+Marko Šiftar (3):
+      Merge pull request #354 from wojobucco/patch-1
+      Merge pull request #342 from oree/341
+      Merge pull request #382 from airbrake/fix/use-proper-capistrano-hook
+
+Martin Tepper (1):
+      This should fix #369
+
+grosser (3):
+      cleanup gemspec
+      fix having symbols in the environment blows up filter_parameters with blocks
+      If we cannot stringify then at least rescue the dup exceptions ...
+
+halida (1):
+      fix rails request.fullpath behavior change in 4.1.6 -- no longer has leading /
+
+shifi (16):
+      add test for filtering frozen objects
+      Merge branch 'Promptus-issue_369_frozen_array_issue'
+      update Appraisals file
+      Merge branch 'master' of https://github.com/halida/airbrake into halida-master
+      remove whitespaces
+      add test for airbrake_request_url
+      Merge branch 'halida-master'
+      update year in license and readme
+      use proper capistrano hook depending on capistrano version
+      set localhost IP to satisfy web console when testing in development
+      Merge branch 'patch-1' of https://github.com/seuros/airbrake into seuros-patch-1
+      fix syntax error in Sidekiq configuration
+      Merge branch 'seuros-patch-1'
+      Merge branch 'master' of https://github.com/developwithvelocity/airbrake into developwithvelocity-master
+      tests for backtrace default filters - gem paths
+      Merge branch 'developwithvelocity-master'
+
+
+Version 4.1.0 - 2014-09-04 23:16:08 +0200
+===============================================================================
+
+Benjamin Fleischer (1):
+      Add license to gemspec, is MIT
+
+Chun-wei Kuo (1):
+      Add missing RAILS_ENV to the deploy notification task for Capistrano 3
+
+David (1):
+      Merge pull request #306 from kiela/master
+
+Giovanni Cappellotto (1):
+      Add support for Sidekiq > 3
+
+Kamil Kieliszczyk (2):
+      Add ability to filter arrays
+      Add ability to filter arrays
+
+Kelley Reynolds (1):
+      Ignore ActionController::UnknownFormat for Rails 4+ which is now handled by middleware
+
+Marko Šiftar (11):
+      Revert "Add ability to filter arrays"
+      Merge pull request #307 from airbrake/revert-306-master
+      Merge pull request #305 from Domon/fix-capistrano3-task
+      Merge pull request #302 from gregory/remove_unused_controller
+      Merge pull request #310 from kiela/master
+      Merge pull request #271 from rykov/master
+      Merge pull request #275 from kreynolds/rails-4-unknown-format
+      Merge pull request #312 from bf4/add_license_to_gemspe
+      Merge pull request #304 from pitchtarget/sidekiq-support
+      Merge pull request #273 from meetme2meat/master
+      Merge pull request #300 from chute/master
+
+Michael Rykov (1):
+      Keep passed exception if original_exception is nil
+
+Petr Bela (1):
+      Add RACK_ENV to rake task for non-Rails apps
+
+Sami Haahtinen (1):
+      Update capistrano v3 support
+
+Viren Negi (1):
+      Added a comment to how to add specify environment when use with rack app
+
+gregory (1):
+      remove unused controller
+
+shifi (4):
+      update capistrano test to make sure we set RAILS_ENV when using rake task
+      Update ignored exceptions by default in Readme
+      fix conflicts in airbrake.cap
+      Merge branch 'ressu-capistrano3'
+
+
+Version 4.0.0 - 2014-05-27 16:32:26 -0700
+===============================================================================
+
+Ali Faiz (2):
+      Remove the Airbrake JS notifier for the major release.
+
+
+Version 3.2.1 - 2014-05-27 15:58:24 -0700
+===============================================================================
+
+Ali Faiz (3):
+      Revert "Merge pull request #297 from airbrake/remove-js-notifier"
+      Add deprecation warning when using  .
+
+
+Version 3.2.0 - 2014-05-23 17:37:35 -0700
+===============================================================================
+
+Ali Faiz (4):
+      Remove JS notifier from templates and libraries
+      Cleanup references to JS notifier in tests
+      Merge pull request #297 from airbrake/remove-js-notifier
+
+
+Version 3.1.17 - 2014-05-20 21:00:25 -0700
+===============================================================================
+
+Alex Tomlins (1):
+      Only send notices if configured with api_key
+
+Ali Faiz (22):
+      Add tasks specific for using appraisal to test different versions
+      Ensure that integration tests can use the same helpers as unit tests
+      Fix errors causing features to fail
+      Add sqlite3 for Rails 3.2 & 4.0 appraisal gems
+      Fix integrations with Rails 3.0 by locking sucker_punch to v1.0.2.
+      Update README.md
+      Merge pull request #285 from airbrake/adjust-ci-integration
+      Merge pull request #281 from jhawthorn/fix_actioncontroller_metal
+      Merge pull request #268 from alphagov/disable_unless_configured
+      Merge pull request #287 from itolmach/master
+      Add apikey to certain cucumber tests for changes for configured
+      Merge pull request #288 from airbrake/fix-apikey-related-tests
+      Merge pull request #277 from polleverywhere/rails3_filter_parameters
+      Merge pull request #262 from roqua/mv-regex-filters
+      Fix filtering checks in cucumber tests by checking for 'key=' instead of blind check
+      Make separate step for the cucumber test that checks for filtered keys
+      Merge pull request #289 from airbrake/fix-regex-filtering
+      Write verbose output when configuration prevents sending notices to Airbrake.
+      Merge pull request #294 from Nitrodist/ensure-rake-integration
+      Merge pull request #295 from airbrake/add-context-when-notice-not-sent
+      Merge pull request #293 from Nitrodist/use-minitest-4
+      Use tag date instead of trying to sort on tag name
+
+Ivan Tolmachev (3):
+      added airbrakeman notifier ruby illustration
+      illustration added, take 2
+      Added Airbrakeman Notifier Illustration
+
+John Hawthorn (1):
+      fix middleware for AC::Metal on rails 3.2
+
+Version 3.1.16 - 2014-03-11 13:34:51 -0700
+===============================================================================
+
+Joseph Silvashy (5):
+      Merge pull request #267 from nberger/fix-typo-in-rails3-tasks
+      Update license for Rackspace
+      Merge pull request #255 from viperdezigns/capistrano3
+      Bump to 3.1.14
+      Bump to 3.1.16
+
+Mark Campbell (2):
+      Add minitest 4.x as an explicit dependency
+      Ensure rake integration is enabled when rescue_rake_exceptions is true
+
+Marten Veldthuis (3):
+      Add support for regexp filters
+      Refactor cgi_data filtering to use `filter_key?`
+      Add a default rack env filter for variables matching "secret" or "password".
+
+Mike Foley (2):
+      Add backwards compatibility for filter_parameters in Rails3
+      Add tests, minor refactor for Rails 3 functionality
+
+Nicolas Berger (1):
+      Fix typo: Rack -> Rake
+
+Richard Pernikoff (3):
+      execute instead of run
+      get full revision hash and send correct repo url
+      execute the rake task within the release_path instead of running cd release_path.
+
+ViperDezigns (1):
+      Merge pull request #2 from tunespeak/capistrano3
+
+spodlecki (7):
+      adding capistrano 3
+      attempting err fixes
+      release_path
+      making repo name a env var
+      adding airbrake escape user method
+      logger.info doesn't exist, seems Cap uses info() now
+      execute instead of run
+
+
+Version 3.1.15 - 2014-01-03 14:37:38 +0100
+===============================================================================
+
+Ahmad Sherif (1):
+      Don't serialize nil to an empty string
+
+Damon Morgan (1):
+      Support sucker_punch for async processor
+
+David Palm (1):
+      Give params_filter a setter so it can be *set* (not only appended to)
+
+Hrvoje Šimić (14):
+      add Rails 4 to README.md
+      use Coveralls for code coverage
+      use Gemnasium for dependency monitoring
+      use Code Climate for code analysis
+      extract ParamsCleaner class
+      being more careful with javascript_notifier and non-public requests
+      Bumping to version 3.1.14
+      add Circle CI badge
+      rename :test task to 'test:unit'
+      use parallel gem installation on CI server
+      enable pry debugging in tests
+      add test for #251
+      enable filtering of sensitive Rack vars by default
+      start using MultiJson
+
+Marko Šiftar (1):
+      fix deploy uri
+
+Marten Veldthuis (1):
+      Airbrake rakefile is not compatible with Capistrano v3
+
+Rodrigo Saito (1):
+      Handle error when variable sinatra.error is present
+
+
+Version 3.1.14 - 2013-08-22 09:03:14 +0200
+===============================================================================
+
+Hrvoje Šimić (5):
+      use Coveralls for code coverage
+      use Gemnasium for dependency monitoring
+      use Code Climate for code analysis
+      extract ParamsCleaner class
+      being more careful with javascript_notifier and non-public requests
+
+
+Version 3.1.13 - 2013-08-20 09:39:41 +0200
+===============================================================================
+
+Anton Minin (1):
+      Fix notice crash on empty cgi_data
+
+Cedric Brancourt (2):
+      fixes #231 When no session in controller , airbrake_session_data returns {:session => "no session found"}
+      fixes airbrake/airbrake#233 duplicate cgi_data in Notice params
+
+Chris Gunther (2):
+      Coerce user attributes to strings before checking that they are valid.
+      Reject invalid user attributes on assignment
+
+Hongli Lai (Phusion) (1):
+      Add support for SSL in the command line tool.
+
+Hrvoje Šimić (22):
+      better explanation of ignored environments and classes
+      add test for warnings about user attributes
+      remove unnecessary active record requirements
+      remove platform checks from nil logger initialization
+      update bourne dependency to fix test-running issues with ruby 2.0.0
+      test against ruby 2.0.0 on a CI server
+      remove mocha deprecation warnings
+      be more careful when reading sinatra environment name
+      wrap the js configuration in try-catch
+      ignore Gemfile.lock
+      lock json-schema to 1.0.12
+      add a scenario for ignoring rake exceptions [#223]
+      get rid of activesupport once and for all
+      fully support Rails 4.0
+      stop using appraisals for unit tests
+      fix formatting of airbrake_session_data
+      fix test for no session controller [#232]
+      include actionpack and activesupport in gemspec for tests
+      cleaning up tests
+      cleaning the codebase from warnings issued in ruby verbose mode
+      remove private writers and use instance variables to remove warnings
+      fixing changeling's version sorting
+
+Jason Petersen (1):
+      Escape user name in Airbrake notify command
+
+Konstantin Zub (1):
+      return environment_info unless environment_name
+
+Kris Kemper (1):
+      Allow backtrace to be a String
+
+Nathan Broadbent (1):
+      Use a separate (blank) array of ignored exceptions for Rake tasks
+
+Subhash Chandra (1):
+      split javascript notifier into loader and configuration
+
+Tony Spore (1):
+      use 'bundle exec' in capistrano task
+
+
+Version 3.1.12 - 2013-04-29 18:48:40 +0200
+===============================================================================
+
+Arvind Kunday (1):
+      Removing the .erb template handler
+
+Hrvoje Šimić (8):
+      introducing null logger for fallback
+      add missing logger requirement
+      being careful with silencing of rake backtrace in the airbrake:test task
+      support for Rails 4.0
+      start using remote XSD file when verifying XML in tests
+      throw a warning for unsupported user attributes
+      updating outdated step definition for current user feature
+      speeding up the test by using 'runner' instead of 'server'
+
+knapo (1):
+      Fix Airbrake::Sender#log to log messages when logger is not passed to options.
+
+
+Version 3.1.11 - 2013-04-11 12:44:09 +0200
+===============================================================================
+
+Eric Jensen (1):
+      add --scm-revision option to cli
+
+Hrvoje Šimić (10):
+      update tested rails versions
+      reverting parts of 8768b1 that caused broken XML
+      update integration test
+      stop cluttering STDERR from rake airbrake:test
+      test coverage for Airbrake::Response
+      introduce configurable test mode
+      add the test mode option to the generator
+      update the test suite to use the test mode accordingly
+      stop using the 'progress' format when running features
+      fix defaults in integration test
+
+Kenneth Kalmer (2):
+      Wrap the JS notifier configuration in a try..catch, since the notifier JS might have failed to load
+      Set a noop window.onerror in the event Airbrake is not available
+
+Mark J. Titorenko (1):
+      Use env rather than @env when constructing fallback request data.
+
+Marko Šiftar (1):
+      pretty formatting of notice details
+
+
+Version 3.1.10 - 2013-04-03 15:41:13 +0200
+===============================================================================
+
+Mark J. Titorenko (1):
+      Use env rather than @env when constructing fallback request data.
+
+
+Version 3.1.9 - 2013-03-25 20:06:10 +0100
+===============================================================================
+
+Bartosz Knapik (2):
+      .rbenv-version should be in gitignore
+      replace current_release with release_path
+
+Chas Lemley (1):
+      correctly use config.user_attributes=
+
+Hrvoje Šimić (6):
+      Update year in README
+      thread safety fix
+      add the secure option to the generator
+      fix the broken generator method call
+      be more careful with @template in javascript notifier
+      update tested rails versions
+
+Marko Šiftar (2):
+      just collect id by default
+      update test suite (user details)
+
+Robert Glaser (1):
+      log failed certicate verifications
+
+Thilo-Alexander Ginkel (1):
+      Partial thread-safety fix
+
+Thom Mahoney (1):
+      Airbake::Backtrace::Line#method => #method_name
+
+jokerswanted (1):
+      Update README.md
+
+
+Version 3.1.8 - 2013-02-05 16:29:43 +0100
+===============================================================================
+
+Hrvoje Šimić (5):
+      rename SUPPORTED_RAILS_VERSIONS to TESTED_AGAINST
+      don't call id on nil - fixes #177
+      move our middleware right after exception middleware (#178)
+      implement tests for #178
+      be nice to older rails versions
+
+
+Version 3.1.7 - 2013-01-28 13:35:10 +0100
+===============================================================================
+
+Adam Duke (1):
+      fix an error if not using ActionController::Base
+
+Ben Arent (2):
+      Update to Readme.md
+      2013! woot.
+
+Cory Kaufman-Schofield (1):
+      Use https for rake airbrake:test if force_ssl set to true (fixes #145)
+
+Dmitry Medvinsky (1):
+      Fix notifier API URL as per Airbrake docs
+
+George Ogata (1):
+      Ignore ActionController::UnknownHttpMethod by default.
+
+Hrvoje Šimić (59):
+      move dependencies from Gemfile
+      CI test only for 3.0.0 for now
+      use appraisal
+      use aruba instead of home-grown terminal
+      fix *ALL* the tests!
+      remove bundler version
+      support all major rails versions for now
+      add bundler dependency
+      destroy rvmrc
+      update appraisals
+      add task for bundling bundler
+      remove gemfile locks
+      update appraisals
+      clean up README
+      logo is not needed in README
+      update the integration tests
+      update testing instructions
+      use CircleCI for continuous integration
+      update rake default task
+      mark heroku tests as wip for now
+      Clean up the rake task
+      stop cluttering STDOUT with trace of rake tasks
+      update supported rails versions
+      send framework info
+      use specific version of builder
+      update appraisals
+      revert "use specific version of builder"
+      remove hard dependency on girl_friday
+      update thoughtbot logo
+      update test suite to newer Rails versions
+      unfreezing version
+      More description about development environments
+      make sure we don't set env["airbrake.error_id"] for async notices
+      stop extending Object, use ActiveSupport instead
+      blank? instead of nil? || empty?
+      move XSD schema to resources
+      enable sending to new JSON API (#163)
+      define headers in Sender
+      ignore gemfile.locks
+      make sending to new JSON API disabled by default (#163)
+      don't use named groups in regexes, they are ruby 1.9 only (#162)
+      make sure we close the body even if exception occurs (closes #153)
+      Rails::Application::Configuration.force_ssl is undefined for Rails 3.0.x
+      update the test suite
+      update the default rake task
+      add the ability to pass a single feature to rake test task
+      tests support Rack::BodyProxy now
+      use rails 4 compatible routes in tests
+      remove unnecessary local variables
+      stop with monkeypatchig of Rails exception middleware
+      style fixes
+      require the new middleware in tests
+      better handler for adding Heroku deploy hooks (#167)
+      support multiple apps in Heroku deploy hooks task (#166)
+      read every available parameter for deploy hook from ENV (#168)
+      fallback to reading API key from ENV for deploy hooks
+      freshen up Heroku readme
+      set username and revision from Heroku variables (#168)
+      automatically get remote origin for deploy hooks (#168)
+
+Joel Friedlaender (1):
+      configuring development environments
+
+Jon Evans (1):
+      Use "get" instead of "match" for verify route
+
+Josh Goebel (1):
+      clean_rack_request_data should also filter out "action_dispatch.secret_token" to prevent passing a Rails applications secret token
+
+Kyle Wilkinson (1):
+      Fix broken gemspec with missing file names.  MIT-LICENSE is now just called LICENSE and there is no TESTING.md
+
+Manuel Meurer (1):
+      Use Airbrake.notify_or_ignore instead of just Airbrake.notify in notify_airbrake controller method
+
+Marko Šiftar (3):
+      better Sinatra handling
+      fix typo
+      add framework info for Sinatra and Rack
+
+Morgan Mikel McDaris (3):
+      fixed the heroku airbrake.rb generation
+      fixed the heroku airbrake.rb generation
+      made supported versions into a link
+
+Pedro Nascimento (1):
+      Allow virtual attributes to be used in user data instead of just attributes.
+
+Ryan Souza (1):
+      Prettier rake exception actions
+
+cielavenir (1):
+      airbrake_javascript_notifier_options should be externalized
+
+
+Version 3.1.6 - 2012-10-23 21:15:50 +0200
+===============================================================================
+
+Hrvoje Šimić (9):
+      load api key from file and env if not provided for executable
+      get a list of your projects from command line
+      create projects from command line
+      fix cli client host
+      creating deploys from command line
+      don't override extension methods
+      update heroku plan in readme
+      another fix for heroku readme
+      don't pollute global namespace with blank?
+
+Sam Umbach (1):
+      Send deploy notification on deploy:cold
+
+
+Version 3.1.5 - 2012-10-05 17:32:23 +0200
+===============================================================================
+
+Hrvoje Šimić (3):
+      make collected user attributes customizable
+      enable filtering of env vars for rake handler
+      add a simple executable
+
+Morgan Mikel McDaris (1):
+      rake section added
+
+Zachary Anker (2):
+      Add the ability to pass XML directly to send_to_airbrake
+      Remove active_support require since it's no longer necessary
+
+
+Version 3.1.4 - 2012-09-11 04:31:51 +0200
+===============================================================================
+
+Ben Arent (1):
+      Update to MIT license to reflect new ownership.
+
+Hrvoje Šimić (4):
+      remove activesupport from runtime dependencies
+      use different logger for async notices
+      Merge pull request #118 from exviva/load_initializer_conditionally
+      symbolize user's keys
+
+Olek Janiszewski (1):
+      Fallback to loading whole environment if initializer does not exist
+
+
+Version 3.1.3 - 2012-09-05 18:58:27 +0200
+===============================================================================
+
+Ben Arent (1):
+      Removed old mailing list.
+
+Dylan Smith (1):
+      Use debug log level for verbose log messages.
+
+Hrvoje Šimić (21):
+      add a note for testing against different frameworks
+      add a scenario to make sure 404s are ignored by default
+      failing scenario for #100
+      remove unnecessary bundler/setup requirement
+      move dependencies from Gemfile to gemspec
+      send info about the current logged in user
+      add async notifications
+      use async? instead of asnyc
+      add info about logger
+      prefer provided error message over original exception message
+      don't load entire environment for deploy task
+      safely handle render exception
+      remove unnecessary AirbrakeError
+      update XML schema
+      test fixes
+      clean whitespace
+      print the failed notice details
+      update supported rails versions
+      update scenarios
+      stop converting notice to xml before passing it to sender
+      remove logger from rack handler
+      update supported rails versions
+
+John Pignata (1):
+      Cherry-pick Object#blank? extension
+
+Joshua Wood (2):
+      rbenv support
+      Fixes outdated rake feature.
+
+Matt Colyer (1):
+      Fix Airbrake so it actually reports data.
+
+Morgan Mikel McDaris (1):
+      changed notify to notify_or_ignore
+
+Sergii Boiko (2):
+      Refactor config.async to provide custom asynchronous delivery way
+      Simplify config.async to use only notice param
+
+grosser (2):
+      fix exceeded available parameter key space breaks notification, fixes #99
+      make all tests runnable via ruby test_file.rb by loading the helper absolutely
+
+
+Version 3.1.2 - 2012-06-23 02:27:01 +0200
+===============================================================================
+
+Hrvoje Šimić (5):
+      routing errors ignored by default, for #92
+      use simplecov for test coverage
+      fix features for javascript
+      ignore user agents in rack, closes #61
+      error out if controller is undefined
+
+
+Version 3.1.1 - 2012-06-06 20:35:00 -0700
+===============================================================================
+
+Hrvoje Šimić (10):
+      minor fixes for Rakefile
+      change color of user informer tests
+      remove unnecessary shim
+      use shim instead of server response in tests
+      add a note about informing the user
+      fix typo in Rakefile
+      valid mock responses
+      add a failing scenario for #92
+      404s reporting fixed, closes #92
+      update mocks for rack and sinatra
+
+Jonathan Siegel (1):
+      Updated copyright/trademarks
+
+
+Version 3.1.0 - 2012-05-28 02:25:09 +0200
+===============================================================================
+
+Andre Arko (1):
+      stop using deprecated RAILS_ROOT
+
+Benjamin Oakes (5):
+      notify_airbrake: filter params on Rails 3.1 (and maybe 3.0 also)
+      `params` is the (eventual) intent, but `hash` is clearer in context
+      One-liner, per @shime
+      Exception safety: worst case scenario, report the unfiltered hash
+      (m) Summarize the cases for future maintainers
+
+Blake Watters (1):
+      Modify Rake handler to use Airbrake.notify_or_ignore rather than Airbrake.notify
+
+Chris Griego (1):
+      Fix allowing airbrake_env/TO being different from rails_env/RAILS_ENV in deployment notifications.
+
+David (10):
+      Merge pull request #33 from cgriego/patch-1
+      Merge pull request #51 from unnu/master
+      Merge pull request #56 from GateGuru/rake_handler_fix
+      Merge pull request #60 from DaPulse/master
+      Merge pull request #71 from sgonyea/patch-1
+      Merge pull request #75 from blackhacker/master
+      Merge pull request #81 from brainopia/patch-1
+      Merge pull request #82 from ghurrell/fix-readme-stubbing-example
+      Merge pull request #80 from yanowitz/patch-1
+      Merge pull request #86 from Playhem/master
+
+David Palm (5):
+      Set VERIFY_PEER in rake task
+      More idiomatic inject
+      Not quite ready yet. Revert "Heroku references now are to Airbrake."
+      Adds `pry` to the gems available in test env
+      Works outside Rails
+
+Eran Kampf (2):
+      Fix for apps behind a local proxy (EY App Master)
+      Changed if statement to one liner
+
+Erik Ostrom (1):
+      Updated Heroku README to use Airbrake's new name.
+
+Gary Rafferty (1):
+      Fix typo in airbrake.gemspec
+
+Greg Hurrell (1):
+      Update stubbing example in README to match method signature
+
+Hrvoje Šimić (47):
+      Merge pull request #59 from benjaminoakes/master
+      Merge pull request #62 from sleparc/master
+      Merge pull request #63 from benjaminoakes/master
+      improved readability
+      added new middleware catcher, fixes #73
+      Merge pull request #72 from 'jdel/lazyload'
+      Merge pull request #87 from gary-rafferty/master
+      Stop using include? to filter parameters
+      renaming so it's easier to understand
+      Merge pull request #90 from samoli/patch-1
+      Merge pull request #68 from cylence/master
+      read ENV variables from heroku config, fixes #89
+      check for airbrake_api_key on heroku
+      Merge pull request #91 from mikz/patch-1
+      ignore user agents in rails 3.0+
+      Merge branch 'master' of github.com:airbrake/airbrake
+      Merge pull request #79 from morgoth/fix-passing-api-key-as-param-to-rake-task
+      minor test fix
+      let's catch errors that happen early in the stack
+      remove deprecated step definitions
+      update url in a test
+      fix required files in gemspec
+      use top-level namespace
+      fix requirements
+      add rvmrc
+      update server response in scenarios
+      update heroku mock
+      remove unnecessary space
+      prefer the latest stable ruby version
+      update steps for newer rails versions
+      support rails 3.2.x with the test suite
+      update exception catcher
+      monkeypatch the old rails versions in tests
+      remove fake exception from env
+      add sanity to rescue_action_in_public_without_airbrake call
+      remove note for rails 1.2.x users, we don't support it
+      support the latest rails versions
+      add 3.0.11 and 3.0.12 to supported versions
+      update rack synopsis
+      log messages for sinatra and rack
+      make rack and sinatra tests green
+      update rack example in readme
+      Update ignored exceptions by default in readme
+      update explanation how we catch errors in readme
+      fix formatting
+      add all supported frameworks to rake test task
+      make metal tests green
+
+Jason Yanowitz (2):
+      remove git dependency from generating gemspec file.  causes errors when vendoring this gem in other projects
+      updated gemspec files specification based on feedback
+
+Jean-Michel Garnier (1):
+      Update README.md
+
+Jonathan Siegel (5):
+      Heroku references now are to Airbrake.
+      Merge branch 'master' of github.com:airbrake/airbrake
+      Added beta support fer cedar.
+      Added beta support fer cedar.
+      Migrated to new api.airbrake.io endpoint.
+
+Jonathan del Strother (1):
+      Lazily-load actioncontroller
+
+Leonid Shevtsov (3):
+      Feature: use a separate API key for Javascript notifications
+      cleaned up configuration
+      Merge branch 'master' of git://github.com/airbrake/airbrake
+
+Michal Cichra (1):
+      Use id to lookup error instead of error-id.
+
+Nathan Broadbent (1):
+      Added Mongoid::Errors::DocumentNotFound to default IGNORED exceptions (same as ActiveRecord::RecordNotFound, for Mongoid.)
+
+Ravil Bayramgalin (1):
+      Update lib/airbrake/user_informer.rb
+
+Ryan L. Cross (1):
+      Added unix style param for url in the deployhook rake task.
+
+Sam Oliver (1):
+      Update hoptoad=>aibrake in rake task example
+
+Scott Gonyea (1):
+      Document proxy parameters; namely, that the proxy_host does not require "http://" as a prefix. Ideally, config.proxy= could be given a URI.
+
+Simon Le Parc (1):
+      Shouldn't test the native dup method
+
+Stuart Chaney (1):
+      Updating README gem instructions for Rails 2.3 with bundler.
+
+Wojciech Wnętrzak (1):
+      fixed passing api_key param to Airbrake deploy task
+
+blackhacker (1):
+      more detailed error message
+
+unnu (1):
+      Fixed TaggedLogging bug in Rails 3 rake test task
+
+usiegj00 (3):
+      Merge pull request #46 from eostrom/master
+      Merge pull request #47 from 21croissants/master
+      Merge pull request #38 from ndbroadbent/ignore_mongoid_notfound
+
+
+Version 3.0.9 - Thu Dec 15 23:51:38 +0100 2011
+===============================================================================
+
+David Palm (2):
+      Merge pull request #45 from spagalloco/patch-1
+      Pulls in ideas from https://github.com/kidsalsa/airbrake/commit/54982ba83bd6c577a0835b9ba5936c690029244c#L0R2 BUT
+        - moves #ca_bundle_path to Airbrake::Configuration
+        - moves #local_cert_path to Airbrake::Configuration
+        - adds #use_system_ssl_cert_chain? alias to Airbrake::Configuration
+        - makes Airbrake.configure return the created sender (in addition to yielding)
+        - stops airbrake deploy tasks duplicate code form the configuration class
+        - cleanup unused expectations from tests
+
+Version 3.0.8 - Sun Dec 11 22:14:18 +0100 2011
+===============================================================================
+
+David Palm (1):
+      Use OpenSSL::X509::DEFAULT_CERT_FILE to connect only if configured to by setting use_system_ssl_cert_chain to true
+
+Version 3.0.7 - Sun Dec 11 21:04:08 +0100 2011
+===============================================================================
+
+David Palm (1):
+      Adds a :use_system_ssl_cert_chain configuration option to allow use of the system default SSL chain (as opposed to the CAs bundled with Airbrake) - defaults to false
+
+Version 3.0.6 - Mon Dec 05 16:41:39 +0100 2011
+===============================================================================
+
+Benjamin Quorning (1):
+      README updated to reflect name change from Hoptoad to Airbrake
+
+Darcy Laycock (1):
+      Explicitly scope calls to Rails.env and such to prevent loading issues when manually requiring parts of airbrake.
+
+David (1):
+      Merge pull request #42 from Playhem/fix-issue-34-cherrypicked
+
+David Czarnecki (6):
+      Using the Capistrano logger for great justice
+      Using the Capistrano logger for great justice
+      Re-organized capistrano task to allow for testing
+      Fixing conflict
+      Fixed the name of the capistrano task in the test to be correct. Updated the cucumber feature to look for the right task name.
+      Change airbrake:notify to airbrake:deploy to be more clear that it is a deploy notification
+
+David Palm (8):
+      Removes support for Rails v2.3.12
+      Documentation glitch
+      Documenting workaround for issue #39
+      Using guard&spork for testing
+      Adding Guardfile
+      Moves #assert_logged to test helper
+      Moves http setup code to own method
+      Not sporking yet
+
+Florent Guilleux (1):
+      Change Hoptoad references to Airbrake.
+
+Gabe Berke-Williams (1):
+      Merge pull request #10 from Florent2/patch-1
+
+Harold Giménez (10):
+      Heroku is still using HOPTOAD_API_KEY, so expect that for now
+      Bumping to version 3.0
+      Bumping to version 3.0.1
+      Fix bug in defining the Airbrake javascript object
+      Bumping to version 3.0.2
+      Ensure a valid configuration object is always available on Airbrake.configuration
+      Merge remote-tracking branch 'agoragames/master'
+      Bumping to version 3.0.3
+      Minor fix to Gemfile instructions on README
+      Bumping to version 3.0.4
+
+Jonathan Siegel (16):
+      Removed class-level caching per jkraemer: Hi,
+      Integrated pulls and updated tests.
+      Integrated: https://github.com/thoughtbot/hoptoad_notifier/pull/37
+      Corrected test.
+      Consistent operation.
+      Consistent callout during test generation.
+      Fixed typo.
+      Refreshed supported.
+      Resolved: http://help.airbrakeapp.com/discussions/questions/587-airbrake_javascript_notifier-is-escaped-rails-31-haml
+      Now running airbrake deploy notifications on the REMOTE machine.
+      Added first rev of PEER cert resolution.
+      Bumped 3.0.5
+      Updated README, fixed JS rescue template missed HT reference.
+      Crosslinked docs...
+      Fixes for tests.
+      Bumping to version 3.0.5
+
+Leonid Shevtsov (3):
+      fixed rake handler failing when exception happens before Airbrake has been configured (for example, when running an unknown Rake task)
+      fix issue #34 'undefined method to_backtrace for Hash'
+      test case for issue #34
+
+Matt Fawcett (1):
+      Call #close on the old body after building the new body to prevent thread joining errors
+
+Roman Shterenzon (1):
+      Use either Airbrake or Hoptoad object.
+
+Stuart Chaney (1):
+      point towards airbrake.io
+
+Thomas Jachmann (1):
+      handles exceptions with #to_hash properly
+
+usiegj00 (4):
+      Merge pull request #21 from mattfawcett/master
+      Merge pull request #12 from leonid-shevtsov/master
+      Merge pull request #14 from thomasjachmann/master
+      Merge pull request #28 from Sutto/patch-1
+
+
+Version 3.0.5 - 2011-11-08 23:02:07 -0800
+===============================================================================
+
+Benjamin Quorning (1):
+      README updated to reflect name change from Hoptoad to Airbrake
+
+Darcy Laycock (1):
+      Explicitly scope calls to Rails.env and such to prevent loading issues when manually requiring parts of airbrake.
+
+David Czarnecki (6):
+      Using the Capistrano logger for great justice
+      Using the Capistrano logger for great justice
+      Re-organized capistrano task to allow for testing
+      Fixing conflict
+      Fixed the name of the capistrano task in the test to be correct. Updated the cucumber feature to look for the right task name.
+      Change airbrake:notify to airbrake:deploy to be more clear that it is a deploy notification
+
+Florent Guilleux (1):
+      Change Hoptoad references to Airbrake.
+
+Gabe Berke-Williams (1):
+      Merge pull request #10 from Florent2/patch-1
+
+Harold Giménez (10):
+      Heroku is still using HOPTOAD_API_KEY, so expect that for now
+      Bumping to version 3.0
+      Bumping to version 3.0.1
+      Fix bug in defining the Airbrake javascript object
+      Bumping to version 3.0.2
+      Ensure a valid configuration object is always available on Airbrake.configuration
+      Merge remote-tracking branch 'agoragames/master'
+      Bumping to version 3.0.3
+      Minor fix to Gemfile instructions on README
+      Bumping to version 3.0.4
+
+Jonathan Siegel (15):
+      Removed class-level caching per jkraemer: Hi,
+      Integrated pulls and updated tests.
+      Integrated: https://github.com/thoughtbot/hoptoad_notifier/pull/37
+      Corrected test.
+      Consistent operation.
+      Consistent callout during test generation.
+      Fixed typo.
+      Refreshed supported.
+      Resolved: http://help.airbrakeapp.com/discussions/questions/587-airbrake_javascript_notifier-is-escaped-rails-31-haml
+      Now running airbrake deploy notifications on the REMOTE machine.
+      Added first rev of PEER cert resolution.
+      Bumped 3.0.5
+      Updated README, fixed JS rescue template missed HT reference.
+      Crosslinked docs...
+      Fixes for tests.
+
+Leonid Shevtsov (1):
+      fixed rake handler failing when exception happens before Airbrake has been configured (for example, when running an unknown Rake task)
+
+Matt Fawcett (1):
+      Call #close on the old body after building the new body to prevent thread joining errors
+
+Roman Shterenzon (1):
+      Use either Airbrake or Hoptoad object.
+
+Stuart Chaney (1):
+      point towards airbrake.io
+
+Thomas Jachmann (1):
+      handles exceptions with #to_hash properly
+
+usiegj00 (4):
+      Merge pull request #21 from mattfawcett/master
+      Merge pull request #12 from leonid-shevtsov/master
+      Merge pull request #14 from thomasjachmann/master
+      Merge pull request #28 from Sutto/patch-1
+
+
+
+Version 3.0.4 - Mon Sep 12 08:25:04 -0400 2011
+===============================================================================
+David Czarnecki(1):
+    Change deploy task back to airbrake:deploy
+Harold Gimenez(1):
+    README updates
+
+Version 3.0.3 - Sat Sep 03 13:18:26 -0400 2011
+===============================================================================
+David Czarnecki(1):
+    Use capistrano's logger, improve tests around capistrano deploy.
+Florent Guilleux(1):
+    README updates
+
+Version 3.0.2 - Mon Aug 29 10:32:04 -0400 2011
+===============================================================================
+Harold Gimenez(1)
+    Fix bug on the Hoptoad to Airbrake fallback code on the javascript notifier.
+
+Version 3.0.1 - Mon Aug 29 08:37:24 -0400 2011
+===============================================================================
+Roman Shterenzon(1):
+    Use either Airbrake or Hoptoad object on javascript notifier
+
+Version 3.0 - Fri Aug 26 08:55:47 -0400 2011
+===============================================================================
+Harold Gimenez:
+    Continue to use HOPTOAD_API_KEY for heroku users' API key env variable
+
+Version 3.0.rc2 - Wed Aug 24 15:03:46 -0400 2011
+===============================================================================
+
+Harold Gimenez:
+    Revert broken commit around exceptions that respond to #to_hash
+    Support latest versions of Rails.
+
+
+Version 3.0.rc1 - Fri Aug 19 08:51:53 -0400 2011
+===============================================================================
+
+Jonathan Yurek and Harold Gimenez
+      Rename to Airbrake
+
+Version 2.4.9 - Wed Mar 30 09:04:53 -0400 2011
+===============================================================================
+
+Jonathan Yurek(1):
+      The User Informer should adhere to only the Rack spec.
+
+Version 2.4.8 - Mon Mar 21 11:11:16 -0400 2011
+===============================================================================
+
+Jonathan Yurek(1):
+      Prevent infinite loops from recursive data structures.
+
+Version 2.4.7 - Thu Mar 10 16:21:31 -0500 2011
+===============================================================================
+
+Jonathan Yurek(1):
+      Rails generator requires './config/boot' for 1.9.2 compatibility.
+
+Version 2.4.6 - Tue Feb 15 15:51:17 -0500 2011
+===============================================================================
+
+Jonathan Yurek(1):
+      Modify the error page's body in-place.
+
+Version 2.4.5 - Wed Feb 02 13:24:29 -0500 2011
+===============================================================================
+
+Jonathan Yurek (1):
+      Don't require Rack::Lock's presence in the middleware for UserInformer
+
+
+Version 2.4.4 - Fri Jan 28 13:50:10 -0500 2011
+===============================================================================
+
+Matt Jankowski (1):
+      Change the javascript notifier from a config option to a helper method
+
+Jonathan Yurek (1):
+      Show the javascript notifier prevents XSS attempts from request.url
+
+Version 2.4.3 - Wed Jan 26 11:35:15 -0500 2011
+===============================================================================
+
+Jon Yurek (1):
+      Allow the application to present the Hoptoad error number to the user
+
+
+Version 2.4.2 - Sun Jan 09 09:37:31 -0500 2011
+===============================================================================
+
+Matt Jankowski (1):
+      fix issue where the gsub to replace the html head with javascript was removing the head element entirely
+
+
+Version 2.4.1 - Sat Jan 08 12:17:15 -0500 2011
+===============================================================================
+
+Matt Jankowski (1):
+      restore method which may have been accidentally removed?
+
+
+Version 2.4.0 - Thu Jan 06 15:03:58 -0500 2011
+===============================================================================
+
+Jason Morrison (1):
+      Remove official support for very old Rails version going forward
+
+Version 2.3.14 - Wed Jan 05 14:06:12 -0500 2011
+===============================================================================
+
+Jason Morrison (1):
+      Fix 'require' path
+
+Version 2.3.13 - Mon Jan 03 15:56:20 -0500 2011
+===============================================================================
+
+Dan Croak (1):
+      including twiddle wakka in install instructions
+
+Emma Lindsay (5):
+      Sends more javascript information back to hoptaod
+      Merge branch 'js_notifier_default_fields'
+      Bumping to version 2.3.10
+      Updated jferris-mocha to bourne
+      Update readme to show quotes around error names in ignores
+
+Jason Morrison (8):
+      wip: Supply default url, component, action for JS notifier
+      gracefully fall back to require 'activesupport' if require 'active_support' fails
+      Add non-capistrano deploy instructions
+      Add instructions for heroku gem to Heroku addon README
+      Add AbstractController::ActionNotFound to default ignore list
+      Bumping to version 2.3.12
+      Bugfix: JS Notifier will now insert itself even when <head> tag has attributes
+      Add Heroku deploy notification
+
+Jon Yurek (11):
+      Require bourne, run right cucumber task
+      Get the API key from Heroku
+      Bumped version: 2.3.11
+      Getting green cucumber stories
+      Fakes out the heroku command for cucumber.
+      Mount the metal endpoint in Rails 3 tests.
+      Metal test mounts at /metal
+      Supported versions: 2.3.9, 2.3.10, and 3.0.1
+      Return non-zero on cucumber failure.
+      Controller info for older Rails-es is different.
+      Remove Rails 2.0.2 from official support. Added 3.0.2+3
+
+Trevor Turk (1):
+      Fix default ignores in the README
+
+
+Version 2.3.12 - Wed Nov 03 13:53:18 -0400 2010
+===============================================================================
+
+In general: Update gems, improve testing, improve documentation, improve
+javascript notifier.
+
+Emma Lindsay (4):
+      Sends more javascript information back to hoptaod
+      Merge branch 'js_notifier_default_fields'
+      Bumping to version 2.3.10
+      Updated jferris-mocha to bourne
+
+Jason Morrison (5):
+      wip: Supply default url, component, action for JS notifier
+      gracefully fall back to require 'activesupport' if require 'active_support' fails
+      Add non-capistrano deploy instructions
+      Add instructions for heroku gem to Heroku addon README
+      Add AbstractController::ActionNotFound to default ignore list
+
+Jon Yurek (9):
+      Require bourne, run right cucumber task
+      Get the API key from Heroku
+      Bumped version: 2.3.11
+      Getting green cucumber stories
+      Fakes out the heroku command for cucumber.
+      Mount the metal endpoint in Rails 3 tests.
+      Metal test mounts at /metal
+      Supported versions: 2.3.9, 2.3.10, and 3.0.1
+      Return non-zero on cucumber failure.
+
+
+Version 2.3.10 - Mon Oct 18 17:07:56 -0400 2010
+===============================================================================
+
+Emma Lindsay (2):
+      Sends more javascript information back to hoptaod
+      Merge branch 'js_notifier_default_fields'
+
+Jason Morrison (2):
+      wip: Supply default url, component, action for JS notifier
+      gracefully fall back to require 'activesupport' if require 'active_support' fails
+
+
+Version 2.3.9 - 2010-10-18
+===============================================================================
+
+This patch release contains a handful of bugfixes, and ensures:
+      If hoptoadapp.com is completely unreachable by HTTP, your app is not affected.
+      Controller method #notify_hoptoad is available in Rails 3.  Thanks contributor Kyle Crum!
+
+Chad Pytel (1):
+      also handle Errno::ECONNREFUSED and other http errors
+
+Jason Morrison (4):
+      Add gem versions to test suite
+      Revert "Revert "attempt to debug mail sending on staging""
+      Adding Heroku notifier readme
+      gracefully fall back to require 'activesupport' if require 'active_support' fails
+
+Jon Yurek (2):
+      Bumping version to 2.3.8
+      Adds builder to the gemspec
+
+Kyle Crum (3):
+      notify_hoptoad now works in rails 3 controllers
+      more sane way of testing for rails 3 controller methods
+      added a scenario for using the notify_hoptoad method within a controller
+
+
+Version 2.3.7 - 2010-09-15
+===============================================================================
+
+Jason Morrison (5):
+      Add ./ prefix to require for 1.9.2
+      More helpful message for testing without ENV['RAILS_VERSION']
+      Support Rails 3.0.0, not 3.0.0.rc
+      This wasn't actually a fix (it regressed tests): Revert "Fix modifying params_filters"
+      Correct the #also_use_rack_params_filters method
+
+Joshua Clayton (1):
+      Fix modifying params_filters
+
+Nick Quaranto (2):
+      s/RSpec/Spec for matchers
+      use Sinatra::Default instead of Sinatra::Base
+
+
+Version 2.3.6 - 2010-08-30
+===============================================================================
+
+Daniel Barron (1):
+      Initializer configuration overrides Railtie configuration if set
+
+Joshua Clayton (1):
+      Remove rack.request.form_vars
+
+Tristan Dunn (1):
+      Move Rails JS scenarios into separate feature and correctly support HTTPS when secure is enabled on the notifier.
+
+
+Version 2.3.5 - 2010-08-13
+===============================================================================
+
+Alexey Palazhchenko (1):
+      Actually call #to_hash.
+
+Joshua Clayton (1):
+      Trace hoptoad:test task when running generator for anything before Rails3
+
+
+Version 2.3.4 - 2010-08-10
+===============================================================================
+
+Tristan Dunn (1):
+      Only include the JS notifier in public environments.
+
+
+Version 2.3.3 - 2010-08-04
+===============================================================================
+
+Tristan Dunn (1):
+      Initial injection of JS notifier.
+
+
+Version 2.3.2 - 2010-07-06
+===============================================================================
+
+Josh Clayton(1):
+      Handle instances when Rack's action_dispach.parameter_filter is nil
+
+
+Version 2.3.1 - 2010-07-02
+===============================================================================
+
+Jason Morrison (2):
+      Use the Rails 3 params filters when available
+      Filter session hash using Hoptoad config.params_filters, in addition to params
+
+
+Version 2.3.0 - 2010-06-24
+===============================================================================
+
+Jason Morrison (5):
+      Add integration test for rails 3.0.0.beta4
+      Added feature: Support the Heroku addon in the generator
+      Add --heroku flag to generator to support ENV['HOPTOAD_API_KEY']
+      Reflect a copy change in rails.feature for --heroku generator flag
+      Support the proxy configuration options when notifying Hoptoad of a deploy (hat tip @gudleik)
+
+
+Version 2.2.6 - 2010-06-02
+===============================================================================
+
+Jason Morrison (1):
+      For Rails 3, just use the Rack middleware instead of specifying a location to insert_after
+
+
+Version 2.2.5 - 2010-06-02
+===============================================================================
+
+Jason Morrison (1):
+      Add documentation for Rails 3.x installation
+
+
+Version 2.2.4 - 2010-06-02
+===============================================================================
+
+Jason Morrison (1):
+      Add a note to README about removing the explicit Catcher #include in ApplicationController
+
+
+Version 2.2.3 - 2010-06-02
+===============================================================================
+
+Summary: Fixed a variety of issues for Rails 3.0.0.beta3,
+         Fixed a bug when using Vlad to deploy instead of Capistrano
+         Give better error output when gem is not installed
+
+Chad Pytel (2):
+      revise gem unpack instructions step
+      Merge branch 'master' of github.com:thoughtbot/hoptoad_notifier
+
+Dan Lawless (1):
+      don't append capistrano details to config.deploy.rb when target app uses Vlad
+
+Jason Morrison (7):
+      LH-556 Clarify sending ENV environment variables
+      Starting to add features for Rails 3
+      Make rails rake tasks depend on gem-making tasks
+      Start to get Rails 3 features to pass
+      require fileutils to reflect rubygems 1.3.6 change
+      Support ENV['CUCUMBER_FORMAT'] in rails cucumber tasks for testing
+      Fix the initializer syntax in the Rails 3 Railtie
+
+Joe Ferris (11):
+      Got the generator running and a request dispatched to the test endpoint
+      Fixed logging in hoptoad:test rake task
+      Separated Rails 2 and 3 entry
+      Support bundler
+      Rails 3 generator works with an existing api key
+      Extract request info from rack env
+      Detect presence of the plugin
+      Added a capistrano hook for Rails 3
+      Fixed rack/sinatra being broken without active_support
+      Fixes for earlier versions of Rails
+      Fixed Rails 3 generator not to append cap hooks for vlad deploys
+
+Josh Kalderimis (7):
+      updated railtie to work with the new rails 3 middleware api
+      railtie_name is deprecated
+      updated app_middleware call to use string version as to make sure constant is loaded
+      moved generator using the new rails 3 convention
+      update path to template for Rails 3 generator
+      correction to referencing of the rails application in rails3_tasks
+      add environment_name and project_root back to rails 3 railtie
+
+Joshua Nichols (1):
+      Handle gem not being installed more gracefully.
+
+
+Version 2.2.2 - 2010-03-10
+===============================================================================
+
+Chad Pytel (1):
+      document proxy support
+
+Joe Ferris (8):
+      Added upgrade instructions to the README
+      Give a clearer error message when generating a Rails app fails
+      Fail loudly when a gem can't be vendored
+      Debugging rubygems issues
+      Explicitly specify the gem paths
+      Less noisy
+      Restore gem path after vendoring
+      Fixed a typo
+
+Jon Yurek (1):
+      Added notice about removing hoptoad rake tasks to upgrade gem
+
+Mike Burns (1):
+      Remove stray file with notes in it
+
+
+Version 2.2.1 - 2010-03-10
+===============================================================================
+
+Jason Morrison (3):
+      LH-629 Ensure notifier is not considered a framework gem
+      Removing things-the-generator-must-do file
+      Add rake cucumber:wip:rails* tasks for work-in-progress features
+
+
+Version 2.2.0 - 2010-02-18
+===============================================================================
+
+Bumping the version from 2.1.4 to 2.2.0 since adding Rack support warrants a minor version.
+
+Jason Morrison (1):
+      Stringify array elements when making assertions about Notice XML for 1.9 compatibility
+
+
+Version 2.1.4 - 2010-02-12
+===============================================================================
+
+Chad Pytel (2):
+      add more info to README for 1.2.6
+      fix gem unpack line for 1.2.6
+
+Jason Morrison (2):
+      Adding additional instructions for Rails 1.2.6
+      Typesetting in README.rdoc
+
+Joe Ferris (11):
+      Separating Rails functionality out more
+      Initial Rack middleware
+      Extract request info from rack env
+      Added integration tests for rescuing
+      Fixed reporting of Rails version
+      Small refactoring
+      Automatically add Rack middleware for Rails apps that support it (catches exceptions from Metal)
+      Added an integration test and docs for rack apps
+      Added integration/readme coverage of Sinatra apps
+      Added docs to HoptoadNotifier::Rack
+      Require rack in tests for older versions of Rails; use active_support instead of activesupport
+
+Nick Quaranto (3):
+      Fixing the capistrano hook bit in the readme
+      Adding changeling:minor and changeling:patch to automate notifier releases
+      Adding rake changeling:push

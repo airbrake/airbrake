@@ -1,148 +1,455 @@
 Airbrake
 ========
 
-[![Circle CI](https://circleci.com/gh/airbrake/airbrake/tree/master.png?circle-token=66cb9cfc6d20f550a2dbde522f5f0f9f81bd653b)](https://circleci.com/gh/airbrake/airbrake)
-[![Code Climate](https://codeclimate.com/github/airbrake/airbrake.png)](https://codeclimate.com/github/airbrake/airbrake)
-[![Coverage Status](https://coveralls.io/repos/airbrake/airbrake/badge.png?branch=master)](https://coveralls.io/r/airbrake/airbrake?branch=master)
-[![Dependency Status](https://gemnasium.com/airbrake/airbrake.png)](https://gemnasium.com/airbrake/airbrake)
+[![Build Status](https://circleci.com/gh/airbrake/airbrake-gem.png?circle-token=97d268fcbb02dacb817dbc01e91d119500c360f5&style=shield)](https://circleci.com/gh/airbrake/airbrake-gem)
+[![semver]](http://semver.org)
+[![Documentation Status](http://inch-ci.org/github/airbrake/airbrake.svg?branch=master)](http://inch-ci.org/github/airbrake/airbrake)
+[![PR Stats](http://issuestats.com/github/airbrake/airbrake/badge/pr?style=flat)](http://issuestats.com/github/airbrake/airbrake)
+[![Issue Stats](http://issuestats.com/github/airbrake/airbrake/badge/issue?style=flat)](http://issuestats.com/github/airbrake/airbrake)
 
 <img src="http://f.cl.ly/items/3Q163w1r2K1J1b030k0g/ruby%2009.19.32.jpg" width=800px>
 
-This is the notifier gem for integrating apps with [Airbrake](http://airbrake.io).
+* [Airbrake README](https://github.com/airbrake/airbrake)
+* [Airbrake Ruby README](https://github.com/airbrake/airbrake-ruby)
+* [YARD API documentation](http://www.rubydoc.info/gems/airbrake-ruby)
+* [**Migration guide from v4 to v5**][migration-guide]
 
-When an uncaught exception occurs, Airbrake will POST the relevant data
-to the Airbrake server specified in your environment.
+Introduction
+------------
 
-<img scr="http://f.cl.ly/items/142j0Z2u0R1Y2L0L3D26/ruby.jpg" width=800px;>
+[Airbrake][airbrake.io] is an online tool that provides robust exception
+tracking in any of your Ruby applications. In doing so, it allows you to easily
+review errors, tie an error to an individual piece of code, and trace the cause
+back to recent changes. The Airbrake dashboard provides easy categorization,
+searching, and prioritization of exceptions so that when errors occur, your team
+can quickly determine the root cause.
 
-Help
-----
+Looking for the old version?
+----------------------------
 
-For help with using Airbrake and this notifier visit [our support site](http://help.airbrake.io).
+Airbrake V5 was released on 18th December 2015. Here is a guide for
+[migrating from v4 to v5][migration-guide].
 
-For **SSL** verification see the [Resources](https://github.com/airbrake/airbrake/blob/master/resources/README.md).
+You can find the [V4 code
+here](https://github.com/airbrake/airbrake/tree/airbrake-v4).
 
-Rails Installation
-------------------
+Key features
+------------
 
-### Rails 3.x/4.x
+This library is built on top of [Airbrake Ruby][airbrake-ruby]. The difference
+between _Airbrake_ and _Airbrake Ruby_ is that the `airbrake` gem is just a
+collection of integrations with frameworks or other libraries. The
+`airbrake-ruby` gem is the core library that performs exception sending and
+other heavy lifting.
 
-Add the airbrake gem to your Gemfile.  In Gemfile:
+Normally, you just need to depend on this gem, select the integration you are
+interested in and follow the instructions for it. If you develop a pure
+frameworkless Ruby application or embed Ruby and don't need any of the listed
+integrations, you can depend on the `airbrake-ruby` gem and ignore this gem
+entirely.
 
-    gem 'airbrake'
+The list of integrations that are available in this gem includes:
 
-Then from your project's RAILS_ROOT, and in your development environment, run:
+* [Heroku support][heroku-docs] (as an [add-on][heroku-addon])
+* Web frameworks
+  * Rails<sup>[[link](#rails)]</sup>
+  * Sinatra<sup>[[link](#sinatra)]</sup>
+  * Rack applications<sup>[[link](#rack)]</sup>
+* Job processing libraries
+  * ActiveJob<sup>[[link](#activejob)]</sup>
+  * Resque<sup>[[link](#resque)]</sup>
+  * Sidekiq<sup>[[link](#sidekiq)]</sup>
+  * DelayedJob<sup>[[link](#delayedjob)]</sup>
+* Other libraries
+  * Rake<sup>[[link](#rake)]</sup>
+* Plain Ruby scripts<sup>[[link](#plain-ruby-scripts)]</sup>
 
-    bundle install
-    rails generate airbrake --api-key your_key_here
+[Paying Airbrake plans][pricing] support the ability to track deployments of
+your application in Airbrake. We offer several ways to track your deployments:
 
-The generator creates a file under `config/initializers/airbrake.rb` configuring Airbrake with your API key. This file should be checked into your version control system so that it is deployed to your staging and production environments.
+* Using Capistrano<sup>[[link](#capistrano)]</sup>
+* Using the Rake task<sup>[[link](#rake-task)]</sup>
 
-### Rails 2.x
+Installation
+------------
 
-Add the airbrake gem to your app. In config/environment.rb:
+### Bundler
 
-    config.gem 'airbrake'
+Add the Airbrake gem to your Gemfile:
 
-or if you are using bundler:
+```ruby
+gem 'airbrake', '~> 5.0.0'
+```
 
-    gem 'airbrake', :require => 'airbrake/rails'
+### Manual
 
-Then from your project's RAILS_ROOT, and in your development environment, run:
+Invoke the following command from your terminal:
 
-    rake gems:install
-    rake gems:unpack GEM=airbrake
-    script/generate airbrake --api-key your_key_here
+```bash
+gem install airbrake
+```
 
-As always, if you choose not to vendor the airbrake gem, make sure
-every server you deploy to has the gem installed or your application won't start.
+Configuration
+-------------
 
-The generator creates a file under `config/initializers/airbrake.rb` configuring Airbrake with your API key. This file should be checked into your version control system so that it is deployed to your staging and production environments.
+### Rails
 
-Ignored exceptions
-------------------------
+#### Airbrake v5 is already here (but we still support Airbrake v4)
 
-Exceptions raised from Rails environments named **development**, **test** or **cucumber** will be ignored by default.
+If you are migrating from Airbrake v4, please [read our migration
+guide][migration-guide].
 
-You can clear the list of ignored environments with this setting:
+Since the 5th major release of the Airbrake gem we support only Rails 3.2+ and
+Ruby 1.9+. Don't worry, if you use older versions of Rails or Ruby, just
+continue using them with Airbrake v4: we _still_ support it. However, v4 is
+_feature frozen_. We accept only bugfixes.
 
-    config.development_environments = []
+In the meantime, consider upgrading to Airbrake v5, as you miss a lot of new
+features, such as support for multiple Airbrake configurations inside one Rails
+project (you can report to different Airbrake projects in the same Ruby
+process), nested exceptions, multiple asynchronous workers support, JRuby's Java
+exceptions and many more.
 
-List of ignored exception classes includes:
+#### Integration
 
-    ActiveRecord::RecordNotFound
-    ActionController::RoutingError
-    ActionController::InvalidAuthenticityToken
-    CGI::Session::CookieStore::TamperedWithCookie
-    ActionController::UnknownHttpMethod
-    ActionController::UnknownAction
-    AbstractController::ActionNotFound
-    Mongoid::Errors::DocumentNotFound
-    ActionController::UnknownFormat
+To integrate Airbrake with your Rails application, you need to know
+your [project id and project key][project-idkey]. Invoke the following command
+and replace `PROJECT_ID` and `PROJECT_KEY` with your values:
 
-You can alter this list with
+```bash
+rails g airbrake PROJECT_ID PROJECT_KEY
+```
 
-    config.ignore_only = []
+[Heroku add-on][heroku-addon] users can omit specifying the key and the id and invoke
+the command without arguments (Heroku add-on's environment variables will be
+used) ([Heroku add-on docs][heroku-docs]):
 
-which will cause none of the exception classes to be ignored.
+```bash
+rails g airbrake
+```
 
-Check the [wiki](https://github.com/airbrake/airbrake/wiki/Customizing-your-airbrake.rb) for more customization options.
+This command will generate the Airbrake configuration file under
+`config/initializers/airbrake.rb`. Make sure that this file is checked into your
+version control system. This is enough to start Airbraking.
 
-Supported frameworks
-------------------------
+In order to configure the library according to your needs, open up the file and
+edit it. [The full list of supported configuration options][config] is available
+online.
 
-See **[TESTED_AGAINST](https://github.com/airbrake/airbrake/blob/master/TESTED_AGAINST)** for a full list of frameworks and versions we test against.
+To test the integration, invoke a special Rake task that we provide:
 
-Airbrake wiki pages
-------------------------
-Our wiki contains a lot of additional information about Airbrake configuration. Please browse the wiki when finished reading this
-README:
+```ruby
+rake airbrake:test
+```
 
-https://github.com/airbrake/airbrake/wiki
+In case of success, a test exception should appear in your dashboard.
 
-Development
------------
+#### The notify_airbrake controller helpers
 
-For running unit tests, you should run
+The Airbrake gem defines two helper methods available inside Rails controllers:
+`#notify_airbrake` and `#notify_airbrake_sync`. If you want to notify Airbrake
+from your controllers manually, it's usually a good idea to prefer them over
+`Airbrake.notify`, because they automatically add information from the Rack
+environment to notices. `#notify_airbrake` is asynchronous (immediately returns
+`nil`), while `#notify_airbrake_sync` is synchronous (waits for responses from
+the server and returns them). The list of accepted arguments is identical to
+`Airbrake.notify`.
 
-    bundle
-    bundle exec rake test:unit
+#### Additional features: user reporting, sophisticated API
 
-If you wish to run the entire suite, which checks the different framework
-integrations with cucumber, you should run the following commands
+The library sends all uncaught exceptions automatically, attaching the maximum
+possible amount information that can help you to debug errors. The Airbrake gem
+is capable of reporting information about the currently logged in user (id,
+email, username, etc.), if you use an authentication library such as Devise. The
+library also provides a special API for manual error
+reporting. [The description of the API][airbrake-api] is available online.
 
-    bundle
-    bundle exec appraisal install
-    bundle exec rake
+#### Automatic integration with Rake tasks and Rails runner
 
-We use [Appraisals](https://github.com/thoughtbot/appraisal) to run the integration
-tests.
+Additionally, the Rails integration offers automatic exception reporting in any
+Rake tasks<sup>[[link](#rake)]</sup> and [Rails runner][rails-runner].
 
-Maintainers
------------
+### Sinatra
 
-Make sure all tests are passing before pushing the new version. Also, make sure integration
-test is passing. You can run it with:
+To use Airbrake with Sinatra, simply `require` the gem, [configure][config] it
+and `use` our Rack middleware.
 
-    ./script/integration_test.rb <api_key> <host>
+```ruby
+# myapp.rb
+require 'sinatra/base'
+require 'airbrake'
 
-After this is passing, change the version inside *lib/airbrake/version.rb* and
-push the new version with Changeling:
+Airbrake.configure do |c|
+  c.project_id = 113743
+  c.project_key = 'fd04e13d806a90f96614ad8e529b2822'
 
-    rake changeling:change
+  # Display debug output.
+  c.logger.level = Logger::DEBUG
+end
 
-Credits
+class MyApp < Sinatra::Base
+  use Airbrake::Rack::Middleware
+
+  get('/') { 1/0 }
+end
+```
+
+To run the app, add a file called `config.ru` to the same directory and invoke
+`rackup` from your console.
+
+```ruby
+# config.ru
+require_relative 'myapp'
+```
+
+That's all! Now you can send a test request to `localhost:9292` and check your
+project's dashboard for a new error.
+
+```bash
+curl localhost:9292
+```
+
+### Rack
+
+To send exceptions to Airbrake from any Rack application, simply `use` our Rack
+middleware, and [configure][config] the default notifier.
+
+```ruby
+require 'airbrake'
+
+Airbrake.configure do |c|
+  c.project_id = 113743
+  c.project_key = 'fd04e13d806a90f96614ad8e529b2822'
+end
+
+use Airbrake::Rack::Middleware
+```
+
+### Sidekiq
+
+We support Sidekiq v2, v3 and v4. The configurations steps for them are
+identical. Simply `require` our error handler and you're done:
+
+```ruby
+require 'airbrake/sidekiq/error_handler'
+```
+
+If you required Sidekiq before Airbrake, then you don't even have to `require`
+anything manually and it should just work out-of-box.
+
+### ActiveJob
+
+No additional configuration is needed. Simply ensure that you have configured
+your Airbrake notifier.
+
+### Resque
+
+Since Airbrake v5 the gem provides its own failure backend. The old way of
+integrating Resque doesn't work. If you upgrade to Airbrake v5, just make sure
+that you require `airbrake/resque/failure` instead of
+`resque/failure/airbrake`. The rest remains the same.
+
+#### Integrating with Rails applications
+
+If you're working with Resque in the context of a Rails application, create a
+new initializer in `config/initializers/resque.rb` with the following content:
+
+```ruby
+# config/initializers/resque.rb
+require 'airbrake/resque/failure'
+Redis::Failure.backend = Resque::Failure::Airbrake
+```
+
+That's all configuration.
+
+#### General integration
+
+Any Ruby app using Resque can be integrated with Airbrake. If you can require
+the Airbrake gem *after* Resque, then there's no need to require
+`airbrake/resque/failure` anymore:
+
+```ruby
+require 'resque'
+require 'airbrake'
+
+Redis::Failure.backend = Resque::Failure::Airbrake
+```
+
+If you're unsure, just configure it similar to the Rails approach. If you use
+multiple backends, then continue reading the needed configuration steps in
+[the Resque wiki][resque-wiki] (it's fairly straightforward).
+
+### DelayedJob
+
+Simply `require` our plugin and you're done:
+
+```ruby
+require 'airbrake/delayed_job/plugin'
+```
+
+If you required DelayedJob before Airbrake, then you don't even have to `require`
+anything manually and it should just work out-of-box.
+
+### Rake
+
+Airbrake offers Rake tasks integration, which is used by our Rails
+integration<sup>[[link](#rails)]</sup>.  To integrate Airbrake in any project,
+just `require` the gem in your `Rakefile`, if it hasn't been required and
+[configure][config] the default notifier.
+
+```ruby
+# Rakefile
+require 'airbrake'
+
+Airbrake.configure do |c|
+  c.project_id = 113743
+  c.project_key = 'fd04e13d806a90f96614ad8e529b2822'
+end
+
+task :foo do
+  1/0
+end
+```
+
+### Plain Ruby scripts
+
+Airbrake supports _any_ type of Ruby applications including plain Ruby scripts.
+If you want to integrate your script with Airbrake, you don't have to use this
+gem. The [Airbrake Ruby][airbrake-ruby] gem provides all the needed tooling.
+
+Deploy tracking
+---------------
+
+Airbrake has the ability to track your deploys (available only for
+[paid plans][pricing]).
+
+By notifying Airbrake of your application deployments, all errors are resolved
+when a deploy occurs, so that you'll be notified again about any errors that
+reoccur after a deployment. Additionally, it's possible to review the errors in
+Airbrake that occurred before and after a deploy.
+
+There are several ways to integrate deployment tracking with your application,
+that are described below.
+
+### Capistrano
+
+The library supports Capistrano v2 and Capistrano v3. In order to configure
+deploy tracking with Capistrano simply `require` our integration from your
+Capfile:
+
+```ruby
+# Capfile
+require 'airbrake/capistrano/tasks'
+```
+
+If you version your application, you can set the `:app_version` variable in
+`config/deploy.rb`, so that information will be attached to your deploy.
+
+```ruby
+# config/deploy.rb
+set :app_version, '1.2.3'
+```
+
+### Rake task
+
+A Rake task can accept several arguments shown in the table below:
+
+| Key       | Required | Default   | Example |
+------------|----------|-----------|----------
+ENVIRONMENT | No       | Rails.env | production
+USERNAME    | No       | nil       | john
+REPOSITORY  | No       | nil       | https://github.com/airbrake/airbrake
+REVISION    | No       | nil       | 38748467ea579e7ae64f7815452307c9d05e05c5
+VERSION     | No       | nil       | v2.0
+
+#### In Rails
+
+Simply invoke `rake airbrake:deploy` and pass needed arguments:
+
+```bash
+rake airbrake:deploy USERNAME=john ENVIRONMENT=production REVISION=38748467 REPOSITORY=https://github.com/airbrake/airbrake
+```
+
+#### Anywhere
+
+Make sure to `require` the library Rake integration in your Rakefile.
+
+```ruby
+# Rakefile
+require 'airbrake/rake/tasks'
+```
+
+Then, invoke it like shown in the example for Rails.
+
+Supported Rubies
+----------------
+
+* CRuby >= 1.9.2
+* JRuby >= 1.9-mode
+* Rubinius >= 2.2.10
+
+Contact
 -------
 
-![thoughtbot](https://secure.gravatar.com/avatar/a95a04df2dae60397c38c9bd04492c53)
+In case you have a problem, question or a bug report, feel free to:
 
-Airbrake is maintained and funded by [airbrake.io](http://airbrake.io).
-
-Thank you to all [the contributors](https://github.com/airbrake/airbrake/contributors)!
-
-The names and logos for Airbrake, thoughtbot are trademarks of their respective holders.
+* [file an issue][issues]
+* [send us an email](mailto:support@airbrake.io)
+* [tweet at us][twitter]
+* chat with us (visit [airbrake.io][airbrake.io] and click on the round orange
+  button in the bottom right corner)
 
 License
 -------
 
-Airbrake is Copyright © 2008-2015 Airbrake.
+The project uses the MIT License. See LICENSE.md for details.
+
+Development & testing
+---------------------
+
+In order to run the test suite, first of all, clone the repo, and install
+dependencies with Bundler.
+
+```bash
+git clone https://github.com/airbrake/airbrake.git
+cd airbrake
+bundle
+```
+
+Next, run unit tests.
+
+```bash
+bundle exec rake
+```
+
+In order to test integrations with frameworks and other libraries, install their
+dependencies with help of the following command:
+
+```bash
+bundle exec appraisal install
+```
+
+To run integration tests for a specific framework, use the `appraisal` command.
+
+```bash
+bundle exec appraisal rails-4.2 rake spec:integration:rails
+bundle exec appraisal sinatra rake spec:integration:sinatra
+```
+
+Pro tip: [`circle.yml`](/circle.yml) has the list of all integration tests and
+commands to invoke them.
+
+[airbrake.io]: https://airbrake.io
+[airbrake-ruby]: https://github.com/airbrake/airbrake-ruby
+[issues]: https://github.com/airbrake/airbrake/issues
+[twitter]: https://twitter.com/airbrake
+[project-idkey]: https://github.com/airbrake/airbrake-ruby#project_id--project_key
+[config]: https://github.com/airbrake/airbrake-ruby#config-options
+[airbrake-api]: https://github.com/airbrake/airbrake-ruby#api
+[rails-runner]: http://guides.rubyonrails.org/command_line.html#rails-runner
+[resque-wiki]: https://github.com/resque/resque/wiki/Failure-Backends#using-multiple-failure-backends-at-once
+[pricing]: https://airbrake.io/pricing
+[heroku-addon]: https://elements.heroku.com/addons/airbrake
+[heroku-docs]: https://devcenter.heroku.com/articles/airbrake
+[semver]: https://img.shields.io/:semver-5.0.0-brightgreen.svg?style=flat
+[migration-guide]: docs/Migration_guide_from_v4_to_v5.md

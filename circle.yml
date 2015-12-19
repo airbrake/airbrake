@@ -1,32 +1,80 @@
 machine:
-  ruby:
-    version: 2.2.3
+  java:
+    version: openjdk7
 
-## Customize dependencies
 dependencies:
-  pre:
-    - gem install bundler --pre
-
+  cache_directories:
+    - vendor
   override:
-    - bundle install -j10
-    - rake appraisal:install
+    - bundle install --path=vendor
+    - ? |
+        case $CIRCLE_NODE_INDEX in
+          0)
+            rvm-exec 1.9.3-p551 bundle install --jobs=15 --path=vendor
+            rvm-exec 1.9.3-p551 bundle exec appraisal install --jobs=15
+            ;;
+          1)
+            rvm-exec 2.2.3 bundle install --jobs=15 --path=vendor
+            rvm-exec 2.2.3 bundle exec appraisal install --jobs=15
+            ;;
+          2)
+            # The 'dev' switch makes JRuby start about 2.5 times faster.
+            # See: https://github.com/jruby/jruby/wiki/Improving-startup-time
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-1.7.19 bundle install --jobs=15 --path=vendor
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-1.7.19 bundle exec appraisal install --jobs=15
+            ;;
+        esac
+      :
+        parallel: true
 
-## Customize test commands
 test:
   override:
-    - case $CIRCLE_NODE_INDEX in 0) rake test:unit ;; 1) rake test:integration:rake ;; esac:
+    - ? |
+        set -e
+        case $CIRCLE_NODE_INDEX in
+          0)
+            rvm-exec 1.9.3-p551 bundle exec appraisal rails-3.2 rake spec:integration:rails
+            rvm-exec 1.9.3-p551 bundle exec appraisal rails-4.0 rake spec:integration:rails
+            rvm-exec 1.9.3-p551 bundle exec appraisal rails-4.1 rake spec:integration:rails
+            rvm-exec 1.9.3-p551 bundle exec appraisal rails-4.2 rake spec:integration:rails
+
+            rvm-exec 1.9.3-p551 bundle exec appraisal sinatra rake spec:integration:sinatra
+
+            rvm-exec 1.9.3-p551 bundle exec appraisal rack rake spec:integration:rack
+            ;;
+          1)
+            rvm-exec 2.2.3 bundle exec appraisal rails-3.2 rake spec:integration:rails
+            rvm-exec 2.2.3 bundle exec appraisal rails-4.0 rake spec:integration:rails
+            rvm-exec 2.2.3 bundle exec appraisal rails-4.1 rake spec:integration:rails
+            rvm-exec 2.2.3 bundle exec appraisal rails-4.2 rake spec:integration:rails
+            rvm-exec 2.2.3 bundle exec appraisal rails-edge rake spec:integration:rails
+
+            rvm-exec 2.2.3 bundle exec appraisal sinatra rake spec:integration:sinatra
+
+            rvm-exec 2.2.3 bundle exec appraisal rack rake spec:integration:rack
+            ;;
+          2)
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-1.7.19 bundle exec appraisal rails-3.2 rake spec:integration:rails
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-1.7.19 bundle exec appraisal rails-4.2 rake spec:integration:rails
+            ;;
+        esac
+      :
         parallel: true
-    - case $CIRCLE_NODE_INDEX in 0) rake test:integration:rails_4_0 ;; 1) rake test:integration:rails_3_2 ;; esac:
+    - ? |
+        set -e
+        case $CIRCLE_NODE_INDEX in
+          0)
+            rvm-exec 1.9.3-p551 bundle exec rake spec:unit
+            ;;
+          1)
+            rvm-exec 2.2.3 bundle exec rake spec:unit
+            ;;
+          2)
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-1.7.19 bundle exec rake spec:unit
+            ;;
+        esac
+      :
         parallel: true
-    - case $CIRCLE_NODE_INDEX in 0) rake test:integration:rails_3_1 ;; 1) rake test:integration:rails_3_0 ;; esac:
-        parallel: true
-    - case $CIRCLE_NODE_INDEX in 0) rake test:integration:rack ;; 1) rake test:integration:sinatra ;; esac:
-        parallel: true
-    - case $CIRCLE_NODE_INDEX in 0) rake test:cucumber:rails_4_0 ;; 1) rake test:cucumber:rails_3_2 ;; esac:
-        parallel: true
-    - case $CIRCLE_NODE_INDEX in 0) rake test:cucumber:rails_3_1 ;; 1) rake test:cucumber:rails_3_0 ;; esac:
-        parallel: true
-    - case $CIRCLE_NODE_INDEX in 0) rake test:cucumber:sinatra ;; 1) rake test:cucumber:rake ;; esac:
-        parallel: true
-    - rake test:cucumber:rack
-    - rake coveralls:push
+
+  post:
+    - bundle exec rubocop
