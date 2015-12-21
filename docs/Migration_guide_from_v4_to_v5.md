@@ -475,7 +475,7 @@ use Airbrake::Rack::Middleware
 
 #### Resque
 
-Replace `resque/failure/airbrake` with `resque/airbrake/failure`
+Replace `resque/failure/airbrake` with `airbrake/resque/failure`
 
 ```ruby
 # Old way
@@ -483,8 +483,8 @@ require 'resque/failure/airbrake'
 Resque::Failure.backend = Resque::Failure::Airbrake
 
 # New way
-require 'resque/airbrake/failure'
-Resque::Failure.backend = Resque::Airbrake::Failure
+require 'airbrake/resque/failure'
+Resque::Failure.backend = Resque::Failure::Airbrake
 ```
 
 #### Sidekiq
