@@ -520,13 +520,22 @@ Capistrano 3 you no longer need an `after` hook.
 ```ruby
 # Old way
 # For Capistrano 2
+# Capfile
 require 'airbrake/capistrano'
 # For Capistrano 3
+# Capfile
 require 'airbrake/capistrano3'
+# config/deploy.rb
 after 'deploy:finished', 'airbrake:deploy'
 
 # New way
+# For Capistrano 2
 require 'airbrake/capistrano/tasks'
+# For Capistrano 3
+# Capfile
+require 'airbrake/capistrano/tasks'
+# config/deploy.rb
+after :finished, 'airbrake:deploy'
 ```
 
 <div align="right">

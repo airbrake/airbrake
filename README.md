@@ -342,6 +342,16 @@ Capfile:
 require 'airbrake/capistrano/tasks'
 ```
 
+If you use Capistrano 3, define the `after :finished` hook, which executes the
+deploy notification task (Capistrano 2 doesn't require this step).
+
+```ruby
+# config/deploy.rb
+namespace :deploy do
+  after :finished, 'airbrake:deploy'
+end
+```
+
 If you version your application, you can set the `:app_version` variable in
 `config/deploy.rb`, so that information will be attached to your deploy.
 
