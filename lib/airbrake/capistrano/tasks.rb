@@ -6,7 +6,8 @@ if defined?(Capistrano::VERSION) &&
   namespace :airbrake do
     desc "Notify Airbrake of the deploy"
     task :deploy do
-      on roles(:all) do
+      role = roles(:all, select: :primary).first || roles(:all).first
+      on role do
         within release_path do
           with rails_env: fetch(:rails_env, fetch(:stage)) do
             execute :rake, <<-CMD
