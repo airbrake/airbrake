@@ -78,7 +78,7 @@ Installation
 Add the Airbrake gem to your Gemfile:
 
 ```ruby
-gem 'airbrake', '~> 5.0.0'
+gem 'airbrake', '~> 5.0'
 ```
 
 ### Manual
@@ -461,5 +461,5 @@ commands to invoke them.
 [pricing]: https://airbrake.io/pricing
 [heroku-addon]: https://elements.heroku.com/addons/airbrake
 [heroku-docs]: https://devcenter.heroku.com/articles/airbrake
-[semver]: https://img.shields.io/:semver-5.0.0-brightgreen.svg?style=flat
+[semver]: https://img.shields.io/:semver-5.0.1-brightgreen.svg?style=flat
 [migration-guide]: docs/Migration_guide_from_v4_to_v5.md

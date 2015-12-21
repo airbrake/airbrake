@@ -1,6 +1,12 @@
 Airbrake Changelog
 ==================
 
+### [v5.0.1][v5.0.1] (December 21, 2015)
+
+* Fixed Migration Guide discrepancies with regard to Resque and Capistrano
+* Using the Capistrano 3 integration, made Airbrake notify of deployments only
+  from primary server ([#433](https://github.com/airbrake/airbrake/pull/443))
+
 ### [v5.0.0][v5.0.0] (December 18, 2015)
 
 * Minor styling/docs tweaks. No bugs were discovered.
@@ -14,3 +20,4 @@ Airbrake Changelog
 
 [v5.0.0.rc.1]: https://github.com/airbrake/airbrake/releases/tag/v5.0.0.rc.1
 [v5.0.0]: https://github.com/airbrake/airbrake/releases/tag/v5.0.0
+[v5.0.1]: https://github.com/airbrake/airbrake/releases/tag/v5.0.1
