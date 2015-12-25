@@ -257,7 +257,7 @@ new initializer in `config/initializers/resque.rb` with the following content:
 ```ruby
 # config/initializers/resque.rb
 require 'airbrake/resque/failure'
-Redis::Failure.backend = Resque::Failure::Airbrake
+Resque::Failure.backend = Resque::Failure::Airbrake
 ```
 
 That's all configuration.
@@ -272,7 +272,7 @@ the Airbrake gem *after* Resque, then there's no need to require
 require 'resque'
 require 'airbrake'
 
-Redis::Failure.backend = Resque::Failure::Airbrake
+Resque::Failure.backend = Resque::Failure::Airbrake
 ```
 
 If you're unsure, just configure it similar to the Rails approach. If you use
