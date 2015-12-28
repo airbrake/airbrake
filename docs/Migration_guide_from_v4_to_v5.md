@@ -125,6 +125,7 @@ test_mode | removed | n/a
 
   # New way
   Airbrake.configure do |c|
+    c.environment = Rails.env
     c.ignore_environments = %w(development test)
 
     # OR to collection exceptions in all envs
