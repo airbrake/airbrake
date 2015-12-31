@@ -1,6 +1,11 @@
 Airbrake Changelog
 ==================
 
+### master
+
+* Fixed the bug when Warden user is `nil`
+  ([#455](https://github.com/airbrake/airbrake/pull/445))
+
 ### [v5.0.1][v5.0.1] (December 21, 2015)
 
 * Fixed Migration Guide discrepancies with regard to Resque and Capistrano
