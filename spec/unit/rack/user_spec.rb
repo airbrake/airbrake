@@ -36,6 +36,16 @@ RSpec.describe Airbrake::Rack::User do
         retval = described_class.extract(env_for('/', 'warden' => warden))
         expect(retval).to be_a(described_class)
       end
+
+      context "and the warden user is nil" do
+        it "returns nil" do
+          warden = instance_double('Warden::Proxy')
+          allow(warden).to receive(:user) { nil }
+
+          retval = described_class.extract(env_for('/', 'warden' => warden))
+          expect(retval).to be_nil
+        end
+      end
     end
 
     context "when the Warden authentication framework is absent" do

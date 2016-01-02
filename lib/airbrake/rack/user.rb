@@ -11,7 +11,8 @@ module Airbrake
       # @return [Airbrake::Rack::User, nil]
       def self.extract(rack_env)
         return unless (warden = rack_env['warden'])
-        new(warden.user(run_callbacks: false))
+        return unless (warden_user = warden.user(run_callbacks: false))
+        new(warden_user)
       end
 
       ##
