@@ -282,6 +282,11 @@ test_mode | removed | n/a
   Read the [`Airbrake.notify` docs](#airbrake-notify) for more information.
 <sup>[[link](#async)]</sup>
 
+* <a name="default-ignored-classes"></a>
+  The list of default ignored exceptions was relaxed. The library now ignores
+  only `SystemExit` exceptions.
+<sup>[[link](#default-ignored-classes)]</sup>
+
 #### Library API
 
 ##### Blacklist filter
