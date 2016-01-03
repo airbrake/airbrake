@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v5.0.2][v5.0.2] (January 3, 2015)
+
 * Fixed the bug when Warden user is `nil`
   ([#455](https://github.com/airbrake/airbrake/pull/445))
 
@@ -26,3 +28,4 @@ Airbrake Changelog
 [v5.0.0.rc.1]: https://github.com/airbrake/airbrake/releases/tag/v5.0.0.rc.1
 [v5.0.0]: https://github.com/airbrake/airbrake/releases/tag/v5.0.0
 [v5.0.1]: https://github.com/airbrake/airbrake/releases/tag/v5.0.1
+[v5.0.2]: https://github.com/airbrake/airbrake/releases/tag/v5.0.2
