@@ -192,6 +192,8 @@ class MyApp < Sinatra::Base
 
   get('/') { 1/0 }
 end
+
+run MyApp.run!
 ```
 
 To run the app, add a file called `config.ru` to the same directory and invoke
