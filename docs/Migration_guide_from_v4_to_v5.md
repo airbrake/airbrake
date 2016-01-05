@@ -110,7 +110,10 @@ test_mode | removed | n/a
   The `development_environments` option was renamed to `ignore_environments`.
   Its behaviour was also slightly changed. By default, the library sends
   exceptions in _all_ environments, so you don't need to assign an empty Array
-  anymore.
+  anymore to get this behavior. If you relied on the default value of
+  `development_environments` before upgrading, you should explicitly set
+  `ignore_environments` to `%w(development test cucumber)` to preserve the old
+  behavior.
 <sup>[[link](#development-environments)]</sup>
 
   ```ruby
@@ -121,6 +124,8 @@ test_mode | removed | n/a
     # OR to collect exceptions in all envs
 
     c.development_environments = []
+    
+    # OR don't set this option to get the default (development, test, cucumber)
   end
 
   # New way
@@ -131,6 +136,10 @@ test_mode | removed | n/a
     # OR to collection exceptions in all envs
 
     # Simply don't set this option
+    
+    # OR use the old default value
+    
+    c.ignore_environments = %w(development test cucumber)
   end
   ```
 
