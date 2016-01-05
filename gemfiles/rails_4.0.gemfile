@@ -2,7 +2,6 @@
 
 source "https://rubygems.org"
 
-gem "airbrake-ruby", :git => ENV['AIRBRAKE_RUBY_ADDRESS'], :branch => "master"
 gem "rubocop", "~> 0.34", :require => false
 gem "rails", "~> 4.0.13"
 gem "warden", "~> 1.2.3"
