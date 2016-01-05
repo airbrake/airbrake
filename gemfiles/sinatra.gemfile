@@ -2,7 +2,6 @@
 
 source "https://rubygems.org"
 
-gem "airbrake-ruby", :git => ENV['AIRBRAKE_RUBY_ADDRESS'], :branch => "master"
 gem "rubocop", "~> 0.34", :require => false
 gem "sinatra", "~> 1.4.6"
 gem "rack-test", "~> 0.6.3"
