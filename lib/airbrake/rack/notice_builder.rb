@@ -62,7 +62,7 @@ module Airbrake
           context[:action] = @controller.action_name
         end
 
-        notice[:context].merge!(@user.to_hash) if @user
+        notice[:context].merge!(@user.as_json) if @user
 
         nil
       end

@@ -132,4 +132,18 @@ RSpec.describe "Rails integration specs" do
       sleep 2
     end
   end
+
+  describe "notice payload when a user is authenticated without Warden" do
+    context "when the current_user method is defined" do
+      it "contains the user information" do
+        user = OpenStruct.new(id: 1, email: 'qa@example.com', username: 'qa-dept')
+        allow_any_instance_of(DummyController).to receive(:current_user) { user }
+
+        get '/crash'
+        wait_for_a_request_with_body(
+          /"user":{"id":"1","username":"qa-dept","email":"qa@example.com"}/
+        )
+      end
+    end
+  end
 end

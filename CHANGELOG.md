@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Added better support for user reporting for Rails applications (including
+  OmniAuth support) ([#466](https://github.com/airbrake/airbrake/pull/466))
+
 ### [v5.0.2][v5.0.2] (January 3, 2015)
 
 * Fixed the bug when Warden user is `nil`
