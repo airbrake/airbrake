@@ -14,8 +14,8 @@ dependencies:
             rvm-exec 1.9.3-p551 bundle exec appraisal install --jobs=15
             ;;
           1)
-            rvm-exec 2.2.3 bundle install --jobs=15 --path=vendor
-            rvm-exec 2.2.3 bundle exec appraisal install --jobs=15
+            rvm-exec 2.3.0 bundle install --jobs=15 --path=vendor
+            rvm-exec 2.3.0 bundle exec appraisal install --jobs=15
             ;;
           2)
             # The 'dev' switch makes JRuby start about 2.5 times faster.
@@ -43,15 +43,15 @@ test:
             rvm-exec 1.9.3-p551 bundle exec appraisal rack rake spec:integration:rack
             ;;
           1)
-            rvm-exec 2.2.3 bundle exec appraisal rails-3.2 rake spec:integration:rails
-            rvm-exec 2.2.3 bundle exec appraisal rails-4.0 rake spec:integration:rails
-            rvm-exec 2.2.3 bundle exec appraisal rails-4.1 rake spec:integration:rails
-            rvm-exec 2.2.3 bundle exec appraisal rails-4.2 rake spec:integration:rails
-            rvm-exec 2.2.3 bundle exec appraisal rails-edge rake spec:integration:rails
+            rvm-exec 2.3.0 bundle exec appraisal rails-3.2 rake spec:integration:rails
+            rvm-exec 2.3.0 bundle exec appraisal rails-4.0 rake spec:integration:rails
+            rvm-exec 2.3.0 bundle exec appraisal rails-4.1 rake spec:integration:rails
+            rvm-exec 2.3.0 bundle exec appraisal rails-4.2 rake spec:integration:rails
+            rvm-exec 2.3.0 bundle exec appraisal rails-edge rake spec:integration:rails
 
-            rvm-exec 2.2.3 bundle exec appraisal sinatra rake spec:integration:sinatra
+            rvm-exec 2.3.0 bundle exec appraisal sinatra rake spec:integration:sinatra
 
-            rvm-exec 2.2.3 bundle exec appraisal rack rake spec:integration:rack
+            rvm-exec 2.3.0 bundle exec appraisal rack rake spec:integration:rack
             ;;
           2)
             JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-1.7.19 bundle exec appraisal rails-3.2 rake spec:integration:rails
@@ -67,7 +67,7 @@ test:
             rvm-exec 1.9.3-p551 bundle exec rake spec:unit
             ;;
           1)
-            rvm-exec 2.2.3 bundle exec rake spec:unit
+            rvm-exec 2.3.0 bundle exec rake spec:unit
             ;;
           2)
             JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-1.7.19 bundle exec rake spec:unit
