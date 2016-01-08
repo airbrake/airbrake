@@ -1,30 +1,31 @@
 module Airbrake
   module Rack
     ##
-    # Represents an authenticated Warden user, which can be converted to
-    # Airbrake's payload format.
+    # Represents an authenticated user, which can be converted to Airbrake's
+    # payload format. Supports Warden and Omniauth authentication frameworks.
     class User
-      # Finds the Warden user in the Rack environment and creates a new user
-      # wrapper.
+      # Finds the user in the Rack environment and creates a new user wrapper.
       #
       # @param [Hash{String=>Object}] rack_env The Rack environment
       # @return [Airbrake::Rack::User, nil]
       def self.extract(rack_env)
-        return unless (warden = rack_env['warden'])
-        return unless (warden_user = warden.user(run_callbacks: false))
-        new(warden_user)
+        # Warden support (including Devise).
+        if (warden = rack_env['warden'])
+          if (user = warden.user(run_callbacks: false))
+            return new(user) if user
+          end
+        end
+
+        # Fallback mode (OmniAuth support included). Works only for Rails.
+        controller = rack_env['action_controller.instance']
+        new(controller.current_user) if controller.respond_to?(:current_user)
       end
 
-      ##
-      # @param [Warden::Proxy] warden_user
-      def initialize(warden_user)
-        @warden_user = warden_user
+      def initialize(user)
+        @user = user
       end
 
-      ##
-      # Converts the user to Airbrake payload user.
-      # @return [Hash{Symbol=>String}] the hash with retrieved user details
-      def to_hash
+      def as_json
         user = {}
 
         user[:id] = try_to_get(:id)
@@ -39,7 +40,7 @@ module Airbrake
       private
 
       def try_to_get(key)
-        String(@warden_user.__send__(key)) if @warden_user.respond_to?(key)
+        String(@user.__send__(key)) if @user.respond_to?(key)
       end
 
       def full_name
