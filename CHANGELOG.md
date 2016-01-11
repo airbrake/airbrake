@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+* Improved RubyMine support
+  ([#469](https://github.com/airbrake/airbrake/pull/469))
 * Added better support for user reporting for Rails applications (including
   OmniAuth support) ([#466](https://github.com/airbrake/airbrake/pull/466))
 
