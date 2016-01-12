@@ -1,6 +1,8 @@
 # For 'Socket.gethostname' only.
 require 'socket'
 
+require 'shellwords'
+
 # Core library that sends notices.
 # See: https://github.com/airbrake/airbrake-ruby
 require 'airbrake-ruby'
