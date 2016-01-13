@@ -1,6 +1,3 @@
-require 'shellwords'
-require 'fileutils'
-
 if defined?(Capistrano::VERSION) &&
    Gem::Version.new(Capistrano::VERSION).release >= Gem::Version.new('3.0.0')
   namespace :airbrake do
@@ -29,7 +26,6 @@ else
     ##
     # The Capistrano v2 integration.
     module Capistrano
-      # rubocop:disable Metrics/AbcSize
       def self.load_into(config)
         config.load do
           after 'deploy',            'airbrake:deploy'
@@ -39,25 +35,24 @@ else
           namespace :airbrake do
             desc "Notify Airbrake of the deploy"
             task :deploy, except: { no_release: true }, on_error: :continue do
-              FileUtils.cd(config.release_path) do
-                username = Shellwords.shellescape(ENV['USER'] || ENV['USERNAME'])
+              username = Shellwords.shellescape(ENV['USER'] || ENV['USERNAME'])
+              command = <<-CMD
+                cd #{config.release_path} && \
 
-                system(<<-CMD)
-                  bundle exec rake airbrake:deploy \
-                    USERNAME=#{username} \
-                    ENVIRONMENT=#{fetch(:rails_env, 'production')} \
-                    REVISION=#{current_revision.strip} \
-                    REPOSITORY=#{repository} \
-                    VERSION=#{fetch(:app_version, nil)}
-                CMD
-              end
+                bundle exec rake airbrake:deploy \
+                  USERNAME=#{username} \
+                  ENVIRONMENT=#{fetch(:rails_env, 'production')} \
+                  REVISION=#{current_revision.strip} \
+                  REPOSITORY=#{repository} \
+                  VERSION=#{fetch(:app_version, nil)}
+              CMD
 
+              run(command, once: true)
               logger.info 'Notified Airbrake of the deploy'
             end
           end
         end
       end
-      # rubocop:enable Metrics/AbcSize
     end
   end
 
