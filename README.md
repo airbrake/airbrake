@@ -463,5 +463,5 @@ commands to invoke them.
 [pricing]: https://airbrake.io/pricing
 [heroku-addon]: https://elements.heroku.com/addons/airbrake
 [heroku-docs]: https://devcenter.heroku.com/articles/airbrake
-[semver]: https://img.shields.io/:semver-5.0.2-brightgreen.svg?style=flat
+[semver]: https://img.shields.io/:semver-5.0.3-brightgreen.svg?style=flat
 [migration-guide]: docs/Migration_guide_from_v4_to_v5.md
