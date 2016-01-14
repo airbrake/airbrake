@@ -62,6 +62,7 @@ The list of integrations that are available in this gem includes:
   * DelayedJob<sup>[[link](#delayedjob)]</sup>
 * Other libraries
   * Rake<sup>[[link](#rake)]</sup>
+  * Phusion Passenger<sup>[[link](#passenger)]</sup>
 * Plain Ruby scripts<sup>[[link](#plain-ruby-scripts)]</sup>
 
 [Paying Airbrake plans][pricing] support the ability to track deployments of
@@ -311,6 +312,18 @@ end
 task :foo do
   1/0
 end
+```
+
+### Passenger
+
+Airbrake can report problems occurring during Phusion Passenger deploy failures
+(require Passenger 4 or greater). To integrate Airbrake with Passenger you don't
+have to do anything, but if it's not working out-of-box, then `require`
+our integration at the top of your `config.ru` file:
+
+```ruby
+# config.ru
+require 'airbrake/passenger/load_shared_helpers_ext'
 ```
 
 ### Plain Ruby scripts
