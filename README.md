@@ -323,6 +323,7 @@ our integration at the top of your `config.ru` file:
 
 ```ruby
 # config.ru
+# In Rails apps this should go after the Rails env is loaded.
 require 'airbrake/passenger/load_shared_helpers_ext'
 ```
 
