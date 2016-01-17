@@ -45,6 +45,7 @@ Airbrake.configure do |c|
   # unwanted environments such as :test. By default, it is equal to an empty
   # Array, which means Airbrake Ruby sends exceptions occurring in all
   # environments.
+  # c.environment must be set otherwise this attribute is ignored.
   # https://github.com/airbrake/airbrake-ruby#ignore_environments
   c.ignore_environments = %w(test)
 end
