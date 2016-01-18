@@ -27,11 +27,3 @@ Style/Alias:
 Style/ConditionalAssignment:
   Exclude:
     - 'spec/spec_helper.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: when_needed, always
-Style/FrozenStringLiteralComment:
-  Exclude:
-    - 'lib/airbrake/version.rb'

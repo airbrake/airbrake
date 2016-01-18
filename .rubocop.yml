@@ -60,3 +60,7 @@ Style/RedundantSelf:
 
 Style/SpaceInsideParens:
   Enabled: true
+
+# TODO: enable this when Ruby 3.0 is out.
+Style/FrozenStringLiteralComment:
+  Enabled: false
