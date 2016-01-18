@@ -67,3 +67,6 @@ Style/FrozenStringLiteralComment:
 
 Style/ConditionalAssignment:
   Enabled: true
+
+Performance/StartWith:
+  Enabled: true

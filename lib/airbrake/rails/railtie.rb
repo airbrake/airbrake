@@ -11,7 +11,7 @@ module Airbrake
         # case the request is local. We want to insert our middleware after
         # DebugExceptions, so we don't notify Airbrake about local requests.
 
-        if ::Rails.version =~ /\A5\./
+        if ::Rails.version.start_with?('5.')
           # Avoid the warning about deprecated strings.
           app.config.middleware.insert_after(
             ActionDispatch::DebugExceptions, Airbrake::Rack::Middleware
