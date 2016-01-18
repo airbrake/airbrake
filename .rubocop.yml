@@ -64,3 +64,6 @@ Style/SpaceInsideParens:
 # TODO: enable this when Ruby 3.0 is out.
 Style/FrozenStringLiteralComment:
   Enabled: false
+
+Style/ConditionalAssignment:
+  Enabled: true

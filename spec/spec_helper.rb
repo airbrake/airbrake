@@ -34,11 +34,11 @@ if ENV['APPRAISAL_INITIALIZED']
 
     rails_vsn = Gem::Version.new(Rails.version)
 
-    if rails_vsn <= Gem::Version.new('4.2')
-      ENV['DATABASE_URL'] = 'sqlite3:///:memory:'
-    else
-      ENV['DATABASE_URL'] = 'sqlite3::memory:'
-    end
+    ENV['DATABASE_URL'] = if rails_vsn <= Gem::Version.new('4.2')
+                            'sqlite3:///:memory:'
+                          else
+                            'sqlite3::memory:'
+                          end
 
     require 'action_controller'
     require 'action_view'
