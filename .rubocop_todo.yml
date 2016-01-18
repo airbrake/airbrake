@@ -20,10 +20,3 @@ Style/Alias:
   Exclude:
     - 'lib/airbrake/delayed_job/plugin.rb'
     - 'lib/airbrake/rake/task_ext.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: SingleLineConditionsOnly.
-Style/ConditionalAssignment:
-  Exclude:
-    - 'spec/spec_helper.rb'
