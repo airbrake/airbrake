@@ -70,3 +70,6 @@ Style/ConditionalAssignment:
 
 Performance/StartWith:
   Enabled: true
+
+Style/Alias:
+  Enabled: true

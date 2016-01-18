@@ -5,12 +5,3 @@
 # one by one as the offenses are removed from the code base.
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: prefer_alias, prefer_alias_method
-Style/Alias:
-  Exclude:
-    - 'lib/airbrake/delayed_job/plugin.rb'
-    - 'lib/airbrake/rake/task_ext.rb'

@@ -36,7 +36,7 @@ if RUBY_ENGINE == 'jruby' && defined?(Delayed::Backend::ActiveRecord::Job)
   # https://github.com/jruby/jruby/issues/3338
   # rubocop:disable Style/ClassAndModuleChildren
   class Delayed::Backend::ActiveRecord::Job
-    alias_method :old_to_ary, :to_ary
+    alias old_to_ary to_ary
 
     def to_ary
       old_to_ary || [self]
