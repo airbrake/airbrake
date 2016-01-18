@@ -8,7 +8,7 @@ module Rake
   # Redefine +Rake::Task#execute+, so it can report errors to Airbrake.
   class Task
     # Store the original method to use it later.
-    alias_method :execute_without_airbrake, :execute
+    alias execute_without_airbrake execute
 
     ##
     # A wrapper around the original +#execute+, that catches all errors and
