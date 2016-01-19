@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v5.0.3][v5.0.3] (January 19, 2015)
+
 * Improved RubyMine support
   ([#469](https://github.com/airbrake/airbrake/pull/469))
 * Added better support for user reporting for Rails applications (including
@@ -36,3 +38,4 @@ Airbrake Changelog
 [v5.0.0]: https://github.com/airbrake/airbrake/releases/tag/v5.0.0
 [v5.0.1]: https://github.com/airbrake/airbrake/releases/tag/v5.0.1
 [v5.0.2]: https://github.com/airbrake/airbrake/releases/tag/v5.0.2
+[v5.0.3]: https://github.com/airbrake/airbrake/releases/tag/v5.0.3
