@@ -26,6 +26,7 @@ else
     ##
     # The Capistrano v2 integration.
     module Capistrano
+      # rubocop:disable Metrics/AbcSize
       def self.load_into(config)
         config.load do
           after 'deploy',            'airbrake:deploy'
@@ -38,6 +39,9 @@ else
               username = Shellwords.shellescape(ENV['USER'] || ENV['USERNAME'])
               command = <<-CMD
                 cd #{config.release_path} && \
+
+                RACK_ENV=#{fetch(:rack_env, nil)} \
+                RAILS_ENV=#{fetch(:rails_env, nil)} \
 
                 bundle exec rake airbrake:deploy \
                   USERNAME=#{username} \
@@ -53,6 +57,7 @@ else
           end
         end
       end
+      # rubocop:enable Metrics/AbcSize
     end
   end
 
