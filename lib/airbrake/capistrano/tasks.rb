@@ -39,6 +39,9 @@ else
               command = <<-CMD
                 cd #{config.release_path} && \
 
+                RACK_ENV=#{fetch(:rack_env, nil)} \
+                RAILS_ENV=#{fetch(:rails_env, nil)} \
+
                 bundle exec rake airbrake:deploy \
                   USERNAME=#{username} \
                   ENVIRONMENT=#{fetch(:rails_env, 'production')} \
