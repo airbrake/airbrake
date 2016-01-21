@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Set RACK_ENV and RAILS_ENV in Capistrano 2 integration
+  ([#489](https://github.com/airbrake/airbrake/pull/489))
+
 ### [v5.0.3][v5.0.3] (January 19, 2015)
 
 * Improved RubyMine support
