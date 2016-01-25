@@ -115,21 +115,24 @@ RSpec.describe "Rails integration specs" do
     end
   end
 
-  describe "DelayedJob jobs" do
-    it "reports exceptions occurring in DelayedJob jobs" do
-      get '/delayed_job'
-      sleep 2
+  # Delayed Job doesn't support Ruby 1.9.2
+  if Gem::Version.new(RUBY_VERSION) > Gem::Version.new('1.9.2')
+    describe "DelayedJob jobs" do
+      it "reports exceptions occurring in DelayedJob jobs" do
+        get '/delayed_job'
+        sleep 2
 
-      wait_for_a_request_with_body(
-        %r("message":"delayed_job\serror".*"params":{.*
+        wait_for_a_request_with_body(
+          %r("message":"delayed_job\serror".*"params":{.*
            "handler":"---\s!ruby/struct:BangoJob\\nbingo:\s
                      bingo\\nbongo:\sbongo\\n".*})x
-      )
+        )
 
-      # Two requests are performed during this example. We care only about one.
-      # Sleep guarantees that we let the unimportant request occur here and not
-      # elsewhere.
-      sleep 2
+        # Two requests are performed during this example. We care only about one.
+        # Sleep guarantees that we let the unimportant request occur here and not
+        # elsewhere.
+        sleep 2
+      end
     end
   end
 
