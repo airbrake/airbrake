@@ -124,7 +124,7 @@ test_mode | removed | n/a
     # OR to collect exceptions in all envs
 
     c.development_environments = []
-    
+
     # OR don't set this option to get the default (development, test, cucumber)
   end
 
@@ -136,9 +136,9 @@ test_mode | removed | n/a
     # OR to collection exceptions in all envs
 
     # Simply don't set this option
-    
+
     # OR use the old default value
-    
+
     c.ignore_environments = %w(development test cucumber)
   end
   ```
@@ -249,6 +249,10 @@ test_mode | removed | n/a
 * <a name="project-root"></a>
   The `project_root` option was renamed to `root_directory`.
 <sup>[[link](#project-root)]</sup>
+
+  NOTE: you *must* set this if you want Airbrake backtraces to link to
+  GitHub. In Rails projects this value should typically be equal to
+  `Rails.root`.
 
   ```ruby
   # Old way
