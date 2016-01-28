@@ -7,7 +7,7 @@ Airbrake
 [![PR Stats](http://issuestats.com/github/airbrake/airbrake/badge/pr?style=flat)](http://issuestats.com/github/airbrake/airbrake)
 [![Issue Stats](http://issuestats.com/github/airbrake/airbrake/badge/issue?style=flat)](http://issuestats.com/github/airbrake/airbrake)
 
-<img src="http://f.cl.ly/items/3Q163w1r2K1J1b030k0g/ruby%2009.19.32.jpg" width=800px>
+![The Airbrake notifier for Ruby][arthur-ruby]
 
 * [Airbrake README](https://github.com/airbrake/airbrake)
 * [Airbrake Ruby README](https://github.com/airbrake/airbrake-ruby)
@@ -35,6 +35,8 @@ here](https://github.com/airbrake/airbrake/tree/airbrake-v4).
 
 Key features
 ------------
+
+![The Airbrake Dashboard][dashboard]
 
 This library is built on top of [Airbrake Ruby][airbrake-ruby]. The difference
 between _Airbrake_ and _Airbrake Ruby_ is that the `airbrake` gem is just a
@@ -465,3 +467,5 @@ commands to invoke them.
 [heroku-docs]: https://devcenter.heroku.com/articles/airbrake
 [semver]: https://img.shields.io/:semver-5.0.3-brightgreen.svg?style=flat
 [migration-guide]: docs/Migration_guide_from_v4_to_v5.md
+[dashboard]: https://s3.amazonaws.com/airbrake-github-assets/airbrake/airbrake-dashboard.png
+[arthur-ruby]: https://s3.amazonaws.com/airbrake-github-assets/airbrake/arthur-ruby.jpg
