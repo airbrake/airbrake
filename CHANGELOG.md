@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v5.0.4][v5.0.4] (February 2, 2015)
+
 * Set RACK_ENV and RAILS_ENV in Capistrano 2 integration
   ([#489](https://github.com/airbrake/airbrake/pull/489))
 * Removed the hostname information from the Rack integration because the new
@@ -45,3 +47,4 @@ Airbrake Changelog
 [v5.0.1]: https://github.com/airbrake/airbrake/releases/tag/v5.0.1
 [v5.0.2]: https://github.com/airbrake/airbrake/releases/tag/v5.0.2
 [v5.0.3]: https://github.com/airbrake/airbrake/releases/tag/v5.0.3
+[v5.0.4]: https://github.com/airbrake/airbrake/releases/tag/v5.0.4
