@@ -5,10 +5,6 @@ module Airbrake
     # coming from the Rack environment.
     class NoticeBuilder
       ##
-      # @return [String] the name of the host machine
-      HOSTNAME = Socket.gethostname.freeze
-
-      ##
       # @param [Hash{String=>Object}] rack_env The Rack environment
       def initialize(rack_env)
         @rack_env = rack_env
@@ -49,7 +45,6 @@ module Airbrake
 
         context[:url] = @request.url
         context[:userAgent] = @request.user_agent
-        context[:hostname] = HOSTNAME
 
         if context.key?(:version)
           context[:version] += " #{@framework_version}"

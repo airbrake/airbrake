@@ -5,6 +5,9 @@ Airbrake Changelog
 
 * Set RACK_ENV and RAILS_ENV in Capistrano 2 integration
   ([#489](https://github.com/airbrake/airbrake/pull/489))
+* Removed the hostname information from the Rack integration because the new
+  `airbrake-ruby` sends it by default
+  ([#495](https://github.com/airbrake/airbrake/pull/495))
 
 ### [v5.0.3][v5.0.3] (January 19, 2015)
 
