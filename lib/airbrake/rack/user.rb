@@ -18,7 +18,7 @@ module Airbrake
 
         # Fallback mode (OmniAuth support included). Works only for Rails.
         controller = rack_env['action_controller.instance']
-        new(controller.current_user) if controller.respond_to?(:current_user)
+        new(controller.current_user) if controller.respond_to?(:current_user) && controller.current_user
       end
 
       def initialize(user)
