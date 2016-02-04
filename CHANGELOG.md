@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+* Fixes issue in the Rack integration when `current_user` is `nil` and we try to
+  build from it ([#501](https://github.com/airbrake/airbrake/pull/501))
 * Improve the Rack integration by attaching more useful debugging information
   such as HTTP headers and HTTP methods
   ([#499](https://github.com/airbrake/airbrake/pull/499))
