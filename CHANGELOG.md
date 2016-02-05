@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Improve the Rack integration by attaching more useful debugging information
+  such as HTTP headers and HTTP methods
+  ([#499](https://github.com/airbrake/airbrake/pull/499))
+
 ### [v5.0.4][v5.0.4] (February 2, 2015)
 
 * Set RACK_ENV and RAILS_ENV in Capistrano 2 integration

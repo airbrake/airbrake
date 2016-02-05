@@ -85,7 +85,7 @@ RSpec.shared_examples 'rack examples' do
 
     context "when additional parameters present" do
       before do
-        get '/crash', nil, 'HTTP_USER_AGENT' => 'Bot'
+        get '/crash', nil, 'HTTP_USER_AGENT' => 'Bot', 'HTTP_REFERER' => 'bingo.com'
       end
 
       it "features url" do
@@ -100,6 +100,18 @@ RSpec.shared_examples 'rack examples' do
 
       it "features userAgent" do
         wait_for_a_request_with_body(/"context":{.*"userAgent":"Bot".*}/)
+      end
+
+      it "features referer" do
+        wait_for_a_request_with_body(/"context":{.*"referer":"bingo.com".*}/)
+      end
+
+      it "contains HTTP headers" do
+        wait_for_a_request_with_body(/"context":{.*"headers":{.*"CONTENT_LENGTH":"0".*}/)
+      end
+
+      it "contains HTTP method" do
+        wait_for_a_request_with_body(/"context":{.*"httpMethod":"GET".*}/)
       end
     end
   end

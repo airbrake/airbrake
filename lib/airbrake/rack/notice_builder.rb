@@ -5,6 +5,15 @@ module Airbrake
     # coming from the Rack environment.
     class NoticeBuilder
       ##
+      # @return [Array<String>] the prefixes of the majority of HTTP headers in
+      #   Rack (some prefixes match the header names for simplicity)
+      HTTP_HEADER_PREFIXES = [
+        'HTTP_'.freeze,
+        'CONTENT_TYPE'.freeze,
+        'CONTENT_LENGTH'.freeze
+      ].freeze
+
+      ##
       # @param [Hash{String=>Object}] rack_env The Rack environment
       def initialize(rack_env)
         @rack_env = rack_env
@@ -45,6 +54,9 @@ module Airbrake
 
         context[:url] = @request.url
         context[:userAgent] = @request.user_agent
+        context[:httpMethod] = @request.request_method
+        context[:referer] = @request.referer
+        context[:headers] = request_headers
 
         if context.key?(:version)
           context[:version] += " #{@framework_version}"
@@ -69,6 +81,16 @@ module Airbrake
       def add_params(notice)
         params = @request.env['action_dispatch.request.parameters']
         notice[:params] = params if params
+      end
+
+      def request_headers
+        @rack_env.map.with_object({}) do |(key, value), headers|
+          if HTTP_HEADER_PREFIXES.any? { |prefix| key.to_s.start_with?(prefix) }
+            headers[key] = value
+          end
+
+          headers
+        end
       end
     end
   end
