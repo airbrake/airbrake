@@ -12,12 +12,12 @@ namespace :airbrake do
       current_revision = capture("cd #{repo_path} && git rev-parse HEAD")
       repository = ENV['REPO'] || ENV['REPONAME']
 
-      notify_command = "airbrake:deploy TO=#{airbrake_env} REVISION=#{current_revision} REPO=#{repo_url} USER=#{Airbrake::Capistrano::shellescape(local_user)}"
+      notify_command = "RAILS_ENV=#{rails_env} airbrake:deploy TO=#{airbrake_env} REVISION=#{current_revision} REPO=#{repo_url} USER=#{Airbrake::Capistrano::shellescape(local_user)}"
       notify_command << " API_KEY=#{ENV['API_KEY']}" if ENV['API_KEY']
       info "Notifying Airbrake of Deploy (#{notify_command})"
       result = ""
       within release_path do
-        execute :rake, notify_command, :once => true do |ch, stream, data| 
+        execute :rake, notify_command, :once => true do |ch, stream, data|
           result << data
         end
       end
