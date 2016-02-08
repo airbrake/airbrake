@@ -99,7 +99,7 @@ RSpec.describe "Rails integration specs" do
         wait_for(
           a_request(:post, endpoint).
           with(body: /"message":"active_job error"/)
-        ).to have_been_made.twice
+        ).to have_been_made.at_least_once
       end
     end
   end
