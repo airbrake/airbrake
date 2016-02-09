@@ -101,18 +101,26 @@ RSpec.shared_examples 'rack examples' do
       it "features userAgent" do
         wait_for_a_request_with_body(/"context":{.*"userAgent":"Bot".*}/)
       end
+    end
+  end
 
-      it "features referer" do
-        wait_for_a_request_with_body(/"context":{.*"referer":"bingo.com".*}/)
-      end
+  describe "environment payload" do
+    before do
+      get '/crash', nil, 'HTTP_REFERER' => 'bingo.com'
+    end
 
-      it "contains HTTP headers" do
-        wait_for_a_request_with_body(/"context":{.*"headers":{.*"CONTENT_LENGTH":"0".*}/)
-      end
+    it "features referer" do
+      wait_for_a_request_with_body(/"environment":{.*"referer":"bingo.com".*}/)
+    end
 
-      it "contains HTTP method" do
-        wait_for_a_request_with_body(/"context":{.*"httpMethod":"GET".*}/)
-      end
+    it "contains HTTP headers" do
+      wait_for_a_request_with_body(
+        /"environment":{.*"headers":{.*"CONTENT_LENGTH":"0".*}/
+      )
+    end
+
+    it "contains HTTP method" do
+      wait_for_a_request_with_body(/"environment":{.*"httpMethod":"GET".*}/)
     end
   end
 end

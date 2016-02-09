@@ -43,6 +43,7 @@ module Airbrake
         add_context(notice)
         add_session(notice)
         add_params(notice)
+        add_environment(notice)
 
         notice
       end
@@ -54,9 +55,6 @@ module Airbrake
 
         context[:url] = @request.url
         context[:userAgent] = @request.user_agent
-        context[:httpMethod] = @request.request_method
-        context[:referer] = @request.referer
-        context[:headers] = request_headers
 
         if context.key?(:version)
           context[:version] += " #{@framework_version}"
@@ -81,6 +79,14 @@ module Airbrake
       def add_params(notice)
         params = @request.env['action_dispatch.request.parameters']
         notice[:params] = params if params
+      end
+
+      def add_environment(notice)
+        notice[:environment] = {
+          httpMethod: @request.request_method,
+          referer: @request.referer,
+          headers: request_headers
+        }
       end
 
       def request_headers
