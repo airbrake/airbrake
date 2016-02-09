@@ -3,13 +3,15 @@ Airbrake Changelog
 
 ### master
 
+### [v5.0.5][v5.0.5] (February 9, 2016)
+
 * Fixes issue in the Rack integration when `current_user` is `nil` and we try to
   build from it ([#501](https://github.com/airbrake/airbrake/pull/501))
 * Improve the Rack integration by attaching more useful debugging information
   such as HTTP headers and HTTP methods
   ([#499](https://github.com/airbrake/airbrake/pull/499))
 
-### [v5.0.4][v5.0.4] (February 2, 2015)
+### [v5.0.4][v5.0.4] (February 2, 2016)
 
 * Set RACK_ENV and RAILS_ENV in Capistrano 2 integration
   ([#489](https://github.com/airbrake/airbrake/pull/489))
@@ -17,7 +19,7 @@ Airbrake Changelog
   `airbrake-ruby` sends it by default
   ([#495](https://github.com/airbrake/airbrake/pull/495))
 
-### [v5.0.3][v5.0.3] (January 19, 2015)
+### [v5.0.3][v5.0.3] (January 19, 2016)
 
 * Improved RubyMine support
   ([#469](https://github.com/airbrake/airbrake/pull/469))
@@ -26,7 +28,7 @@ Airbrake Changelog
 * Fixed the Capistrano 2 integration, which was not working at all
   ([#475](https://github.com/airbrake/airbrake/pull/475))
 
-### [v5.0.2][v5.0.2] (January 3, 2015)
+### [v5.0.2][v5.0.2] (January 3, 2016)
 
 * Fixed the bug when Warden user is `nil`
   ([#455](https://github.com/airbrake/airbrake/pull/455))
@@ -54,3 +56,4 @@ Airbrake Changelog
 [v5.0.2]: https://github.com/airbrake/airbrake/releases/tag/v5.0.2
 [v5.0.3]: https://github.com/airbrake/airbrake/releases/tag/v5.0.3
 [v5.0.4]: https://github.com/airbrake/airbrake/releases/tag/v5.0.4
+[v5.0.5]: https://github.com/airbrake/airbrake/releases/tag/v5.0.5
