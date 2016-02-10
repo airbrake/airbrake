@@ -9,7 +9,7 @@ if defined?(Capistrano::VERSION) &&
           with rails_env: fetch(:rails_env, fetch(:stage)) do
             execute :rake, <<-CMD
               airbrake:deploy USERNAME=#{Shellwords.shellescape(local_user)} \
-                              ENVIRONMENT=#{fetch(:rails_env, fetch(:stage))} \
+                              ENVIRONMENT=#{fetch(:airbrake_env, fetch(:rails_env, fetch(:stage)))} \
                               REVISION=#{fetch(:current_revision)} \
                               REPOSITORY=#{fetch(:repo_url)} \
                               VERSION=#{fetch(:app_version)}
