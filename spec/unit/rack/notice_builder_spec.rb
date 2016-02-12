@@ -31,5 +31,43 @@ RSpec.describe Airbrake::Rack::NoticeBuilder do
 
       expect(notice[:params]).to eq(params)
     end
+
+    it "adds CONTENT_TYPE, CONTENT_LENGTH and HTTP_* headers in the environment" do
+      headers = {
+        "HTTP_HOST" => "example.com",
+        "CONTENT_TYPE" => "text/html",
+        "CONTENT_LENGTH" => 100500
+      }
+      notice_builder = described_class.new(headers.dup)
+      notice = notice_builder.build_notice(AirbrakeTestError.new)
+      expect(notice[:environment][:headers]).to eq(headers)
+    end
+
+    it "skips headers that were not selected to be stored in the environment" do
+      headers = {
+        "HTTP_HOST" => "example.com",
+        "CONTENT_TYPE" => "text/html",
+        "CONTENT_LENGTH" => 100500
+      }
+      notice_builder = described_class.new(headers.merge("X-SOME-HEADER" => "value"))
+      notice = notice_builder.build_notice(AirbrakeTestError.new)
+      expect(notice[:environment][:headers]).to eq(headers)
+    end
+
+    it "preserves data that already has been added to the environment" do
+      headers = {
+        "HTTP_HOST" => "example.com",
+        "CONTENT_TYPE" => "text/html",
+        "CONTENT_LENGTH" => 100500
+      }
+      allow(Airbrake).to receive(:build_notice).and_wrap_original do |method, *args|
+        notice = method.call(*args)
+        notice[:environment]["SOME_KEY"] = "SOME_VALUE"
+        notice
+      end
+      notice_builder = described_class.new(headers)
+      notice = notice_builder.build_notice(AirbrakeTestError.new)
+      expect(notice[:environment]["SOME_KEY"]).to eq("SOME_VALUE")
+    end
   end
 end

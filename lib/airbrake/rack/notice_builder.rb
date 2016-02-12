@@ -82,11 +82,11 @@ module Airbrake
       end
 
       def add_environment(notice)
-        notice[:environment] = {
+        notice[:environment].merge!(
           httpMethod: @request.request_method,
           referer: @request.referer,
           headers: request_headers
-        }
+        )
       end
 
       def request_headers
