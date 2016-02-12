@@ -406,7 +406,7 @@ README](https://github.com/airbrake/airbrake-ruby#notice).
 
   ```ruby
   Airbrake.add_filter do |notice|
-    notice[:environment] = ENV
+    notice[:environment].merge!(ENV)
   end
   ```
 
