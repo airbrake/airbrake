@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed Rake integration sometimes not reporting errors
+  ([#513](https://github.com/airbrake/airbrake/pull/513))
+
 ### [v5.0.5][v5.0.5] (February 9, 2016)
 
 * Fixes issue in the Rack integration when `current_user` is `nil` and we try to

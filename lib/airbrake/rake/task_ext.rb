@@ -27,7 +27,7 @@ module Rake
         argv: ARGV.join(' ')
       }
 
-      Airbrake.notify(notice)
+      Airbrake.notify_sync(notice)
       raise ex
     end
     # rubocop:enable Lint/RescueException
