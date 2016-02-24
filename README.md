@@ -212,6 +212,10 @@ project's dashboard for a new error.
 curl localhost:9292
 ```
 
+If your Sinatra app consists of subprojects and you want to capture errors
+separately for each subproject, make sure to [configure it
+accordingly](#configuring-individual-notifier-for-each-subproject).
+
 ### Rack
 
 To send exceptions to Airbrake from any Rack application, simply `use` our Rack
@@ -244,6 +248,27 @@ end
 ```
 
 `request` here is a normal Rack request.
+
+#### Configuring individual notifier for each subproject
+
+If your app consists of multiple components and you want to log errors from each
+component to its own Airbrake project, you can pass second argument to our Rack
+middleware. First, make sure to [configure a named
+notifier](https://github.com/airbrake/airbrake-ruby#creating-a-named-notifier).
+Next, pass the name to the middleware:
+
+```ruby
+require 'airbrake'
+
+# 1 - Configure a notifier for :app2.
+Airbrake.configure(:app2) do |c|
+  c.project_id = 113743
+  c.project_key = 'fd04e13d806a90f96614ad8e529b2822'
+end
+
+# 2 - Let Airbrake Rack middleware use the :app2 notifier to send errors.
+use Airbrake::Rack::Middleware, :app2
+```
 
 ### Sidekiq
 

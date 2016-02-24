@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Added support for multiple notifiers for Rack middleware
+  ([#515](https://github.com/airbrake/airbrake/pull/515))
+
 ### [v5.5.0][v5.5.0] (September 14, 2016)
 
 * Started depending on

@@ -8,8 +8,9 @@ module Airbrake
     # The middleware automatically sends information about the framework that
     # uses it (name and version).
     class Middleware
-      def initialize(app)
+      def initialize(app, notifier_name = :default)
         @app = app
+        @notifier_name = notifier_name
       end
 
       ##
@@ -35,10 +36,10 @@ module Airbrake
       private
 
       def notify_airbrake(exception, env)
-        notice = NoticeBuilder.new(env).build_notice(exception)
+        notice = NoticeBuilder.new(env, @notifier_name).build_notice(exception)
         return unless notice
 
-        Airbrake.notify(notice)
+        Airbrake.notify(notice, {}, @notifier_name)
       end
 
       ##
