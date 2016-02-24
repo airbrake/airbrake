@@ -78,7 +78,7 @@ RSpec.describe Airbrake::Rack::NoticeBuilder do
           end
         }
       end
-      notice_builder = extended_class.new({ 'REMOTE_IP' => '127.0.0.1' })
+      notice_builder = extended_class.new('REMOTE_IP' => '127.0.0.1')
       notice = notice_builder.build_notice(AirbrakeTestError.new)
       expect(notice[:params][:remoteIp]).to eq("127.0.0.1")
     end
