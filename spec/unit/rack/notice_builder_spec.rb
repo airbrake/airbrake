@@ -69,5 +69,18 @@ RSpec.describe Airbrake::Rack::NoticeBuilder do
       notice = notice_builder.build_notice(AirbrakeTestError.new)
       expect(notice[:environment]["SOME_KEY"]).to eq("SOME_VALUE")
     end
+
+    it "allows to add custom metadata by overridding of add_metadata" do
+      extended_class = described_class.dup.class_eval do
+        prepend Module.new {
+          def add_metadata(notice)
+            notice[:params][:remoteIp] = @rack_env['REMOTE_IP']
+          end
+        }
+      end
+      notice_builder = extended_class.new('REMOTE_IP' => '127.0.0.1')
+      notice = notice_builder.build_notice(AirbrakeTestError.new)
+      expect(notice[:params][:remoteIp]).to eq("127.0.0.1")
+    end
   end
 end

@@ -44,6 +44,7 @@ module Airbrake
         add_session(notice)
         add_params(notice)
         add_environment(notice)
+        add_metadata(notice)
 
         notice
       end
@@ -79,6 +80,11 @@ module Airbrake
       def add_params(notice)
         params = @request.env['action_dispatch.request.parameters']
         notice[:params] = params if params
+      end
+
+      def add_metadata(notice)
+        # This method does nothing by default, but it can be overridden to add any custom
+        # data from RACK environment to the notice.
       end
 
       def add_environment(notice)
