@@ -4,6 +4,20 @@ module Airbrake
     # A helper class for filling notices with all sorts of useful information
     # coming from the Rack environment.
     class NoticeBuilder
+      @builders = []
+
+      class << self
+        ##
+        # @return [Array<#call>] the list of notice's builders
+        attr_reader :builders
+
+        ##
+        # Adds user defined builders to the chain.
+        def add_builder(&block)
+          @builders << block
+        end
+      end
+
       ##
       # @return [Array<String>] the prefixes of the majority of HTTP headers in
       #   Rack (some prefixes match the header names for simplicity)
@@ -16,20 +30,7 @@ module Airbrake
       ##
       # @param [Hash{String=>Object}] rack_env The Rack environment
       def initialize(rack_env)
-        @rack_env = rack_env
         @request = ::Rack::Request.new(rack_env)
-        @controller = rack_env['action_controller.instance']
-        @session = @request.session
-        @user = Airbrake::Rack::User.extract(rack_env)
-
-        @framework_version =
-          if defined?(::Rails)
-            "Rails/#{::Rails.version}"
-          elsif defined?(::Sinatra)
-            "Sinatra/#{Sinatra::VERSION}"
-          else
-            "Rack.version/#{::Rack.version} Rack.release/#{::Rack.release}"
-          end.freeze
       end
 
       ##
@@ -39,64 +40,71 @@ module Airbrake
       # @return [Airbrake::Notice] the notice with extra information
       def build_notice(exception)
         notice = Airbrake.build_notice(exception)
-
-        add_context(notice)
-        add_session(notice)
-        add_params(notice)
-        add_environment(notice)
-
+        NoticeBuilder.builders.each { |builder| builder.call(notice, @request) }
         notice
       end
 
-      private
-
-      def add_context(notice)
+      # Adds context (url, user agent, framework version, controller, etc)
+      add_builder do |notice, request|
         context = notice[:context]
 
-        context[:url] = @request.url
-        context[:userAgent] = @request.user_agent
+        context[:url] = request.url
+        context[:userAgent] = request.user_agent
+
+        framework_version =
+          if defined?(::Rails)
+            "Rails/#{::Rails.version}"
+          elsif defined?(::Sinatra)
+            "Sinatra/#{Sinatra::VERSION}"
+          else
+            "Rack.version/#{::Rack.version} Rack.release/#{::Rack.release}"
+          end.freeze
 
         if context.key?(:version)
-          context[:version] += " #{@framework_version}"
+          context[:version] += " #{framework_version}"
         else
-          context[:version] = @framework_version
+          context[:version] = framework_version
         end
 
-        if @controller
-          context[:component] = @controller.controller_name
-          context[:action] = @controller.action_name
+        controller = request.env['action_controller.instance']
+        if controller
+          context[:component] = controller.controller_name
+          context[:action] = controller.action_name
         end
 
-        notice[:context].merge!(@user.as_json) if @user
+        user = Airbrake::Rack::User.extract(request.env)
+        notice[:context].merge!(user.as_json) if user
 
         nil
       end
 
-      def add_session(notice)
-        notice[:session] = @session if @session
+      # Adds session
+      add_builder do |notice, request|
+        session = request.session
+        notice[:session] = session if session
       end
 
-      def add_params(notice)
-        params = @request.env['action_dispatch.request.parameters']
+      # Adds request params
+      add_builder do |notice, request|
+        params = request.env['action_dispatch.request.parameters']
         notice[:params] = params if params
       end
 
-      def add_environment(notice)
-        notice[:environment].merge!(
-          httpMethod: @request.request_method,
-          referer: @request.referer,
-          headers: request_headers
-        )
-      end
-
-      def request_headers
-        @rack_env.map.with_object({}) do |(key, value), headers|
+      # Adds http referer, method and headers to the environment
+      add_builder do |notice, request|
+        http_headers = request.env.map.with_object({}) do |(key, value), headers|
           if HTTP_HEADER_PREFIXES.any? { |prefix| key.to_s.start_with?(prefix) }
             headers[key] = value
           end
 
           headers
         end
+
+        notice[:environment].merge!(
+          httpMethod: request.request_method,
+          referer: request.referer,
+          headers: http_headers
+        )
       end
     end
   end
