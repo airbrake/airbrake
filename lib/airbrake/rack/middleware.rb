@@ -39,13 +39,13 @@ module Airbrake
         Airbrake.notify(notice)
       end
 
+      ##
       # Web framework middlewares often store rescued exceptions inside the
       # Rack env, but Rack doesn't have a standard key for it:
       #
       # - Rails uses action_dispatch.exception: https://goo.gl/Kd694n
       # - Sinatra uses sinatra.error: https://goo.gl/LLkVL9
       # - Goliath uses rack.exception: https://goo.gl/i7e1nA
-      #
       def framework_exception(env)
         env['action_dispatch.exception'] ||
           env['sinatra.error'] ||

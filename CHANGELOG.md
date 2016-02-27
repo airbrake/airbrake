@@ -7,6 +7,8 @@ Airbrake Changelog
   ([#513](https://github.com/airbrake/airbrake/pull/513))
 * Added a way to attach custom information to notices from Rack requests
   ([#517](https://github.com/airbrake/airbrake/pull/517))
+* Added support for Goliath apps (fixes regression from Airbrake v4)
+  ([#519](https://github.com/airbrake/airbrake/pull/519))
 
 ### [v5.0.5][v5.0.5] (February 9, 2016)
 
