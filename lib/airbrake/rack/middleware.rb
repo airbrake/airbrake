@@ -26,9 +26,7 @@ module Airbrake
         end
         # rubocop:enable Lint/RescueException
 
-        # The internal framework middlewares store exceptions inside the Rack
-        # env. See: https://goo.gl/Kd694n
-        exception = env['action_dispatch.exception'] || env['sinatra.error']
+        exception = framework_exception(env)
         notify_airbrake(exception, env) if exception
 
         response
@@ -39,6 +37,19 @@ module Airbrake
       def notify_airbrake(exception, env)
         notice = NoticeBuilder.new(env).build_notice(exception)
         Airbrake.notify(notice)
+      end
+
+      # Web framework middlewares often store rescued exceptions inside the
+      # Rack env, but Rack doesn't have a standard key for it:
+      #
+      # - Rails uses action_dispatch.exception: https://goo.gl/Kd694n
+      # - Sinatra uses sinatra.error: https://goo.gl/LLkVL9
+      # - Goliath uses rack.exception: https://goo.gl/i7e1nA
+      #
+      def framework_exception(env)
+        env['action_dispatch.exception'] ||
+          env['sinatra.error'] ||
+          env['rack.exception']
       end
     end
   end

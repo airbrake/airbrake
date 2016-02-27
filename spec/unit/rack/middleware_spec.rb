@@ -57,7 +57,7 @@ RSpec.describe Airbrake::Rack::Middleware do
           end
         end
 
-        ['action_dispatch.exception', 'sinatra.error'].each do |type|
+        ['rack.exception', 'action_dispatch.exception', 'sinatra.error'].each do |type|
           include_examples 'stored exception', type
         end
       end
