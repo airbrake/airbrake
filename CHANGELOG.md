@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v5.1.0][v5.1.0] (February 29, 2016)
+
 * Fixed Rake integration sometimes not reporting errors
   ([#513](https://github.com/airbrake/airbrake/pull/513))
 * Added a way to attach custom information to notices from Rack requests
@@ -64,3 +66,4 @@ Airbrake Changelog
 [v5.0.3]: https://github.com/airbrake/airbrake/releases/tag/v5.0.3
 [v5.0.4]: https://github.com/airbrake/airbrake/releases/tag/v5.0.4
 [v5.0.5]: https://github.com/airbrake/airbrake/releases/tag/v5.0.5
+[v5.1.0]: https://github.com/airbrake/airbrake/releases/tag/v5.1.0
