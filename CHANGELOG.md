@@ -5,6 +5,8 @@ Airbrake Changelog
 
 * Fixed Rake integration sometimes not reporting errors
   ([#513](https://github.com/airbrake/airbrake/pull/513))
+* Added a way to attach custom information to notices from Rack requests
+  ([#517](https://github.com/airbrake/airbrake/pull/517))
 
 ### [v5.0.5][v5.0.5] (February 9, 2016)
 

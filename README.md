@@ -229,6 +229,17 @@ end
 use Airbrake::Rack::Middleware
 ```
 
+If you want to append additional information from web requests (such as HTTP
+headers), define a special hook:
+
+```ruby
+Airbrake.add_rack_builder do |notice, request|
+  notice[:params][:remoteIp] = request.env['REMOTE_IP']
+end
+```
+
+`request` here is a normal Rack request.
+
 ### Sidekiq
 
 We support Sidekiq v2, v3 and v4. The configurations steps for them are
