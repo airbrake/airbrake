@@ -21,21 +21,25 @@ require 'airbrake/sidekiq/error_handler' if defined?(Sidekiq)
 require 'airbrake/delayed_job/plugin' if defined?(Delayed)
 
 ##
-# This module extends original module Airbrake from airbrake-ruby and
-# serves as a namespace for other classes and modules.
+# This module reopens the original Airbrake module from airbrake-ruby and adds
+# integration specific methods.
 module Airbrake
   class << self
     ##
-    # Allows users to add their own notice's builders. Useful if it's needed to
-    # attach some info from the rack environment or request to the notice.
+    # Attaches a callback (builder) that runs every time the Rack integration
+    # reports an error. Can be used to attach additional data from the Rack
+    # request.
     #
-    # @example Adds remote ip from the rack_env to the notice
-    #   Airbrake.add_rack_builder |notice, request| do
+    # @example Adding remote IP from the Rack environment
+    #   Airbrake.add_rack_builder do |notice, request|
     #     notice[:params][:remoteIp] = request.env['REMOTE_IP']
     #   end
     #
-    # @yieldparam notice [Airbrake::Notice] notice that will be sent to the Airbrake
+    # @yieldparam notice [Airbrake::Notice] notice that will be sent to Airbrake
     # @yieldparam request [Rack::Request] current rack request
+    # @yieldreturn [void]
+    # @return [void]
+    # @since 5.1.0
     def add_rack_builder(&block)
       Airbrake::Rack::NoticeBuilder.add_builder(&block)
     end
