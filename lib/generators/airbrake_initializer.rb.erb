@@ -54,7 +54,7 @@ end
 
 # A list of parameters that should be filtered out of what is sent to Airbrake.
 # By default, all "password" attributes will have their contents replaced.
-# https://github.com/airbrake/airbrake-ruby#the-keysblacklist-filter
+# https://github.com/airbrake/airbrake-ruby#blacklist_keys
 Airbrake.blacklist_keys(/password/i)
 
 # If Airbrake doesn't send any expected exceptions, we suggest to uncomment the
