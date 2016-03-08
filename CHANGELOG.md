@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Fixed bug when trying to send a test exception with help of the Rake task
+  results in an error due to the current environment being ignored
+  ([#523](https://github.com/airbrake/airbrake/pull/523))
+
 ### [v5.1.0][v5.1.0] (February 29, 2016)
 
 * Fixed Rake integration sometimes not reporting errors
