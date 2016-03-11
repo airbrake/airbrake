@@ -1,4 +1,5 @@
 require 'shellwords'
+require 'English'
 
 # Core library that sends notices.
 # See: https://github.com/airbrake/airbrake-ruby
@@ -44,4 +45,9 @@ module Airbrake
       Airbrake::Rack::NoticeBuilder.add_builder(&block)
     end
   end
+end
+
+# Notify of unhandled exceptions, if there were any, but ignore SystemExit.
+at_exit do
+  Airbrake.notify_sync($ERROR_INFO) if $ERROR_INFO
 end
