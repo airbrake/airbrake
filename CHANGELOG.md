@@ -6,6 +6,10 @@ Airbrake Changelog
 * Fixed bug when trying to send a test exception with help of the Rake task
   results in an error due to the current environment being ignored
   ([#523](https://github.com/airbrake/airbrake/pull/523))
+* Added support for reporting critical exceptions that terminate the process.
+  This bit of functionality was moved from
+  [airbrake-ruby](https://github.com/airbrake/airbrake-ruby/pull/61)
+  ([#526](https://github.com/airbrake/airbrake/pull/526))
 
 ### [v5.1.0][v5.1.0] (February 29, 2016)
 
