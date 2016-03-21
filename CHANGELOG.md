@@ -3,7 +3,13 @@ Airbrake Changelog
 
 ### master
 
-### [v5.2.0][v5.2.0] (March 11, 2016)
+### [v5.2.1][v5.2.1] (March 21, 2016)
+
+* **Quickfix**: updated the Rails generator to use the newer
+  Blacklisting/Whitelisting API
+  ([#530](https://github.com/airbrake/airbrake/pull/530))
+
+### [v5.2.0][v5.2.0] (March 21, 2016)
 
 * **IMPORTANT:** depended on
   [airbrake-ruby-1.2.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v1.2.0)
@@ -80,3 +86,4 @@ Airbrake Changelog
 [v5.0.5]: https://github.com/airbrake/airbrake/releases/tag/v5.0.5
 [v5.1.0]: https://github.com/airbrake/airbrake/releases/tag/v5.1.0
 [v5.2.0]: https://github.com/airbrake/airbrake/releases/tag/v5.2.0
+[v5.2.1]: https://github.com/airbrake/airbrake/releases/tag/v5.2.1
