@@ -29,7 +29,7 @@ DESC
   s.files        = ['lib/airbrake.rb', *Dir.glob('lib/**/*')]
   s.test_files   = Dir.glob('spec/**/*')
 
-  s.add_dependency 'airbrake-ruby', '~> 1.1'
+  s.add_dependency 'airbrake-ruby', '~> 1.2'
 
   s.add_development_dependency 'rspec', '~> 3'
   s.add_development_dependency 'rspec-wait', '~> 0'

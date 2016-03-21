@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+### [v5.2.0][v5.2.0] (March 11, 2016)
+
+* **IMPORTANT:** depended on
+  [airbrake-ruby-1.2.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v1.2.0)
 * Fixed bug when trying to send a test exception with help of the Rake task
   results in an error due to the current environment being ignored
   ([#523](https://github.com/airbrake/airbrake/pull/523))
@@ -75,3 +79,4 @@ Airbrake Changelog
 [v5.0.4]: https://github.com/airbrake/airbrake/releases/tag/v5.0.4
 [v5.0.5]: https://github.com/airbrake/airbrake/releases/tag/v5.0.5
 [v5.1.0]: https://github.com/airbrake/airbrake/releases/tag/v5.1.0
+[v5.2.0]: https://github.com/airbrake/airbrake/releases/tag/v5.2.0
