@@ -22,6 +22,11 @@ appraise 'rails-4.0' do
   gem 'resque_spec', git: 'git@github.com:kyrylo/resque_spec.git'
 
   gem 'delayed_job_active_record', '~> 4.1.0'
+
+  if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.0')
+    # Newer 'mime-types' doesn't support Ruby 1.9.3 anymore.
+    gem 'mime-types', '~> 2.6'
+  end
 end
 
 appraise 'rails-4.1' do
@@ -35,6 +40,11 @@ appraise 'rails-4.1' do
   gem 'resque_spec', git: 'git@github.com:kyrylo/resque_spec.git'
 
   gem 'delayed_job_active_record', '~> 4.1.0'
+
+  if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.0')
+    # Newer 'mime-types' doesn't support Ruby 1.9.3 anymore.
+    gem 'mime-types', '~> 2.6'
+  end
 end
 
 appraise 'rails-4.2' do
@@ -48,6 +58,11 @@ appraise 'rails-4.2' do
   gem 'resque_spec', git: 'git@github.com:kyrylo/resque_spec.git'
 
   gem 'delayed_job_active_record', '~> 4.1.0'
+
+  if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.0')
+    # Newer 'mime-types' doesn't support Ruby 1.9.3 anymore.
+    gem 'mime-types', '~> 2.6'
+  end
 end
 
 # Rails 5+ supports only Ruby 2.1+
