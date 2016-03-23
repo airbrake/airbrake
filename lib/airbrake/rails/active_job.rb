@@ -9,8 +9,8 @@ module Airbrake
         rescue_from(Exception) do |exception|
           notice = Airbrake.build_notice(exception)
 
-          notice[:context][:component] = self.class.name
-          notice[:context][:action] = job_id
+          notice[:context][:component] = 'active_job'
+          notice[:context][:action] = self.class.name
 
           notice[:params] = as_json
 

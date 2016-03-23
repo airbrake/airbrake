@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed grouping for the ActiveJob integration
+  ([#533](https://github.com/airbrake/airbrake/pull/533))
+
 ### [v5.2.1][v5.2.1] (March 21, 2016)
 
 * **Quickfix**: updated the Rails generator to use the newer
