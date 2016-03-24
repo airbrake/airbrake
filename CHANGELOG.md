@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v5.2.2][v5.2.2] (March 24, 2016)
+
 * Fixed grouping for the ActiveJob integration
   ([#533](https://github.com/airbrake/airbrake/pull/533))
 
@@ -90,3 +92,4 @@ Airbrake Changelog
 [v5.1.0]: https://github.com/airbrake/airbrake/releases/tag/v5.1.0
 [v5.2.0]: https://github.com/airbrake/airbrake/releases/tag/v5.2.0
 [v5.2.1]: https://github.com/airbrake/airbrake/releases/tag/v5.2.1
+[v5.2.2]: https://github.com/airbrake/airbrake/releases/tag/v5.2.2
