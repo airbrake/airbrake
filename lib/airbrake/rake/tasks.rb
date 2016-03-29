@@ -16,47 +16,47 @@ namespace :airbrake do
     end.join("\n")
 
     if !response
-      puts <<NORESPONSE
-Couldn't send a test exception. There are two reasons for this:
-
-1. Airbrake ignored this exception due to misconfigured filters
-2. Airbrake was configured to ignore the '#{Rails.env}' environment.
-   To fix this try one of the following:
-     * specify another environment via RAILS_ENV
-     * temporarily unignore the '#{Rails.env}' environment
-NORESPONSE
+      puts <<-NORESPONSE.gsub(/^\s+\|/, '')
+        |Couldn't send a test exception. There are two reasons for this:
+        |
+        |1. Airbrake ignored this exception due to misconfigured filters
+        |2. Airbrake was configured to ignore the '#{Rails.env}' environment.
+        |   To fix this try one of the following:
+        |     * specify another environment via RAILS_ENV
+        |     * temporarily unignore the '#{Rails.env}' environment
+      NORESPONSE
     elsif response['error']
-      puts <<ERROR
-Error occurred: #{response['error']}
-Make sure that your Project ID and Project Key are correct:
-https://github.com/airbrake/airbrake-ruby#project_id--project_key
-ERROR
+      puts <<-ERROR.gsub(/^\s+\|/, '')
+        |Error occurred: #{response['error']}
+        |Make sure that your Project ID and Project Key are correct:
+        |https://github.com/airbrake/airbrake-ruby#project_id--project_key
+      ERROR
     else
-      puts <<OUTPUT
-[ruby]
-description: #{RUBY_DESCRIPTION}
-
-#{if defined?(Rails)
-    "[rails]\nversion: #{Rails::VERSION::STRING}"
-  elsif defined?(Sinatra)
-    "[sinatra]\nversion: #{Sinatra::VERSION}"
-  end}
-
-[airbrake]
-version: #{Airbrake::AIRBRAKE_VERSION}
-
-[airbrake-ruby]
-version: #{Airbrake::Notice::NOTIFIER[:version]}
-
-[notifiers]
-#{notifiers}
-
-The output above contains useful information about your environment. Our support
-team may request this information if you have problems using the Airbrake gem;
-we would be really grateful if you could attach the output to your message.
-
-The test exception was sent. Find it here: #{response['url']}
-OUTPUT
+      puts <<-OUTPUT.gsub(/^\s+\|/, '')
+        |[ruby]
+        |description: #{RUBY_DESCRIPTION}
+        |
+        |#{if defined?(Rails)
+             "[rails]\nversion: #{Rails::VERSION::STRING}"
+           elsif defined?(Sinatra)
+             "[sinatra]\nversion: #{Sinatra::VERSION}"
+           end}
+        |
+        |[airbrake]
+        |version: #{Airbrake::AIRBRAKE_VERSION}
+        |
+        |[airbrake-ruby]
+        |version: #{Airbrake::Notice::NOTIFIER[:version]}
+        |
+        |[notifiers]
+        |#{notifiers}
+        |
+        |The output above contains useful information about your environment. Our support
+        |team may request this information if you have problems using the Airbrake gem;
+        |we would be really grateful if you could attach the output to your message.
+        |
+        |The test exception was sent. Find it here: #{response['url']}
+      OUTPUT
     end
   end
 
