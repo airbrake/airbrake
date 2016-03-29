@@ -300,6 +300,12 @@ test_mode | removed | n/a
   only `SystemExit` exceptions.
 <sup>[[link](#default-ignored-classes)]</sup>
 
+* <a name="filter-parameters"></a>
+  Airbrake no longer reuses filters specified by
+  `Rails.application.config.filter_parameters`. Instead, use the
+  [`add_filter` API](#filtering).
+<sup>[[link](#filter-parameters)]</sup>
+
 #### Library API
 
 ##### Blacklist filter
