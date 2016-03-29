@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed bug in the Rake integration where it couldn't display error message
+  coming from the API ([#536](https://github.com/airbrake/airbrake/pull/536))
+
 ### [v5.2.2][v5.2.2] (March 24, 2016)
 
 * Fixed grouping for the ActiveJob integration
