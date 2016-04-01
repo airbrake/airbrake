@@ -100,7 +100,14 @@ namespace :airbrake do
 
     exit!(1) if [id, key].any?(&:nil?)
 
+    unless (env = heroku_env['RAILS_ENV'])
+      env = 'production'
+      puts "Airbrake couldn't identify your app's environment, so the '#{env}'" \
+           " environment will be used."
+    end
+
     url = "https://airbrake.io/api/v3/projects/#{id}/heroku-deploys?key=#{key}"
+    url << "&environment=#{env}"
 
     command = %(heroku addons:create deployhooks:http --url="#{url}")
     command << " --app #{app}" if app
