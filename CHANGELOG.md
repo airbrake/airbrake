@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v5.2.3][v5.2.3] (April 5, 2016)
+
 * Fixed bug in the Rake integration where it couldn't display error message
   coming from the API ([#536](https://github.com/airbrake/airbrake/pull/536))
 
@@ -96,3 +98,4 @@ Airbrake Changelog
 [v5.2.0]: https://github.com/airbrake/airbrake/releases/tag/v5.2.0
 [v5.2.1]: https://github.com/airbrake/airbrake/releases/tag/v5.2.1
 [v5.2.2]: https://github.com/airbrake/airbrake/releases/tag/v5.2.2
+[v5.2.3]: https://github.com/airbrake/airbrake/releases/tag/v5.2.3
