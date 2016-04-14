@@ -6,6 +6,11 @@ module Airbrake
       extend ActiveSupport::Concern
 
       included do
+        if ::Rails.application.config.respond_to?(:active_job)
+          active_job_cfg = ::Rails.application.config.active_job
+          is_resque_adapter = (active_job_cfg.queue_adapter == :resque)
+        end
+
         rescue_from(Exception) do |exception|
           notice = Airbrake.build_notice(exception)
 
@@ -14,7 +19,14 @@ module Airbrake
 
           notice[:params] = as_json
 
-          Airbrake.notify(notice)
+          # We special case Resque because it kills our workers by forking, so
+          # we use synchronous delivery instead.
+          if is_resque_adapter
+            Airbrake.notify_sync(notice)
+          else
+            Airbrake.notify(notice)
+          end
+
           raise exception
         end
       end
