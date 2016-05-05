@@ -71,3 +71,6 @@ Performance/StartWith:
 
 Style/Alias:
   Enabled: true
+
+Style/MultilineArrayBraceLayout:
+  Enabled: true

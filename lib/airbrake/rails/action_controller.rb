@@ -13,7 +13,8 @@ module Airbrake
       # Attaches information from the Rack env.
       # @see Airbrake#notify, #notify_airbrake_sync
       def notify_airbrake(exception, parameters = {}, notifier = :default)
-        Airbrake.notify(build_notice(exception), parameters, notifier)
+        return unless (notice = build_notice(exception))
+        Airbrake.notify(notice, parameters, notifier)
       end
 
       ##
@@ -21,7 +22,8 @@ module Airbrake
       # Attaches information from the Rack env.
       # @see Airbrake#notify_sync, #notify_airbrake
       def notify_airbrake_sync(exception, parameters = {}, notifier = :default)
-        Airbrake.notify_sync(build_notice(exception), parameters, notifier)
+        return unless (notice = build_notice(exception))
+        Airbrake.notify_sync(notice, parameters, notifier)
       end
 
       ##

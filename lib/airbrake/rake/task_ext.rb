@@ -18,7 +18,16 @@ module Rake
     def execute(args = nil)
       execute_without_airbrake(args)
     rescue Exception => ex
-      notice = Airbrake.build_notice(ex)
+      notify_airbrake(ex, args)
+      raise ex
+    end
+    # rubocop:enable Lint/RescueException
+
+    private
+
+    def notify_airbrake(exception, args)
+      return unless (notice = Airbrake.build_notice(exception))
+
       notice[:context][:component] = 'rake'
       notice[:context][:action] = name
       notice[:params] = {
@@ -28,11 +37,7 @@ module Rake
       }
 
       Airbrake.notify_sync(notice)
-      raise ex
     end
-    # rubocop:enable Lint/RescueException
-
-    private
 
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/AbcSize
     def task_info

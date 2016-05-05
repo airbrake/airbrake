@@ -36,6 +36,8 @@ module Airbrake
 
       def notify_airbrake(exception, env)
         notice = NoticeBuilder.new(env).build_notice(exception)
+        return unless notice
+
         Airbrake.notify(notice)
       end
 

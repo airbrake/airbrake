@@ -12,7 +12,7 @@ module Airbrake
         end
 
         rescue_from(Exception) do |exception|
-          notice = Airbrake.build_notice(exception)
+          next unless (notice = Airbrake.build_notice(exception))
 
           notice[:context][:component] = 'active_job'
           notice[:context][:action] = self.class.name

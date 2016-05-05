@@ -39,7 +39,8 @@ module Airbrake
       # @param [Exception] exception
       # @return [Airbrake::Notice] the notice with extra information
       def build_notice(exception)
-        notice = Airbrake.build_notice(exception)
+        return unless (notice = Airbrake.build_notice(exception))
+
         NoticeBuilder.builders.each { |builder| builder.call(notice, @request) }
         notice
       end

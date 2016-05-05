@@ -32,8 +32,7 @@ RSpec.describe "airbrake/rake/tasks" do
      %w(username john),
      %w(revision 123abcdef),
      %w(repository https://github.com/airbrake/airbrake'),
-     %w(version v2.0)
-    ].each do |(key, val)|
+     %w(version v2.0)].each do |(key, val)|
       include_examples 'deploy payload', key, val
     end
   end
