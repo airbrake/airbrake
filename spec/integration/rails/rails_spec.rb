@@ -101,6 +101,24 @@ RSpec.describe "Rails integration specs" do
           with(body: /"message":"active_job error"/)
         ).to have_been_made.at_least_once
       end
+
+      context "when Airbrake is not configured" do
+        it "doesn't report errors" do
+          allow(Airbrake).to receive(:build_notice).and_return(nil)
+          allow(Airbrake).to receive(:notify)
+
+          get '/active_job'
+          sleep 2
+
+          wait_for(
+            a_request(:post, endpoint).
+            with(body: /"message":"active_job error"/)
+          ).not_to have_been_made
+
+          expect(Airbrake).to have_received(:build_notice)
+          expect(Airbrake).not_to have_received(:notify)
+        end
+      end
     end
   end
 

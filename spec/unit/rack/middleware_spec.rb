@@ -77,4 +77,17 @@ RSpec.describe Airbrake::Rack::Middleware do
       expect(response[2]).to eq('Bingo bango content')
     end
   end
+
+  context "when Airbrake is not configured" do
+    it "returns nil" do
+      allow(Airbrake).to receive(:build_notice).and_return(nil)
+      allow(Airbrake).to receive(:notify)
+
+      expect { described_class.new(faulty_app).call(env_for('/')) }.
+        to raise_error(AirbrakeTestError)
+
+      expect(Airbrake).to have_received(:build_notice)
+      expect(Airbrake).not_to have_received(:notify)
+    end
+  end
 end

@@ -79,5 +79,15 @@ RSpec.describe Airbrake::Rack::NoticeBuilder do
       notice = notice_builder.build_notice(AirbrakeTestError.new)
       expect(notice[:params][:remoteIp]).to eq("127.0.0.1")
     end
+
+    context "when Airbrake is not configured" do
+      it "returns nil" do
+        allow(Airbrake).to receive(:build_notice).and_return(nil)
+        notice_builder = described_class.new('bingo' => 'bango')
+
+        expect(notice_builder.build_notice('bongo')).to be_nil
+        expect(Airbrake).to have_received(:build_notice)
+      end
+    end
   end
 end
