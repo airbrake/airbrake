@@ -5,6 +5,9 @@ Airbrake Changelog
 
 * Fixed bug in the ActiveJob+Resque integration, where the gem couldn't report
   any exceptions ([#542](https://github.com/airbrake/airbrake/pull/542))
+* Started depending on
+  [airbrake-ruby-1.3.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v1.3.0)
+  ([#548](https://github.com/airbrake/airbrake/pull/548))
 
 ### [v5.2.3][v5.2.3] (April 5, 2016)
 
