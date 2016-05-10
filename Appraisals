@@ -82,7 +82,8 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.0')
     # to test our Resque integration.
     gem 'resque_spec', git: 'git@github.com:kyrylo/resque_spec.git'
 
-    gem 'delayed_job_active_record', '~> 4.1.0'
+    gem 'delayed_job_active_record', github: 'collectiveidea/delayed_job_active_record'
+    gem 'delayed_job', github: 'collectiveidea/delayed_job'
   end
 end
 
