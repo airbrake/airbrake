@@ -1,7 +1,7 @@
 Airbrake
 ========
 
-[![Build Status](https://circleci.com/gh/airbrake/airbrake-gem.png?circle-token=97d268fcbb02dacb817dbc01e91d119500c360f5&style=shield)](https://circleci.com/gh/airbrake/airbrake-gem)
+[![Build Status](https://circleci.com/gh/airbrake/airbrake.png?style=shield)](https://circleci.com/gh/airbrake/airbrake)
 [![semver]](http://semver.org)
 [![Documentation Status](http://inch-ci.org/github/airbrake/airbrake.svg?branch=master)](http://inch-ci.org/github/airbrake/airbrake)
 [![Downloads](https://img.shields.io/gem/dt/airbrake.svg?style=flat)](https://rubygems.org/gems/airbrake)
