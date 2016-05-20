@@ -314,6 +314,8 @@ Instead of [various filter options](#params-filters) the library supports
 blacklist filtering. The blacklist filter is global, which means it filters
 every matching key in the notice's payload.
 
+###### Airbrake v5.2.0+
+
 ```ruby
 # Old way
 Airbrake.configure do |c|
@@ -321,6 +323,14 @@ Airbrake.configure do |c|
 end
 
 # New way
+Airbrake.configure do |c|
+  c.blacklist_keys << [:credit_card_number]
+end
+```
+
+###### Airbrake v5.0.0-v5.1.0 API (deprecated)
+
+```ruby
 Airbrake.blacklist_keys([:credit_card_number])
 ```
 
@@ -330,6 +340,8 @@ Instead of [various filter options](#params-whitelist-filters) the library
 supports whitelist filtering. The whitelist filter is global, which means it
 filters every key except the specified ones.
 
+###### Airbrake v5.2.0+
+
 ```ruby
 # Old way
 Airbrake.configure do |c|
@@ -337,6 +349,14 @@ Airbrake.configure do |c|
 end
 
 # New way
+Airbrake.configure do |c|
+  c.whitelist_keys << [:email]
+end
+```
+
+###### Airbrake v5.0.0-v5.1.0 API (deprecated)
+
+```ruby
 Airbrake.whitelist_keys([:email])
 ```
 
