@@ -3,6 +3,11 @@ Airbrake Changelog
 
 ### master
 
+### [v5.4.0][v5.4.0] (June 6, 2016)
+
+* Started depending on
+  [airbrake-ruby-1.4.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v1.4.0)
+
 ### [v5.3.0][v5.3.0] (May 11, 2016)
 
 * Fixed bug in the ActiveJob+Resque integration, where the gem couldn't report
@@ -108,3 +113,4 @@ Airbrake Changelog
 [v5.2.2]: https://github.com/airbrake/airbrake/releases/tag/v5.2.2
 [v5.2.3]: https://github.com/airbrake/airbrake/releases/tag/v5.2.3
 [v5.3.0]: https://github.com/airbrake/airbrake/releases/tag/v5.3.0
+[v5.4.0]: https://github.com/airbrake/airbrake/releases/tag/v5.4.0
