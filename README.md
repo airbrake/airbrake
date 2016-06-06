@@ -2,7 +2,7 @@ Airbrake
 ========
 
 [![Build Status](https://circleci.com/gh/airbrake/airbrake.png?style=shield)](https://circleci.com/gh/airbrake/airbrake)
-[![semver]](http://semver.org)
+[![Gem Version](https://badge.fury.io/rb/airbrake.svg)](http://badge.fury.io/rb/airbrake)
 [![Documentation Status](http://inch-ci.org/github/airbrake/airbrake.svg?branch=master)](http://inch-ci.org/github/airbrake/airbrake)
 [![Downloads](https://img.shields.io/gem/dt/airbrake.svg?style=flat)](https://rubygems.org/gems/airbrake)
 [![PR Stats](http://issuestats.com/github/airbrake/airbrake/badge/pr?style=flat)](http://issuestats.com/github/airbrake/airbrake)
@@ -477,7 +477,6 @@ commands to invoke them.
 [pricing]: https://airbrake.io/pricing
 [heroku-addon]: https://elements.heroku.com/addons/airbrake
 [heroku-docs]: https://devcenter.heroku.com/articles/airbrake
-[semver]: https://img.shields.io/:semver-5.3.0-brightgreen.svg?style=flat
 [migration-guide]: docs/Migration_guide_from_v4_to_v5.md
 [dashboard]: https://s3.amazonaws.com/airbrake-github-assets/airbrake/airbrake-dashboard.png
 [arthur-ruby]: https://s3.amazonaws.com/airbrake-github-assets/airbrake/arthur-ruby.jpg
