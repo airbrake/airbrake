@@ -1,3 +1,13 @@
+Version 4.3.7 - 2016-06-14 19:33:24 +0300
+===============================================================================
+
+Egor Lynko (1):
+      Fix params cleaner for deep nested arrays
+
+Kyrylo Silin (1):
+      Merge pull request #559 from flexoid/fix-params-cleaner-for-nested-arrays
+
+
 Version 4.3.6 - 2016-02-17 19:35:46 +0200
 ===============================================================================
 
@@ -1656,6 +1666,7 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
+
 
 
 
