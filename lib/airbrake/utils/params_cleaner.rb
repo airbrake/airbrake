@@ -97,16 +97,15 @@ module Airbrake
         end
 
         def filter(hash)
+          return hash unless hash.is_a?(Hash)
+
           hash.each do |key, value|
-            if hash.is_a?(Hash) && filter_key?(key)
+            if filter_key?(key)
               hash[key] = "[FILTERED]"
             elsif value.respond_to?(:to_hash)
-              filter(hash[key])
+              filter(value)
             elsif value.is_a?(Array)
-              hash[key] = value.inject(Array.new) do |result, item|
-                item = filter(item) if item.is_a?(Enumerable)
-                result.push(item)
-              end
+              hash[key] = value.map { |item| filter(item) }
             end
           end
         end

@@ -37,7 +37,7 @@ class ParamsCleanerTest < Test::Unit::TestCase
       'ghi' => '789',
       'something_with_abc' => 'match the entire string',
       'nested_hash' => { 'abc' => '100', 'ghi' => '789' },
-      'nested_array' => [{ 'abc' => '100' }, { 'ghi' => '789' }, 'xyz']
+      'nested_array' => [{ 'abc' => '100' }, { 'ghi' => '789' }, 'xyz', [['asd', []]]]
     }
     filtered = {
       'abc' => '[FILTERED]',
@@ -45,7 +45,7 @@ class ParamsCleanerTest < Test::Unit::TestCase
       'ghi' => '789',
       'something_with_abc' => 'match the entire string',
       'nested_hash' => { 'abc' => '[FILTERED]', 'ghi' => '789' },
-      'nested_array' => [{ 'abc' => '[FILTERED]' }, { 'ghi' => '789' }, 'xyz']
+      'nested_array' => [{ 'abc' => '[FILTERED]' }, { 'ghi' => '789' }, 'xyz', [['asd', []]]]
     }
 
     clean_params = clean(:params_filters => filters, attribute => original)
