@@ -202,10 +202,10 @@ test_mode | removed | n/a
   # New way
   Airbrake.configure do |c|
     c.proxy = {
-      host: 'example.com'
-      port: 8080
-      user: 'user'
-      password: 'p4ssw0rd'
+      host: 'example.com',
+      port: 8080,
+      user: 'user',
+      password: 'p4ssw0rd',
     }
   end
   ```
