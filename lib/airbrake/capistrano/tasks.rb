@@ -7,7 +7,7 @@ if defined?(Capistrano::VERSION) &&
       on role do
         within release_path do
           with rails_env: fetch(:rails_env, fetch(:stage)) do
-            execute :rake, <<-CMD
+            execute :bundle, :exec, :rake, <<-CMD
               airbrake:deploy USERNAME=#{Shellwords.shellescape(local_user)} \
                               ENVIRONMENT=#{fetch(:airbrake_env, fetch(:rails_env, fetch(:stage)))} \
                               REVISION=#{fetch(:current_revision)} \
