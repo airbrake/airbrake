@@ -137,8 +137,8 @@ module Airbrake
       ensure
         # The Airbrake middleware is first in the chain, before ActiveRecord::ConnectionAdapters::ConnectionManagement
         # kicks in to do its thing. This can cause the connection pool to run out of connections.
-        if defined?(ActiveRecord::Base) && ActiveRecord::Base.respond_to?(:connection_pool)
-          ActiveRecord::Base.connection_pool.release_connection
+        if defined?(ActiveRecord::Base) && ActiveRecord::Base.respond_to?(:clear_active_connections!)
+          ActiveRecord::Base.clear_active_connections!
         end
       end
     end
