@@ -3,6 +3,11 @@ Airbrake Changelog
 
 ### master
 
+### [v5.4.1][v5.4.1] (June 21, 2016)
+
+* Fixed Capistrano 3 bug when system has conflicting Rake versions, which would
+  raise `Gem::LoadError` ([#564](https://github.com/airbrake/airbrake/pull/564))
+
 ### [v5.4.0][v5.4.0] (June 6, 2016)
 
 * Started depending on
@@ -114,3 +119,4 @@ Airbrake Changelog
 [v5.2.3]: https://github.com/airbrake/airbrake/releases/tag/v5.2.3
 [v5.3.0]: https://github.com/airbrake/airbrake/releases/tag/v5.3.0
 [v5.4.0]: https://github.com/airbrake/airbrake/releases/tag/v5.4.0
+[v5.4.1]: https://github.com/airbrake/airbrake/releases/tag/v5.4.1
