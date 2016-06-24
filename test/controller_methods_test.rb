@@ -124,9 +124,8 @@ class ControllerMethodsTest < Test::Unit::TestCase
       end
 
       should "release DB connections" do
-        ::POOL = Object.new
-        module ::ActiveRecord; class Base; def self.connection_pool; ::POOL; end; end; end
-        ::POOL.expects(:release_connection)
+        module ::ActiveRecord; class Base; end; end
+        ::ActiveRecord::Base.expects(:clear_active_connections!)
 
         CurrentUserTestController.new.airbrake_request_data
       end
