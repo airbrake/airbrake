@@ -5,8 +5,6 @@ Airbrake
 [![Gem Version](https://badge.fury.io/rb/airbrake.svg)](http://badge.fury.io/rb/airbrake)
 [![Documentation Status](http://inch-ci.org/github/airbrake/airbrake.svg?branch=master)](http://inch-ci.org/github/airbrake/airbrake)
 [![Downloads](https://img.shields.io/gem/dt/airbrake.svg?style=flat)](https://rubygems.org/gems/airbrake)
-[![PR Stats](http://issuestats.com/github/airbrake/airbrake/badge/pr?style=flat)](http://issuestats.com/github/airbrake/airbrake)
-[![Issue Stats](http://issuestats.com/github/airbrake/airbrake/badge/issue?style=flat)](http://issuestats.com/github/airbrake/airbrake)
 
 ![The Airbrake notifier for Ruby][arthur-ruby]
 
