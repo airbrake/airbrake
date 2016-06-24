@@ -165,6 +165,21 @@ RSpec.describe "Rails integration specs" do
           /"user":{"id":"1","username":"qa-dept","email":"qa@example.com"}/
         )
       end
+
+      it "releases DB connections" do
+        user = OpenStruct.new(id: 1, email: 'qa@example.com', username: 'qa-dept')
+        allow_any_instance_of(DummyController).to receive(:current_user) { user }
+
+        # For Rails 3,4 this would be called twice. Rails 5 removes the call by
+        # https://goo.gl/hTuVDS so we expect only 1 (our) call.
+        expect(::ActiveRecord::Base).to(
+          receive(:clear_active_connections!).
+          at_most(:twice)
+        )
+
+        get '/crash'
+        wait_for_a_request_with_body(/.+/)
+      end
     end
   end
 end
