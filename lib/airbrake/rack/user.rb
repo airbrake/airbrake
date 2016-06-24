@@ -19,7 +19,18 @@ module Airbrake
         # Fallback mode (OmniAuth support included). Works only for Rails.
         controller = rack_env['action_controller.instance']
         return unless controller.respond_to?(:current_user)
-        new(controller.current_user) if controller.current_user
+        extract_rails_user(controller)
+      end
+
+      def self.extract_rails_user(controller)
+        return unless controller.current_user
+        new(controller.current_user)
+      ensure
+        # Don't leak DB connections.
+        # https://github.com/airbrake/airbrake/pull/562
+        if defined?(::ActiveRecord::Base)
+          ::ActiveRecord::Base.clear_active_connections!
+        end
       end
 
       def initialize(user)
