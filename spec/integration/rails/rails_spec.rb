@@ -8,11 +8,21 @@ RSpec.describe "Rails integration specs" do
 
   include_examples 'rack examples'
 
-  it "inserts the Airbrake Rack middleware after DebugExceptions" do
-    middlewares = Rails.configuration.middleware.middlewares.map(&:inspect)
-    own_idx = middlewares.index('Airbrake::Rack::Middleware')
+  if ::Rails.version.start_with?('5.')
+    it "inserts the Airbrake Rack middleware after DebugExceptions" do
+      middlewares = Rails.configuration.middleware.middlewares.map(&:inspect)
+      own_idx = middlewares.index('Airbrake::Rack::Middleware')
 
-    expect(middlewares[own_idx - 1]).to eq('ActionDispatch::DebugExceptions')
+      expect(middlewares[own_idx - 1]).to eq('ActionDispatch::DebugExceptions')
+    end
+  else
+    it "inserts the Airbrake Rack middleware after ConnectionManagement" do
+      middlewares = Rails.configuration.middleware.middlewares.map(&:inspect)
+      own_idx = middlewares.index('Airbrake::Rack::Middleware')
+
+      expect(middlewares[own_idx - 1]).
+        to eq('ActiveRecord::ConnectionAdapters::ConnectionManagement')
+    end
   end
 
   shared_examples 'context payload content' do |route|
