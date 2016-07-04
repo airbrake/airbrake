@@ -3,6 +3,6 @@
 source "https://rubygems.org"
 
 gem "rubocop", "~> 0.40", :require => false
-gem "warden", "~> 1.2.3"
+gem "warden", "~> 1.2.6"
 
 gemspec :path => "../"

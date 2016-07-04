@@ -69,6 +69,7 @@ test:
             rvm-exec 2.3.0 bundle exec appraisal rails-4.0 rake spec:integration:rails
             rvm-exec 2.3.0 bundle exec appraisal rails-4.1 rake spec:integration:rails
             rvm-exec 2.3.0 bundle exec appraisal rails-4.2 rake spec:integration:rails
+            rvm-exec 2.3.0 bundle exec appraisal rails-5.0 rake spec:integration:rails
             rvm-exec 2.3.0 bundle exec appraisal rails-edge rake spec:integration:rails
 
             rvm-exec 2.3.0 bundle exec appraisal sinatra rake spec:integration:sinatra
