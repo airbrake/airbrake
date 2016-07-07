@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.0')
+  require 'sidekiq'
+  require 'sidekiq/cli'
+  require 'airbrake/sidekiq/error_handler'
+
   RSpec.describe "airbrake/sidekiq/error_handler" do
     let(:endpoint) do
       'https://airbrake.io/api/v3/projects/113743/notices?key=fd04e13d806a90f96614ad8e529b2822'

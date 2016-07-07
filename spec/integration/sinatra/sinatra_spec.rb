@@ -1,4 +1,6 @@
+require 'sinatra'
 require 'spec_helper'
+require 'apps/sinatra/dummy_app'
 require 'integration/shared_examples/rack_examples'
 
 RSpec.describe "Sinatra integration specs" do

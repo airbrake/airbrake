@@ -7,11 +7,6 @@ require 'rack'
 require 'rack/test'
 require 'rake'
 
-if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.0')
-  require 'sidekiq'
-  require 'sidekiq/cli'
-end
-
 require 'airbrake'
 require 'airbrake/rake/tasks'
 
@@ -69,20 +64,11 @@ if ENV['APPRAISAL_INITIALIZED']
     puts '** Skipped Rails specs'
   end
 
-  # Load a Sinatra app or skip.
-  begin
-    # Resque depends on Sinatra, so when we launch Rails specs, we also
-    # accidentally load Sinatra.
-    raise LoadError if defined?(Resque)
-
-    require 'sinatra'
-    require 'apps/sinatra/dummy_app'
-  rescue LoadError
-    puts '** Skipped Sinatra specs'
-  end
-
   # Load a Rack app or skip.
   begin
+    # Don't load the Rack app since we want to test Sinatra if it's loaded.
+    raise LoadError if defined?(Sinatra)
+
     require 'apps/rack/dummy_app'
   rescue LoadError
     puts '** Skipped Rack specs'
@@ -120,7 +106,6 @@ versions = <<EOS
 EOS
 versions << "# JRUBY_VERSION #{JRUBY_VERSION}\n" if defined?(JRUBY_VERSION)
 versions << "# Rails version: #{Rails.version}\n" if defined?(Rails)
-versions << "# Sinatra version: #{Sinatra::VERSION}\n" if defined?(Sinatra)
 versions << "# Rack release: #{Rack.release}\n"
 versions << '#' * 80
 
