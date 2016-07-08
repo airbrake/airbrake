@@ -5,12 +5,12 @@ source "https://rubygems.org"
 gem "rubocop", "~> 0.40", :require => false
 gem "rails", :github => "rails/rails"
 gem "arel", :github => "rails/arel"
-gem "rack", :github => "rack/rack"
-gem "warden", "~> 1.2.3"
-gem "activerecord-jdbcsqlite3-adapter", "~> 1.3.18", :platforms => :jruby
+gem "rack", "~> 2.0"
+gem "warden", "~> 1.2.6"
+gem "activerecord-jdbcsqlite3-adapter", "~> 1.3.20", :platforms => :jruby
 gem "sqlite3", "~> 1.3.11", :platforms => [:mri, :rbx]
-gem "resque", "~> 1.25.2"
-gem "resque_spec", :git => "git@github.com:kyrylo/resque_spec.git"
+gem "resque", "~> 1.6"
+gem "resque_spec", :github => "airbrake/resque_spec"
 gem "delayed_job_active_record", :github => "collectiveidea/delayed_job_active_record"
 gem "delayed_job", :github => "collectiveidea/delayed_job"
 
