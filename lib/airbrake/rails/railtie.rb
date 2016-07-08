@@ -13,12 +13,18 @@ module Airbrake
 
         if ::Rails.version.start_with?('5.')
           # Avoid the warning about deprecated strings.
+          # Insert after DebugExceptions, since ConnectionManagement doesn't
+          # exist in Rails 5 anymore.
           app.config.middleware.insert_after(
-            ActionDispatch::DebugExceptions, Airbrake::Rack::Middleware
+            ActionDispatch::DebugExceptions,
+            Airbrake::Rack::Middleware
           )
         else
+          # Insert after ConnectionManagement to avoid DB connection leakage:
+          # https://github.com/airbrake/airbrake/pull/568
           app.config.middleware.insert_after(
-            ActionDispatch::DebugExceptions, 'Airbrake::Rack::Middleware'
+            ActiveRecord::ConnectionAdapters::ConnectionManagement,
+            'Airbrake::Rack::Middleware'
           )
         end
       end
