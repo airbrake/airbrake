@@ -36,4 +36,32 @@ RSpec.describe "airbrake/rake/tasks" do
       include_examples 'deploy payload', key, val
     end
   end
+
+  describe "airbrake:install_heroku_deploy_hook" do
+    let(:task) { Rake::Task['airbrake:install_heroku_deploy_hook'] }
+
+    after { task.reenable }
+
+    let(:airbrake_vars) { "AIRBRAKE_PROJECT_ID=1\nAIRBRAKE_API_KEY=2\nRAILS_ENV=3\n" }
+    let(:silenced_stdout) { File.new(File::NULL, 'w') }
+
+    before do
+      @original_stdout = $stdout
+      $stdout = silenced_stdout
+    end
+
+    after do
+      $stdout.close
+      $stdout = @original_stdout
+    end
+
+    describe "parsing environment variables" do
+      it "does not raise when an env variable value contains '='" do
+        heroku_config = airbrake_vars + "URL=https://airbrake.io/docs?key=11\n"
+        expect(Bundler).to receive(:with_clean_env).twice.and_return(heroku_config)
+
+        task.invoke
+      end
+    end
+  end
 end

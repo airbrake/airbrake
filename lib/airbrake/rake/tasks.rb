@@ -92,7 +92,7 @@ namespace :airbrake do
     end
 
     heroku_env = config.each_line.with_object({}) do |line, h|
-      h.merge!(Hash[*line.rstrip.split('=')])
+      h.merge!(Hash[*line.rstrip.split("\n").flat_map { |v| v.split('=', 2) }])
     end
 
     id = heroku_env['AIRBRAKE_PROJECT_ID']
