@@ -58,6 +58,7 @@ rake_environment_filters | [add_filter](#filtering) | optional
 ignore | [add_filter](#filtering) | optional
 ignore_rake | [add_filter](#filtering) | optional
 ignore_user_agent | [add_filter](#filtering) | optional
+ignore_only | [add_filter](#filtering) | optional
 environment_name | [environment](#environment-name) | optional
 project_root | [root_directory](#project-root) | optional
 async | removed ([async by default](#notify)) | n/a
@@ -222,8 +223,8 @@ test_mode | removed | n/a
 
 * <a name="filtering"></a>
   The `backtrace_filters`, `ignore_by_filters`, `rake_environment_filters`,
-  `ignore`, `ignore_rake` & `ignore_user_agent` option were replaced with the
-  [`add_filter` API](#ignore-by-filter).
+  `ignore`, `ignore_rake`, `ignore_user_agent` & `ignore_only` options were
+  replaced with the [`add_filter` API](#ignore-by-filter).
 <sup>[[link](#filtering)]</sup>
 
 * <a name="development-lookup"></a>
