@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v5.4.2][v5.4.2] (July 15, 2016)
+
 * Fixed Heroku deploy hook error when parsing variables containing `=`
   ([#577](https://github.com/airbrake/airbrake/pull/577))
 
@@ -123,3 +125,4 @@ Airbrake Changelog
 [v5.3.0]: https://github.com/airbrake/airbrake/releases/tag/v5.3.0
 [v5.4.0]: https://github.com/airbrake/airbrake/releases/tag/v5.4.0
 [v5.4.1]: https://github.com/airbrake/airbrake/releases/tag/v5.4.1
+[v5.4.2]: https://github.com/airbrake/airbrake/releases/tag/v5.4.2
