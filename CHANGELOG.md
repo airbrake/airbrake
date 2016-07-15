@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed Heroku deploy hook error when parsing variables containing `=`
+  ([#577](https://github.com/airbrake/airbrake/pull/577))
+
 ### [v5.4.1][v5.4.1] (June 21, 2016)
 
 * Fixed Capistrano 3 bug when system has conflicting Rake versions, which would
