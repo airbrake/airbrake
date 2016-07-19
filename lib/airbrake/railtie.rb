@@ -12,7 +12,7 @@ module Airbrake
 
     initializer "airbrake.middleware" do |app|
 
-      rails_4_or_less = Rails::VERSION::MAJOR < 5
+      rails_4_or_less = ::Rails::VERSION::MAJOR < 5
 
       middleware = if defined?(ActionDispatch::DebugExceptions)
         # Rails >= 3.2.0
