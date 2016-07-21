@@ -41,6 +41,7 @@ dependencies:
 
 test:
   override:
+    - bundle exec rubocop
     - ? |
         set -e
         case $CIRCLE_NODE_INDEX in
@@ -109,6 +110,3 @@ test:
         esac
       :
         parallel: true
-
-  post:
-    - bundle exec rubocop
