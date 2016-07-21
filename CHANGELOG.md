@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* **IMPORTANT**: Fixed support for apps, which don't use ActiveRecord. In v5.4.2
+  it broke, so it's recommended to upgrade to the current version (or use v5.4.1
+  instead) ([#580](https://github.com/airbrake/airbrake/issues/580))
+
 ### [v5.4.2][v5.4.2] (July 15, 2016)
 
 * Fixed Heroku deploy hook error when parsing variables containing `=`
