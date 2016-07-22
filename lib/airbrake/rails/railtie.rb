@@ -19,11 +19,17 @@ module Airbrake
             ActionDispatch::DebugExceptions,
             Airbrake::Rack::Middleware
           )
-        else
+        elsif defined?(ActiveRecord)
           # Insert after ConnectionManagement to avoid DB connection leakage:
           # https://github.com/airbrake/airbrake/pull/568
           app.config.middleware.insert_after(
             ActiveRecord::ConnectionAdapters::ConnectionManagement,
+            'Airbrake::Rack::Middleware'
+          )
+        else
+          # Insert after DebugExceptions for apps without ActiveRecord.
+          app.config.middleware.insert_after(
+            ActionDispatch::DebugExceptions,
             'Airbrake::Rack::Middleware'
           )
         end
