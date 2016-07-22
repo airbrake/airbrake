@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v5.4.3][v5.4.3] (July 22, 2016)
+
 * **IMPORTANT**: Fixed support for apps, which don't use ActiveRecord. In v5.4.2
   it broke, so it's recommended to upgrade to the current version (or use v5.4.1
   instead) ([#580](https://github.com/airbrake/airbrake/issues/580))
@@ -130,3 +132,4 @@ Airbrake Changelog
 [v5.4.0]: https://github.com/airbrake/airbrake/releases/tag/v5.4.0
 [v5.4.1]: https://github.com/airbrake/airbrake/releases/tag/v5.4.1
 [v5.4.2]: https://github.com/airbrake/airbrake/releases/tag/v5.4.2
+[v5.4.3]: https://github.com/airbrake/airbrake/releases/tag/v5.4.3
