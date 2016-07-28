@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed Rails runner integration not reporting errors
+  ([#582](https://github.com/airbrake/airbrake/issues/580))
+
 ### [v5.4.3][v5.4.3] (July 22, 2016)
 
 * **IMPORTANT**: Fixed support for apps, which don't use ActiveRecord. In v5.4.2
