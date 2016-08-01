@@ -181,8 +181,8 @@ module Airbrake
     end
 
     def unwrap_exception(exception)
-      if exception.respond_to?(:original_exception)
-        exception.original_exception
+      if exception.respond_to?(:cause)
+        exception.cause
       elsif exception.respond_to?(:continued_exception)
         exception.continued_exception
       end || exception

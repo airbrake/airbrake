@@ -222,7 +222,7 @@ class ActionControllerCatcherTest < ActionDispatch::IntegrationTest
 
     cattr_accessor :local
 
-    before_filter :set_session
+    before_action :set_session
 
     def set_session
       unless params.empty?
