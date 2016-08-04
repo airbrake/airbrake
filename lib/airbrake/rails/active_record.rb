@@ -13,17 +13,13 @@ module Airbrake
     # @see https://goo.gl/ddFNg7 Rails <4.2 implementation (bugged)
     module ActiveRecord
       ##
-      # @return [Array<Symbol>] the hooks that needs fixing
-      KINDS = [:commit, :rollback].freeze
-
-      ##
       # Patches default +run_callbacks+ with our version, which is capable of
       # notifying about exceptions.
       #
       # rubocop:disable Lint/RescueException
       def run_callbacks(kind, *args, &block)
         # Let the post process handle the exception if it's not a bugged hook.
-        return super unless KINDS.include?(kind)
+        return super unless [:commit, :rollback].include?(kind)
 
         # Handle the exception ourselves. The 'ex' exception won't be
         # propagated, therefore we must notify it here.
