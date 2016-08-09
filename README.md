@@ -228,6 +228,12 @@ end
 use Airbrake::Rack::Middleware
 ```
 
+**Note:** be aware that by default the library doesn't filter any parameters,
+including user passwords. To filter out passwords
+[add a filter](https://github.com/airbrake/airbrake-ruby#airbrakeadd_filter).
+
+#### Appending information from Rack requests
+
 If you want to append additional information from web requests (such as HTTP
 headers), define a special hook:
 
