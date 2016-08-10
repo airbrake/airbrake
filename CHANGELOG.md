@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* **IMPORTANT**: fixed ActiveJob integration not re-raising exceptions, which
+  resulted into marking failed jobs as successfully completed
+  ([#591](https://github.com/airbrake/airbrake/issues/591))
 * Fixed Rails runner integration not reporting errors
   ([#582](https://github.com/airbrake/airbrake/issues/580))
 * Fixed bug with the [enum_field](https://github.com/jamesgolick/enum_field) gem
