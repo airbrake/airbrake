@@ -9,7 +9,7 @@ Airbrake Changelog
   resulted into marking failed jobs as successfully completed
   ([#591](https://github.com/airbrake/airbrake/issues/591))
 * Fixed Rails runner integration not reporting errors
-  ([#582](https://github.com/airbrake/airbrake/issues/580))
+  ([#585](https://github.com/airbrake/airbrake/issues/585))
 * Fixed bug with the [enum_field](https://github.com/jamesgolick/enum_field) gem
   raising errors in Rails apps due to constant names collision. As the result,
   the library does not leak `MyModel::KINDS` constants for every Rails model
