@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v5.4.4][v5.4.4] (August 10, 2016)
+
 * **IMPORTANT**: fixed ActiveJob integration not re-raising exceptions, which
   resulted into marking failed jobs as successfully completed
   ([#591](https://github.com/airbrake/airbrake/issues/591))
@@ -143,3 +145,4 @@ Airbrake Changelog
 [v5.4.1]: https://github.com/airbrake/airbrake/releases/tag/v5.4.1
 [v5.4.2]: https://github.com/airbrake/airbrake/releases/tag/v5.4.2
 [v5.4.3]: https://github.com/airbrake/airbrake/releases/tag/v5.4.3
+[v5.4.4]: https://github.com/airbrake/airbrake/releases/tag/v5.4.4
