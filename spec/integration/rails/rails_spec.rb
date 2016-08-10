@@ -117,6 +117,14 @@ RSpec.describe "Rails integration specs" do
           allow(Airbrake).to receive(:build_notice).and_return(nil)
           allow(Airbrake).to receive(:notify)
 
+          # Make sure we don't call `build_notice` more than 1 time. Rack
+          # integration will try to handle error 500 and we want to prevent
+          # that: https://github.com/airbrake/airbrake/pull/583
+          allow_any_instance_of(Airbrake::Rack::Middleware).to(
+            receive(:notify_airbrake).
+            and_return(nil)
+          )
+
           get '/active_job'
           sleep 2
 
