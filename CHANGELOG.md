@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v5.4.5][v5.4.5] (August 23, 2016)
+
 * Fixed possible SystemStackError when using ActiveJob integration
   ([#593](https://github.com/airbrake/airbrake/pull/593))
 
@@ -149,3 +151,4 @@ Airbrake Changelog
 [v5.4.2]: https://github.com/airbrake/airbrake/releases/tag/v5.4.2
 [v5.4.3]: https://github.com/airbrake/airbrake/releases/tag/v5.4.3
 [v5.4.4]: https://github.com/airbrake/airbrake/releases/tag/v5.4.4
+[v5.4.5]: https://github.com/airbrake/airbrake/releases/tag/v5.4.5
