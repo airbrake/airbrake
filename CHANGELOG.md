@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed possible SystemStackError when using ActiveJob integration
+  ([#593](https://github.com/airbrake/airbrake/pull/593))
+
 ### [v5.4.4][v5.4.4] (August 10, 2016)
 
 * **IMPORTANT**: fixed ActiveJob integration not re-raising exceptions, which
