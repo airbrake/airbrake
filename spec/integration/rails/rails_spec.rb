@@ -112,6 +112,16 @@ RSpec.describe "Rails integration specs" do
         ).to have_been_made.at_least_once
       end
 
+      it "does not raise SystemStackError" do
+        get '/active_job'
+        sleep 2
+
+        wait_for(
+          a_request(:post, endpoint).
+          with(body: /"type":"SystemStackError"/)
+        ).not_to have_been_made
+      end
+
       context "when Airbrake is not configured" do
         it "doesn't report errors" do
           allow(Airbrake).to receive(:build_notice).and_return(nil)
