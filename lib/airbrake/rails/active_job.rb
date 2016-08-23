@@ -16,7 +16,7 @@ module Airbrake
             notice[:context][:component] = 'active_job'
             notice[:context][:action] = self.class.name
 
-            notice[:params] = as_json
+            notice[:params] = serialize
 
             # We special case Resque because it kills our workers by forking, so
             # we use synchronous delivery instead.
