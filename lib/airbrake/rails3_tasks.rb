@@ -86,7 +86,7 @@ namespace :airbrake do
     puts 'Setting up the Controller.'
     class ApplicationController
       # This is to bypass any filters that may prevent access to the action.
-      prepend_before_filter :test_airbrake
+      prepend_before_action :test_airbrake
       def test_airbrake
         puts "Raising '#{exception_class.name}' to simulate application failure."
         raise exception_class.new, "\nTesting airbrake via \"rake airbrake:test\"."\
