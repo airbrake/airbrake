@@ -3,6 +3,11 @@ Airbrake Changelog
 
 ### master
 
+### [v5.5.0][v5.5.0] (September 14, 2016)
+
+* Started depending on
+  [airbrake-ruby-1.5.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v1.5.0)
+
 ### [v5.4.5][v5.4.5] (August 23, 2016)
 
 * Fixed possible SystemStackError when using ActiveJob integration
@@ -152,3 +157,4 @@ Airbrake Changelog
 [v5.4.3]: https://github.com/airbrake/airbrake/releases/tag/v5.4.3
 [v5.4.4]: https://github.com/airbrake/airbrake/releases/tag/v5.4.4
 [v5.4.5]: https://github.com/airbrake/airbrake/releases/tag/v5.4.5
+[v5.5.0]: https://github.com/airbrake/airbrake/releases/tag/v5.5.0
