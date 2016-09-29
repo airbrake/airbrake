@@ -20,22 +20,22 @@ dependencies:
             rvm-exec 2.0.0-p645 bundle exec appraisal install --jobs=15
             ;;
           2)
-            rvm-exec 2.3.0 bundle install --jobs=15 --path=vendor
-            rvm-exec 2.3.0 bundle exec appraisal install --jobs=15
+            rvm-exec 2.3.1 bundle install --jobs=15 --path=vendor
+            rvm-exec 2.3.1 bundle exec appraisal install --jobs=15
             ;;
           3)
             # The 'dev' switch makes JRuby start about 2.5 times faster.
             # See: https://github.com/jruby/jruby/wiki/Improving-startup-time
-            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.0.4.0 bundle install --jobs=15 --path=vendor
-            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.0.4.0 bundle exec appraisal install --jobs=15
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.1.5.0 bundle install --jobs=15 --path=vendor
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.1.5.0 bundle exec appraisal install --jobs=15
             ;;
           4)
-            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.0.4.0 bundle install --jobs=15 --path=vendor
-            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.0.4.0 bundle exec appraisal install --jobs=15
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.1.5.0 bundle install --jobs=15 --path=vendor
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.1.5.0 bundle exec appraisal install --jobs=15
             ;;
           5)
-            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.0.4.0 bundle install --jobs=15 --path=vendor
-            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.0.4.0 bundle exec appraisal install --jobs=15
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.1.5.0 bundle install --jobs=15 --path=vendor
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.1.5.0 bundle exec appraisal install --jobs=15
             ;;
         esac
       :
@@ -68,28 +68,28 @@ test:
             rvm-exec 2.0.0-p645 bundle exec appraisal rack rake spec:integration:rack
             ;;
           2)
-            rvm-exec 2.3.0 bundle exec appraisal rails-3.2 rake spec:integration:rails
-            rvm-exec 2.3.0 bundle exec appraisal rails-4.0 rake spec:integration:rails
-            rvm-exec 2.3.0 bundle exec appraisal rails-4.1 rake spec:integration:rails
-            rvm-exec 2.3.0 bundle exec appraisal rails-4.2 rake spec:integration:rails
-            rvm-exec 2.3.0 bundle exec appraisal rails-5.0 rake spec:integration:rails
-            rvm-exec 2.3.0 bundle exec appraisal rails-edge rake spec:integration:rails
+            rvm-exec 2.3.1 bundle exec appraisal rails-3.2 rake spec:integration:rails
+            rvm-exec 2.3.1 bundle exec appraisal rails-4.0 rake spec:integration:rails
+            rvm-exec 2.3.1 bundle exec appraisal rails-4.1 rake spec:integration:rails
+            rvm-exec 2.3.1 bundle exec appraisal rails-4.2 rake spec:integration:rails
+            rvm-exec 2.3.1 bundle exec appraisal rails-5.0 rake spec:integration:rails
+            rvm-exec 2.3.1 bundle exec appraisal rails-edge rake spec:integration:rails
 
-            rvm-exec 2.3.0 bundle exec appraisal sinatra rake spec:integration:sinatra
+            rvm-exec 2.3.1 bundle exec appraisal sinatra rake spec:integration:sinatra
 
-            rvm-exec 2.3.0 bundle exec appraisal rack rake spec:integration:rack
+            rvm-exec 2.3.1 bundle exec appraisal rack rake spec:integration:rack
             ;;
           3)
-            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.0.4.0 bundle exec appraisal rails-3.2 rake spec:integration:rails
-            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.0.4.0 bundle exec appraisal rails-4.0 rake spec:integration:rails
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.1.5.0 bundle exec appraisal rails-3.2 rake spec:integration:rails
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.1.5.0 bundle exec appraisal rails-4.0 rake spec:integration:rails
             ;;
           4)
-            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.0.4.0 bundle exec appraisal rails-4.1 rake spec:integration:rails
-            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.0.4.0 bundle exec appraisal rails-4.2 rake spec:integration:rails
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.1.5.0 bundle exec appraisal rails-4.1 rake spec:integration:rails
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.1.5.0 bundle exec appraisal rails-4.2 rake spec:integration:rails
             ;;
           5)
-            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.0.4.0 bundle exec appraisal sinatra rake spec:integration:sinatra
-            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.0.4.0 bundle exec appraisal rack rake spec:integration:rack
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.1.5.0 bundle exec appraisal sinatra rake spec:integration:sinatra
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.1.5.0 bundle exec appraisal rack rake spec:integration:rack
             ;;
         esac
       :
@@ -104,10 +104,10 @@ test:
             rvm-exec 2.0.0-p645 bundle exec rake spec:unit
             ;;
           2)
-            rvm-exec 2.3.0 bundle exec rake spec:unit
+            rvm-exec 2.3.1 bundle exec rake spec:unit
             ;;
           3)
-            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.0.4.0 bundle exec rake spec:unit
+            JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.1.5.0 bundle exec rake spec:unit
             ;;
         esac
       :
