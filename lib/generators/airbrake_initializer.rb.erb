@@ -56,6 +56,10 @@ Airbrake.configure do |c|
   # replaced.
   # https://github.com/airbrake/airbrake-ruby#blacklist_keys
   c.blacklist_keys = [/password/i]
+
+  # Alternatively, you can integrate with Rails' filter_parameters.
+  # Read more: https://goo.gl/gqQ1xS
+  # c.blacklist_keys = Rails.application.config.filter_parameters
 end
 
 # If Airbrake doesn't send any expected exceptions, we suggest to uncomment the
