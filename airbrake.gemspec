@@ -37,7 +37,7 @@ DESC
   s.add_development_dependency 'pry', '~> 0'
   s.add_development_dependency 'appraisal', '~> 2'
   s.add_development_dependency 'rack', '~> 1'
-  s.add_development_dependency 'webmock', '~> 1'
+  s.add_development_dependency 'webmock', '~> 2'
   s.add_development_dependency 'rack-test', '~> 0'
   s.add_development_dependency 'sidekiq', '~> 4'
 end
