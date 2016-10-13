@@ -85,18 +85,36 @@ RSpec.describe "Rails integration specs" do
   end
 
   describe "Active Record callbacks" do
-    it "reports exceptions in after_commit callbacks" do
-      get '/active_record_after_commit'
-      wait_for_a_request_with_body(
-        /"type":"AirbrakeTestError","message":"after_commit"/
-      )
-    end
+    if Gem::Version.new(Rails.version) >= Gem::Version.new('5.1.0.alpha')
+      it "reports exceptions in after_commit callbacks" do
+        get '/active_record_after_commit'
+        wait_for(
+          a_request(:post, endpoint).
+          with(body: /"type":"AirbrakeTestError","message":"after_commit"/)
+        ).to have_been_made.twice
+      end
 
-    it "reports exceptions in after_rollback callbacks" do
-      get '/active_record_after_rollback'
-      wait_for_a_request_with_body(
-        /"type":"AirbrakeTestError","message":"after_rollback"/
-      )
+      it "reports exceptions in after_rollback callbacks" do
+        get '/active_record_after_rollback'
+        wait_for(
+          a_request(:post, endpoint).
+          with(body: /"type":"AirbrakeTestError","message":"after_rollback"/)
+        ).to have_been_made.twice
+      end
+    else
+      it "reports exceptions in after_commit callbacks" do
+        get '/active_record_after_commit'
+        wait_for_a_request_with_body(
+          /"type":"AirbrakeTestError","message":"after_commit"/
+        )
+      end
+
+      it "reports exceptions in after_rollback callbacks" do
+        get '/active_record_after_rollback'
+        wait_for_a_request_with_body(
+          /"type":"AirbrakeTestError","message":"after_rollback"/
+        )
+      end
     end
   end
 
