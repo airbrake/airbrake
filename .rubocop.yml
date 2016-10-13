@@ -74,3 +74,13 @@ Style/Alias:
 
 Style/MultilineArrayBraceLayout:
   Enabled: true
+
+Metrics/BlockLength:
+  CountComments: false
+  Max: 25
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*.rb'
+    - 'airbrake.gemspec'
+    - 'lib/airbrake/rake/tasks.rb'
