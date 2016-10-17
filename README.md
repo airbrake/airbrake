@@ -121,9 +121,9 @@ and replace `PROJECT_ID` and `PROJECT_KEY` with your values:
 rails g airbrake PROJECT_ID PROJECT_KEY
 ```
 
-[Heroku add-on][heroku-addon] users can omit specifying the key and the id and invoke
-the command without arguments (Heroku add-on's environment variables will be
-used) ([Heroku add-on docs][heroku-docs]):
+[Heroku add-on][heroku-addon] users can omit specifying the key and the id and
+invoke the command without arguments (Heroku add-on's environment variables will
+be used) ([Heroku add-on docs][heroku-docs]):
 
 ```bash
 rails g airbrake
@@ -169,6 +169,31 @@ reporting. [The description of the API][airbrake-api] is available online.
 
 Additionally, the Rails integration offers automatic exception reporting in any
 Rake tasks<sup>[[link](#rake)]</sup> and [Rails runner][rails-runner].
+
+#### Integration with filter_parameters
+
+If you want to reuse `Rails.application.config.filter_parameters` in Airbrake
+you can configure your notifier the following way:
+
+```rb
+# config/initializers/airbrake.rb
+Airbrake.configure do |c|
+  c.blacklist_keys = Rails.application.config.filter_parameters
+end
+```
+
+There are a few important details:
+
+1. You must load `filter_parameter_logging.rb` before the Airbrake config
+2. If you use Lambdas to configure `filter_parameters`, you need to convert them
+   to Procs. Otherwise you will get `ArgumentError`
+3. If you use Procs to configure `filter_parameters`, the procs must return an
+   Array of keys compatible with the Airbrake whitelist/blacklist option
+   (String, Symbol, Regexp)
+
+Consult the
+[example application](https://github.com/kyrylo/airbrake-ruby-issue108), which
+was created to show how to configure `filter_parameters`.
 
 ### Sinatra
 
