@@ -29,20 +29,63 @@ RSpec.describe Airbrake::Rack::Middleware do
 
   describe "#call" do
     context "when app raises an exception" do
-      it "rescues the exception, notifies Airbrake & re-raises it" do
-        expect { described_class.new(faulty_app).call(env_for('/')) }.
-          to raise_error(AirbrakeTestError)
+      context "and when the notifier name is specified" do
+        let(:notifier_name) { :rack_middleware_initialize }
 
-        wait_for_a_request_with_body(/"errors":\[{"type":"AirbrakeTestError"/)
+        let(:bingo_endpoint) do
+          'https://airbrake.io/api/v3/projects/92123/notices?key=ad04e13d806a90f96614ad8e529b2821'
+        end
+
+        let(:expected_body) do
+          /"errors":\[{"type":"AirbrakeTestError"/
+        end
+
+        before do
+          Airbrake.configure(notifier_name) do |c|
+            c.project_id = 92123
+            c.project_key = 'ad04e13d806a90f96614ad8e529b2821'
+            c.logger = Logger.new('/dev/null')
+            c.app_version = '3.2.1'
+          end
+
+          stub_request(:post, bingo_endpoint).to_return(status: 201, body: '{}')
+        end
+
+        after { Airbrake.close(notifier_name) }
+
+        it "notifies via the specified notifier" do
+          expect do
+            described_class.new(faulty_app, notifier_name).call(env_for('/'))
+          end.to raise_error(AirbrakeTestError)
+
+          wait_for(
+            a_request(:post, bingo_endpoint).
+              with(body: expected_body)
+          ).to have_been_made.once
+
+          expect(
+            a_request(:post, endpoint).
+              with(body: expected_body)
+          ).not_to have_been_made
+        end
       end
 
-      it "sends framework version and name" do
-        expect { described_class.new(faulty_app).call(env_for('/bingo/bango')) }.
-          to raise_error(AirbrakeTestError)
+      context "and when the notifier is not configured" do
+        it "rescues the exception, notifies Airbrake & re-raises it" do
+          expect { described_class.new(faulty_app).call(env_for('/')) }.
+            to raise_error(AirbrakeTestError)
 
-        wait_for_a_request_with_body(
-          %r("context":{.*"version":"1.2.3 (Rails|Sinatra|Rack\.version)/.+".+})
-        )
+          wait_for_a_request_with_body(/"errors":\[{"type":"AirbrakeTestError"/)
+        end
+
+        it "sends framework version and name" do
+          expect { described_class.new(faulty_app).call(env_for('/bingo/bango')) }.
+            to raise_error(AirbrakeTestError)
+
+          wait_for_a_request_with_body(
+            %r("context":{.*"version":"1.2.3 (Rails|Sinatra|Rack\.version)/.+".+})
+          )
+        end
       end
     end
 

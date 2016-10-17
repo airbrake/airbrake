@@ -8,7 +8,7 @@ module Airbrake
 
       class << self
         ##
-        # @return [Array<#call>] the list of notice's builders
+        # @return [Array<Proc>] the list of notice builders
         attr_reader :builders
 
         ##
@@ -29,7 +29,9 @@ module Airbrake
 
       ##
       # @param [Hash{String=>Object}] rack_env The Rack environment
-      def initialize(rack_env)
+      def initialize(rack_env, notifier_name = :default)
+        @rack_env = rack_env
+        @notifier_name = notifier_name
         @request = ::Rack::Request.new(rack_env)
       end
 
@@ -39,13 +41,14 @@ module Airbrake
       # @param [Exception] exception
       # @return [Airbrake::Notice] the notice with extra information
       def build_notice(exception)
-        return unless (notice = Airbrake.build_notice(exception))
+        return unless (notice = Airbrake.build_notice(exception, {}, @notifier_name))
 
         NoticeBuilder.builders.each { |builder| builder.call(notice, @request) }
         notice
       end
 
-      # Adds context (url, user agent, framework version, controller, etc)
+      ##
+      # Adds context (URL, User-Agent, framework version, controller and more).
       add_builder do |notice, request|
         context = notice[:context]
 
@@ -75,23 +78,24 @@ module Airbrake
 
         user = Airbrake::Rack::User.extract(request.env)
         notice[:context].merge!(user.as_json) if user
-
-        nil
       end
 
-      # Adds session
+      ##
+      # Adds session.
       add_builder do |notice, request|
         session = request.session
         notice[:session] = session if session
       end
 
-      # Adds request params
+      ##
+      # Adds HTTP request parameters.
       add_builder do |notice, request|
         params = request.env['action_dispatch.request.parameters']
         notice[:params] = params if params
       end
 
-      # Adds http referer, method and headers to the environment
+      ##
+      # Adds HTTP referer, method and headers to the environment.
       add_builder do |notice, request|
         http_headers = request.env.map.with_object({}) do |(key, value), headers|
           if HTTP_HEADER_PREFIXES.any? { |prefix| key.to_s.start_with?(prefix) }
