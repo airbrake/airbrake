@@ -312,6 +312,17 @@ anything manually and it should just work out-of-box.
 No additional configuration is needed. Simply ensure that you have configured
 your Airbrake notifier.
 
+If you see duplicate error entries in your dashboard, you can avoid them by
+ignoring the ActiveJob wrapper. Just add a filter like this one:
+
+```ruby
+Airbrake.add_filter do |notice|
+  if notice[:context][:action] == 'ActiveJob::QueueAdapters::DelayedJobAdapter::JobWrapper'
+    notice.ignore!
+  end
+end
+```
+
 ### Resque
 
 Since Airbrake v5 the gem provides its own failure backend. The old way of
