@@ -3,8 +3,12 @@ Airbrake Changelog
 
 ### master
 
+### [v5.6.0][v5.6.0] (October 18, 2016)
+
 * Added support for multiple notifiers for Rack middleware
   ([#515](https://github.com/airbrake/airbrake/pull/515))
+* Started depending on
+  [airbrake-ruby-1.6.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v1.6.0)
 
 ### [v5.5.0][v5.5.0] (September 14, 2016)
 
@@ -161,3 +165,4 @@ Airbrake Changelog
 [v5.4.4]: https://github.com/airbrake/airbrake/releases/tag/v5.4.4
 [v5.4.5]: https://github.com/airbrake/airbrake/releases/tag/v5.4.5
 [v5.5.0]: https://github.com/airbrake/airbrake/releases/tag/v5.5.0
+[v5.6.0]: https://github.com/airbrake/airbrake/releases/tag/v5.6.0
