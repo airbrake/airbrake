@@ -18,9 +18,8 @@ module Airbrake
 
         # Fallback mode (OmniAuth support included). Works only for Rails.
         controller = rack_env['action_controller.instance']
-        return unless controller.respond_to?(:current_user)
-        return unless [-1,0].include?(controller.method(:current_user).arity)
-        new(controller.current_user) if controller.current_user
+        user = try_current_user(controller)
+        new(user) if user
       end
 
       def initialize(user)
@@ -49,6 +48,12 @@ module Airbrake
         # Try to get first and last names. If that fails, try to get just 'name'.
         name = [try_to_get(:first_name), try_to_get(:last_name)].compact.join(' ')
         name.empty? ? try_to_get(:name) : name
+      end
+      
+      def self.try_current_user(controller)
+        return unless controller.respond_to?(:current_user)
+        return unless [-1, 0].include?(controller.method(:current_user).arity)
+        return controller.current_user
       end
     end
   end
