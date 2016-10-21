@@ -51,6 +51,8 @@ module Airbrake
     attr_reader :parameters
     alias_method :params, :parameters
 
+    attr_reader :body
+
     # The component (if any) which was used in this request (usually the controller)
     attr_reader :component
     alias_method :controller, :component
@@ -126,6 +128,10 @@ module Airbrake
       @hostname        = local_hostname
       @user            = args[:user] || {}
 
+      if input = args[:rack_env]["rack.input"]
+        input.rewind if input.respond_to?(:rewind)
+        @body = input.read
+      end
 
       also_use_rack_params_filters
       find_session_data
@@ -171,6 +177,7 @@ module Airbrake
                 xml_vars_for(params, parameters)
               end
             end
+            request.body(body) unless body
             unless session_data.empty?
               request.session do |session|
                 xml_vars_for(session, session_data)
@@ -239,6 +246,7 @@ module Airbrake
       }.tap do |hash|
           hash['environment'] = cgi_data     unless cgi_data.empty?
           hash['params']      = parameters   unless parameters.empty?
+          hash['body']        = body         unless body
           hash['session']     = session_data unless session_data.empty?
       end)
     end
