@@ -21,7 +21,7 @@ module Airbrake
         user = try_current_user(controller)
         new(user) if user
       end
-      
+
       def self.try_current_user(controller)
         return unless controller.respond_to?(:current_user)
         return unless [-1, 0].include?(controller.method(:current_user).arity)

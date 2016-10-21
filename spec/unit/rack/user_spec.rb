@@ -52,10 +52,11 @@ RSpec.describe Airbrake::Rack::User do
     end
 
     context "when the current_user Rails controller method is defined" do
+      let(:controller) { instance_double('DummyController') }
+      let(:env) { env_for('/', 'action_controller.instance' => controller) }
+
       context "and it is nil" do
         it "returns nil" do
-          controller = instance_double('DummyController')
-          env = env_for('/', 'action_controller.instance' => controller)
           allow(controller).to receive(:current_user) { nil }
 
           retval = described_class.extract(env)
@@ -65,12 +66,27 @@ RSpec.describe Airbrake::Rack::User do
 
       context "and it is not nil" do
         it "returns the wrapped user" do
-          controller = instance_double('DummyController')
-          env = env_for('/', 'action_controller.instance' => controller)
           allow(controller).to receive(:current_user) { user }
 
           retval = described_class.extract(env)
           expect(retval).to be_a(described_class)
+        end
+
+        context "but it requires parameters" do
+          before do
+            class DummyController
+              def current_user(_)
+                "username"
+              end
+            end
+          end
+          let(:controller) { DummyController.new }
+          after { Object.send(:remove_const, :DummyController) }
+
+          it "returns nil" do
+            retval = described_class.extract(env)
+            expect(retval).to be_nil
+          end
         end
       end
     end
