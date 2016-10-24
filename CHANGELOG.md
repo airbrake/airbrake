@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v5.6.1][v5.6.1] (October 24, 2016)
+
 * Fixed Rails bug with regard to the `current_user` method signature having
   parameters, while the library expected none
   ([#619](https://github.com/airbrake/airbrake/pull/619))
@@ -172,3 +174,4 @@ Airbrake Changelog
 [v5.4.5]: https://github.com/airbrake/airbrake/releases/tag/v5.4.5
 [v5.5.0]: https://github.com/airbrake/airbrake/releases/tag/v5.5.0
 [v5.6.0]: https://github.com/airbrake/airbrake/releases/tag/v5.6.0
+[v5.6.1]: https://github.com/airbrake/airbrake/releases/tag/v5.6.1
