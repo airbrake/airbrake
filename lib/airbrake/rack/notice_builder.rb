@@ -90,8 +90,10 @@ module Airbrake
       ##
       # Adds HTTP request parameters.
       add_builder do |notice, request|
-        params = request.env['action_dispatch.request.parameters']
-        notice[:params] = params if params
+        notice[:params] = request.params
+
+        rails_params = request.env['action_dispatch.request.parameters']
+        notice[:params].merge!(rails_params) if rails_params
       end
 
       ##
@@ -110,6 +112,15 @@ module Airbrake
           referer: request.referer,
           headers: http_headers
         )
+
+        notice[:environment][:body] =
+          if request.body
+            data = request.body.read(512)
+            request.body.rewind
+            data
+          end
+
+        notice[:environment]
       end
     end
   end

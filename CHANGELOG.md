@@ -6,6 +6,8 @@ Airbrake Changelog
 * Fixed Rails bug with regard to the `current_user` method signature having
   parameters, while the library expected none
   ([#619](https://github.com/airbrake/airbrake/pull/619))
+* Started collecting HTTP request body for Rack compliant apps
+  ([#624](https://github.com/airbrake/airbrake/pull/624))
 
 ### [v5.6.0][v5.6.0] (October 18, 2016)
 
