@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Fixed Rails bug with regard to the `current_user` method signature having
+  parameters, while the library expected none
+  ([#619](https://github.com/airbrake/airbrake/pull/619))
+
 ### [v5.6.0][v5.6.0] (October 18, 2016)
 
 * Added support for multiple notifiers for Rack middleware
