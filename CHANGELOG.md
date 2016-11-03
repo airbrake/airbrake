@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Read up to 4096 bytes from Rack request's body (increased from 512)
+  ([#627](https://github.com/airbrake/airbrake/pull/627))
+
 ### [v5.6.1][v5.6.1] (October 24, 2016)
 
 * Fixed Rails bug with regard to the `current_user` method signature having

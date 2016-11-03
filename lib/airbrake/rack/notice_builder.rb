@@ -113,12 +113,10 @@ module Airbrake
           headers: http_headers
         )
 
-        notice[:environment][:body] =
-          if request.body
-            data = request.body.read(512)
-            request.body.rewind
-            data
-          end
+        if request.body
+          notice[:environment][:body] = request.body.read(4096)
+          request.body.rewind
+        end
 
         notice[:environment]
       end
