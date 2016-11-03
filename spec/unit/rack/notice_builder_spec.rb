@@ -142,8 +142,8 @@ RSpec.describe Airbrake::Rack::NoticeBuilder do
         expect(body.pos).to be_zero
       end
 
-      it "reads only first 512 bytes" do
-        len = 513
+      it "reads only first 4096 bytes" do
+        len = 4097
         body = StringIO.new('a' * len)
         notice_builder = described_class.new(
           env_for('/', 'rack.input' => body)
