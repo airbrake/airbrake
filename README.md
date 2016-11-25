@@ -11,7 +11,6 @@ Airbrake
 * [Airbrake README](https://github.com/airbrake/airbrake)
 * [Airbrake Ruby README](https://github.com/airbrake/airbrake-ruby)
 * [YARD API documentation](http://www.rubydoc.info/gems/airbrake-ruby)
-* [**Migration guide from v4 to v5**][migration-guide]
 
 Introduction
 ------------
@@ -22,15 +21,6 @@ review errors, tie an error to an individual piece of code, and trace the cause
 back to recent changes. The Airbrake dashboard provides easy categorization,
 searching, and prioritization of exceptions so that when errors occur, your team
 can quickly determine the root cause.
-
-Looking for the old version?
-----------------------------
-
-Airbrake V5 was released on 18th December 2015. Here is a guide for
-[migrating from v4 to v5][migration-guide].
-
-You can find the [V4 code
-here](https://github.com/airbrake/airbrake/tree/airbrake-v4).
 
 Key features
 ------------
@@ -94,22 +84,6 @@ Configuration
 -------------
 
 ### Rails
-
-#### Airbrake v5 is already here (but we still support Airbrake v4)
-
-If you are migrating from Airbrake v4, please [read our migration
-guide][migration-guide].
-
-Since the 5th major release of the Airbrake gem we support only Rails 3.2+ and
-Ruby 1.9+. Don't worry, if you use older versions of Rails or Ruby, just
-continue using them with Airbrake v4: we _still_ support it. However, v4 is
-_feature frozen_. We accept only bugfixes.
-
-In the meantime, consider upgrading to Airbrake v5, as you miss a lot of new
-features, such as support for multiple Airbrake configurations inside one Rails
-project (you can report to different Airbrake projects in the same Ruby
-process), nested exceptions, multiple asynchronous workers support, JRuby's Java
-exceptions and many more.
 
 #### Integration
 
@@ -542,6 +516,5 @@ commands to invoke them.
 [pricing]: https://airbrake.io/pricing
 [heroku-addon]: https://elements.heroku.com/addons/airbrake
 [heroku-docs]: https://devcenter.heroku.com/articles/airbrake
-[migration-guide]: https://github.com/airbrake/airbrake/blob/master/docs/Migration_guide_from_v4_to_v5.md
 [dashboard]: https://s3.amazonaws.com/airbrake-github-assets/airbrake/airbrake-dashboard.png
 [arthur-ruby]: https://s3.amazonaws.com/airbrake-github-assets/airbrake/arthur-ruby.jpg
