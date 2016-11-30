@@ -37,7 +37,12 @@ DESC
   s.add_development_dependency 'pry', '~> 0'
   s.add_development_dependency 'appraisal', '~> 2'
   s.add_development_dependency 'rack', '~> 1'
+
   s.add_development_dependency 'webmock', '~> 2'
+  # This is a webmock dependency recent versions of which don't support
+  # Ruby 1.9.3. We lock it to the last version which supports it.
+  s.add_development_dependency 'public_suffix', '~> 1.4.6'
+
   s.add_development_dependency 'rack-test', '~> 0'
   s.add_development_dependency 'sidekiq', '~> 4'
 end
