@@ -104,8 +104,7 @@ class DummyController < ActionController::Base
     )
   ]
 
-  def index
-  end
+  def index; end
 
   def crash
     raise AirbrakeTestError
