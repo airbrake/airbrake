@@ -215,6 +215,39 @@ If your Sinatra app consists of subprojects and you want to capture errors
 separately for each subproject, make sure to [configure it
 accordingly](#configuring-individual-notifier-for-each-subproject).
 
+### Hanami
+
+To use Airbrake with specific [hanami](http://hanamirb.org) app you need
+to create initializer file and `use` our [Rack middleware](#rack) in app
+configuration.
+
+```ruby
+# config/initializers/airbrake.rb
+require 'airbrake'
+
+Airbrake.configure do |c|
+  c.project_id = 113743
+  c.project_key = 'fd04e13d806a90f96614ad8e529b2822'
+
+  # Display debug output.
+  c.logger.level = Logger::DEBUG
+end
+
+# apps/web/application.rb
+module Web
+  class Application < Hanami::Application
+    configure do
+      # ...
+      middleware.use Airbrake::Rack::Middleware
+      # ...
+    end
+  end
+end
+```
+
+To use Airbrake for full hanami stack, add our [Rack integration](#rack)
+to the `config.ru` file (instead of `application.rb`).
+
 ### Rack
 
 To send exceptions to Airbrake from any Rack application, simply `use` our Rack
