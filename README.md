@@ -169,6 +169,15 @@ Consult the
 [example application](https://github.com/kyrylo/airbrake-ruby-issue108), which
 was created to show how to configure `filter_parameters`.
 
+
+##### filter_parameters dot notation warning
+
+The dot notation introduced in [rails/pull/13897][rails-13897] for
+`filter_parameters` (e.g. a key like `credit_card.code`) is unsupported for
+performance reasons. Instead, simply specify the `code` key. If you have a
+strong opinion on this, leave a comment in
+the [dedicated issue][rails-sub-keys].
+
 ### Sinatra
 
 To use Airbrake with Sinatra, simply `require` the gem, [configure][config] it
@@ -518,3 +527,5 @@ commands to invoke them.
 [heroku-docs]: https://devcenter.heroku.com/articles/airbrake
 [dashboard]: https://s3.amazonaws.com/airbrake-github-assets/airbrake/airbrake-dashboard.png
 [arthur-ruby]: https://s3.amazonaws.com/airbrake-github-assets/airbrake/arthur-ruby.jpg
+[rails-13897]: https://github.com/rails/rails/pull/13897
+[rails-sub-keys]: https://github.com/airbrake/airbrake-ruby/issues/137
