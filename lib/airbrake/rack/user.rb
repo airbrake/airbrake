@@ -22,19 +22,18 @@ module Airbrake
       end
 
       def self.try_user_signed_in(rack_env)
-                puts " see me 1321321321 " * 100
-
         controller = rack_env['action_controller.instance']
-                puts " see me 65464654654 " * 100
-
-        return unless controller.respond_to?(:user_signed_in?)
-        puts " see me 9879879387 " * 100
-        return unless [-1, 0].include?(controller.method(:user_signed_in?).arity)
-        controller.user_signed_in?
+        return unless controller.respond_to?(:warden)
+        return unless [-1, 0].include?(controller.method(:warden).arity)
+        controller.warden.authenticated?(scope: :user)
       end
       
       def self.try_current_user(rack_env)
+        puts " see me 65464654654 " * 100
+
         return unless self.try_user_signed_in(rack_env)
+        puts " see me 9879879387 " * 100
+
         controller = rack_env['action_controller.instance']
         return unless controller.respond_to?(:current_user)
         return unless [-1, 0].include?(controller.method(:current_user).arity)
