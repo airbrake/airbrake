@@ -21,7 +21,7 @@ module Airbrake
         new(user) if user
       end
 
-      def self.try_user_signed_in
+      def self.try_user_signed_in(rack_env)
         controller = rack_env['action_controller.instance']
         return unless controller.respond_to?(:user_signed_in)
         return unless [-1, 0].include?(controller.method(:user_signed_in).arity)
@@ -29,7 +29,7 @@ module Airbrake
       end
       
       def self.try_current_user(rack_env)
-        return unless self.try_user_signed_in
+        return unless self.try_user_signed_in(rack_env)
         controller = rack_env['action_controller.instance']
         return unless controller.respond_to?(:current_user)
         return unless [-1, 0].include?(controller.method(:current_user).arity)
