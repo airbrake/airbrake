@@ -24,6 +24,7 @@ module Airbrake
       def self.try_user_signed_in(rack_env)
         controller = rack_env['action_controller.instance']
         return unless controller.respond_to?(:user_signed_in?)
+        puts " see me 9879879387 " * 100
         return unless [-1, 0].include?(controller.method(:user_signed_in?).arity)
         controller.user_signed_in?
       end
