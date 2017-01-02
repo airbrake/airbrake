@@ -23,9 +23,9 @@ module Airbrake
 
       def self.try_user_signed_in(rack_env)
         controller = rack_env['action_controller.instance']
-        return unless controller.respond_to?(:user_signed_in)
-        return unless [-1, 0].include?(controller.method(:user_signed_in).arity)
-        controller.user_signed_in
+        return unless controller.respond_to?(:user_signed_in?)
+        return unless [-1, 0].include?(controller.method(:user_signed_in?).arity)
+        controller.user_signed_in?
       end
       
       def self.try_current_user(rack_env)
@@ -35,7 +35,7 @@ module Airbrake
         return unless [-1, 0].include?(controller.method(:current_user).arity)
         controller.current_user
       end
-      private_class_method :try_current_user, :try_user_signed_in
+      private_class_method :try_current_user 
 
       def initialize(user)
         @user = user
