@@ -35,7 +35,7 @@ module Airbrake
         return unless [-1, 0].include?(controller.method(:current_user).arity)
         controller.current_user
       end
-      private_class_method :try_current_user 
+      private_class_method :try_current_user
 
       def initialize(user)
         @user = user
