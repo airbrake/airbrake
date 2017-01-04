@@ -11,9 +11,11 @@ module Airbrake
       def self.extract(rack_env)
         # Warden support (including Devise).
         if (warden = rack_env['warden'])
-          if (user = warden.user(run_callbacks: false))
-            return new(user) if user
-          end
+          user = warden.user(run_callbacks: false)
+          # Early return to prevent unwanted possible authentication via
+          # calling the `current_user` method later.
+          # See: https://github.com/airbrake/airbrake/issues/641
+          return user ? new(user) : nil
         end
 
         # Fallback mode (OmniAuth support included). Works only for Rails.

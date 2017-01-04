@@ -202,6 +202,10 @@ RSpec.describe "Rails integration specs" do
 
   describe "notice payload when a user is authenticated without Warden" do
     context "when the current_user method is defined" do
+      before do
+        allow(Warden::Proxy).to receive(:new) { nil }
+      end
+
       it "contains the user information" do
         user = OpenStruct.new(id: 1, email: 'qa@example.com', username: 'qa-dept')
         allow_any_instance_of(DummyController).to receive(:current_user) { user }
