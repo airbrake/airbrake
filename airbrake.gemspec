@@ -41,6 +41,10 @@ DESC
   # We still support Ruby 1.9.2+, but webmock 2.2.0+ doesn't.
   s.add_development_dependency 'webmock', '= 2.2.0'
 
+  # We still support Ruby 1.9.2+, 1.9.3+, 2.0.0+, but
+  # nokogiri 1.7.0+ doesn't.
+  s.add_development_dependency 'nokogiri', '= 1.6.8.1'
+
   s.add_development_dependency 'rack-test', '~> 0'
   s.add_development_dependency 'sidekiq', '~> 4'
 end
