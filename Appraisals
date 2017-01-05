@@ -98,7 +98,7 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
     # to test our Resque integration.
     gem 'resque_spec', github: 'airbrake/resque_spec'
 
-    gem 'delayed_job_active_record', github: 'collectiveidea/delayed_job_active_record'
+    gem 'delayed_job_active_record', github: 'airbrake/delayed_job_active_record', branch: 'rails-edge-fix'
     gem 'delayed_job', github: 'collectiveidea/delayed_job'
   end
 end
