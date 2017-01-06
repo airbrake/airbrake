@@ -47,4 +47,5 @@ DESC
 
   s.add_development_dependency 'rack-test', '~> 0'
   s.add_development_dependency 'sidekiq', '~> 4'
+  s.add_development_dependency 'passenger', '>= 4', '<= 5.1'
 end
