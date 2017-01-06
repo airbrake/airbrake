@@ -23,10 +23,7 @@ appraise 'rails-4.0' do
 
   gem 'delayed_job_active_record', '~> 4.1.0'
 
-  if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.0')
-    # Newer 'mime-types' doesn't support Ruby 1.9.3 anymore.
-    gem 'mime-types', '~> 2.6'
-  end
+  gem 'mime-types', '~> 3.1'
 end
 
 appraise 'rails-4.1' do
@@ -41,10 +38,7 @@ appraise 'rails-4.1' do
 
   gem 'delayed_job_active_record', '~> 4.1.0'
 
-  if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.0')
-    # Newer 'mime-types' doesn't support Ruby 1.9.3 anymore.
-    gem 'mime-types', '~> 2.6'
-  end
+  gem 'mime-types', '~> 3.1'
 end
 
 appraise 'rails-4.2' do
@@ -59,10 +53,7 @@ appraise 'rails-4.2' do
 
   gem 'delayed_job_active_record', '~> 4.1.0'
 
-  if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.0')
-    # Newer 'mime-types' doesn't support Ruby 1.9.3 anymore.
-    gem 'mime-types', '~> 2.6'
-  end
+  gem 'mime-types', '~> 3.1'
 end
 
 # Rails 5+ supports only modern Rubies (2.2.2+)
