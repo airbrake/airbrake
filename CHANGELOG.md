@@ -5,10 +5,13 @@ Airbrake Changelog
 
 * **IMPORTANT:** support for Ruby 1.9.2, 1.9.3 & JRuby (1.9-mode) is dropped
   ([#646](https://github.com/airbrake/airbrake/pull/646))
-* Read up to 4096 bytes from Rack request's body (increased from 512)
-  ([#627](https://github.com/airbrake/airbrake/pull/627))
 * Fixed unwanted authentication when calling `current_user`, when Warden is
   present ([#643](https://github.com/airbrake/airbrake/pull/643))
+* Stopped collecting HTTP request bodies by default, which started happening
+  since [v5.6.1](#v561-october-24-2016). Due to security concerns we now make
+  this behaviour optional. Users who need this information can use a new
+  predefined builder called `Airbrake::Rack::RequestBodyBuilder`
+  ([#650](https://github.com/airbrake/airbrake/pull/650))
 
 ### [v5.6.1][v5.6.1] (October 24, 2016)
 

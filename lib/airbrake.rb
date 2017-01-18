@@ -10,8 +10,13 @@ require 'airbrake/version'
 # Automatically load needed files for the environment the library is running in.
 if defined?(Rack)
   require 'airbrake/rack/user'
-  require 'airbrake/rack/notice_builder'
   require 'airbrake/rack/middleware'
+  require 'airbrake/rack/notice_builder'
+  require 'airbrake/rack/request_body_builder'
+  require 'airbrake/rack/context_builder'
+  require 'airbrake/rack/session_builder'
+  require 'airbrake/rack/http_params_builder'
+  require 'airbrake/rack/http_headers_builder'
 
   require 'airbrake/rails/railtie' if defined?(Rails)
 end
@@ -36,14 +41,29 @@ module Airbrake
     #     notice[:params][:remoteIp] = request.env['REMOTE_IP']
     #   end
     #
+    # @param [#call] builder The builder object
     # @yieldparam notice [Airbrake::Notice] notice that will be sent to Airbrake
     # @yieldparam request [Rack::Request] current rack request
     # @yieldreturn [void]
     # @return [void]
     # @since 5.1.0
-    def add_rack_builder(&block)
-      Airbrake::Rack::NoticeBuilder.add_builder(&block)
+    def add_rack_builder(builder = nil, &block)
+      Airbrake::Rack::NoticeBuilder.builders << (block_given? ? block : builder)
     end
+  end
+end
+
+if defined?(Rack)
+  [
+    Airbrake::Rack::ContextBuilder,
+    Airbrake::Rack::SessionBuilder,
+    Airbrake::Rack::HttpParamsBuilder,
+    Airbrake::Rack::HttpHeadersBuilder
+
+    # Optional builders (must be included by users):
+    # Airbrake::Rack::RequestBodyBuilder
+  ].each do |builder|
+    Airbrake.add_rack_builder(builder.new)
   end
 end
 
