@@ -93,13 +93,13 @@ RSpec.describe Airbrake::Rack::NoticeBuilder do
 
     context "when a custom builder is defined" do
       before do
-        described_class.add_builder do |notice, request|
+        Airbrake.add_rack_builder do |notice, request|
           notice[:params][:remoteIp] = request.env['REMOTE_IP']
         end
       end
 
       after do
-        described_class.instance_variable_get(:@builders).pop
+        Airbrake::Rack::NoticeBuilder.builders.pop
       end
 
       it "runs the builder against notices" do
@@ -121,36 +121,58 @@ RSpec.describe Airbrake::Rack::NoticeBuilder do
     end
 
     context "when a request has a body" do
-      it "reads the body" do
-        body = StringIO.new('<bingo>bongo</bango>')
-        notice_builder = described_class.new(
-          env_for('/', 'rack.input' => body)
-        )
-        notice = notice_builder.build_notice(AirbrakeTestError.new)
+      context "and RequestBodyBuilder is not installed" do
+        it "doesn't read the body" do
+          body = StringIO.new('<bingo>bongo</bango>')
+          notice_builder = described_class.new(
+            env_for('/', 'rack.input' => body)
+          )
+          notice = notice_builder.build_notice(AirbrakeTestError.new)
 
-        expect(notice[:environment][:body]).to eq(body.string)
+          expect(notice[:environment][:body]).to be_nil
+        end
       end
 
-      it "rewinds rack.input" do
-        body = StringIO.new('<bingo>bongo</bango>' * 512)
-        notice_builder = described_class.new(
-          env_for('/', 'rack.input' => body)
-        )
+      context "and RequestBodyBuilder is installed" do
+        before do
+          Airbrake.add_rack_builder(Airbrake::Rack::RequestBodyBuilder.new(4096))
+        end
 
-        notice_builder.build_notice(AirbrakeTestError.new)
+        after do
+          Airbrake::Rack::NoticeBuilder.builders.pop
+        end
 
-        expect(body.pos).to be_zero
-      end
+        it "reads the body" do
+          body = StringIO.new('<bingo>bongo</bango>')
+          notice_builder = described_class.new(
+            env_for('/', 'rack.input' => body)
+          )
+          notice = notice_builder.build_notice(AirbrakeTestError.new)
 
-      it "reads only first 4096 bytes" do
-        len = 4097
-        body = StringIO.new('a' * len)
-        notice_builder = described_class.new(
-          env_for('/', 'rack.input' => body)
-        )
-        notice = notice_builder.build_notice(AirbrakeTestError.new)
+          expect(notice[:environment][:body]).to eq(body.string)
+        end
 
-        expect(notice[:environment][:body]).to eq(body.string[0...len - 1])
+        it "rewinds rack.input" do
+          body = StringIO.new('<bingo>bongo</bango>' * 512)
+          notice_builder = described_class.new(
+            env_for('/', 'rack.input' => body)
+          )
+
+          notice_builder.build_notice(AirbrakeTestError.new)
+
+          expect(body.pos).to be_zero
+        end
+
+        it "reads only first 4096 bytes" do
+          len = 4097
+          body = StringIO.new('a' * len)
+          notice_builder = described_class.new(
+            env_for('/', 'rack.input' => body)
+          )
+          notice = notice_builder.build_notice(AirbrakeTestError.new)
+
+          expect(notice[:environment][:body]).to eq(body.string[0...len - 1])
+        end
       end
     end
   end

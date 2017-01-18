@@ -257,6 +257,17 @@ end
 
 `request` here is a normal Rack request.
 
+The library comes with optional predefined builders listed below.
+
+##### RequestBodyBuilder
+
+`RequestBodyBuilder` appends Rack request body to the notice. It accepts a
+`length` argument, which tells the builder how many bytes to read from the body.
+
+```ruby
+Airbrake.add_rack_builder(Airbrake::Rack::RequestBodyBuilder.new(512))
+```
+
 #### Configuring individual notifier for each subproject
 
 If your app consists of multiple components and you want to log errors from each
