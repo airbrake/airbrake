@@ -60,6 +60,8 @@ module Airbrake
             "Rails/#{::Rails.version}"
           elsif defined?(::Sinatra)
             "Sinatra/#{Sinatra::VERSION}"
+          elsif defined?(::Hanami)
+            "Hanami/#{Hanami::VERSION}"
           else
             "Rack.version/#{::Rack.version} Rack.release/#{::Rack.release}"
           end.freeze
