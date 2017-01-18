@@ -37,16 +37,14 @@ Airbrake.configure do |c|
 
   # Configures the environment the application is running in. Helps the Airbrake
   # dashboard to distinguish between exceptions occurring in different
-  # environments. By default, it's not set.
+  # environments.
   # NOTE: This option must be set in order to make the 'ignore_environments'
   # option work.
   # https://github.com/airbrake/airbrake-ruby#environment
   c.environment = Rails.env
 
   # Setting this option allows Airbrake to filter exceptions occurring in
-  # unwanted environments such as :test. By default, it is equal to an empty
-  # Array, which means Airbrake Ruby sends exceptions occurring in all
-  # environments.
+  # unwanted environments such as :test.
   # NOTE: This option *does not* work if you don't set the 'environment' option.
   # https://github.com/airbrake/airbrake-ruby#ignore_environments
   c.ignore_environments = %w(test)
