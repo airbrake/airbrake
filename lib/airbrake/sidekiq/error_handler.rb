@@ -15,8 +15,11 @@ module Airbrake
       private
 
       def notify_airbrake(exception, context)
-        params = context.merge(component: 'sidekiq', action: context['class'])
-        Airbrake.notify(exception, params)
+        notice = Airbrake.build_notice(exception, context)
+        notice[:context][:component] = 'sidekiq'
+        notice[:context][:action] = context['class']
+
+        Airbrake.notify(notice)
       end
     end
   end
