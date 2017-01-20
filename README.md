@@ -247,15 +247,18 @@ including user passwords. To filter out passwords
 #### Appending information from Rack requests
 
 If you want to append additional information from web requests (such as HTTP
-headers), define a special hook:
+headers), define a special filter such as:
 
 ```ruby
-Airbrake.add_rack_builder do |notice, request|
+Airbrake.add_filter do |notice|
+  return unless (request = notice.stash[:rack_request])
   notice[:params][:remoteIp] = request.env['REMOTE_IP']
 end
 ```
 
-`request` here is a normal Rack request.
+The `notice` object carries a real `Rack::Request` object in
+its [stash](https://github.com/airbrake/airbrake-ruby#noticestash--noticestash).
+Rack requests will always be accessible through the `:rack_request` stash key.
 
 #### Configuring individual notifier for each subproject
 

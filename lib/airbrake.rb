@@ -10,7 +10,10 @@ require 'airbrake/version'
 # Automatically load needed files for the environment the library is running in.
 if defined?(Rack)
   require 'airbrake/rack/user'
-  require 'airbrake/rack/notice_builder'
+  require 'airbrake/rack/context_filter'
+  require 'airbrake/rack/session_filter'
+  require 'airbrake/rack/http_params_filter'
+  require 'airbrake/rack/http_headers_filter'
   require 'airbrake/rack/middleware'
 
   require 'airbrake/rails/railtie' if defined?(Rails)
@@ -41,8 +44,28 @@ module Airbrake
     # @yieldreturn [void]
     # @return [void]
     # @since 5.1.0
+    # @deprecated Use {Airbrake.add_filter} with {Airbrake::Notice#stash}
+    #   instead.
     def add_rack_builder(&block)
-      Airbrake::Rack::NoticeBuilder.add_builder(&block)
+      warn(
+        "#{LOG_LABEL} `Airbrake.add_rack_builder` is deprecated and will " \
+        "be removed. Please use `Airbrake.add_filter` with `Notice#stash` " \
+        "instead. The stashed object is accessible through the :rack_request " \
+        "key. How to use: https://goo.gl/2dbuzR"
+      )
+      Airbrake.add_filter(rack_builder_shim(block))
+    end
+
+    private
+
+    def rack_builder_shim(block)
+      proc do |notice|
+        if notice.stash[:rack_request]
+          block.call(notice, notice.stash[:rack_request])
+        else
+          block.call(notice)
+        end
+      end
     end
   end
 end
