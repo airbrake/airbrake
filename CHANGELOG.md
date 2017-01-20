@@ -9,6 +9,8 @@ Airbrake Changelog
   ([#627](https://github.com/airbrake/airbrake/pull/627))
 * Fixed unwanted authentication when calling `current_user`, when Warden is
   present ([#643](https://github.com/airbrake/airbrake/pull/643))
+* Started depending on
+  [airbrake-ruby-1.7.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v1.7.0)
 
 ### [v5.6.1][v5.6.1] (October 24, 2016)
 
