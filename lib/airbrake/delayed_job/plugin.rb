@@ -10,17 +10,18 @@ module Delayed
             # Forward the call to the next callback in the callback chain
             block.call(job, *args)
           rescue Exception => exception
-            params = job.as_json.merge(
-              component: 'delayed_job',
-              action: job.payload_object.class.name
-            )
+            params = job.as_json
 
             # If DelayedJob is used through ActiveJob, it contains extra info.
             if job.payload_object.respond_to?(:job_data)
               params[:active_job] = job.payload_object.job_data
             end
 
-            ::Airbrake.notify(exception, params)
+            notice = ::Airbrake.build_notice(exception, params)
+            notice[:context][:component] = 'delayed_job'
+            notice[:context][:action] = job.payload_object.class.name
+
+            ::Airbrake.notify(notice)
             raise exception
           end
         end
