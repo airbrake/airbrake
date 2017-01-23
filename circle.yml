@@ -32,11 +32,15 @@ dependencies:
             rvm-exec 2.4.0 bundle exec appraisal install --jobs=15
             ;;
           5)
+            # Workaround for https://github.com/sickill/rainbow/issues/48
+            # rvm-exec jruby-9.1.7.0 gem update --remote bundler
+            # rvm-exec jruby-9.1.7.0 gem update --system
+
             # The 'dev' switch makes JRuby start about 2.5 times faster.
             # See: https://github.com/jruby/jruby/wiki/Improving-startup-time
-            export JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF"
-            rvm-exec jruby-9.1.5.0 bundle install --jobs=15 --path=vendor
-            rvm-exec jruby-9.1.5.0 bundle exec appraisal install --jobs=15
+            # export JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF"
+            # rvm-exec jruby-9.1.7.0 bundle install --jobs=15 --path=vendor
+            # rvm-exec jruby-9.1.7.0 bundle exec appraisal install --jobs=15
             ;;
         esac
       :
@@ -62,7 +66,6 @@ test:
             rvm-exec 2.1.10 bundle exec appraisal rails-4.0 rake spec:integration:rails
             rvm-exec 2.1.10 bundle exec appraisal rails-4.1 rake spec:integration:rails
             rvm-exec 2.1.10 bundle exec appraisal rails-4.2 rake spec:integration:rails
-            rvm-exec 2.1.10 bundle exec appraisal rails-5.0 rake spec:integration:rails
 
             rvm-exec 2.1.10 bundle exec appraisal sinatra rake spec:integration:sinatra
 
@@ -103,17 +106,17 @@ test:
             rvm-exec 2.4.0 bundle exec appraisal rack rake spec:integration:rack
             ;;
           5)
-            export JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF"
+            # export JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF"
 
-            rvm-exec jruby-9.1.5.0 bundle exec appraisal rails-3.2 rake spec:integration:rails
-            rvm-exec jruby-9.1.5.0 bundle exec appraisal rails-4.0 rake spec:integration:rails
-            rvm-exec jruby-9.1.5.0 bundle exec appraisal rails-4.1 rake spec:integration:rails
-            rvm-exec jruby-9.1.5.0 bundle exec appraisal rails-4.2 rake spec:integration:rails
-            rvm-exec jruby-9.1.5.0 bundle exec appraisal rails-5.0 rake spec:integration:rails
+            # rvm-exec jruby-9.1.7.0 bundle exec appraisal rails-3.2 rake spec:integration:rails
+            # rvm-exec jruby-9.1.7.0 bundle exec appraisal rails-4.0 rake spec:integration:rails
+            # rvm-exec jruby-9.1.7.0 bundle exec appraisal rails-4.1 rake spec:integration:rails
+            # rvm-exec jruby-9.1.7.0 bundle exec appraisal rails-4.2 rake spec:integration:rails
+            # rvm-exec jruby-9.1.7.0 bundle exec appraisal rails-5.0 rake spec:integration:rails
 
-            rvm-exec jruby-9.1.5.0 bundle exec appraisal sinatra rake spec:integration:sinatra
+            # rvm-exec jruby-9.1.7.0 bundle exec appraisal sinatra rake spec:integration:sinatra
 
-            rvm-exec jruby-9.1.5.0 bundle exec appraisal rack rake spec:integration:rack
+            # rvm-exec jruby-9.1.7.0 bundle exec appraisal rack rake spec:integration:rack
             ;;
         esac
       :
@@ -125,7 +128,9 @@ test:
           2) rvm-exec 2.2.5 bundle exec rake spec:unit ;;
           3) rvm-exec 2.3.3 bundle exec rake spec:unit ;;
           4) rvm-exec 2.4.0 bundle exec rake spec:unit ;;
-          5) JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.1.5.0 bundle exec rake spec:unit ;;
+          5)
+            # JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF" rvm-exec jruby-9.1.7.0 bundle exec rake spec:unit
+          ;;
         esac
       :
         parallel: true

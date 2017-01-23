@@ -5,6 +5,8 @@ Airbrake Changelog
 
 * **IMPORTANT:** support for Ruby 1.9.2, 1.9.3 & JRuby (1.9-mode) is dropped
   ([#646](https://github.com/airbrake/airbrake/pull/646))
+* **IMPORTANT:** deprecated `Airbrake.add_rack_builder` public method call
+  ([#651](https://github.com/airbrake/airbrake/pull/651))
 * Read up to 4096 bytes from Rack request's body (increased from 512)
   ([#627](https://github.com/airbrake/airbrake/pull/627))
 * Fixed unwanted authentication when calling `current_user`, when Warden is
