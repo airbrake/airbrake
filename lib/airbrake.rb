@@ -14,6 +14,7 @@ if defined?(Rack)
   require 'airbrake/rack/session_filter'
   require 'airbrake/rack/http_params_filter'
   require 'airbrake/rack/http_headers_filter'
+  require 'airbrake/rack/request_body_filter'
   require 'airbrake/rack/middleware'
 
   require 'airbrake/rails/railtie' if defined?(Rails)

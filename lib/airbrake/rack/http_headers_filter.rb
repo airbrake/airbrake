@@ -32,11 +32,6 @@ module Airbrake
           referer: request.referer,
           headers: http_headers
         )
-
-        return unless request.body
-
-        notice[:environment][:body] = request.body.read(4096)
-        request.body.rewind
       end
     end
   end

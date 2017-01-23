@@ -260,6 +260,28 @@ The `notice` object carries a real `Rack::Request` object in
 its [stash](https://github.com/airbrake/airbrake-ruby#noticestash--noticestash).
 Rack requests will always be accessible through the `:rack_request` stash key.
 
+#### Optional Rack request filters
+
+The library comes with optional predefined builders listed below.
+
+##### RequestBodyFilter
+
+`RequestBodyFilter` appends Rack request body to the notice. It accepts a
+`length` argument, which tells the filter how many bytes to read from the body.
+
+By default, up to 4096 bytes is read:
+
+```ruby
+Airbrake.add_filter(Airbrake::Rack::RequestBodyFilter.new)
+```
+
+You can redefine how many bytes to read by passing an Integer argument to the
+filter. For example, read up to 512 bytes:
+
+```ruby
+Airbrake.add_filter(Airbrake::Rack::RequestBodyFilter.new(512))
+```
+
 #### Configuring individual notifier for each subproject
 
 If your app consists of multiple components and you want to log errors from each
