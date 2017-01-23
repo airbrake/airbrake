@@ -35,7 +35,7 @@ RSpec.describe Airbrake::Rack::ContextFilter do
   context "when User-Agent is present" do
     let(:uri) { '/' }
     let(:opts) do
-      { 'HTTP_USER_AGENT' => 'Bingo Agent'}
+      { 'HTTP_USER_AGENT' => 'Bingo Agent' }
     end
 
     it "adds User-Agent to the context" do
