@@ -16,6 +16,9 @@ module Airbrake
         Airbrake::Rack::SessionFilter,
         Airbrake::Rack::HttpParamsFilter,
         Airbrake::Rack::HttpHeadersFilter
+
+        # Optional filters (must be included by users):
+        # Airbrake::Rack::RequestBodyFilter
       ].freeze
 
       ##

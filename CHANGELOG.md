@@ -13,6 +13,11 @@ Airbrake Changelog
   present ([#643](https://github.com/airbrake/airbrake/pull/643))
 * Started depending on
   [airbrake-ruby-1.7.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v1.7.0)
+* Stopped collecting HTTP request bodies by default, which started happening
+  since [v5.6.1](#v561-october-24-2016). Due to security concerns we now make
+  this behaviour optional. Users who need this information can use a new
+  predefined filter called `Airbrake::Rack::RequestFilter`
+  ([#654](https://github.com/airbrake/airbrake/pull/654))
 
 ### [v5.6.1][v5.6.1] (October 24, 2016)
 

@@ -45,38 +45,4 @@ RSpec.describe Airbrake::Rack::HttpHeadersFilter do
       expect(notice[:environment][:headers]).to eq(headers)
     end
   end
-
-  describe "environment.body" do
-    let(:opts) do
-      { 'rack.input' => body }
-    end
-
-    context "when a request has a body" do
-      let(:body) { StringIO.new('<bingo>bongo</bango>') }
-
-      it "reads the body" do
-        subject.call(notice)
-        expect(notice[:environment][:body]).to eq(body.string)
-      end
-    end
-
-    context "when body was read" do
-      let(:body) { StringIO.new('<bingo>bongo</bango>' * 512) }
-
-      it "rewinds rack.input" do
-        subject.call(notice)
-        expect(body.pos).to be_zero
-      end
-    end
-
-    context "when body is bigger than the limit" do
-      let(:len) { 4097 }
-      let(:body) { StringIO.new('a' * len) }
-
-      it "reads only first 4096 bytes" do
-        subject.call(notice)
-        expect(notice[:environment][:body]).to eq(body.string[0...len - 1])
-      end
-    end
-  end
 end
