@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v5.7.0.rc.1][v5.7.0.rc.1] (January 24, 2017)
+
 * **IMPORTANT:** support for Ruby 1.9.2, 1.9.3 & JRuby (1.9-mode) is dropped
   ([#646](https://github.com/airbrake/airbrake/pull/646))
 * **IMPORTANT:** deprecated `Airbrake.add_rack_builder` public method call
@@ -191,3 +193,4 @@ Airbrake Changelog
 [v5.5.0]: https://github.com/airbrake/airbrake/releases/tag/v5.5.0
 [v5.6.0]: https://github.com/airbrake/airbrake/releases/tag/v5.6.0
 [v5.6.1]: https://github.com/airbrake/airbrake/releases/tag/v5.6.1
+[v5.7.0.rc.1]: https://github.com/airbrake/airbrake/releases/tag/v5.7.0.rc.1
