@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v5.7.0][v5.7.0] (January 26, 2017)
+
 * Included `Airbrake::Rack::RequestBodyFilter` to the Rails config generator
   (commented by default) ([#658](https://github.com/airbrake/airbrake/pull/658))
 
@@ -197,3 +199,4 @@ Airbrake Changelog
 [v5.6.0]: https://github.com/airbrake/airbrake/releases/tag/v5.6.0
 [v5.6.1]: https://github.com/airbrake/airbrake/releases/tag/v5.6.1
 [v5.7.0.rc.1]: https://github.com/airbrake/airbrake/releases/tag/v5.7.0.rc.1
+[v5.7.0]: https://github.com/airbrake/airbrake/releases/tag/v5.7.0
