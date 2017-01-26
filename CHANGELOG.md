@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Included `Airbrake::Rack::RequestBodyFilter` to the Rails config generator
+  (commented by default) ([#658](https://github.com/airbrake/airbrake/pull/658))
+
 ### [v5.7.0.rc.1][v5.7.0.rc.1] (January 24, 2017)
 
 * **IMPORTANT:** support for Ruby 1.9.2, 1.9.3 & JRuby (1.9-mode) is dropped

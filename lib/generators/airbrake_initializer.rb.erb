@@ -60,6 +60,11 @@ Airbrake.configure do |c|
   # c.blacklist_keys = Rails.application.config.filter_parameters
 end
 
+# A filter that collects request body information. Enable it if you are sure you
+# don't send sensitive information to Airbrake in your body (such as passwords).
+# https://github.com/airbrake/airbrake#requestbodyfilter
+# Airbrake.add_filter(Airbrake::Rack::RequestBodyFilter.new)
+
 # If Airbrake doesn't send any expected exceptions, we suggest to uncomment the
 # line below. It might simplify debugging of background Airbrake workers, which
 # can silently die.
