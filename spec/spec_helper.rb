@@ -5,6 +5,7 @@ require 'rspec/wait'
 require 'rack'
 require 'rack/test'
 require 'rake'
+require 'pry'
 
 require 'airbrake'
 require 'airbrake/rake/tasks'
