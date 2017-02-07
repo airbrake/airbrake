@@ -7,7 +7,7 @@ module Airbrake
     class ContextFilter
       def initialize
         @framework_version =
-          if defined?(::Rails)
+          if defined?(::Rails) && ::Rails.respond_to?(:version)
             "Rails/#{::Rails.version}"
           elsif defined?(::Sinatra)
             "Sinatra/#{Sinatra::VERSION}"
