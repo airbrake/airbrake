@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed version reporting for Rack applications with Rails-related dependencies
+  ([#660](https://github.com/airbrake/airbrake/pull/660))
+
 ### [v5.7.0][v5.7.0] (January 26, 2017)
 
 * Included `Airbrake::Rack::RequestBodyFilter` to the Rails config generator
