@@ -5,6 +5,8 @@ Airbrake Changelog
 
 * Fixed version reporting for Rack applications with Rails-related dependencies
   ([#660](https://github.com/airbrake/airbrake/pull/660))
+* Fixed unwanted exceptions for Sidekiq, DelayedJob & Resque when Airbrake is
+  unconfigured ([#665](https://github.com/airbrake/airbrake/pull/665))
 
 ### [v5.7.0][v5.7.0] (January 26, 2017)
 
