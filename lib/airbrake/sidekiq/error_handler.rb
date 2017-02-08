@@ -15,7 +15,7 @@ module Airbrake
       private
 
       def notify_airbrake(exception, context)
-        notice = Airbrake.build_notice(exception, context)
+        notice = Airbrake.build_notice(exception, context) or return
         notice[:context][:component] = 'sidekiq'
         notice[:context][:action] = context['class']
 

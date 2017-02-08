@@ -7,7 +7,7 @@ module Resque
     # @see https://github.com/resque/resque/wiki/Failure-Backends
     class Airbrake < Base
       def save
-        notice = ::Airbrake.build_notice(exception, payload)
+        notice = ::Airbrake.build_notice(exception, payload) or return
         notice[:context][:component] = 'resque'
         notice[:context][:action] = payload['class'].to_s
 
