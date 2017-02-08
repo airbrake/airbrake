@@ -23,6 +23,7 @@ module Delayed
 
               ::Airbrake.notify(notice)
             end
+
             raise exception
           end
         end
