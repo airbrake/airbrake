@@ -169,13 +169,32 @@ RSpec.describe "Rails integration specs" do
   end
 
   describe "Resque workers" do
-    it "reports exceptions occurring in Resque workers" do
-      with_resque { get '/resque' }
+    context "when Airbrake is configured" do
+      it "reports exceptions occurring in Resque workers" do
+        with_resque { get '/resque' }
 
-      wait_for_a_request_with_body(
-        /"message":"resque\serror".*"params":{.*
+        wait_for_a_request_with_body(
+          /"message":"resque\serror".*"params":{.*
          "class":"BingoWorker","args":\["bango","bongo"\].*}/x
-      )
+        )
+      end
+    end
+
+    context "when Airbrake is not configured" do
+      it "doesn't report errors" do
+        allow(Airbrake).to receive(:build_notice).and_return(nil)
+        allow(Airbrake).to receive(:notify)
+
+        with_resque { get '/resque' }
+
+        wait_for(
+          a_request(:post, endpoint).
+            with(body: /"message":"resque error"/)
+        ).not_to have_been_made
+
+        expect(Airbrake).to have_received(:build_notice)
+        expect(Airbrake).not_to have_received(:notify)
+      end
     end
   end
 
@@ -194,6 +213,32 @@ RSpec.describe "Rails integration specs" do
       # Sleep guarantees that we let the unimportant request occur here and not
       # elsewhere.
       sleep 2
+    end
+
+    context "when Airbrake is not configured" do
+      it "doesn't report errors" do
+        allow(Airbrake).to receive(:build_notice).and_return(nil)
+        allow(Airbrake).to receive(:notify)
+
+        # Make sure we don't call `build_notice` more than 1 time. Rack
+        # integration will try to handle error 500 and we want to prevent
+        # that: https://github.com/airbrake/airbrake/pull/583
+        allow_any_instance_of(Airbrake::Rack::Middleware).to(
+          receive(:notify_airbrake).
+            and_return(nil)
+        )
+
+        get '/delayed_job'
+        sleep 2
+
+        wait_for(
+          a_request(:post, endpoint).
+            with(body: /"message":"delayed_job error"/)
+        ).not_to have_been_made
+
+        expect(Airbrake).to have_received(:build_notice)
+        expect(Airbrake).not_to have_received(:notify)
+      end
     end
   end
 
