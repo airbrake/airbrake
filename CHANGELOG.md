@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v5.7.1][v5.7.1] (February 10, 2017)
+
 * Fixed version reporting for Rack applications with Rails-related dependencies
   ([#660](https://github.com/airbrake/airbrake/pull/660))
 * Fixed unwanted exceptions for Sidekiq, DelayedJob & Resque when Airbrake is
@@ -205,3 +207,4 @@ Airbrake Changelog
 [v5.6.1]: https://github.com/airbrake/airbrake/releases/tag/v5.6.1
 [v5.7.0.rc.1]: https://github.com/airbrake/airbrake/releases/tag/v5.7.0.rc.1
 [v5.7.0]: https://github.com/airbrake/airbrake/releases/tag/v5.7.0
+[v5.7.1]: https://github.com/airbrake/airbrake/releases/tag/v5.7.1
