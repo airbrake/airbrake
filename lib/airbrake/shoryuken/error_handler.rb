@@ -1,16 +1,20 @@
 module Airbrake
   module Shoryuken
+    ##
+    # Provides integration with Shoryuken.
     class ErrorHandler
-      def call(worker, queue, sqs_msg, body)
-        begin
-          yield
-        rescue => e
-          notify_airbrake(e, body.is_a?(Array) ? { batch: body } : body)
-          raise e
-        end
+      def call(_worker, _queue, _sqs_msg, body)
+        yield
+      rescue => e
+        notify_airbrake(e, notice_context(body))
+        raise e
       end
 
       private
+
+      def notice_context(body)
+        body.is_a?(Array) ? { batch: body } : { body: body }
+      end
 
       def notify_airbrake(exception, context)
         return unless (notice = Airbrake.build_notice(exception, context))
