@@ -17,8 +17,8 @@ prioritization of exceptions so that when errors occur, your team can quickly
 determine the root cause.
 
 Additionally, this gem includes integrations with such popular libraries and
-frameworks as Rails, Sinatra, Resque, Sidekiq, Delayed Job, ActiveJob and many
-more.
+frameworks as Rails, Sinatra, Resque, Sidekiq, Delayed Job, Shoryuken,
+ActiveJob and many more.
 DESC
   s.author      = 'Airbrake Technologies, Inc.'
   s.email       = 'support@airbrake.io'
