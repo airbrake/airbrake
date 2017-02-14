@@ -4,7 +4,6 @@ require 'airbrake/shoryuken/error_handler'
 RSpec.describe Airbrake::Shoryuken::ErrorHandler do
   let(:error) { AirbrakeTestError.new('shoryuken error') }
   let(:body) { { message: 'message' } }
-  let(:notice) { double 'notice' }
   let(:worker) { FooWorker.new }
   let(:endpoint) do
     'https://airbrake.io/api/v3/projects/113743/notices?key=fd04e13d806a90f96614ad8e529b2822'
