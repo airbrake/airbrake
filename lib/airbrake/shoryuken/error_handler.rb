@@ -3,23 +3,28 @@ module Airbrake
     ##
     # Provides integration with Shoryuken.
     class ErrorHandler
-      def call(_worker, _queue, _sqs_msg, body)
+      # rubocop:disable Lint/RescueException
+      def call(worker, _queue, _sqs_msg, body)
         yield
-      rescue => e
-        notify_airbrake(e, notice_context(body))
-        raise e
+      rescue Exception => exception
+        notify_airbrake(exception, worker, body)
+
+        raise exception
       end
+      # rubocop:enable Lint/RescueException
 
       private
 
-      def notice_context(body)
-        body.is_a?(Array) ? { batch: body } : { body: body }
-      end
-
-      def notify_airbrake(exception, context)
-        return unless (notice = Airbrake.build_notice(exception, context))
+      def notify_airbrake(exception, worker, body)
+        return unless (notice = Airbrake.build_notice(exception, notice_context(body)))
+        notice[:context][:component] = 'shoryuken'
+        notice[:context][:action] = worker.class.to_s
 
         Airbrake.notify(notice)
+      end
+
+      def notice_context(body)
+        body.is_a?(Array) ? { batch: body } : { body: body }
       end
     end
   end
