@@ -4,6 +4,7 @@ require 'airbrake/shoryuken/error_handler'
 RSpec.describe Airbrake::Shoryuken::ErrorHandler do
   let(:error) { AirbrakeTestError.new('shoryuken error') }
   let(:body) { { message: 'message' } }
+  let(:queue) { 'foo_queue' }
   let(:worker) { FooWorker.new }
   let(:endpoint) do
     'https://airbrake.io/api/v3/projects/113743/notices?key=fd04e13d806a90f96614ad8e529b2822'
@@ -22,10 +23,11 @@ RSpec.describe Airbrake::Shoryuken::ErrorHandler do
   context "when there's an error" do
     it 'notifies' do
       expect do
-        subject.call(worker, nil, nil, body) { raise error }
+        subject.call(worker, queue, nil, body) { raise error }
       end.to raise_error(error)
 
       wait_for_a_request_with_body(/"message":"shoryuken\serror"/)
+      wait_for_a_request_with_body(/"params":{.*"queue":"#{queue}"/)
       wait_for_a_request_with_body(/"params":{.*"body":\{"message":"message"\}/)
       wait_for_a_request_with_body(/"component":"shoryuken","action":"FooWorker"/)
     end
@@ -35,10 +37,11 @@ RSpec.describe Airbrake::Shoryuken::ErrorHandler do
 
       it 'notifies' do
         expect do
-          subject.call(worker, nil, nil, body) { raise error }
+          subject.call(worker, queue, nil, body) { raise error }
         end.to raise_error(error)
 
         wait_for_a_request_with_body(/"message":"shoryuken\serror"/)
+        wait_for_a_request_with_body(/"params":{.*"queue":"#{queue}"/)
         wait_for_a_request_with_body(
           /"params":{.*"batch":\[\{"message1":"message1"\},\{"message2":"message2"\}\]/
         )
@@ -53,7 +56,7 @@ RSpec.describe Airbrake::Shoryuken::ErrorHandler do
       allow(Airbrake).to receive(:notify)
 
       expect do
-        subject.call(worker, nil, nil, body) { raise error }
+        subject.call(worker, queue, nil, body) { raise error }
       end.to raise_error(error)
 
       expect(Airbrake).to have_received(:build_notice)
