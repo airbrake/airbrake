@@ -5,7 +5,13 @@ RSpec.describe Airbrake::Shoryuken::ErrorHandler do
   let(:error) { AirbrakeTestError.new('shoryuken error') }
   let(:body) { { message: 'message' } }
   let(:queue) { 'foo_queue' }
-  let(:worker) { FooWorker.new }
+  let(:worker) do
+    Class.new do
+      def self.to_s
+        'FooWorker'
+      end
+    end.new
+  end
   let(:endpoint) do
     'https://airbrake.io/api/v3/projects/113743/notices?key=fd04e13d806a90f96614ad8e529b2822'
   end
