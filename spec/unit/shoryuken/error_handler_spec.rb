@@ -1,53 +1,64 @@
 require 'spec_helper'
 require 'airbrake/shoryuken/error_handler'
 
-module Airbrake
-  ##
-  # Provides tests for the Shoryuken integration.
-  module Shoryuken
-    RSpec.describe ErrorHandler do
-      let(:error) { AirbrakeTestError.new('shoryuken error') }
-      let(:body) { { message: 'message' } }
-      let(:notice) { double 'Notice' }
+RSpec.describe Airbrake::Shoryuken::ErrorHandler do
+  let(:error) { AirbrakeTestError.new('shoryuken error') }
+  let(:body) { { message: 'message' } }
+  let(:notice) { double 'notice' }
+  let(:worker) { FooWorker.new }
+  let(:endpoint) do
+    'https://airbrake.io/api/v3/projects/113743/notices?key=fd04e13d806a90f96614ad8e529b2822'
+  end
 
-      context "when there's an error" do
-        it 'notifies' do
-          expect(Airbrake).to receive(:build_notice).with(error, body: body).
-            and_return(notice)
+  class FooWorker; end
 
-          expect(Airbrake).to receive(:notify).with(notice)
+  def wait_for_a_request_with_body(body)
+    wait_for(a_request(:post, endpoint).with(body: body)).to have_been_made.once
+  end
 
-          expect do
-            subject.call(nil, nil, nil, body) { raise error }
-          end.to raise_error(error)
-        end
+  before do
+    stub_request(:post, endpoint).to_return(status: 201, body: '{}')
+  end
 
-        context "and it's a batch" do
-          let(:body) { [{ message1: 'message1' }, { message2: 'message2' }] }
+  context "when there's an error" do
+    it 'notifies' do
+      expect do
+        subject.call(worker, nil, nil, body) { raise error }
+      end.to raise_error(error)
 
-          it 'notifies' do
-            expect(Airbrake).to receive(:build_notice).with(error, batch: body).
-              and_return(notice)
+      wait_for_a_request_with_body(/"message":"shoryuken\serror"/)
+      wait_for_a_request_with_body(/"params":{.*"body":\{"message":"message"\}/)
+      wait_for_a_request_with_body(/"component":"shoryuken","action":"FooWorker"/)
+    end
 
-            expect(Airbrake).to receive(:notify).with(notice)
+    context "and it's a batch" do
+      let(:body) { [{ message1: 'message1' }, { message2: 'message2' }] }
 
-            expect do
-              subject.call(nil, nil, nil, body) { raise error }
-            end.to raise_error(error)
-          end
-        end
+      it 'notifies' do
+        expect do
+          subject.call(worker, nil, nil, body) { raise error }
+        end.to raise_error(error)
+
+        wait_for_a_request_with_body(/"message":"shoryuken\serror"/)
+        wait_for_a_request_with_body(
+          /"params":{.*"batch":\[\{"message1":"message1"\},\{"message2":"message2"\}\]/
+        )
+        wait_for_a_request_with_body(/"component":"shoryuken","action":"FooWorker"/)
       end
+    end
+  end
 
-      context "when there's no error" do
-        it 'does not notify ' do
-          expect(Airbrake).to_not receive(:build_notice)
-          expect(Airbrake).to_not receive(:notify)
+  context 'when Airbrake is not configured' do
+    it 'returns nil' do
+      allow(Airbrake).to receive(:build_notice).and_return(nil)
+      allow(Airbrake).to receive(:notify)
 
-          expect do
-            expect { |b| subject.call(nil, nil, nil, body, &b) }.to yield_control
-          end.to_not raise_error
-        end
-      end
+      expect do
+        subject.call(worker, nil, nil, body) { raise error }
+      end.to raise_error(error)
+
+      expect(Airbrake).to have_received(:build_notice)
+      expect(Airbrake).not_to have_received(:notify)
     end
   end
 end
