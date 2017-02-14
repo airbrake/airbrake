@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* **IMPORTANT:** added Shoryuken integration
+  ([#669](https://github.com/airbrake/airbrake/pull/669))
+
 ### [v5.7.1][v5.7.1] (February 10, 2017)
 
 * Fixed version reporting for Rack applications with Rails-related dependencies
