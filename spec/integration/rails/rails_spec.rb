@@ -141,6 +141,11 @@ RSpec.describe "Rails integration specs" do
       end
 
       context "when Airbrake is not configured" do
+        before do
+          # Make sure the Logger intergration doesn't get in the way.
+          allow_any_instance_of(Logger).to receive(:airbrake_notifier).and_return(nil)
+        end
+
         it "doesn't report errors" do
           allow(Airbrake).to receive(:build_notice).and_return(nil)
           allow(Airbrake).to receive(:notify)
@@ -216,6 +221,11 @@ RSpec.describe "Rails integration specs" do
     end
 
     context "when Airbrake is not configured" do
+      before do
+        # Make sure the Logger intergration doesn't get in the way.
+        allow_any_instance_of(Logger).to receive(:airbrake_notifier).and_return(nil)
+      end
+
       it "doesn't report errors" do
         allow(Airbrake).to receive(:build_notice).and_return(nil)
         allow(Airbrake).to receive(:notify)

@@ -54,6 +54,7 @@ The list of integrations that are available in this gem includes:
   * Shoryuken<sup>[[link](#shoryuken)]</sup>
 * Other libraries
   * Rake<sup>[[link](#rake)]</sup>
+  * Logger<sup>[[link](#logger)]</sup>
 * Plain Ruby scripts<sup>[[link](#plain-ruby-scripts)]</sup>
 
 [Paying Airbrake plans][pricing] support the ability to track deployments of
@@ -394,7 +395,7 @@ anything manually and it should just work out-of-box.
 ### Rake
 
 Airbrake offers Rake tasks integration, which is used by our Rails
-integration<sup>[[link](#rails)]</sup>.  To integrate Airbrake in any project,
+integration<sup>[[link](#rails)]</sup>. To integrate Airbrake in any project,
 just `require` the gem in your `Rakefile`, if it hasn't been required and
 [configure][config] the default notifier.
 
@@ -411,6 +412,50 @@ task :foo do
   1/0
 end
 ```
+
+### Logger
+
+If you want to convert your log messages to Airbrake errors, you can use our
+integration with Ruby's `Logger` class from stdlib. All you need to do is to
+make sure that the integration is required (if the Airbrake is loaded after
+`Logger`, then it is already integrated):
+
+```ruby
+require 'airbrake/logger/logger_ext'
+```
+
+To start using the integration you don't have to perform any additional steps,
+simply use Logger as you normally do. Messages will be both logged and sent to
+Airbrake:
+
+```ruby
+logger = Logger.new(STDOUT)
+logger.fatal('oops')
+```
+
+The Logger class will attempt to utilize the default Airbrake notifier to send
+messages. It's possible to set the notifier explicitly:
+
+```ruby
+# New method.
+# We assign the default notifier here.
+logger.airbrake_notifier = Airbrake[:default]
+```
+
+#### Airbrake severity level
+
+In order to reduce the noise from the Logger integration (or maximize) it's
+possible to configure Airbrake severity level. For example, if only want to send
+fatal messages from Logger, then configure your logger as follows:
+
+```ruby
+# New method.
+# Send only fatal messages to Airbrake.
+logger.airbrake_severity_level = Logger::FATAL
+```
+
+By default, `airbrake_severity_level` is set to `Logger::WARN`, which means it
+sends warnings, errors and fatal error messages to Airbrake.
 
 ### Plain Ruby scripts
 
