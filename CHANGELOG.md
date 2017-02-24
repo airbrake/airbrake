@@ -5,6 +5,8 @@ Airbrake Changelog
 
 * **IMPORTANT:** added Shoryuken integration
   ([#669](https://github.com/airbrake/airbrake/pull/669))
+* Started depending on
+  [airbrake-ruby-1.8.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v1.8.0)
 
 ### [v5.7.1][v5.7.1] (February 10, 2017)
 
