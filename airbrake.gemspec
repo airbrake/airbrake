@@ -31,7 +31,7 @@ DESC
 
   s.required_ruby_version = '>= 2.0'
 
-  s.add_dependency 'airbrake-ruby', '~> 1.7'
+  s.add_dependency 'airbrake-ruby', '~> 1.8'
 
   s.add_development_dependency 'rspec', '~> 3'
   s.add_development_dependency 'rspec-wait', '~> 0'
