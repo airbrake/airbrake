@@ -51,7 +51,7 @@ RSpec.describe Airbrake::Rack::Middleware do
           stub_request(:post, bingo_endpoint).to_return(status: 201, body: '{}')
         end
 
-        after { Airbrake.close(notifier_name) }
+        after { Airbrake[notifier_name].close }
 
         it "notifies via the specified notifier" do
           expect do
@@ -123,14 +123,14 @@ RSpec.describe Airbrake::Rack::Middleware do
 
   context "when Airbrake is not configured" do
     it "returns nil" do
-      allow(Airbrake).to receive(:build_notice).and_return(nil)
-      allow(Airbrake).to receive(:notify)
+      allow(Airbrake[:default]).to receive(:build_notice).and_return(nil)
+      allow(Airbrake[:default]).to receive(:notify)
 
       expect { described_class.new(faulty_app).call(env_for('/')) }.
         to raise_error(AirbrakeTestError)
 
-      expect(Airbrake).to have_received(:build_notice)
-      expect(Airbrake).not_to have_received(:notify)
+      expect(Airbrake[:default]).to have_received(:build_notice)
+      expect(Airbrake[:default]).not_to have_received(:notify)
     end
   end
 end

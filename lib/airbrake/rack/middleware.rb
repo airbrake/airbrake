@@ -37,7 +37,7 @@ module Airbrake
         @@known_notifiers << notifier_name
 
         RACK_FILTERS.each do |filter|
-          Airbrake.add_filter(filter.new, notifier_name)
+          Airbrake[notifier_name].add_filter(filter.new)
         end
       end
 
@@ -64,11 +64,11 @@ module Airbrake
       private
 
       def notify_airbrake(exception, env)
-        notice = Airbrake.build_notice(exception, {}, @notifier_name)
+        notice = Airbrake[@notifier_name].build_notice(exception)
         return unless notice
 
         notice.stash[:rack_request] = ::Rack::Request.new(env)
-        Airbrake.notify(notice, {}, @notifier_name)
+        Airbrake[@notifier_name].notify(notice)
       end
 
       ##
