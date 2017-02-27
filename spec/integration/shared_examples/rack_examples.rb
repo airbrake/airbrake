@@ -12,6 +12,9 @@ RSpec.shared_examples 'rack examples' do
   end
 
   before do
+    # Make sure the Logger integration doesn't get in the way.
+    allow_any_instance_of(Logger).to receive(:airbrake_notifier).and_return(nil)
+
     stub_request(:post, endpoint).to_return(status: 201, body: '{}')
   end
 
