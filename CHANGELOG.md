@@ -3,10 +3,12 @@ Airbrake Changelog
 
 ### master
 
-* Fixed Rails controller helper methods throwing `NameError`
-  ([#669](https://github.com/airbrake/airbrake/pull/669))
+### [v5.8.0.rc.2][v5.8.0.rc.2] (February 27, 2017)
 
-[v5.8.0.rc.1][v5.8.0.rc.1] (February 27, 2017)
+* Fixed Rails controller helper methods throwing `NameError`
+  ([#681](https://github.com/airbrake/airbrake/pull/681))
+
+### [v5.8.0.rc.1][v5.8.0.rc.1] (February 27, 2017)
 
 * **IMPORTANT:** added Shoryuken integration
   ([#669](https://github.com/airbrake/airbrake/pull/669))
@@ -221,3 +223,4 @@ Airbrake Changelog
 [v5.7.0]: https://github.com/airbrake/airbrake/releases/tag/v5.7.0
 [v5.7.1]: https://github.com/airbrake/airbrake/releases/tag/v5.7.1
 [v5.8.0.rc.1]: https://github.com/airbrake/airbrake/releases/tag/v5.8.0.rc.1
+[v5.8.0.rc.2]: https://github.com/airbrake/airbrake/releases/tag/v5.8.0.rc.2
