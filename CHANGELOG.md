@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed user reporting in the Rails integration, when `current_user` is a
+  private method ([#684](https://github.com/airbrake/airbrake/pull/684))
+
 ### [v5.8.0.rc.2][v5.8.0.rc.2] (February 27, 2017)
 
 * Fixed Rails controller helper methods throwing `NameError`
