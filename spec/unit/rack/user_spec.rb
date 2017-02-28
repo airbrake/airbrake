@@ -137,6 +137,27 @@ RSpec.describe Airbrake::Rack::User do
           end
         end
       end
+
+      context 'and it is a private method' do
+        context "and it is not nil" do
+          let(:dummy_controller) do
+            Class.new do
+              private
+
+              def current_user
+                "username"
+              end
+            end
+          end
+
+          let(:controller) { dummy_controller.new }
+
+          it "returns the wrapped user" do
+            retval = described_class.extract(env)
+            expect(retval).to be_a(described_class)
+          end
+        end
+      end
     end
   end
 

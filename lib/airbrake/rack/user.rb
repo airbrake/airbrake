@@ -25,9 +25,9 @@ module Airbrake
 
       def self.try_current_user(rack_env)
         controller = rack_env['action_controller.instance']
-        return unless controller.respond_to?(:current_user)
+        return unless controller.respond_to?(:current_user, true)
         return unless [-1, 0].include?(controller.method(:current_user).arity)
-        controller.current_user
+        controller.__send__(:current_user)
       end
       private_class_method :try_current_user
 
