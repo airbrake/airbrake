@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'airbrake/logger/logger_ext'
 
 RSpec.describe Logger do
   let(:project_id) { 113743 }
@@ -22,9 +23,9 @@ RSpec.describe Logger do
     stub_request(:post, endpoint).to_return(status: 201, body: '{}')
   end
 
-  describe "#airbrake" do
-    it "has the default notifier installed by default" do
-      expect(logger.airbrake_notifier).to be_an(Airbrake::Notifier)
+  describe "#airbrake_notifier" do
+    it "does not have a notifier specified by default" do
+      expect(logger.airbrake_notifier).to be_nil
     end
 
     it "installs Airbrake notifier" do
@@ -34,54 +35,69 @@ RSpec.describe Logger do
       logger.airbrake_notifier = airbrake
       expect(logger.airbrake_notifier.object_id).to eq(notifier_id)
     end
-  end
 
-  context "when Airbrake is installed" do
-    let(:out) { StringIO.new }
-    let(:logger) { Logger.new(out) }
+    context "when Airbrake is installed explicitly" do
+      let(:out) { StringIO.new }
+      let(:logger) { Logger.new(out) }
 
-    before do
-      logger.airbrake_notifier = airbrake
+      before do
+        logger.airbrake_notifier = airbrake
+      end
+
+      it "both logs and notifies using the specified notifier" do
+        msg = 'bingo'
+        logger.fatal(msg)
+
+        wait_for_a_request_with_body(/"message":"#{msg}"/)
+        expect(out.string).to match(/FATAL -- : #{msg}/)
+      end
+
+      it "sets the correct severity" do
+        logger.fatal('bango')
+        wait_for_a_request_with_body(/"context":{.*"severity":"critical".*}/)
+      end
+
+      it "sets the correct component" do
+        logger.fatal('bingo')
+        wait_for_a_request_with_body(/"component":"log"/)
+      end
+
+      it "strips out internal logger frames" do
+        logger.fatal('bongo')
+
+        wait_for(
+          a_request(:post, endpoint).
+            with(body: %r{"file":".+/logger.rb"})
+        ).not_to have_been_made
+        wait_for(a_request(:post, endpoint)).to have_been_made.once
+      end
     end
 
-    it "both logs and notifies" do
-      msg = 'bingo'
-      logger.fatal(msg)
+    context "when Airbrake is not installed explicitly" do
+      it "both logs and notifies using the default notifier" do
+        expect(Airbrake[:default]).to receive(:notify)
 
-      wait_for_a_request_with_body(/"message":"#{msg}"/)
-      expect(out.string).to match(/FATAL -- : #{msg}/)
-    end
+        out = StringIO.new
+        l = Logger.new(out)
+        l.airbrake_notifier = nil
+        msg = 'bango'
+        l.fatal(msg)
 
-    it "sets the correct severity" do
-      logger.fatal('bango')
-      wait_for_a_request_with_body(/"context":{.*"severity":"critical".*}/)
-    end
-
-    it "sets the correct component" do
-      logger.fatal('bingo')
-      wait_for_a_request_with_body(/"component":"log"/)
-    end
-
-    it "strips out internal logger frames" do
-      logger.fatal('bongo')
-
-      wait_for(
-        a_request(:post, endpoint).
-        with(body: %r{"file":".+/logger.rb"})
-      ).not_to have_been_made
-      wait_for(a_request(:post, endpoint)).to have_been_made.once
+        expect(out.string).to match("FATAL -- : #{msg}")
+      end
     end
   end
 
   describe "#airbrake_severity_level" do
     context "when not set" do
-      it "defaults to Logger::WARN" do
-        expect(logger.airbrake_severity_level).to eq(Logger::WARN)
+      it "defaults to nil" do
+        expect(logger.airbrake_severity_level).to be_nil
       end
     end
 
     context "when set" do
       before do
+        logger.airbrake_notifier = airbrake
         logger.airbrake_severity_level = Logger::FATAL
       end
 
@@ -94,20 +110,11 @@ RSpec.describe Logger do
         logger.fatal('bingo')
         wait_for(a_request(:post, endpoint)).to have_been_made
       end
-    end
-  end
 
-  context "when Airbrake is not installed" do
-    it "only logs, never notifies" do
-      out = StringIO.new
-      l = Logger.new(out)
-      l.airbrake_notifier = nil
-      msg = 'bango'
-
-      l.fatal(msg)
-
-      wait_for(a_request(:post, endpoint)).not_to have_been_made
-      expect(out.string).to match('FATAL -- : bango')
+      it "falls back to Logger::WARN when it is lower" do
+        logger.airbrake_severity_level = Logger::DEBUG
+        expect(logger.airbrake_severity_level).to eq(Logger::WARN)
+      end
     end
   end
 end

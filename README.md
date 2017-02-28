@@ -417,8 +417,8 @@ end
 
 If you want to convert your log messages to Airbrake errors, you can use our
 integration with Ruby's `Logger` class from stdlib. All you need to do is to
-make sure that the integration is required (if the Airbrake is loaded after
-`Logger`, then it is already integrated):
+manually `require` the integration somewhere in your code (after Logger is
+loaded):
 
 ```ruby
 require 'airbrake/logger/logger_ext'
@@ -437,16 +437,15 @@ The Logger class will attempt to utilize the default Airbrake notifier to send
 messages. It's possible to set the notifier explicitly:
 
 ```ruby
-# New method.
-# We assign the default notifier here.
-logger.airbrake_notifier = Airbrake[:default]
+# Assign a custom notifier.
+logger.airbrake_notifier = Airbrake[:nondefault_notifier]
 ```
 
 #### Airbrake severity level
 
-In order to reduce the noise from the Logger integration (or maximize) it's
-possible to configure Airbrake severity level. For example, if only want to send
-fatal messages from Logger, then configure your logger as follows:
+In order to reduce the noise from the Logger integration it's possible to
+configure Airbrake severity level. For example, if only want to send fatal
+messages from Logger, then configure your logger as follows:
 
 ```ruby
 # New method.
@@ -455,7 +454,9 @@ logger.airbrake_severity_level = Logger::FATAL
 ```
 
 By default, `airbrake_severity_level` is set to `Logger::WARN`, which means it
-sends warnings, errors and fatal error messages to Airbrake.
+sends warnings, errors and fatal error messages to Airbrake. Due to security
+considerations `Logger::WARN` is the lowest permitted severity (so you don't
+flood your project with debug messages).
 
 ### Plain Ruby scripts
 

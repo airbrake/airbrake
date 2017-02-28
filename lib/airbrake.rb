@@ -25,7 +25,9 @@ require 'airbrake/resque/failure' if defined?(Resque)
 require 'airbrake/sidekiq/error_handler' if defined?(Sidekiq)
 require 'airbrake/shoryuken/error_handler' if defined?(Shoryuken)
 require 'airbrake/delayed_job/plugin' if defined?(Delayed)
-require 'airbrake/logger/logger_ext' if defined?(Logger)
+
+# Potentially dangerous to require automatically:
+# require 'airbrake/logger/logger_ext' if defined?(Logger)
 
 ##
 # This module reopens the original Airbrake module from airbrake-ruby and adds
