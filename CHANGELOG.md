@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed Logger integration error and refactored the way it works. It's no longer
+  required automatically ([#681](https://github.com/airbrake/airbrake/pull/681))
+
 ### [v5.8.0.rc.2][v5.8.0.rc.2] (February 27, 2017)
 
 * Fixed Rails controller helper methods throwing `NameError`
