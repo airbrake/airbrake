@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v5.8.0.rc.3][v5.8.0.rc.3] (March 1, 2017)
+
 * Fixed user reporting in the Rails integration, when `current_user` is a
   private method ([#684](https://github.com/airbrake/airbrake/pull/684))
 * Completely refatored the Logger integration. It no longer monkey-patches
@@ -231,3 +233,4 @@ Airbrake Changelog
 [v5.7.1]: https://github.com/airbrake/airbrake/releases/tag/v5.7.1
 [v5.8.0.rc.1]: https://github.com/airbrake/airbrake/releases/tag/v5.8.0.rc.1
 [v5.8.0.rc.2]: https://github.com/airbrake/airbrake/releases/tag/v5.8.0.rc.2
+[v5.8.0.rc.3]: https://github.com/airbrake/airbrake/releases/tag/v5.8.0.rc.3
