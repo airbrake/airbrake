@@ -5,6 +5,10 @@ Airbrake Changelog
 
 * Fixed user reporting in the Rails integration, when `current_user` is a
   private method ([#684](https://github.com/airbrake/airbrake/pull/684))
+* Completely refatored the Logger integration. It no longer monkey-patches
+  `Logger`. There's also no need to `require` it. It stopped supporting
+  loglevels below `Logger::WARN`
+  ([#685](https://github.com/airbrake/airbrake/pull/685))
 
 ### [v5.8.0.rc.2][v5.8.0.rc.2] (February 27, 2017)
 
