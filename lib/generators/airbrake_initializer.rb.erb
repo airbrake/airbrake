@@ -65,7 +65,7 @@ end
 # https://github.com/airbrake/airbrake#requestbodyfilter
 # Airbrake.add_filter(Airbrake::Rack::RequestBodyFilter.new)
 
-# If Airbrake doesn't send any expected exceptions, we suggest to uncomment the
-# line below. It might simplify debugging of background Airbrake workers, which
-# can silently die.
-# Thread.abort_on_exception = ['test', 'development'].include?(Rails.env)
+# If you want to convert your log messages to Airbrake errors, we offer an
+# integration with the Logger class from stdlib.
+# https://github.com/airbrake/airbrake#logger
+# Rails.logger = Airbrake::AirbrakeLogger.new(Rails.logger)
