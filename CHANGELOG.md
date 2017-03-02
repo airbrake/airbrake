@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Added a mention of the Logger integration to the Rails initializer
+  ([#688](https://github.com/airbrake/airbrake/pull/688))
+
 ### [v5.8.0.rc.3][v5.8.0.rc.3] (March 1, 2017)
 
 * Fixed user reporting in the Rails integration, when `current_user` is a
