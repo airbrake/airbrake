@@ -325,7 +325,7 @@ end
 
 # New way
 Airbrake.configure do |c|
-  c.blacklist_keys << [:credit_card_number]
+  c.blacklist_keys << 'credit_card_number'
 end
 ```
 
