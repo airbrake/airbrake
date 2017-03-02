@@ -30,14 +30,15 @@ module Airbrake
 
       def initialize(app, notifier_name = :default)
         @app = app
-        @notifier_name = notifier_name
+        @notifier = Airbrake[notifier_name]
 
         # Prevent adding same filters to the same notifier.
         return if @@known_notifiers.include?(notifier_name)
         @@known_notifiers << notifier_name
 
+        return unless @notifier
         RACK_FILTERS.each do |filter|
-          Airbrake[notifier_name].add_filter(filter.new)
+          @notifier.add_filter(filter.new)
         end
       end
 
@@ -64,11 +65,11 @@ module Airbrake
       private
 
       def notify_airbrake(exception, env)
-        notice = Airbrake[@notifier_name].build_notice(exception)
+        notice = @notifier.build_notice(exception)
         return unless notice
 
         notice.stash[:rack_request] = ::Rack::Request.new(env)
-        Airbrake[@notifier_name].notify(notice)
+        @notifier.notify(notice)
       end
 
       ##
