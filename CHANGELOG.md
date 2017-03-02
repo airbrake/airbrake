@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v5.8.0][v5.8.0] (March 2, 2017)
+
 * Added a mention of the Logger integration to the Rails initializer
   ([#688](https://github.com/airbrake/airbrake/pull/688))
 
@@ -237,3 +239,4 @@ Airbrake Changelog
 [v5.8.0.rc.1]: https://github.com/airbrake/airbrake/releases/tag/v5.8.0.rc.1
 [v5.8.0.rc.2]: https://github.com/airbrake/airbrake/releases/tag/v5.8.0.rc.2
 [v5.8.0.rc.3]: https://github.com/airbrake/airbrake/releases/tag/v5.8.0.rc.3
+[v5.8.0]: https://github.com/airbrake/airbrake/releases/tag/v5.8.0

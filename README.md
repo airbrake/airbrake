@@ -71,7 +71,7 @@ Installation
 Add the Airbrake gem to your Gemfile:
 
 ```ruby
-gem 'airbrake', '~> 5.7'
+gem 'airbrake', '~> 5.8'
 ```
 
 ### Manual
