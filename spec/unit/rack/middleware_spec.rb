@@ -27,6 +27,14 @@ RSpec.describe Airbrake::Rack::Middleware do
     stub_request(:post, endpoint).to_return(status: 201, body: '{}')
   end
 
+  describe "#new" do
+    it "doesn't add filters if no notifiers are configured" do
+      expect do
+        expect(described_class.new(faulty_app, :unknown_notifier))
+      end.not_to raise_error
+    end
+  end
+
   describe "#call" do
     context "when app raises an exception" do
       context "and when the notifier name is specified" do
