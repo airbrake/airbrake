@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Started always closing the default notifier to stop losing exceptions
+  occurring in Rake & Resque integrations
+  ([#695](https://github.com/airbrake/airbrake/pull/695))
+
 ### [v5.8.1][v5.8.1] (March 2, 2017)
 
 * Fixed `NoMethodError` when initializing the Rack integration without a
