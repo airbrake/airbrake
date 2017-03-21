@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* **IMPORTANT:** remove `Airbrake.add_rack_builder` deprecated
+  in [v5.7.0.rc.1](#v570rc1-january-24-2017)
+  ([#698](https://github.com/airbrake/airbrake/pull/698))
 * Started always closing the default notifier to stop losing exceptions
   occurring in Rake & Resque integrations
   ([#695](https://github.com/airbrake/airbrake/pull/695))
