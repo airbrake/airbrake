@@ -3,7 +3,9 @@ Airbrake Changelog
 
 ### master
 
-* **IMPORTANT:** remove `Airbrake.add_rack_builder` deprecated
+### [v6.0.0][v6.0.0] (March 21, 2017)
+
+* **IMPORTANT:** removed `Airbrake.add_rack_builder` deprecated
   in [v5.7.0.rc.1](#v570rc1-january-24-2017)
   ([#698](https://github.com/airbrake/airbrake/pull/698))
 * Started always closing the default notifier to stop losing exceptions
@@ -256,3 +258,4 @@ Airbrake Changelog
 [v5.8.0.rc.3]: https://github.com/airbrake/airbrake/releases/tag/v5.8.0.rc.3
 [v5.8.0]: https://github.com/airbrake/airbrake/releases/tag/v5.8.0
 [v5.8.1]: https://github.com/airbrake/airbrake/releases/tag/v5.8.1
+[v6.0.0]: https://github.com/airbrake/airbrake/releases/tag/v6.0.0
