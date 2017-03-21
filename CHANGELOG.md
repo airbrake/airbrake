@@ -9,6 +9,9 @@ Airbrake Changelog
 * Started always closing the default notifier to stop losing exceptions
   occurring in Rake & Resque integrations
   ([#695](https://github.com/airbrake/airbrake/pull/695))
+* Started depending on
+  [airbrake-ruby-2.0.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v2.0.0)
+  ([#699](https://github.com/airbrake/airbrake/pull/699))
 
 ### [v5.8.1][v5.8.1] (March 2, 2017)
 
