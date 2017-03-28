@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Started appending HTTP request info (method, headers & referer) from Rack to
+  the `context` hash instead of the `environment` hash
+  ([#703](https://github.com/airbrake/airbrake/pull/703))
+
 ### [v6.0.0][v6.0.0] (March 21, 2017)
 
 * **IMPORTANT:** removed `Airbrake.add_rack_builder` deprecated
