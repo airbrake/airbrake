@@ -457,6 +457,21 @@ logger.airbrake_level = Logger::FATAL
 By default, `airbrake_level` is set to `Logger::WARN`, which means it
 sends warnings, errors and fatal error messages to Airbrake.
 
+#### Configuring Airbrake logger integration with a Rails application
+
+In order to configure a production logger with Airbrake integration, simply
+overwrite `Rails.logger` with a wrapped logger in an `after_initialize`
+callback:
+
+```ruby
+# config/environments/production.rb
+config.after_initialize do
+  # Standard logger with Airbrake integration:
+  # https://github.com/airbrake/airbrake#logger
+  Rails.logger = Airbrake::AirbrakeLogger.new(Rails.logger)
+end
+```
+
 ### Plain Ruby scripts
 
 Airbrake supports _any_ type of Ruby applications including plain Ruby scripts.
