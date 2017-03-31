@@ -74,26 +74,26 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
     gem 'mime-types', '~> 3.1'
   end
 
-  appraise 'rails-edge' do
-    gem 'rails', github: 'rails/rails'
-    gem 'arel', github: 'rails/arel'
-    gem 'rack', '~> 2.0'
-    gem 'warden', '~> 1.2.6'
+  # appraise 'rails-edge' do
+  #   gem 'rails', github: 'rails/rails'
+  #   gem 'arel', github: 'rails/arel'
+  #   gem 'rack', '~> 2.0'
+  #   gem 'warden', '~> 1.2.6'
 
-    gem 'activerecord-jdbcsqlite3-adapter', '~> 1.3.20', platforms: :jruby
-    gem 'sqlite3', '~> 1.3.11', platforms: %i(mri rbx)
+  #   gem 'activerecord-jdbcsqlite3-adapter', '~> 1.3.20', platforms: :jruby
+  #   gem 'sqlite3', '~> 1.3.11', platforms: %i(mri rbx)
 
-    gem 'resque', '~> 1.6'
-    # A temporary fork of https://github.com/leshill/resque_spec with
-    # https://github.com/leshill/resque_spec/pull/88 merged in. This allows us
-    # to test our Resque integration.
-    gem 'resque_spec', github: 'airbrake/resque_spec'
+  #   gem 'resque', '~> 1.6'
+  #   # A temporary fork of https://github.com/leshill/resque_spec with
+  #   # https://github.com/leshill/resque_spec/pull/88 merged in. This allows us
+  #   # to test our Resque integration.
+  #   gem 'resque_spec', github: 'airbrake/resque_spec'
 
-    gem('delayed_job_active_record',
-        github: 'airbrake/delayed_job_active_record',
-        branch: 'rails-edge-fix')
-    gem 'delayed_job', github: 'collectiveidea/delayed_job'
-  end
+  #   gem('delayed_job_active_record',
+  #       github: 'airbrake/delayed_job_active_record',
+  #       branch: 'rails-edge-fix')
+  #   gem 'delayed_job', github: 'collectiveidea/delayed_job'
+  # end
 end
 
 appraise 'sinatra' do
