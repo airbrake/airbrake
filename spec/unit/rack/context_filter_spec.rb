@@ -14,7 +14,7 @@ RSpec.describe Airbrake::Rack::ContextFilter do
   end
 
   let(:uri) { '/' }
-  let(:opts) { Hash.new }
+  let(:opts) { {} }
 
   it "adds framework version to the context" do
     subject.call(notice)
@@ -24,7 +24,7 @@ RSpec.describe Airbrake::Rack::ContextFilter do
 
   context "when URL is present" do
     let(:uri) { '/bingo' }
-    let(:opts) { Hash.new }
+    let(:opts) { {} }
 
     it "adds URL to the context" do
       subject.call(notice)

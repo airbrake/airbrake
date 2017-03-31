@@ -1,6 +1,7 @@
 # Explanations of all possible options:
 #   https://github.com/bbatsov/rubocop/blob/master/config/default.yml
 AllCops:
+  TargetRubyVersion: 2.0
   DisplayCopNames: true
   DisplayStyleGuide: true
 
@@ -84,3 +85,11 @@ Metrics/BlockLength:
     - 'spec/**/*.rb'
     - 'airbrake.gemspec'
     - 'lib/airbrake/rake/tasks.rb'
+
+Style/IndentHeredoc:
+  Enabled: false
+
+Style/FileName:
+  Enabled: true
+  Exclude:
+    - 'Appraisals'
