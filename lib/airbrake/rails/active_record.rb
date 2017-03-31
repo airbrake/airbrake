@@ -19,7 +19,7 @@ module Airbrake
       # rubocop:disable Lint/RescueException
       def run_callbacks(kind, *args, &block)
         # Let the post process handle the exception if it's not a bugged hook.
-        return super unless [:commit, :rollback].include?(kind)
+        return super unless %i(commit rollback).include?(kind)
 
         # Handle the exception ourselves. The 'ex' exception won't be
         # propagated, therefore we must notify it here.

@@ -15,7 +15,7 @@ RSpec.describe Airbrake::Rack::HttpParamsFilter do
 
   context "when rack params is nil" do
     let(:uri) { '/' }
-    let(:opts) { Hash.new }
+    let(:opts) { {} }
 
     it "doesn't overwrite the params key with nil" do
       subject.call(notice)
@@ -46,7 +46,7 @@ RSpec.describe Airbrake::Rack::HttpParamsFilter do
 
   context "when query string params are present" do
     let(:uri) { '/?bingo=bango&bongo=bish' }
-    let(:opts) { Hash.new }
+    let(:opts) { {} }
 
     it "sets the params hash" do
       subject.call(notice)

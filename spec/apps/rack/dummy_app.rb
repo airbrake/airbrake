@@ -12,6 +12,6 @@ DummyApp = Rack::Builder.new do
   end
 
   map '/crash' do
-    run proc { |_env| raise AirbrakeTestError }
+    run(proc { |_env| raise AirbrakeTestError })
   end
 end
