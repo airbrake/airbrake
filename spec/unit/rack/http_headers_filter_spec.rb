@@ -24,25 +24,25 @@ RSpec.describe Airbrake::Rack::HttpHeadersFilter do
   let(:uri) { '/' }
   let(:opts) { headers.dup }
 
-  it "preserves data that already has been added to the environment" do
-    notice[:environment]['SOME_KEY'] = 'SOME_VALUE'
+  it "preserves data that already has been added to the context" do
+    notice[:context]['SOME_KEY'] = 'SOME_VALUE'
     subject.call(notice)
-    expect(notice[:environment]['SOME_KEY']).to eq('SOME_VALUE')
+    expect(notice[:context]['SOME_KEY']).to eq('SOME_VALUE')
   end
 
   context "when CONTENT_TYPE, CONTENT_LENGTH and HTTP_* headers are present" do
-    it "adds them to the environment hash" do
+    it "adds them to the context hash" do
       subject.call(notice)
-      expect(notice[:environment][:headers]).to eq(headers)
+      expect(notice[:context][:headers]).to eq(headers)
     end
   end
 
   context "when unexpected headers are present" do
     let(:opts) { headers.dup.merge('X-SOME-HEADER' => 'value') }
 
-    it "adds them to the environment hash" do
+    it "adds them to the context hash" do
       subject.call(notice)
-      expect(notice[:environment][:headers]).to eq(headers)
+      expect(notice[:context][:headers]).to eq(headers)
     end
   end
 end

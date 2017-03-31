@@ -27,7 +27,7 @@ module Airbrake
           headers
         end
 
-        notice[:environment].merge!(
+        notice[:context].merge!(
           httpMethod: request.request_method,
           referer: request.referer,
           headers: http_headers
