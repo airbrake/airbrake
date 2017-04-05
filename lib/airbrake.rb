@@ -9,13 +9,7 @@ require 'airbrake/version'
 
 # Automatically load needed files for the environment the library is running in.
 if defined?(Rack)
-  require 'airbrake/rack/user'
-  require 'airbrake/rack/context_filter'
-  require 'airbrake/rack/session_filter'
-  require 'airbrake/rack/http_params_filter'
-  require 'airbrake/rack/http_headers_filter'
-  require 'airbrake/rack/request_body_filter'
-  require 'airbrake/rack/middleware'
+  require 'airbrake/rack'
 
   require 'airbrake/rails/railtie' if defined?(Rails)
 end
