@@ -233,6 +233,7 @@ middleware, and [configure][config] the default notifier.
 
 ```ruby
 require 'airbrake'
+require 'airbrake/rack'
 
 Airbrake.configure do |c|
   c.project_id = 113743
