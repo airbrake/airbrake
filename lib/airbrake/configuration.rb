@@ -156,7 +156,7 @@ module Airbrake
     alias_method :use_system_ssl_cert_chain?, :use_system_ssl_cert_chain
 
     def initialize
-      @secure                   = false
+      @secure                   = true
       @use_system_ssl_cert_chain= false
       @host                     = 'api.airbrake.io'
       @port                     = nil

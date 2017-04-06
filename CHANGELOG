@@ -1,3 +1,9 @@
+Version 4.3.9 - 2017-04-06 13:39:44 +0300
+===============================================================================
+
+Kyrylo Silin (1):
+	Enable `secure` by default
+
 Version 4.3.8 - 2016-06-24 17:43:35 +0300
 ===============================================================================
 
@@ -1676,41 +1682,3 @@ Nick Quaranto (3):
       Fixing the capistrano hook bit in the readme
       Adding changeling:minor and changeling:patch to automate notifier releases
       Adding rake changeling:push
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
