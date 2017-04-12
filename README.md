@@ -254,7 +254,7 @@ headers), define a special filter such as:
 
 ```ruby
 Airbrake.add_filter do |notice|
-  return unless (request = notice.stash[:rack_request])
+  next unless (request = notice.stash[:rack_request])
   notice[:params][:remoteIp] = request.env['REMOTE_IP']
 end
 ```
