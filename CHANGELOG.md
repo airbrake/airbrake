@@ -6,6 +6,8 @@ Airbrake Changelog
 * Started appending HTTP request info (method, headers & referer) from Rack to
   the `context` hash instead of the `environment` hash
   ([#703](https://github.com/airbrake/airbrake/pull/703))
+* Fixed Rack integration overriding `notice[:params]`
+  ([#716](https://github.com/airbrake/airbrake/pull/716))
 
 ### [v6.0.0][v6.0.0] (March 21, 2017)
 
