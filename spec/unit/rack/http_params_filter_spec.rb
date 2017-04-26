@@ -42,6 +42,12 @@ RSpec.describe Airbrake::Rack::HttpParamsFilter do
       subject.call(notice)
       expect(notice[:params]).to eq(params)
     end
+
+    it "merges given params with existing params" do
+      notice[:params] = { bingo: :bango }
+      subject.call(notice)
+      expect(notice[:params]).to eq(bingo: :bango, a: 1, b: 2)
+    end
   end
 
   context "when query string params are present" do

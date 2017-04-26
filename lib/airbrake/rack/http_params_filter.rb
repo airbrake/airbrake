@@ -10,7 +10,7 @@ module Airbrake
       def call(notice)
         return unless (request = notice.stash[:rack_request])
 
-        notice[:params] = request.params
+        notice[:params].merge!(request.params)
 
         rails_params = request.env['action_dispatch.request.parameters']
         notice[:params].merge!(rails_params) if rails_params
