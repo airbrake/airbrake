@@ -14,11 +14,11 @@ if defined?(Rack)
   require 'airbrake/rails/railtie' if defined?(Rails)
 end
 
-require 'airbrake/rake/task_ext' if defined?(Rake::Task)
-require 'airbrake/resque/failure' if defined?(Resque)
-require 'airbrake/sidekiq/error_handler' if defined?(Sidekiq)
-require 'airbrake/shoryuken/error_handler' if defined?(Shoryuken)
-require 'airbrake/delayed_job/plugin' if defined?(Delayed)
+require 'airbrake/rake' if defined?(Rake::Task)
+require 'airbrake/resque' if defined?(Resque)
+require 'airbrake/sidekiq' if defined?(Sidekiq)
+require 'airbrake/shoryuken' if defined?(Shoryuken)
+require 'airbrake/delayed_job' if defined?(Delayed)
 
 require 'airbrake/logger/airbrake_logger'
 

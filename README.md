@@ -309,10 +309,10 @@ use Airbrake::Rack::Middleware, :app2
 ### Sidekiq
 
 We support Sidekiq v2, v3 and v4. The configurations steps for them are
-identical. Simply `require` our error handler and you're done:
+identical. Simply `require` our integration and you're done:
 
 ```ruby
-require 'airbrake/sidekiq/error_handler'
+require 'airbrake/sidekiq'
 ```
 
 If you required Sidekiq before Airbrake, then you don't even have to `require`
@@ -336,10 +336,11 @@ end
 
 ### Resque
 
-Since Airbrake v5 the gem provides its own failure backend. The old way of
-integrating Resque doesn't work. If you upgrade to Airbrake v5, just make sure
-that you require `airbrake/resque/failure` instead of
-`resque/failure/airbrake`. The rest remains the same.
+Simply `require` the Resque integration:
+
+```ruby
+require 'airbrake/resque'
+```
 
 #### Integrating with Rails applications
 
@@ -348,17 +349,17 @@ new initializer in `config/initializers/resque.rb` with the following content:
 
 ```ruby
 # config/initializers/resque.rb
-require 'airbrake/resque/failure'
+require 'airbrake/resque'
 Resque::Failure.backend = Resque::Failure::Airbrake
 ```
 
-That's all configuration.
+Now you're all set.
 
 #### General integration
 
 Any Ruby app using Resque can be integrated with Airbrake. If you can require
 the Airbrake gem *after* Resque, then there's no need to require
-`airbrake/resque/failure` anymore:
+`airbrake/resque` anymore:
 
 ```ruby
 require 'resque'
@@ -373,10 +374,10 @@ multiple backends, then continue reading the needed configuration steps in
 
 ### DelayedJob
 
-Simply `require` our plugin and you're done:
+Simply `require` our integration and you're done:
 
 ```ruby
-require 'airbrake/delayed_job/plugin'
+require 'airbrake/delayed_job'
 ```
 
 If you required DelayedJob before Airbrake, then you don't even have to `require`
@@ -384,10 +385,10 @@ anything manually and it should just work out-of-box.
 
 ### Shoryuken
 
-Simply `require` our error handler and you're done:
+Simply `require` our integration and you're done:
 
 ```ruby
-require 'airbrake/shoryuken/error_handler'
+require 'airbrake/shoryuken'
 ```
 
 If you required Shoryuken before Airbrake, then you don't even have to `require`

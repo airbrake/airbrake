@@ -3,7 +3,7 @@ require 'spec_helper'
 if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.0')
   require 'sidekiq'
   require 'sidekiq/cli'
-  require 'airbrake/sidekiq/error_handler'
+  require 'airbrake/sidekiq'
 
   RSpec.describe "airbrake/sidekiq/error_handler" do
     let(:endpoint) do
