@@ -73,7 +73,7 @@ if ENV['APPRAISAL_INITIALIZED']
     require 'airbrake/delayed_job'
     Delayed::Worker.delay_jobs = false
 
-    require 'airbrake/rails/railtie'
+    require 'airbrake/rails'
 
     load 'apps/rails/dummy_task.rake'
     require 'apps/rails/dummy_app'

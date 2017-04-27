@@ -1,18 +1,5 @@
-module Resque
-  module Failure
-    ##
-    # Provides Resque integration with Airbrake.
-    #
-    # @since v5.0.0
-    # @see https://github.com/resque/resque/wiki/Failure-Backends
-    class Airbrake < Base
-      def save
-        return unless (notice = ::Airbrake.build_notice(exception, payload))
-        notice[:context][:component] = 'resque'
-        notice[:context][:action] = payload['class'].to_s
+require 'airbrake/resque'
 
-        ::Airbrake.notify_sync(notice)
-      end
-    end
-  end
-end
+warn "DEPRECATION WARNING: Requiring 'airbrake/resque/failure' is " \
+     "deprecated and will be removed in the next MAJOR release. Require " \
+     "'airbrake/resque' instead."

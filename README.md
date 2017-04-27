@@ -422,6 +422,8 @@ integration with Ruby's `Logger` class from stdlib. All you need to do is to
 wrap your logger in Airbrake's decorator class:
 
 ```ruby
+require 'airbrake/logger'
+
 # Create a normal logger
 logger = Logger.new(STDOUT)
 
