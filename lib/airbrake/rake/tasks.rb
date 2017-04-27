@@ -106,8 +106,19 @@ namespace :airbrake do
            " environment will be used."
     end
 
+    unless (repo = ENV['REPOSITORY_URL'])
+      repo = `git remote get-url origin 2>/dev/null`.chomp
+      if repo.empty?
+        puts "Airbrake couldn't identify your app's repository."
+      else
+        puts "Airbrake couldn't identify your app's repository, so the " \
+             "'origin' remote url '#{repo}' will be used."
+      end
+    end
+
     url = "https://airbrake.io/api/v3/projects/#{id}/heroku-deploys?key=#{key}"
     url << "&environment=#{env}"
+    url << "&repository=#{repo}" unless repo.empty?
 
     command = %(heroku addons:create deployhooks:http --url="#{url}")
     command << " --app #{app}" if app
