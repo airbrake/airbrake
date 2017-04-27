@@ -11,6 +11,20 @@ Airbrake Changelog
 * Started depending on
   [airbrake-ruby-2.1.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v2.1.0)
   ([#718](https://github.com/airbrake/airbrake/pull/718))
+* Deprecated requiring `airbrake/delayed_job/plugin` in favour of
+  `airbrake/delayed_job` ([#719](https://github.com/airbrake/airbrake/pull/719))
+* Deprecated requiring `airbrake/logger/airbrake_logger` in favour of
+  `airbrake/logger` ([#719](https://github.com/airbrake/airbrake/pull/719))
+* Deprecated requiring `airbrake/rails/railtie` in favour of `airbrake/railtie`
+  ([#719](https://github.com/airbrake/airbrake/pull/719))
+* Deprecated requiring `airbrake/rake/task_ext` in favour of `airbrake/rake`
+  ([#719](https://github.com/airbrake/airbrake/pull/719))
+* Deprecated requiring `airbrake/resque/failure` in favour of `airbrake/resque`
+  ([#719](https://github.com/airbrake/airbrake/pull/719))
+* Deprecated requiring `airbrake/shoryuken/error_handler` in favour of
+  `airbrake/shoryuken` ([#719](https://github.com/airbrake/airbrake/pull/719))
+* Deprecated requiring `airbrake/sidekiq/error_handler` in favour of
+  `airbrake/sidekiq` ([#719](https://github.com/airbrake/airbrake/pull/719))
 
 ### [v6.0.0][v6.0.0] (March 21, 2017)
 

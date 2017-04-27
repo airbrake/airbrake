@@ -11,7 +11,7 @@ require 'airbrake/version'
 if defined?(Rack)
   require 'airbrake/rack'
 
-  require 'airbrake/rails/railtie' if defined?(Rails)
+  require 'airbrake/rails' if defined?(Rails)
 end
 
 require 'airbrake/rake' if defined?(Rake::Task)
@@ -20,7 +20,7 @@ require 'airbrake/sidekiq' if defined?(Sidekiq)
 require 'airbrake/shoryuken' if defined?(Shoryuken)
 require 'airbrake/delayed_job' if defined?(Delayed)
 
-require 'airbrake/logger/airbrake_logger'
+require 'airbrake/logger'
 
 # Notify of unhandled exceptions, if there were any, but ignore SystemExit.
 at_exit do
