@@ -309,10 +309,10 @@ use Airbrake::Rack::Middleware, :app2
 ### Sidekiq
 
 We support Sidekiq v2, v3 and v4. The configurations steps for them are
-identical. Simply `require` our error handler and you're done:
+identical. Simply `require` our integration and you're done:
 
 ```ruby
-require 'airbrake/sidekiq/error_handler'
+require 'airbrake/sidekiq'
 ```
 
 If you required Sidekiq before Airbrake, then you don't even have to `require`
