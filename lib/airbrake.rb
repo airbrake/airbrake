@@ -14,7 +14,7 @@ if defined?(Rack)
   require 'airbrake/rails/railtie' if defined?(Rails)
 end
 
-require 'airbrake/rake/task_ext' if defined?(Rake::Task)
+require 'airbrake/rake' if defined?(Rake::Task)
 require 'airbrake/resque' if defined?(Resque)
 require 'airbrake/sidekiq' if defined?(Sidekiq)
 require 'airbrake/shoryuken' if defined?(Shoryuken)
