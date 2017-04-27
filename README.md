@@ -384,10 +384,10 @@ anything manually and it should just work out-of-box.
 
 ### Shoryuken
 
-Simply `require` our error handler and you're done:
+Simply `require` our integration and you're done:
 
 ```ruby
-require 'airbrake/shoryuken/error_handler'
+require 'airbrake/shoryuken'
 ```
 
 If you required Shoryuken before Airbrake, then you don't even have to `require`
