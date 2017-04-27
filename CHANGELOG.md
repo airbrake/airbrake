@@ -8,6 +8,9 @@ Airbrake Changelog
   ([#703](https://github.com/airbrake/airbrake/pull/703))
 * Fixed Rack integration overriding `notice[:params]`
   ([#716](https://github.com/airbrake/airbrake/pull/716))
+* Started depending on
+  [airbrake-ruby-2.1.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v2.1.0)
+  ([#718](https://github.com/airbrake/airbrake/pull/718))
 
 ### [v6.0.0][v6.0.0] (March 21, 2017)
 
