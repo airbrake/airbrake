@@ -15,7 +15,7 @@ if defined?(Rack)
 end
 
 require 'airbrake/rake/task_ext' if defined?(Rake::Task)
-require 'airbrake/resque/failure' if defined?(Resque)
+require 'airbrake/resque' if defined?(Resque)
 require 'airbrake/sidekiq' if defined?(Sidekiq)
 require 'airbrake/shoryuken' if defined?(Shoryuken)
 require 'airbrake/delayed_job' if defined?(Delayed)

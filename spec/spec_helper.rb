@@ -65,7 +65,7 @@ if ENV['APPRAISAL_INITIALIZED']
 
     require 'resque'
     require 'resque_spec'
-    require 'airbrake/resque/failure'
+    require 'airbrake/resque'
     Resque::Failure.backend = Resque::Failure::Airbrake
 
     require 'delayed_job'

@@ -336,10 +336,11 @@ end
 
 ### Resque
 
-Since Airbrake v5 the gem provides its own failure backend. The old way of
-integrating Resque doesn't work. If you upgrade to Airbrake v5, just make sure
-that you require `airbrake/resque/failure` instead of
-`resque/failure/airbrake`. The rest remains the same.
+Simply `require` the Resque integration:
+
+```ruby
+require 'airbrake/resque'
+```
 
 #### Integrating with Rails applications
 
@@ -348,17 +349,17 @@ new initializer in `config/initializers/resque.rb` with the following content:
 
 ```ruby
 # config/initializers/resque.rb
-require 'airbrake/resque/failure'
+require 'airbrake/resque'
 Resque::Failure.backend = Resque::Failure::Airbrake
 ```
 
-That's all configuration.
+Now you're all set.
 
 #### General integration
 
 Any Ruby app using Resque can be integrated with Airbrake. If you can require
 the Airbrake gem *after* Resque, then there's no need to require
-`airbrake/resque/failure` anymore:
+`airbrake/resque` anymore:
 
 ```ruby
 require 'resque'
