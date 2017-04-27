@@ -70,7 +70,7 @@ if ENV['APPRAISAL_INITIALIZED']
 
     require 'delayed_job'
     require 'delayed_job_active_record'
-    require 'airbrake/delayed_job/plugin'
+    require 'airbrake/delayed_job'
     Delayed::Worker.delay_jobs = false
 
     require 'airbrake/rails/railtie'

@@ -373,10 +373,10 @@ multiple backends, then continue reading the needed configuration steps in
 
 ### DelayedJob
 
-Simply `require` our plugin and you're done:
+Simply `require` our integration and you're done:
 
 ```ruby
-require 'airbrake/delayed_job/plugin'
+require 'airbrake/delayed_job'
 ```
 
 If you required DelayedJob before Airbrake, then you don't even have to `require`
