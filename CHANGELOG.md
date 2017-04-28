@@ -25,6 +25,9 @@ Airbrake Changelog
   `airbrake/shoryuken` ([#719](https://github.com/airbrake/airbrake/pull/719))
 * Deprecated requiring `airbrake/sidekiq/error_handler` in favour of
   `airbrake/sidekiq` ([#719](https://github.com/airbrake/airbrake/pull/719))
+* Fixed `airbrake:deploy` task raising `AirbrakeError` when Rails `:environment`
+  is already required by some other task
+  ([#721](https://github.com/airbrake/airbrake/pull/721))
 
 ### [v6.0.0][v6.0.0] (March 21, 2017)
 
