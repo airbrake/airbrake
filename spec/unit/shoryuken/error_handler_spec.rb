@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'airbrake/shoryuken/error_handler'
+require 'airbrake/shoryuken'
 
 RSpec.describe Airbrake::Shoryuken::ErrorHandler do
   let(:error) { AirbrakeTestError.new('shoryuken error') }
