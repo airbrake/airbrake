@@ -126,11 +126,11 @@ In case of success, a test exception should appear in your dashboard.
 The Airbrake gem defines two helper methods available inside Rails controllers:
 `#notify_airbrake` and `#notify_airbrake_sync`. If you want to notify Airbrake
 from your controllers manually, it's usually a good idea to prefer them over
-`Airbrake.notify`, because they automatically add information from the Rack
-environment to notices. `#notify_airbrake` is asynchronous (immediately returns
-`nil`), while `#notify_airbrake_sync` is synchronous (waits for responses from
-the server and returns them). The list of accepted arguments is identical to
-`Airbrake.notify`.
+[`Airbrake.notify`][airbrake-notify], because they automatically add
+information from the Rack environment to notices. `#notify_airbrake` is
+asynchronous, while `#notify_airbrake_sync` is synchronous (waits for responses
+from the server and returns them). The list of accepted arguments is identical
+to `Airbrake.notify`.
 
 #### Additional features: user reporting, sophisticated API
 
@@ -630,3 +630,4 @@ commands to invoke them.
 [arthur-ruby]: https://s3.amazonaws.com/airbrake-github-assets/airbrake/arthur-ruby.jpg
 [rails-13897]: https://github.com/rails/rails/pull/13897
 [rails-sub-keys]: https://github.com/airbrake/airbrake-ruby/issues/137
+[airbrake-notify]: https://github.com/airbrake/airbrake-ruby#airbrakenotify
