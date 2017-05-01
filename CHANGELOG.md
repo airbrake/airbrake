@@ -9,8 +9,8 @@ Airbrake Changelog
 * Fixed Rack integration overriding `notice[:params]`
   ([#716](https://github.com/airbrake/airbrake/pull/716))
 * Started depending on
-  [airbrake-ruby-2.1.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v2.1.0)
-  ([#718](https://github.com/airbrake/airbrake/pull/718))
+  [airbrake-ruby-2.2.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v2.2.0)
+  ([#724](https://github.com/airbrake/airbrake/pull/724))
 * Deprecated requiring `airbrake/delayed_job/plugin` in favour of
   `airbrake/delayed_job` ([#719](https://github.com/airbrake/airbrake/pull/719))
 * Deprecated requiring `airbrake/logger/airbrake_logger` in favour of
