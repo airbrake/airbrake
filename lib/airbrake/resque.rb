@@ -7,11 +7,10 @@ module Resque
     # @see https://github.com/resque/resque/wiki/Failure-Backends
     class Airbrake < Base
       def save
-        return unless (notice = ::Airbrake.build_notice(exception, payload))
-        notice[:context][:component] = 'resque'
-        notice[:context][:action] = payload['class'].to_s
-
-        ::Airbrake.notify_sync(notice)
+        Airbrake.notify_sync(exception, payload) do |notice|
+          notice[:context][:component] = 'resque'
+          notice[:context][:action] = payload['class'].to_s
+        end
       end
     end
   end

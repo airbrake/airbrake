@@ -35,13 +35,17 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.0')
     end
 
     context "when Airbrake is not configured" do
-      it "returns nil" do
-        allow(Airbrake).to receive(:build_notice).and_return(nil)
-        allow(Airbrake).to receive(:notify)
+      before do
+        @notifiers = Airbrake.instance_variable_get(:@notifiers)
+        @default_notifier = @notifiers.delete(:default)
+      end
 
+      after do
+        @notifiers[:default] = @default_notifier
+      end
+
+      it "returns nil" do
         expect(call_handler).to be_nil
-        expect(Airbrake).to have_received(:build_notice)
-        expect(Airbrake).not_to have_received(:notify)
       end
     end
   end

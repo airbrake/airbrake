@@ -16,13 +16,10 @@ module Airbrake
       private
 
       def notify_airbrake(exception, worker, queue, body)
-        notice = Airbrake.build_notice(exception, notice_context(queue, body))
-        return unless notice
-
-        notice[:context][:component] = 'shoryuken'
-        notice[:context][:action] = worker.class.to_s
-
-        Airbrake.notify(notice)
+        Airbrake.notify(exception, notice_context(queue, body)) do |notice|
+          notice[:context][:component] = 'shoryuken'
+          notice[:context][:action] = worker.class.to_s
+        end
       end
 
       def notice_context(queue, body)

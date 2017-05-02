@@ -5,6 +5,7 @@ RSpec.describe Airbrake::Shoryuken::ErrorHandler do
   let(:error) { AirbrakeTestError.new('shoryuken error') }
   let(:body) { { message: 'message' } }
   let(:queue) { 'foo_queue' }
+
   let(:worker) do
     Class.new do
       def self.to_s
@@ -12,6 +13,7 @@ RSpec.describe Airbrake::Shoryuken::ErrorHandler do
       end
     end.new
   end
+
   let(:endpoint) do
     'https://airbrake.io/api/v3/projects/113743/notices?key=fd04e13d806a90f96614ad8e529b2822'
   end
@@ -55,16 +57,19 @@ RSpec.describe Airbrake::Shoryuken::ErrorHandler do
   end
 
   context 'when Airbrake is not configured' do
-    it 'returns nil' do
-      allow(Airbrake).to receive(:build_notice).and_return(nil)
-      allow(Airbrake).to receive(:notify)
+    before do
+      @notifiers = Airbrake.instance_variable_get(:@notifiers)
+      @default_notifier = @notifiers.delete(:default)
+    end
 
+    after do
+      @notifiers[:default] = @default_notifier
+    end
+
+    it "raises error" do
       expect do
         subject.call(worker, queue, nil, body) { raise error }
       end.to raise_error(error)
-
-      expect(Airbrake).to have_received(:build_notice)
-      expect(Airbrake).not_to have_received(:notify)
     end
   end
 end
