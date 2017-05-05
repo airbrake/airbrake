@@ -11,9 +11,14 @@ module Airbrake
     # @note This filter is *not* used by default.
     class RequestBodyFilter
       ##
+      # @return [Integer]
+      attr_reader :weight
+
+      ##
       # @param [Integer] length The maximum number of bytes to read
       def initialize(length = 4096)
         @length = length
+        @weight = 95
       end
 
       ##
