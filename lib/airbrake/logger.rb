@@ -78,19 +78,17 @@ module Airbrake
     def notify_airbrake(severity, progname)
       return if severity < @airbrake_level || !@airbrake_notifier
 
-      notice = @airbrake_notifier.build_notice(progname)
+      @airbrake_notifier.notify(progname) do |notice|
+        # Get rid of unwanted internal Logger frames. Examples:
+        # * /ruby-2.4.0/lib/ruby/2.4.0/logger.rb
+        # * /gems/activesupport-4.2.7.1/lib/active_support/logger.rb
+        backtrace = notice[:errors].first[:backtrace]
+        notice[:errors].first[:backtrace] =
+          backtrace.drop_while { |frame| frame[:file] =~ %r{/logger.rb\z} }
 
-      # Get rid of unwanted internal Logger frames. Examples:
-      # * /ruby-2.4.0/lib/ruby/2.4.0/logger.rb
-      # * /gems/activesupport-4.2.7.1/lib/active_support/logger.rb
-      backtrace = notice[:errors].first[:backtrace]
-      notice[:errors].first[:backtrace] =
-        backtrace.drop_while { |frame| frame[:file] =~ %r{/logger.rb\z} }
-
-      notice[:context][:component] = 'log'
-      notice[:context][:severity] = normalize_severity(severity)
-
-      @airbrake_notifier.notify(notice)
+        notice[:context][:component] = 'log'
+        notice[:context][:severity] = normalize_severity(severity)
+      end
     end
 
     def normalize_severity(severity)

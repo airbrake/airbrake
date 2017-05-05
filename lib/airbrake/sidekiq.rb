@@ -15,11 +15,10 @@ module Airbrake
       private
 
       def notify_airbrake(exception, context)
-        return unless (notice = Airbrake.build_notice(exception, context))
-        notice[:context][:component] = 'sidekiq'
-        notice[:context][:action] = context['class']
-
-        Airbrake.notify(notice)
+        Airbrake.notify(exception, context) do |notice|
+          notice[:context][:component] = 'sidekiq'
+          notice[:context][:action] = context['class']
+        end
       end
     end
   end
