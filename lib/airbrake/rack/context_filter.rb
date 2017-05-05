@@ -5,6 +5,10 @@ module Airbrake
     #
     # @since v5.7.0
     class ContextFilter
+      ##
+      # @return [Integer]
+      attr_reader :weight
+
       def initialize
         @framework_version =
           if defined?(::Rails) && ::Rails.respond_to?(:version)
@@ -14,6 +18,7 @@ module Airbrake
           else
             "Rack.version/#{::Rack.version} Rack.release/#{::Rack.release}"
           end.freeze
+        @weight = 99
       end
 
       ##
