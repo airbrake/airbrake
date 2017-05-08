@@ -17,7 +17,7 @@ module Delayed
               params[:active_job] = job.payload_object.job_data
             end
 
-            Airbrake.notify(exception, params) do |notice|
+            ::Airbrake.notify(exception, params) do |notice|
               notice[:context][:component] = 'delayed_job'
               notice[:context][:action] = job.payload_object.class.name
             end
