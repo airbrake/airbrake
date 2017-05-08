@@ -74,7 +74,6 @@ test:
           1) rvm-exec 2.1.10 bundle exec appraisal rails-4.0 rake spec:integration:rails ;;
           2) rvm-exec 2.2.7 bundle exec appraisal rails-4.0 rake spec:integration:rails ;;
           3) rvm-exec 2.3.4 bundle exec appraisal rails-4.0 rake spec:integration:rails ;;
-          4) rvm-exec 2.4.1 bundle exec appraisal rails-4.0 rake spec:integration:rails ;;
           5)
             export JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF"
             rvm-exec jruby-9.1.8.0 bundle exec appraisal rails-4.0 rake spec:integration:rails
@@ -88,7 +87,6 @@ test:
           1) rvm-exec 2.1.10 bundle exec appraisal rails-4.1 rake spec:integration:rails ;;
           2) rvm-exec 2.2.7 bundle exec appraisal rails-4.1 rake spec:integration:rails ;;
           3) rvm-exec 2.3.4 bundle exec appraisal rails-4.1 rake spec:integration:rails ;;
-          4) rvm-exec 2.4.1 bundle exec appraisal rails-4.1 rake spec:integration:rails ;;
           5)
             export JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF"
             rvm-exec jruby-9.1.8.0 bundle exec appraisal rails-4.1 rake spec:integration:rails
@@ -115,19 +113,15 @@ test:
           2) rvm-exec 2.2.7 bundle exec appraisal rails-5.0 rake spec:integration:rails ;;
           3) rvm-exec 2.3.4 bundle exec appraisal rails-5.0 rake spec:integration:rails ;;
           4) rvm-exec 2.4.1 bundle exec appraisal rails-5.0 rake spec:integration:rails ;;
-          5)
-            export JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF"
-            rvm-exec jruby-9.1.8.0 bundle exec appraisal rails-5.0 rake spec:integration:rails
-            ;;
         esac
       :
         parallel: true
-    - ? |
-        case $CIRCLE_NODE_INDEX in
-          4) rvm-exec 2.4.1 bundle exec appraisal rails-edge rake spec:integration:rails ;;
-        esac
-      :
-        parallel: true
+    # - ? |
+    #     case $CIRCLE_NODE_INDEX in
+    #       4) rvm-exec 2.4.1 bundle exec appraisal rails-edge rake spec:integration:rails ;;
+    #     esac
+    #   :
+    #     parallel: true
     - ? |
         case $CIRCLE_NODE_INDEX in
           0) rvm-exec 2.0.0-p645 bundle exec appraisal sinatra rake spec:integration:sinatra ;;
