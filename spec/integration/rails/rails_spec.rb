@@ -186,19 +186,22 @@ RSpec.describe "Rails integration specs" do
     end
 
     context "when Airbrake is not configured" do
-      it "doesn't report errors" do
-        allow(Airbrake).to receive(:build_notice).and_return(nil)
-        allow(Airbrake).to receive(:notify)
+      before do
+        @notifiers = Airbrake.instance_variable_get(:@notifiers)
+        @default_notifier = @notifiers.delete(:default)
+      end
 
+      after do
+        @notifiers[:default] = @default_notifier
+      end
+
+      it "doesn't report errors" do
         with_resque { get '/resque' }
 
         wait_for(
           a_request(:post, endpoint).
             with(body: /"message":"resque error"/)
         ).not_to have_been_made
-
-        expect(Airbrake).to have_received(:build_notice)
-        expect(Airbrake).not_to have_received(:notify)
       end
     end
   end
@@ -224,12 +227,16 @@ RSpec.describe "Rails integration specs" do
       before do
         # Make sure the Logger intergration doesn't get in the way.
         allow_any_instance_of(Logger).to receive(:airbrake_notifier).and_return(nil)
+
+        @notifiers = Airbrake.instance_variable_get(:@notifiers)
+        @default_notifier = @notifiers.delete(:default)
+      end
+
+      after do
+        @notifiers[:default] = @default_notifier
       end
 
       it "doesn't report errors" do
-        allow(Airbrake).to receive(:build_notice).and_return(nil)
-        allow(Airbrake).to receive(:notify)
-
         # Make sure we don't call `build_notice` more than 1 time. Rack
         # integration will try to handle error 500 and we want to prevent
         # that: https://github.com/airbrake/airbrake/pull/583
@@ -245,9 +252,6 @@ RSpec.describe "Rails integration specs" do
           a_request(:post, endpoint).
             with(body: /"message":"delayed_job error"/)
         ).not_to have_been_made
-
-        expect(Airbrake).to have_received(:build_notice)
-        expect(Airbrake).not_to have_received(:notify)
       end
     end
   end
