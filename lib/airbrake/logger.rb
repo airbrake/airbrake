@@ -20,10 +20,8 @@ module Airbrake
     attr_accessor :airbrake_notifier
 
     ##
-    # @example
-    #   logger.airbrake_level = Logger::FATAL
     # @return [Integer]
-    attr_accessor :airbrake_level
+    attr_reader :airbrake_level
 
     def initialize(logger)
       __setobj__(logger)
