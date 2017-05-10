@@ -1,13 +1,9 @@
 machine:
-  java:
-    version: openjdk7
   ruby:
     version: 2.4.1
 
 dependencies:
   override:
-    - gem update --remote bundler
-    - gem update --system
     - bundle install
     - ? |
         case $CIRCLE_NODE_INDEX in
@@ -24,28 +20,12 @@ dependencies:
             rvm-exec 2.2.7 bundle exec appraisal install --jobs=15
             ;;
           3)
-            # Workaround for https://github.com/sickill/rainbow/issues/48
-            rvm-exec 2.3.4 gem update --remote bundler
-            rvm-exec 2.3.4 gem update --system
-
             rvm-exec 2.3.4 bundle install --jobs=15
             rvm-exec 2.3.4 bundle exec appraisal install --jobs=15
             ;;
           4)
             rvm-exec 2.4.1 bundle install --jobs=15
             rvm-exec 2.4.1 bundle exec appraisal install --jobs=15
-            ;;
-          5)
-            # The 'dev' switch makes JRuby start about 2.5 times faster.
-            # See: https://github.com/jruby/jruby/wiki/Improving-startup-time
-            export JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF"
-
-            # Workaround for https://github.com/sickill/rainbow/issues/48
-            rvm-exec jruby-9.1.8.0 gem update --remote bundler
-            rvm-exec jruby-9.1.8.0 gem update --system
-
-            rvm-exec jruby-9.1.8.0 bundle install --jobs=15
-            rvm-exec jruby-9.1.8.0 bundle exec appraisal install --jobs=15
             ;;
         esac
       :
@@ -61,10 +41,6 @@ test:
           2) rvm-exec 2.2.7 bundle exec appraisal rails-3.2 rake spec:integration:rails ;;
           3) rvm-exec 2.3.4 bundle exec appraisal rails-3.2 rake spec:integration:rails ;;
           4) rvm-exec 2.4.1 bundle exec appraisal rails-3.2 rake spec:integration:rails ;;
-          5)
-            export JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF"
-            rvm-exec jruby-9.1.8.0 bundle exec appraisal rails-3.2 rake spec:integration:rails
-            ;;
         esac
       :
         parallel: true
@@ -74,10 +50,6 @@ test:
           1) rvm-exec 2.1.10 bundle exec appraisal rails-4.0 rake spec:integration:rails ;;
           2) rvm-exec 2.2.7 bundle exec appraisal rails-4.0 rake spec:integration:rails ;;
           3) rvm-exec 2.3.4 bundle exec appraisal rails-4.0 rake spec:integration:rails ;;
-          5)
-            export JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF"
-            rvm-exec jruby-9.1.8.0 bundle exec appraisal rails-4.0 rake spec:integration:rails
-            ;;
         esac
       :
         parallel: true
@@ -87,10 +59,6 @@ test:
           1) rvm-exec 2.1.10 bundle exec appraisal rails-4.1 rake spec:integration:rails ;;
           2) rvm-exec 2.2.7 bundle exec appraisal rails-4.1 rake spec:integration:rails ;;
           3) rvm-exec 2.3.4 bundle exec appraisal rails-4.1 rake spec:integration:rails ;;
-          5)
-            export JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF"
-            rvm-exec jruby-9.1.8.0 bundle exec appraisal rails-4.1 rake spec:integration:rails
-            ;;
         esac
       :
         parallel: true
@@ -101,10 +69,6 @@ test:
           2) rvm-exec 2.2.7 bundle exec appraisal rails-4.2 rake spec:integration:rails ;;
           3) rvm-exec 2.3.4 bundle exec appraisal rails-4.2 rake spec:integration:rails ;;
           4) rvm-exec 2.4.1 bundle exec appraisal rails-4.2 rake spec:integration:rails ;;
-          5)
-            export JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF"
-            rvm-exec jruby-9.1.8.0 bundle exec appraisal rails-4.2 rake spec:integration:rails
-            ;;
         esac
       :
         parallel: true
@@ -129,10 +93,6 @@ test:
           2) rvm-exec 2.2.7 bundle exec appraisal sinatra rake spec:integration:sinatra ;;
           3) rvm-exec 2.3.4 bundle exec appraisal sinatra rake spec:integration:sinatra ;;
           4) rvm-exec 2.4.1 bundle exec appraisal sinatra rake spec:integration:sinatra ;;
-          5)
-            export JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF"
-            rvm-exec jruby-9.1.8.0 bundle exec appraisal sinatra rake spec:integration:sinatra
-            ;;
         esac
       :
         parallel: true
@@ -143,10 +103,6 @@ test:
           2) rvm-exec 2.2.7 bundle exec appraisal rack rake spec:integration:rack ;;
           3) rvm-exec 2.3.4 bundle exec appraisal rack rake spec:integration:rack ;;
           4) rvm-exec 2.4.1 bundle exec appraisal rack rake spec:integration:rack ;;
-          5)
-            export JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF"
-            rvm-exec jruby-9.1.8.0 bundle exec appraisal rack rake spec:integration:rack
-            ;;
         esac
       :
         parallel: true
@@ -157,10 +113,6 @@ test:
           2) rvm-exec 2.2.7 bundle exec rake spec:unit ;;
           3) rvm-exec 2.3.4 bundle exec rake spec:unit ;;
           4) rvm-exec 2.4.1 bundle exec rake spec:unit ;;
-          5)
-            export JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF"
-            rvm-exec jruby-9.1.8.0 bundle exec rake spec:unit
-            ;;
         esac
       :
         parallel: true
