@@ -45,6 +45,6 @@ DESC
   s.add_development_dependency 'nokogiri', '= 1.6.8.1'
 
   s.add_development_dependency 'rack-test', '~> 0'
-  s.add_development_dependency 'sidekiq', '~> 4'
+  s.add_development_dependency 'sidekiq', '~> 5'
   s.add_development_dependency 'rubocop', '~> 0.47'
 end
