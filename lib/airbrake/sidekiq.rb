@@ -1,7 +1,7 @@
 module Airbrake
   module Sidekiq
     ##
-    # Provides integration with Sidekiq 2 and Sidekiq 3.
+    # Provides integration with Sidekiq 2, 4, 5.
     class ErrorHandler
       # rubocop:disable Lint/RescueException
       def call(_worker, context, _queue)
