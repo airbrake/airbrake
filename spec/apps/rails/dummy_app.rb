@@ -150,7 +150,36 @@ ActiveRecord::Base.connection.create_table(:books) do |t|
 end
 
 ActiveRecord::Migration.verbose = false
-require 'generators/delayed_job/templates/migration'
+
+# Modified version of: https://goo.gl/q8uCJq
+migration_template = File.open(
+  File.join(
+    $LOAD_PATH.grep(/delayed_job/)[0],
+    'generators/delayed_job/templates/migration.rb'
+  )
+)
+
+# need to eval the template with the migration_version intact
+migration_context = Class.new do
+  # rubocop:disable Style/AccessorMethodName
+  def get_binding
+    binding
+  end
+  # rubocop:enable Style/AccessorMethodName
+
+  def migration_version
+    return unless ActiveRecord::VERSION::MAJOR >= 5
+    "[#{ActiveRecord::VERSION::MAJOR}.#{ActiveRecord::VERSION::MINOR}]"
+  end
+end
+
+migration_ruby =
+  ERB.new(migration_template.read).result(migration_context.new.get_binding)
+migration_template.close
+# rubocop:disable Security/Eval
+eval(migration_ruby)
+# rubocop:enable Security/Eval
+
 ActiveRecord::Schema.define do
   CreateDelayedJobs.up
 end
