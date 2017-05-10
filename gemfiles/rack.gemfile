@@ -4,4 +4,4 @@ source "https://rubygems.org"
 
 gem "warden", "~> 1.2.6"
 
-gemspec :path => "../"
+gemspec path: "../"
