@@ -80,12 +80,22 @@ test:
         esac
       :
         parallel: true
-    # - ? |
-    #     case $CIRCLE_NODE_INDEX in
-    #       4) rvm-exec 2.4.1 bundle exec appraisal rails-edge rake spec:integration:rails ;;
-    #     esac
-    #   :
-    #     parallel: true
+    - ? |
+        case $CIRCLE_NODE_INDEX in
+          2) rvm-exec 2.2.7 bundle exec appraisal rails-5.1 rake spec:integration:rails ;;
+          3) rvm-exec 2.3.4 bundle exec appraisal rails-5.1 rake spec:integration:rails ;;
+          4) rvm-exec 2.4.1 bundle exec appraisal rails-5.1 rake spec:integration:rails ;;
+        esac
+      :
+        parallel: true
+    - ? |
+        case $CIRCLE_NODE_INDEX in
+          2) rvm-exec 2.2.7 bundle exec appraisal rails-edge rake spec:integration:rails ;;
+          3) rvm-exec 2.3.4 bundle exec appraisal rails-edge rake spec:integration:rails ;;
+          4) rvm-exec 2.4.1 bundle exec appraisal rails-edge rake spec:integration:rails ;;
+        esac
+      :
+        parallel: true
     - ? |
         case $CIRCLE_NODE_INDEX in
           0) rvm-exec 2.0.0-p645 bundle exec appraisal sinatra rake spec:integration:sinatra ;;
