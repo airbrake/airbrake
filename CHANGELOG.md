@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v6.1.0.rc.1][v6.1.0.rc.1] (May 10, 2017)
+
 * Started appending HTTP request info (method, headers & referer) from Rack to
   the `context` hash instead of the `environment` hash
   ([#703](https://github.com/airbrake/airbrake/pull/703))
@@ -285,3 +287,4 @@ Airbrake Changelog
 [v5.8.0]: https://github.com/airbrake/airbrake/releases/tag/v5.8.0
 [v5.8.1]: https://github.com/airbrake/airbrake/releases/tag/v5.8.1
 [v6.0.0]: https://github.com/airbrake/airbrake/releases/tag/v6.0.0
+[v6.1.0.rc.1]: https://github.com/airbrake/airbrake/releases/tag/v6.1.0.rc.1
