@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Started depending on
+  [airbrake-ruby-2.2.3](https://github.com/airbrake/airbrake-ruby/releases/tag/v2.2.3)
+  ([#741](https://github.com/airbrake/airbrake/pull/741))
+
 ### [v6.1.0.rc.1][v6.1.0.rc.1] (May 10, 2017)
 
 * Started appending HTTP request info (method, headers & referer) from Rack to
