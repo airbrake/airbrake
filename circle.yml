@@ -1,10 +1,5 @@
-machine:
-  ruby:
-    version: 2.4.1
-
 dependencies:
   override:
-    - bundle install
     - ? |
         case $CIRCLE_NODE_INDEX in
           0)
@@ -33,7 +28,12 @@ dependencies:
 
 test:
   override:
-    - bundle exec rubocop
+    - ? |
+        case $CIRCLE_NODE_INDEX in
+          4) rvm-exec 2.4.1 bundle exec rubocop ;;
+        esac
+      :
+        parallel: true
     - ? |
         case $CIRCLE_NODE_INDEX in
           0) rvm-exec 2.0.0-p645 bundle exec appraisal rails-3.2 rake spec:integration:rails ;;
