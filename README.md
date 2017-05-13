@@ -3,6 +3,7 @@ Airbrake
 
 [![Circle Build Status](https://circleci.com/gh/airbrake/airbrake.png?style=shield)](https://circleci.com/gh/airbrake/airbrake)
 [![Travis Build Status](https://travis-ci.org/airbrake/airbrake.svg?branch=master)](https://travis-ci.org/airbrake/airbrake)
+[![Code Climate](https://codeclimate.com/github/airbrake/airbrake.png)](https://codeclimate.com/github/airbrake/airbrake)
 [![Gem Version](https://badge.fury.io/rb/airbrake.svg)](http://badge.fury.io/rb/airbrake)
 [![Documentation Status](http://inch-ci.org/github/airbrake/airbrake.svg?branch=master)](http://inch-ci.org/github/airbrake/airbrake)
 [![Downloads](https://img.shields.io/gem/dt/airbrake.svg?style=flat)](https://rubygems.org/gems/airbrake)
