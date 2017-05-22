@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed `airbrake:deploy` Rake task not reporting deploys
+  ([#746](https://github.com/airbrake/airbrake/pull/746))
+
 ### [v6.1.0][v6.1.0] (May 11, 2017)
 
 * Started depending on
