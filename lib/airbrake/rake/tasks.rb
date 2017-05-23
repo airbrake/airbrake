@@ -67,8 +67,8 @@ namespace :airbrake do
 
       # Avoid loading the environment to speed up the deploy task and try guess
       # the initializer file location.
-      if initializer.exist?
-        load(initializer) unless Airbrake[:default]
+      if initializer.exist? && Airbrake[:default].is_a?(Airbrake::NilNotifier)
+        load(initializer)
       else
         Rake::Task[:environment].invoke
       end
