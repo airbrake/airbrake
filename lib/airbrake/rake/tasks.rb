@@ -74,13 +74,18 @@ namespace :airbrake do
       end
     end
 
-    Airbrake.create_deploy(
+    deploy_params = {
       environment: ENV['ENVIRONMENT'],
       username: ENV['USERNAME'],
       revision: ENV['REVISION'],
       repository: ENV['REPOSITORY'],
       version: ENV['VERSION']
-    )
+    }
+    promise = Airbrake.create_deploy(deploy_params)
+    promise.then do
+      puts "The #{deploy_params[:environment]} environment was deployed."
+    end
+    promise.rescue { |error| abort(error) }
   end
 
   desc 'Install a Heroku deploy hook to notify Airbrake of deploys'
