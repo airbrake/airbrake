@@ -23,7 +23,15 @@ module Airbrake
         new(user) if user
       end
 
+      def self.try_warden_authenticated?(rack_env)
+        controller = rack_env['action_controller.instance']
+        return unless controller.respond_to?(:warden)
+        return unless [-1, 0].include?(controller.method(:warden).arity)
+        controller.warden.authenticated?(scope: :user)
+      end
+      
       def self.try_current_user(rack_env)
+        return unless self.try_warden_authenticated?(rack_env)
         controller = rack_env['action_controller.instance']
         return unless controller.respond_to?(:current_user, true)
         return unless [-1, 0].include?(controller.method(:current_user).arity)
