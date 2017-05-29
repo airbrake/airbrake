@@ -72,6 +72,7 @@ framework | removed | n/a
 rescue_rake_exceptions | removed | n/a
 user_attributes | removed | n/a
 test_mode | removed | n/a
+ignore_only | removed | n/a
 
 * <a name="api-key"></a>
   The `api_key` option was renamed to `project_key`.
