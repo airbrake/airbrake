@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed Rails config generation on Ruby 2.1
+  ([#753](https://github.com/airbrake/airbrake/pull/753))
+
 ### [v6.1.1][v6.1.1] (May 23, 2017)
 
 * Fixed `airbrake:deploy` Rake task not reporting deploys
