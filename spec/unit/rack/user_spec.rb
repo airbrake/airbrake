@@ -189,5 +189,34 @@ RSpec.describe Airbrake::Rack::User do
         expect(user_data).to be_empty
       end
     end
+
+    context "when Rack user's field expects a parameter" do
+      let(:user_data) do
+        described_class.new(
+          Class.new do
+            def name(required_param)
+              "my name is #{required_param}"
+            end
+
+            def id(required_param, *optional_params)
+              "id is #{required_param} #{optional_params.inspect}"
+            end
+
+            def username(*optional_params)
+              "username is #{optional_params.inspect}"
+            end
+          end.new
+        ).as_json
+      end
+
+      it "does not call the method if it has required parameters" do
+        expect(user_data[:user]).not_to include(:id)
+        expect(user_data[:user]).not_to include(:name)
+      end
+
+      it "calls the method if it has a variable number of optional parameters" do
+        expect(user_data[:user]).to include(:username)
+      end
+    end
   end
 end
