@@ -29,6 +29,7 @@ module Airbrake
         context = notice[:context]
 
         context[:url] = request.url
+        context[:userAddr] = request.ip
         context[:userAgent] = request.user_agent
 
         add_framework_version(context)
