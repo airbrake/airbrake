@@ -5,6 +5,8 @@ Airbrake Changelog
 
 * Fixed Rails config generation on Ruby 2.1
   ([#753](https://github.com/airbrake/airbrake/pull/753))
+* Added support for `context/userAddr`
+  ([#756](https://github.com/airbrake/airbrake/pull/756))
 
 ### [v6.1.1][v6.1.1] (May 23, 2017)
 
