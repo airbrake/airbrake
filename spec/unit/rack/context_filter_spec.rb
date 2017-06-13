@@ -44,6 +44,28 @@ RSpec.describe Airbrake::Rack::ContextFilter do
     end
   end
 
+  context "when visitor address is present" do
+    let(:opts) do
+      { 'REMOTE_ADDR' => '1.2.3.4' }
+    end
+
+    it "adds userAddr to the context" do
+      subject.call(notice)
+      expect(notice[:context][:userAddr]).to eq('1.2.3.4')
+    end
+  end
+
+  context "when visitor is behind a proxy or load balancer" do
+    let(:opts) do
+      { 'HTTP_X_FORWARDED_FOR' => '8.8.8.8, 9.9.9.9' }
+    end
+
+    it "adds userAddr to the context" do
+      subject.call(notice)
+      expect(notice[:context][:userAddr]).to eq('9.9.9.9')
+    end
+  end
+
   context "when controller is present" do
     let(:controller) do
       double.tap do |ctrl|
