@@ -7,6 +7,8 @@ Airbrake Changelog
   ([#753](https://github.com/airbrake/airbrake/pull/753))
 * Added support for `context/userAddr`
   ([#756](https://github.com/airbrake/airbrake/pull/756))
+* Fixed Rack integration support for user fields with required parameters
+  ([#755](https://github.com/airbrake/airbrake/pull/755))
 
 ### [v6.1.1][v6.1.1] (May 23, 2017)
 
