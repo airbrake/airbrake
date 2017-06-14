@@ -50,7 +50,11 @@ module Airbrake
       private
 
       def try_to_get(key)
-        String(@user.__send__(key)) if @user.respond_to?(key)
+        return unless @user.respond_to?(key)
+        # try methods with no arguments or with variable number of arguments,
+        # where none of them are required
+        return unless @user.method(key).arity.between?(-1, 0)
+        String(@user.__send__(key))
       end
 
       def full_name
