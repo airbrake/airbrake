@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v6.1.2][v6.1.2] (June 15, 2017)
+
 * Fixed Rails config generation on Ruby 2.1
   ([#753](https://github.com/airbrake/airbrake/pull/753))
 * Added support for `context/userAddr`
@@ -308,3 +310,4 @@ Airbrake Changelog
 [v6.1.0.rc.1]: https://github.com/airbrake/airbrake/releases/tag/v6.1.0.rc.1
 [v6.1.0]: https://github.com/airbrake/airbrake/releases/tag/v6.1.0
 [v6.1.1]: https://github.com/airbrake/airbrake/releases/tag/v6.1.1
+[v6.1.2]: https://github.com/airbrake/airbrake/releases/tag/v6.1.2
