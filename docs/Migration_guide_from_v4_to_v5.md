@@ -216,7 +216,7 @@ test_mode | removed | n/a
   [blacklist filter](#blacklist-filter).
 <sup>[[link](#params-filters)]</sup>
 
-* <a name="params-whitelist-filters">
+* <a name="params-whitelist-filters"></a>
   The `params_whitelist_filters` option was replaced with the [whitelist
   filter](#whitelist-filter)
 <sup>[[link](#whitelist-filter)]</sup>
