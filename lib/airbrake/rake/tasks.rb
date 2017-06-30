@@ -1,73 +1,45 @@
+require 'airbrake-ruby'
+
 namespace :airbrake do
   desc 'Verify your gem installation by sending a test exception'
-  task test: :environment do
-    require 'pp'
-
-    begin
-      raise StandardError, 'Exception from the test Rake task'
-    rescue => ex
-      response = Airbrake.notify_sync(ex)
+  task test: (:environment if defined?(Rails)) do
+    unless Airbrake.configured?
+      raise Airbrake::Error, 'airbrake-ruby is not configured'
     end
 
-    notifiers = Airbrake.instance_variable_get(:@notifiers).map do |name, notif|
-      cfg = notif.instance_variable_get(:@config)
-      filters = notif.instance_variable_get(:@filter_chain)
-      "#{name}:\n  " + [cfg, filters].pretty_inspect
-    end.join("\n")
+    require 'pp'
 
-    if !response
-      puts <<-NORESPONSE.gsub(/^\s+\|/, '')
-        |Couldn't send a test exception. There are two reasons for this:
-        |
-        |1. Airbrake ignored this exception due to misconfigured filters
-        |2. Airbrake was configured to ignore the '#{Rails.env}' environment.
-        |   To fix this try one of the following:
-        |     * specify another environment via RAILS_ENV
-        |     * temporarily unignore the '#{Rails.env}' environment
-      NORESPONSE
-    elsif response['error']
+    response = Airbrake.notify_sync('Exception from the test Rake task')
+    if response['code']
       puts <<-ERROR.gsub(/^\s+\|/, '')
-        |Error occurred: #{response['error']}
-        |Make sure that your Project ID and Project Key are correct:
-        |https://github.com/airbrake/airbrake-ruby#project_id--project_key
+        |Couldn't send a test exception:
+        |#{response['type']}: #{response['message']} (#{response['code']})
+        |
+        |Possible problems:
+        |  1. Project ID or project key is incorrect
+        |  2. Exception was ignored due to misconfigured filters
+        |  3. The environment this task runs in is ignored by Airbrake
       ERROR
     else
       puts <<-OUTPUT.gsub(/^\s+\|/, '')
-        |[ruby]
-        |description: #{RUBY_DESCRIPTION}
-        |
-        |#{if defined?(Rails)
-             "[rails]\nversion: #{Rails::VERSION::STRING}"
-           elsif defined?(Sinatra)
-             "[sinatra]\nversion: #{Sinatra::VERSION}"
-           end}
-        |
-        |[airbrake]
-        |version: #{Airbrake::AIRBRAKE_VERSION}
-        |
-        |[airbrake-ruby]
-        |version: #{Airbrake::Notice::NOTIFIER[:version]}
-        |
-        |[notifiers]
-        |#{notifiers}
-        |
-        |The output above contains useful information about your environment. Our support
-        |team may request this information if you have problems using the Airbrake gem;
-        |we would be really grateful if you could attach the output to your message.
-        |
-        |The test exception was sent. Find it here: #{response['url']}
+        |A test exception was sent to Airbrake.
+        |Find it here: #{response['url']}
       OUTPUT
     end
   end
 
   desc 'Notify Airbrake of a new deploy'
   task :deploy do
+    unless Airbrake.configured?
+      raise Airbrake::Error, 'airbrake-ruby is not configured'
+    end
+
     if defined?(Rails)
       initializer = Rails.root.join('config', 'initializers', 'airbrake.rb')
 
       # Avoid loading the environment to speed up the deploy task and try guess
       # the initializer file location.
-      if initializer.exist? && Airbrake[:default].is_a?(Airbrake::NilNotifier)
+      if initializer.exist? && !Airbrake.configured?
         load(initializer)
       else
         Rake::Task[:environment].invoke

@@ -6,6 +6,8 @@ Airbrake Changelog
 * Started depending on
   [airbrake-ruby-2.3.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v2.3.0)
   ([#764](https://github.com/airbrake/airbrake/pull/764))
+* Fixed Rake integration not reporting test errors or deploys in plain Ruby
+  projects ([#763](https://github.com/airbrake/airbrake/pull/763))
 
 ### [v6.1.2][v6.1.2] (June 15, 2017)
 
