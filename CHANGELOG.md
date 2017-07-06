@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Started depending on
+  [airbrake-ruby-2.3.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v2.3.0)
+  ([#764](https://github.com/airbrake/airbrake/pull/764))
+
 ### [v6.1.2][v6.1.2] (June 15, 2017)
 
 * Fixed Rails config generation on Ruby 2.1
