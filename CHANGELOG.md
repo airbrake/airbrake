@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v6.2.0][v6.2.0] (July 8, 2017)
+
 * Started depending on
   [airbrake-ruby-2.3.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v2.3.0)
   ([#764](https://github.com/airbrake/airbrake/pull/764))
@@ -317,3 +319,4 @@ Airbrake Changelog
 [v6.1.0]: https://github.com/airbrake/airbrake/releases/tag/v6.1.0
 [v6.1.1]: https://github.com/airbrake/airbrake/releases/tag/v6.1.1
 [v6.1.2]: https://github.com/airbrake/airbrake/releases/tag/v6.1.2
+[v6.2.0]: https://github.com/airbrake/airbrake/releases/tag/v6.2.0
