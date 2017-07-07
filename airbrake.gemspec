@@ -45,6 +45,9 @@ DESC
   s.add_development_dependency 'nokogiri', '= 1.6.8.1'
 
   s.add_development_dependency 'rack-test', '~> 0'
-  s.add_development_dependency 'sidekiq', '~> 5'
   s.add_development_dependency 'rubocop', '~> 0.47'
+
+  if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
+    s.add_development_dependency 'sidekiq', '~> 5'
+  end
 end
