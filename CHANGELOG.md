@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v6.2.1][v6.2.1] (July 15, 2017)
+
 * Fixed the `airbrake:deploy` Rake task
   ([#769](https://github.com/airbrake/airbrake/pull/769))
 
@@ -323,3 +325,4 @@ Airbrake Changelog
 [v6.1.1]: https://github.com/airbrake/airbrake/releases/tag/v6.1.1
 [v6.1.2]: https://github.com/airbrake/airbrake/releases/tag/v6.1.2
 [v6.2.0]: https://github.com/airbrake/airbrake/releases/tag/v6.2.0
+[v6.2.1]: https://github.com/airbrake/airbrake/releases/tag/v6.2.1
