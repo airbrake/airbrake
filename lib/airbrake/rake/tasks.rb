@@ -30,10 +30,6 @@ namespace :airbrake do
 
   desc 'Notify Airbrake of a new deploy'
   task :deploy do
-    unless Airbrake.configured?
-      raise Airbrake::Error, 'airbrake-ruby is not configured'
-    end
-
     if defined?(Rails)
       initializer = Rails.root.join('config', 'initializers', 'airbrake.rb')
 
@@ -44,6 +40,10 @@ namespace :airbrake do
       else
         Rake::Task[:environment].invoke
       end
+    end
+
+    unless Airbrake.configured?
+      raise Airbrake::Error, 'airbrake-ruby is not configured'
     end
 
     deploy_params = {

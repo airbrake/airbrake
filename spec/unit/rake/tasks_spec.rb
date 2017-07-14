@@ -35,6 +35,22 @@ RSpec.describe "airbrake/rake/tasks" do
      %w[version v2.0]].each do |(key, val)|
       include_examples 'deploy payload', key, val
     end
+
+    context "when Airbrake is not configured" do
+      let(:deploy_endpoint) do
+        'https://airbrake.io/api/v3/projects/113743/notices?key=fd04e13d806a90f96614ad8e529b2822'
+      end
+
+      before do
+        stub_request(:post, deploy_endpoint)
+        expect(Airbrake).to receive(:configured?).and_return(false)
+      end
+
+      it "raises error" do
+        expect { task.invoke }.
+          to raise_error(Airbrake::Error, 'airbrake-ruby is not configured')
+      end
+    end
   end
 
   describe "airbrake:install_heroku_deploy_hook" do
