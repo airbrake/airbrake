@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Deprecated requiring `airbrake/capistrano/tasks` in favour of
+  `airbrake/capistrano` ([#778](https://github.com/airbrake/airbrake/pull/778))
+
 ### [v6.2.1][v6.2.1] (July 15, 2017)
 
 * Fixed the `airbrake:deploy` Rake task
