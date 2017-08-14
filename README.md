@@ -506,7 +506,7 @@ Capfile:
 
 ```ruby
 # Capfile
-require 'airbrake/capistrano/tasks'
+require 'airbrake/capistrano'
 ```
 
 If you use Capistrano 3, define the `after :finished` hook, which executes the
