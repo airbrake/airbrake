@@ -15,8 +15,8 @@ module Airbrake
           # Avoid the warning about deprecated strings.
           # Insert after DebugExceptions, since ConnectionManagement doesn't
           # exist in Rails 5 anymore.
-          app.config.middleware.insert_after(
-            ActionDispatch::DebugExceptions,
+          app.config.middleware.insert_before(
+            ActionDispatch::Executor,
             Airbrake::Rack::Middleware
           )
         elsif defined?(ActiveRecord)
