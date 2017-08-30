@@ -12,6 +12,9 @@ RSpec.shared_examples 'rack examples' do
   end
 
   before do
+    # Make sure the Logger integration doesn't get in the way.
+    allow_any_instance_of(Logger).to receive(:airbrake_notifier).and_return(nil)
+
     stub_request(:post, endpoint).to_return(status: 201, body: '{}')
   end
 
@@ -88,39 +91,33 @@ RSpec.shared_examples 'rack examples' do
         get '/crash', nil, 'HTTP_USER_AGENT' => 'Bot', 'HTTP_REFERER' => 'bingo.com'
       end
 
-      it "features url" do
+      it "contains url" do
         wait_for_a_request_with_body(
           %r("context":{.*"url":"http://example\.org/crash".*})
         )
       end
 
-      it "features hostname" do
+      it "contains hostname" do
         wait_for_a_request_with_body(/"context":{.*"hostname":".+".*}/)
       end
 
-      it "features userAgent" do
+      it "contains userAgent" do
         wait_for_a_request_with_body(/"context":{.*"userAgent":"Bot".*}/)
       end
-    end
-  end
 
-  describe "environment payload" do
-    before do
-      get '/crash', nil, 'HTTP_REFERER' => 'bingo.com'
-    end
+      it "contains referer" do
+        wait_for_a_request_with_body(/"context":{.*"referer":"bingo.com".*}/)
+      end
 
-    it "features referer" do
-      wait_for_a_request_with_body(/"environment":{.*"referer":"bingo.com".*}/)
-    end
+      it "contains HTTP headers" do
+        wait_for_a_request_with_body(
+          /"context":{.*"headers":{.*"CONTENT_LENGTH":"0".*}/
+        )
+      end
 
-    it "contains HTTP headers" do
-      wait_for_a_request_with_body(
-        /"environment":{.*"headers":{.*"CONTENT_LENGTH":"0".*}/
-      )
-    end
-
-    it "contains HTTP method" do
-      wait_for_a_request_with_body(/"environment":{.*"httpMethod":"GET".*}/)
+      it "contains HTTP method" do
+        wait_for_a_request_with_body(/"context":{.*"httpMethod":"GET".*}/)
+      end
     end
   end
 end

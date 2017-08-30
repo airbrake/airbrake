@@ -85,18 +85,36 @@ RSpec.describe "Rails integration specs" do
   end
 
   describe "Active Record callbacks" do
-    it "reports exceptions in after_commit callbacks" do
-      get '/active_record_after_commit'
-      wait_for_a_request_with_body(
-        /"type":"AirbrakeTestError","message":"after_commit"/
-      )
-    end
+    if Gem::Version.new(Rails.version) >= Gem::Version.new('5.1.0.alpha')
+      it "reports exceptions in after_commit callbacks" do
+        get '/active_record_after_commit'
+        wait_for(
+          a_request(:post, endpoint).
+          with(body: /"type":"AirbrakeTestError","message":"after_commit"/)
+        ).to have_been_made.twice
+      end
 
-    it "reports exceptions in after_rollback callbacks" do
-      get '/active_record_after_rollback'
-      wait_for_a_request_with_body(
-        /"type":"AirbrakeTestError","message":"after_rollback"/
-      )
+      it "reports exceptions in after_rollback callbacks" do
+        get '/active_record_after_rollback'
+        wait_for(
+          a_request(:post, endpoint).
+          with(body: /"type":"AirbrakeTestError","message":"after_rollback"/)
+        ).to have_been_made.twice
+      end
+    else
+      it "reports exceptions in after_commit callbacks" do
+        get '/active_record_after_commit'
+        wait_for_a_request_with_body(
+          /"type":"AirbrakeTestError","message":"after_commit"/
+        )
+      end
+
+      it "reports exceptions in after_rollback callbacks" do
+        get '/active_record_after_rollback'
+        wait_for_a_request_with_body(
+          /"type":"AirbrakeTestError","message":"after_rollback"/
+        )
+      end
     end
   end
 
@@ -123,6 +141,11 @@ RSpec.describe "Rails integration specs" do
       end
 
       context "when Airbrake is not configured" do
+        before do
+          # Make sure the Logger intergration doesn't get in the way.
+          allow_any_instance_of(Logger).to receive(:airbrake_notifier).and_return(nil)
+        end
+
         it "doesn't report errors" do
           allow(Airbrake).to receive(:build_notice).and_return(nil)
           allow(Airbrake).to receive(:notify)
@@ -151,39 +174,94 @@ RSpec.describe "Rails integration specs" do
   end
 
   describe "Resque workers" do
-    it "reports exceptions occurring in Resque workers" do
-      with_resque { get '/resque' }
+    context "when Airbrake is configured" do
+      it "reports exceptions occurring in Resque workers" do
+        with_resque { get '/resque' }
 
-      wait_for_a_request_with_body(
-        /"message":"resque\serror".*"params":{.*
+        wait_for_a_request_with_body(
+          /"message":"resque\serror".*"params":{.*
          "class":"BingoWorker","args":\["bango","bongo"\].*}/x
-      )
+        )
+      end
+    end
+
+    context "when Airbrake is not configured" do
+      before do
+        @notifiers = Airbrake.instance_variable_get(:@notifiers)
+        @default_notifier = @notifiers.delete(:default)
+      end
+
+      after do
+        @notifiers[:default] = @default_notifier
+      end
+
+      it "doesn't report errors" do
+        with_resque { get '/resque' }
+
+        wait_for(
+          a_request(:post, endpoint).
+            with(body: /"message":"resque error"/)
+        ).not_to have_been_made
+      end
     end
   end
 
-  # Delayed Job doesn't support Ruby 1.9.2
-  if Gem::Version.new(RUBY_VERSION) > Gem::Version.new('1.9.2')
-    describe "DelayedJob jobs" do
-      it "reports exceptions occurring in DelayedJob jobs" do
+  describe "DelayedJob jobs" do
+    it "reports exceptions occurring in DelayedJob jobs" do
+      get '/delayed_job'
+      sleep 2
+
+      wait_for_a_request_with_body(
+        %r("message":"delayed_job\serror".*"params":{.*
+           "handler":"---\s!ruby/struct:BangoJob\\nbingo:\s
+                     bingo\\nbongo:\sbongo\\n".*})x
+      )
+
+      # Two requests are performed during this example. We care only about one.
+      # Sleep guarantees that we let the unimportant request occur here and not
+      # elsewhere.
+      sleep 2
+    end
+
+    context "when Airbrake is not configured" do
+      before do
+        # Make sure the Logger intergration doesn't get in the way.
+        allow_any_instance_of(Logger).to receive(:airbrake_notifier).and_return(nil)
+
+        @notifiers = Airbrake.instance_variable_get(:@notifiers)
+        @default_notifier = @notifiers.delete(:default)
+      end
+
+      after do
+        @notifiers[:default] = @default_notifier
+      end
+
+      it "doesn't report errors" do
+        # Make sure we don't call `build_notice` more than 1 time. Rack
+        # integration will try to handle error 500 and we want to prevent
+        # that: https://github.com/airbrake/airbrake/pull/583
+        allow_any_instance_of(Airbrake::Rack::Middleware).to(
+          receive(:notify_airbrake).
+            and_return(nil)
+        )
+
         get '/delayed_job'
         sleep 2
 
-        wait_for_a_request_with_body(
-          %r("message":"delayed_job\serror".*"params":{.*
-           "handler":"---\s!ruby/struct:BangoJob\\nbingo:\s
-                     bingo\\nbongo:\sbongo\\n".*})x
-        )
-
-        # Two requests are performed during this example. We care only about one.
-        # Sleep guarantees that we let the unimportant request occur here and not
-        # elsewhere.
-        sleep 2
+        wait_for(
+          a_request(:post, endpoint).
+            with(body: /"message":"delayed_job error"/)
+        ).not_to have_been_made
       end
     end
   end
 
   describe "notice payload when a user is authenticated without Warden" do
     context "when the current_user method is defined" do
+      before do
+        allow(Warden::Proxy).to receive(:new) { nil }
+      end
+
       it "contains the user information" do
         user = OpenStruct.new(id: 1, email: 'qa@example.com', username: 'qa-dept')
         allow_any_instance_of(DummyController).to receive(:current_user) { user }

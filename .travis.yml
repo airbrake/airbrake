@@ -1,0 +1,35 @@
+language: ruby
+sudo: false
+
+rvm:
+  - jruby-9.1.8.0
+
+env:
+  global:
+    - JRUBY_OPTS="--dev -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF"
+
+cache:
+  bundler: true
+
+before_install: gem install bundler
+
+install:
+  - bundle install --jobs=15
+  - bundle exec appraisal install --jobs=15
+
+script:
+  - bundle exec appraisal rails-3.2 rake spec:integration:rails
+  - bundle exec appraisal rails-4.0 rake spec:integration:rails
+  - bundle exec appraisal rails-4.1 rake spec:integration:rails
+  - bundle exec appraisal rails-4.2 rake spec:integration:rails
+
+  # Sinatra specs fail on JRuby due to an unknwon Rack::Test issue:
+  # Example: https://travis-ci.org/airbrake/airbrake/builds/230467859
+  # - bundle exec appraisal sinatra rake spec:integration:sinatra
+
+  - bundle exec appraisal rack rake spec:integration:rack
+  - bundle exec rake spec:unit
+
+notifications:
+  slack:
+    secure: m2uvmZiXuUrpdyEcfsWA1lKe3rNaGmuxrBl++gLCiwyNM5SDX82pl71vc8yTeXsZQBsDyQDItjBq2T2QeEqQu584ABjnnu4tS/+uPpwQvZdfW/4yiOa218RGK/pXOm5DpK8S0ouEFCUkcH+C/92z7OeGaLFYCYb006uE26Acq2g=

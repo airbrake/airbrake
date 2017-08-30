@@ -2,13 +2,30 @@
 require 'webmock'
 require 'webmock/rspec'
 require 'rspec/wait'
-require 'pry'
 require 'rack'
 require 'rack/test'
 require 'rake'
+require 'pry'
 
 require 'airbrake'
 require 'airbrake/rake/tasks'
+
+Airbrake.configure do |c|
+  c.project_id = 113743
+  c.project_key = 'fd04e13d806a90f96614ad8e529b2822'
+  c.logger = Logger.new('/dev/null')
+  c.app_version = '1.2.3'
+  c.workers = 5
+end
+
+RSpec.configure do |c|
+  c.order = 'random'
+  c.color = true
+  c.disable_monkey_patching!
+  c.wait_timeout = 3
+
+  c.include Rack::Test::Methods
+end
 
 # Load integration tests only when they're run through appraisals.
 if ENV['APPRAISAL_INITIALIZED']
@@ -48,15 +65,15 @@ if ENV['APPRAISAL_INITIALIZED']
 
     require 'resque'
     require 'resque_spec'
-    require 'airbrake/resque/failure'
+    require 'airbrake/resque'
     Resque::Failure.backend = Resque::Failure::Airbrake
 
     require 'delayed_job'
     require 'delayed_job_active_record'
-    require 'airbrake/delayed_job/plugin'
+    require 'airbrake/delayed_job'
     Delayed::Worker.delay_jobs = false
 
-    require 'airbrake/rails/railtie'
+    require 'airbrake/rails'
 
     load 'apps/rails/dummy_task.rake'
     require 'apps/rails/dummy_app'
@@ -73,23 +90,6 @@ if ENV['APPRAISAL_INITIALIZED']
   rescue LoadError
     puts '** Skipped Rack specs'
   end
-end
-
-RSpec.configure do |c|
-  c.order = 'random'
-  c.color = true
-  c.disable_monkey_patching!
-  c.wait_timeout = 3
-
-  c.include Rack::Test::Methods
-end
-
-Airbrake.configure do |c|
-  c.project_id = 113743
-  c.project_key = 'fd04e13d806a90f96614ad8e529b2822'
-  c.logger = Logger.new('/dev/null')
-  c.app_version = '1.2.3'
-  c.workers = 5
 end
 
 # Make sure tests that use async requests fail.

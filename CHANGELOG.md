@@ -3,6 +3,165 @@ Airbrake Changelog
 
 ### master
 
+* Deprecated requiring `airbrake/capistrano/tasks` in favour of
+  `airbrake/capistrano` ([#778](https://github.com/airbrake/airbrake/pull/778))
+
+### [v6.2.1][v6.2.1] (July 15, 2017)
+
+* Fixed the `airbrake:deploy` Rake task
+  ([#769](https://github.com/airbrake/airbrake/pull/769))
+
+### [v6.2.0][v6.2.0] (July 8, 2017)
+
+* Started depending on
+  [airbrake-ruby-2.3.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v2.3.0)
+  ([#764](https://github.com/airbrake/airbrake/pull/764))
+* Fixed Rake integration not reporting test errors or deploys in plain Ruby
+  projects ([#763](https://github.com/airbrake/airbrake/pull/763))
+
+### [v6.1.2][v6.1.2] (June 15, 2017)
+
+* Fixed Rails config generation on Ruby 2.1
+  ([#753](https://github.com/airbrake/airbrake/pull/753))
+* Added support for `context/userAddr`
+  ([#756](https://github.com/airbrake/airbrake/pull/756))
+* Fixed Rack integration support for user fields with required parameters
+  ([#755](https://github.com/airbrake/airbrake/pull/755))
+
+### [v6.1.1][v6.1.1] (May 23, 2017)
+
+* Fixed `airbrake:deploy` Rake task not reporting deploys
+  ([#746](https://github.com/airbrake/airbrake/pull/746))
+
+### [v6.1.0][v6.1.0] (May 11, 2017)
+
+* Started depending on
+  [airbrake-ruby-2.2.3](https://github.com/airbrake/airbrake-ruby/releases/tag/v2.2.3)
+  ([#741](https://github.com/airbrake/airbrake/pull/741))
+
+### [v6.1.0.rc.1][v6.1.0.rc.1] (May 10, 2017)
+
+* Started appending HTTP request info (method, headers & referer) from Rack to
+  the `context` hash instead of the `environment` hash
+  ([#703](https://github.com/airbrake/airbrake/pull/703))
+* Fixed Rack integration overriding `notice[:params]`
+  ([#716](https://github.com/airbrake/airbrake/pull/716))
+* Started depending on
+  [airbrake-ruby-2.2.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v2.2.0)
+  ([#724](https://github.com/airbrake/airbrake/pull/724))
+* Deprecated requiring `airbrake/delayed_job/plugin` in favour of
+  `airbrake/delayed_job` ([#719](https://github.com/airbrake/airbrake/pull/719))
+* Deprecated requiring `airbrake/logger/airbrake_logger` in favour of
+  `airbrake/logger` ([#719](https://github.com/airbrake/airbrake/pull/719))
+* Deprecated requiring `airbrake/rails/railtie` in favour of `airbrake/railtie`
+  ([#719](https://github.com/airbrake/airbrake/pull/719))
+* Deprecated requiring `airbrake/rake/task_ext` in favour of `airbrake/rake`
+  ([#719](https://github.com/airbrake/airbrake/pull/719))
+* Deprecated requiring `airbrake/resque/failure` in favour of `airbrake/resque`
+  ([#719](https://github.com/airbrake/airbrake/pull/719))
+* Deprecated requiring `airbrake/shoryuken/error_handler` in favour of
+  `airbrake/shoryuken` ([#719](https://github.com/airbrake/airbrake/pull/719))
+* Deprecated requiring `airbrake/sidekiq/error_handler` in favour of
+  `airbrake/sidekiq` ([#719](https://github.com/airbrake/airbrake/pull/719))
+* Fixed `airbrake:deploy` task raising `AirbrakeError` when Rails `:environment`
+  is already required by some other task
+  ([#721](https://github.com/airbrake/airbrake/pull/721))
+
+### [v6.0.0][v6.0.0] (March 21, 2017)
+
+* **IMPORTANT:** removed `Airbrake.add_rack_builder` deprecated
+  in [v5.7.0.rc.1](#v570rc1-january-24-2017)
+  ([#698](https://github.com/airbrake/airbrake/pull/698))
+* Started always closing the default notifier to stop losing exceptions
+  occurring in Rake & Resque integrations
+  ([#695](https://github.com/airbrake/airbrake/pull/695))
+* Started depending on
+  [airbrake-ruby-2.0.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v2.0.0)
+  ([#699](https://github.com/airbrake/airbrake/pull/699))
+
+### [v5.8.1][v5.8.1] (March 2, 2017)
+
+* Fixed `NoMethodError` when initializing the Rack integration without a
+  configured notifier ([#692](https://github.com/airbrake/airbrake/pull/692))
+
+### [v5.8.0][v5.8.0] (March 2, 2017)
+
+* Added a mention of the Logger integration to the Rails initializer
+  ([#688](https://github.com/airbrake/airbrake/pull/688))
+
+### [v5.8.0.rc.3][v5.8.0.rc.3] (March 1, 2017)
+
+* Fixed user reporting in the Rails integration, when `current_user` is a
+  private method ([#684](https://github.com/airbrake/airbrake/pull/684))
+* Completely refatored the Logger integration. It no longer monkey-patches
+  `Logger`. There's also no need to `require` it. It stopped supporting
+  loglevels below `Logger::WARN`
+  ([#685](https://github.com/airbrake/airbrake/pull/685))
+
+### [v5.8.0.rc.2][v5.8.0.rc.2] (February 27, 2017)
+
+* Fixed Rails controller helper methods throwing `NameError`
+  ([#681](https://github.com/airbrake/airbrake/pull/681))
+
+### [v5.8.0.rc.1][v5.8.0.rc.1] (February 27, 2017)
+
+* **IMPORTANT:** added Shoryuken integration
+  ([#669](https://github.com/airbrake/airbrake/pull/669))
+* **IMPORTANT:** added Logger integration
+  ([#674](https://github.com/airbrake/airbrake/pull/674))
+* Started depending on
+  [airbrake-ruby-1.8.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v1.8.0)
+
+### [v5.7.1][v5.7.1] (February 10, 2017)
+
+* Fixed version reporting for Rack applications with Rails-related dependencies
+  ([#660](https://github.com/airbrake/airbrake/pull/660))
+* Fixed unwanted exceptions for Sidekiq, DelayedJob & Resque when Airbrake is
+  unconfigured ([#665](https://github.com/airbrake/airbrake/pull/665))
+
+### [v5.7.0][v5.7.0] (January 26, 2017)
+
+* Included `Airbrake::Rack::RequestBodyFilter` to the Rails config generator
+  (commented by default) ([#658](https://github.com/airbrake/airbrake/pull/658))
+
+### [v5.7.0.rc.1][v5.7.0.rc.1] (January 24, 2017)
+
+* **IMPORTANT:** support for Ruby 1.9.2, 1.9.3 & JRuby (1.9-mode) is dropped
+  ([#646](https://github.com/airbrake/airbrake/pull/646))
+* **IMPORTANT:** deprecated `Airbrake.add_rack_builder` public method call
+  ([#651](https://github.com/airbrake/airbrake/pull/651))
+* Read up to 4096 bytes from Rack request's body (increased from 512)
+  ([#627](https://github.com/airbrake/airbrake/pull/627))
+* Fixed unwanted authentication when calling `current_user`, when Warden is
+  present ([#643](https://github.com/airbrake/airbrake/pull/643))
+* Started depending on
+  [airbrake-ruby-1.7.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v1.7.0)
+* Stopped collecting HTTP request bodies by default, which started happening
+  since [v5.6.1](#v561-october-24-2016). Due to security concerns we now make
+  this behaviour optional. Users who need this information can use a new
+  predefined filter called `Airbrake::Rack::RequestFilter`
+  ([#654](https://github.com/airbrake/airbrake/pull/654))
+
+### [v5.6.1][v5.6.1] (October 24, 2016)
+
+* Fixed Rails bug with regard to the `current_user` method signature having
+  parameters, while the library expected none
+  ([#619](https://github.com/airbrake/airbrake/pull/619))
+* Started collecting HTTP request body for Rack compliant apps
+  ([#624](https://github.com/airbrake/airbrake/pull/624))
+
+### [v5.6.0][v5.6.0] (October 18, 2016)
+
+* Added support for multiple notifiers for Rack middleware
+  ([#515](https://github.com/airbrake/airbrake/pull/515))
+* Started depending on
+  [airbrake-ruby-1.6.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v1.6.0)
+
+### [v5.5.0][v5.5.0] (September 14, 2016)
+
+* Started depending on
+  [airbrake-ruby-1.5.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v1.5.0)
+
 ### [v5.4.5][v5.4.5] (August 23, 2016)
 
 * Fixed possible SystemStackError when using ActiveJob integration
@@ -152,3 +311,21 @@ Airbrake Changelog
 [v5.4.3]: https://github.com/airbrake/airbrake/releases/tag/v5.4.3
 [v5.4.4]: https://github.com/airbrake/airbrake/releases/tag/v5.4.4
 [v5.4.5]: https://github.com/airbrake/airbrake/releases/tag/v5.4.5
+[v5.5.0]: https://github.com/airbrake/airbrake/releases/tag/v5.5.0
+[v5.6.0]: https://github.com/airbrake/airbrake/releases/tag/v5.6.0
+[v5.6.1]: https://github.com/airbrake/airbrake/releases/tag/v5.6.1
+[v5.7.0.rc.1]: https://github.com/airbrake/airbrake/releases/tag/v5.7.0.rc.1
+[v5.7.0]: https://github.com/airbrake/airbrake/releases/tag/v5.7.0
+[v5.7.1]: https://github.com/airbrake/airbrake/releases/tag/v5.7.1
+[v5.8.0.rc.1]: https://github.com/airbrake/airbrake/releases/tag/v5.8.0.rc.1
+[v5.8.0.rc.2]: https://github.com/airbrake/airbrake/releases/tag/v5.8.0.rc.2
+[v5.8.0.rc.3]: https://github.com/airbrake/airbrake/releases/tag/v5.8.0.rc.3
+[v5.8.0]: https://github.com/airbrake/airbrake/releases/tag/v5.8.0
+[v5.8.1]: https://github.com/airbrake/airbrake/releases/tag/v5.8.1
+[v6.0.0]: https://github.com/airbrake/airbrake/releases/tag/v6.0.0
+[v6.1.0.rc.1]: https://github.com/airbrake/airbrake/releases/tag/v6.1.0.rc.1
+[v6.1.0]: https://github.com/airbrake/airbrake/releases/tag/v6.1.0
+[v6.1.1]: https://github.com/airbrake/airbrake/releases/tag/v6.1.1
+[v6.1.2]: https://github.com/airbrake/airbrake/releases/tag/v6.1.2
+[v6.2.0]: https://github.com/airbrake/airbrake/releases/tag/v6.2.0
+[v6.2.1]: https://github.com/airbrake/airbrake/releases/tag/v6.2.1

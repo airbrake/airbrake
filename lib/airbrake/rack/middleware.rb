@@ -8,8 +8,38 @@ module Airbrake
     # The middleware automatically sends information about the framework that
     # uses it (name and version).
     class Middleware
-      def initialize(app)
+      ##
+      # @return [Array<Class>] the list of Rack filters that read Rack request
+      #   information and append it to notices
+      RACK_FILTERS = [
+        Airbrake::Rack::ContextFilter,
+        Airbrake::Rack::SessionFilter,
+        Airbrake::Rack::HttpParamsFilter,
+        Airbrake::Rack::HttpHeadersFilter
+
+        # Optional filters (must be included by users):
+        # Airbrake::Rack::RequestBodyFilter
+      ].freeze
+
+      ##
+      # An Array that holds notifier names, which are known to be associated
+      # with particular Airbrake Rack middleware.
+      # rubocop:disable Style/ClassVars
+      @@known_notifiers = []
+      # rubocop:enable Style/ClassVars
+
+      def initialize(app, notifier_name = :default)
         @app = app
+        @notifier = Airbrake[notifier_name]
+
+        # Prevent adding same filters to the same notifier.
+        return if @@known_notifiers.include?(notifier_name)
+        @@known_notifiers << notifier_name
+
+        return unless @notifier
+        RACK_FILTERS.each do |filter|
+          @notifier.add_filter(filter.new)
+        end
       end
 
       ##
@@ -35,10 +65,11 @@ module Airbrake
       private
 
       def notify_airbrake(exception, env)
-        notice = NoticeBuilder.new(env).build_notice(exception)
+        notice = @notifier.build_notice(exception)
         return unless notice
 
-        Airbrake.notify(notice)
+        notice.stash[:rack_request] = ::Rack::Request.new(env)
+        @notifier.notify(notice)
       end
 
       ##

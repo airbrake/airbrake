@@ -11,16 +11,25 @@ module Airbrake
       def self.extract(rack_env)
         # Warden support (including Devise).
         if (warden = rack_env['warden'])
-          if (user = warden.user(run_callbacks: false))
-            return new(user) if user
-          end
+          user = warden.user(run_callbacks: false)
+          # Early return to prevent unwanted possible authentication via
+          # calling the `current_user` method later.
+          # See: https://github.com/airbrake/airbrake/issues/641
+          return user ? new(user) : nil
         end
 
         # Fallback mode (OmniAuth support included). Works only for Rails.
-        controller = rack_env['action_controller.instance']
-        return unless controller.respond_to?(:current_user)
-        new(controller.current_user) if controller.current_user
+        user = try_current_user(rack_env)
+        new(user) if user
       end
+
+      def self.try_current_user(rack_env)
+        controller = rack_env['action_controller.instance']
+        return unless controller.respond_to?(:current_user, true)
+        return unless [-1, 0].include?(controller.method(:current_user).arity)
+        controller.__send__(:current_user)
+      end
+      private_class_method :try_current_user
 
       def initialize(user)
         @user = user
@@ -41,7 +50,11 @@ module Airbrake
       private
 
       def try_to_get(key)
-        String(@user.__send__(key)) if @user.respond_to?(key)
+        return unless @user.respond_to?(key)
+        # try methods with no arguments or with variable number of arguments,
+        # where none of them are required
+        return unless @user.method(key).arity.between?(-1, 0)
+        String(@user.__send__(key))
       end
 
       def full_name

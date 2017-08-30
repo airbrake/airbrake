@@ -1,7 +1,9 @@
 Airbrake
 ========
 
-[![Build Status](https://circleci.com/gh/airbrake/airbrake.png?style=shield)](https://circleci.com/gh/airbrake/airbrake)
+[![Circle Build Status](https://circleci.com/gh/airbrake/airbrake.png?style=shield)](https://circleci.com/gh/airbrake/airbrake)
+[![Travis Build Status](https://travis-ci.org/airbrake/airbrake.svg?branch=master)](https://travis-ci.org/airbrake/airbrake)
+[![Code Climate](https://codeclimate.com/github/airbrake/airbrake.svg)](https://codeclimate.com/github/airbrake/airbrake)
 [![Gem Version](https://badge.fury.io/rb/airbrake.svg)](http://badge.fury.io/rb/airbrake)
 [![Documentation Status](http://inch-ci.org/github/airbrake/airbrake.svg?branch=master)](http://inch-ci.org/github/airbrake/airbrake)
 [![Downloads](https://img.shields.io/gem/dt/airbrake.svg?style=flat)](https://rubygems.org/gems/airbrake)
@@ -11,7 +13,6 @@ Airbrake
 * [Airbrake README](https://github.com/airbrake/airbrake)
 * [Airbrake Ruby README](https://github.com/airbrake/airbrake-ruby)
 * [YARD API documentation](http://www.rubydoc.info/gems/airbrake-ruby)
-* [**Migration guide from v4 to v5**][migration-guide]
 
 Introduction
 ------------
@@ -22,15 +23,6 @@ review errors, tie an error to an individual piece of code, and trace the cause
 back to recent changes. The Airbrake dashboard provides easy categorization,
 searching, and prioritization of exceptions so that when errors occur, your team
 can quickly determine the root cause.
-
-Looking for the old version?
-----------------------------
-
-Airbrake V5 was released on 18th December 2015. Here is a guide for
-[migrating from v4 to v5][migration-guide].
-
-You can find the [V4 code
-here](https://github.com/airbrake/airbrake/tree/airbrake-v4).
 
 Key features
 ------------
@@ -61,8 +53,10 @@ The list of integrations that are available in this gem includes:
   * Resque<sup>[[link](#resque)]</sup>
   * Sidekiq<sup>[[link](#sidekiq)]</sup>
   * DelayedJob<sup>[[link](#delayedjob)]</sup>
+  * Shoryuken<sup>[[link](#shoryuken)]</sup>
 * Other libraries
   * Rake<sup>[[link](#rake)]</sup>
+  * Logger<sup>[[link](#logger)]</sup>
 * Plain Ruby scripts<sup>[[link](#plain-ruby-scripts)]</sup>
 
 [Paying Airbrake plans][pricing] support the ability to track deployments of
@@ -79,7 +73,7 @@ Installation
 Add the Airbrake gem to your Gemfile:
 
 ```ruby
-gem 'airbrake', '~> 5.4'
+gem 'airbrake', '~> 6.2'
 ```
 
 ### Manual
@@ -95,22 +89,6 @@ Configuration
 
 ### Rails
 
-#### Airbrake v5 is already here (but we still support Airbrake v4)
-
-If you are migrating from Airbrake v4, please [read our migration
-guide][migration-guide].
-
-Since the 5th major release of the Airbrake gem we support only Rails 3.2+ and
-Ruby 1.9+. Don't worry, if you use older versions of Rails or Ruby, just
-continue using them with Airbrake v4: we _still_ support it. However, v4 is
-_feature frozen_. We accept only bugfixes.
-
-In the meantime, consider upgrading to Airbrake v5, as you miss a lot of new
-features, such as support for multiple Airbrake configurations inside one Rails
-project (you can report to different Airbrake projects in the same Ruby
-process), nested exceptions, multiple asynchronous workers support, JRuby's Java
-exceptions and many more.
-
 #### Integration
 
 To integrate Airbrake with your Rails application, you need to know
@@ -121,9 +99,9 @@ and replace `PROJECT_ID` and `PROJECT_KEY` with your values:
 rails g airbrake PROJECT_ID PROJECT_KEY
 ```
 
-[Heroku add-on][heroku-addon] users can omit specifying the key and the id and invoke
-the command without arguments (Heroku add-on's environment variables will be
-used) ([Heroku add-on docs][heroku-docs]):
+[Heroku add-on][heroku-addon] users can omit specifying the key and the id and
+invoke the command without arguments (Heroku add-on's environment variables will
+be used) ([Heroku add-on docs][heroku-docs]):
 
 ```bash
 rails g airbrake
@@ -150,11 +128,11 @@ In case of success, a test exception should appear in your dashboard.
 The Airbrake gem defines two helper methods available inside Rails controllers:
 `#notify_airbrake` and `#notify_airbrake_sync`. If you want to notify Airbrake
 from your controllers manually, it's usually a good idea to prefer them over
-`Airbrake.notify`, because they automatically add information from the Rack
-environment to notices. `#notify_airbrake` is asynchronous (immediately returns
-`nil`), while `#notify_airbrake_sync` is synchronous (waits for responses from
-the server and returns them). The list of accepted arguments is identical to
-`Airbrake.notify`.
+[`Airbrake.notify`][airbrake-notify], because they automatically add
+information from the Rack environment to notices. `#notify_airbrake` is
+asynchronous, while `#notify_airbrake_sync` is synchronous (waits for responses
+from the server and returns them). The list of accepted arguments is identical
+to `Airbrake.notify`.
 
 #### Additional features: user reporting, sophisticated API
 
@@ -169,6 +147,40 @@ reporting. [The description of the API][airbrake-api] is available online.
 
 Additionally, the Rails integration offers automatic exception reporting in any
 Rake tasks<sup>[[link](#rake)]</sup> and [Rails runner][rails-runner].
+
+#### Integration with filter_parameters
+
+If you want to reuse `Rails.application.config.filter_parameters` in Airbrake
+you can configure your notifier the following way:
+
+```rb
+# config/initializers/airbrake.rb
+Airbrake.configure do |c|
+  c.blacklist_keys = Rails.application.config.filter_parameters
+end
+```
+
+There are a few important details:
+
+1. You must load `filter_parameter_logging.rb` before the Airbrake config
+2. If you use Lambdas to configure `filter_parameters`, you need to convert them
+   to Procs. Otherwise you will get `ArgumentError`
+3. If you use Procs to configure `filter_parameters`, the procs must return an
+   Array of keys compatible with the Airbrake whitelist/blacklist option
+   (String, Symbol, Regexp)
+
+Consult the
+[example application](https://github.com/kyrylo/airbrake-ruby-issue108), which
+was created to show how to configure `filter_parameters`.
+
+
+##### filter_parameters dot notation warning
+
+The dot notation introduced in [rails/pull/13897][rails-13897] for
+`filter_parameters` (e.g. a key like `credit_card.code`) is unsupported for
+performance reasons. Instead, simply specify the `code` key. If you have a
+strong opinion on this, leave a comment in
+the [dedicated issue][rails-sub-keys].
 
 ### Sinatra
 
@@ -212,6 +224,10 @@ project's dashboard for a new error.
 curl localhost:9292
 ```
 
+If your Sinatra app consists of subprojects and you want to capture errors
+separately for each subproject, make sure to [configure it
+accordingly](#configuring-individual-notifier-for-each-subproject).
+
 ### Rack
 
 To send exceptions to Airbrake from any Rack application, simply `use` our Rack
@@ -219,6 +235,7 @@ middleware, and [configure][config] the default notifier.
 
 ```ruby
 require 'airbrake'
+require 'airbrake/rack'
 
 Airbrake.configure do |c|
   c.project_id = 113743
@@ -235,23 +252,69 @@ including user passwords. To filter out passwords
 #### Appending information from Rack requests
 
 If you want to append additional information from web requests (such as HTTP
-headers), define a special hook:
+headers), define a special filter such as:
 
 ```ruby
-Airbrake.add_rack_builder do |notice, request|
+Airbrake.add_filter do |notice|
+  next unless (request = notice.stash[:rack_request])
   notice[:params][:remoteIp] = request.env['REMOTE_IP']
 end
 ```
 
-`request` here is a normal Rack request.
+The `notice` object carries a real `Rack::Request` object in
+its [stash](https://github.com/airbrake/airbrake-ruby#noticestash--noticestash).
+Rack requests will always be accessible through the `:rack_request` stash key.
+
+#### Optional Rack request filters
+
+The library comes with optional predefined builders listed below.
+
+##### RequestBodyFilter
+
+`RequestBodyFilter` appends Rack request body to the notice. It accepts a
+`length` argument, which tells the filter how many bytes to read from the body.
+
+By default, up to 4096 bytes is read:
+
+```ruby
+Airbrake.add_filter(Airbrake::Rack::RequestBodyFilter.new)
+```
+
+You can redefine how many bytes to read by passing an Integer argument to the
+filter. For example, read up to 512 bytes:
+
+```ruby
+Airbrake.add_filter(Airbrake::Rack::RequestBodyFilter.new(512))
+```
+
+#### Configuring individual notifier for each subproject
+
+If your app consists of multiple components and you want to log errors from each
+component to its own Airbrake project, you can pass second argument to our Rack
+middleware. First, make sure to [configure a named
+notifier](https://github.com/airbrake/airbrake-ruby#creating-a-named-notifier).
+Next, pass the name to the middleware:
+
+```ruby
+require 'airbrake'
+
+# 1 - Configure a notifier for :app2.
+Airbrake.configure(:app2) do |c|
+  c.project_id = 113743
+  c.project_key = 'fd04e13d806a90f96614ad8e529b2822'
+end
+
+# 2 - Let Airbrake Rack middleware use the :app2 notifier to send errors.
+use Airbrake::Rack::Middleware, :app2
+```
 
 ### Sidekiq
 
 We support Sidekiq v2, v3 and v4. The configurations steps for them are
-identical. Simply `require` our error handler and you're done:
+identical. Simply `require` our integration and you're done:
 
 ```ruby
-require 'airbrake/sidekiq/error_handler'
+require 'airbrake/sidekiq'
 ```
 
 If you required Sidekiq before Airbrake, then you don't even have to `require`
@@ -262,12 +325,24 @@ anything manually and it should just work out-of-box.
 No additional configuration is needed. Simply ensure that you have configured
 your Airbrake notifier.
 
+If you see duplicate error entries in your dashboard, you can avoid them by
+ignoring the ActiveJob wrapper. Just add a filter like this one:
+
+```ruby
+Airbrake.add_filter do |notice|
+  if notice[:context][:action] == 'ActiveJob::QueueAdapters::DelayedJobAdapter::JobWrapper'
+    notice.ignore!
+  end
+end
+```
+
 ### Resque
 
-Since Airbrake v5 the gem provides its own failure backend. The old way of
-integrating Resque doesn't work. If you upgrade to Airbrake v5, just make sure
-that you require `airbrake/resque/failure` instead of
-`resque/failure/airbrake`. The rest remains the same.
+Simply `require` the Resque integration:
+
+```ruby
+require 'airbrake/resque'
+```
 
 #### Integrating with Rails applications
 
@@ -276,20 +351,20 @@ new initializer in `config/initializers/resque.rb` with the following content:
 
 ```ruby
 # config/initializers/resque.rb
-require 'airbrake/resque/failure'
+require 'airbrake/resque'
 require 'resque/failure/redis'
 require 'resque/failure/multiple'
 Resque::Failure::Multiple.classes = [Resque::Failure::Redis, Resque::Failure::Airbrake]
 Resque::Failure.backend = Resque::Failure::Multiple
 ```
 
-That's all configuration.
+Now you're all set.
 
 #### General integration
 
 Any Ruby app using Resque can be integrated with Airbrake. If you can require
 the Airbrake gem *after* Resque, then there's no need to require
-`airbrake/resque/failure` anymore:
+`airbrake/resque` anymore:
 
 ```ruby
 require 'resque'
@@ -304,19 +379,30 @@ multiple backends, then continue reading the needed configuration steps in
 
 ### DelayedJob
 
-Simply `require` our plugin and you're done:
+Simply `require` our integration and you're done:
 
 ```ruby
-require 'airbrake/delayed_job/plugin'
+require 'airbrake/delayed_job'
 ```
 
 If you required DelayedJob before Airbrake, then you don't even have to `require`
 anything manually and it should just work out-of-box.
 
+### Shoryuken
+
+Simply `require` our integration and you're done:
+
+```ruby
+require 'airbrake/shoryuken'
+```
+
+If you required Shoryuken before Airbrake, then you don't even have to `require`
+anything manually and it should just work out-of-box.
+
 ### Rake
 
 Airbrake offers Rake tasks integration, which is used by our Rails
-integration<sup>[[link](#rails)]</sup>.  To integrate Airbrake in any project,
+integration<sup>[[link](#rails)]</sup>. To integrate Airbrake in any project,
 just `require` the gem in your `Rakefile`, if it hasn't been required and
 [configure][config] the default notifier.
 
@@ -331,6 +417,67 @@ end
 
 task :foo do
   1/0
+end
+```
+
+### Logger
+
+If you want to convert your log messages to Airbrake errors, you can use our
+integration with Ruby's `Logger` class from stdlib. All you need to do is to
+wrap your logger in Airbrake's decorator class:
+
+```ruby
+require 'airbrake/logger'
+
+# Create a normal logger
+logger = Logger.new(STDOUT)
+
+# Wrap it
+logger = Airbrake::AirbrakeLogger.new(logger)
+```
+
+Now you can use the `logger` object exactly the same way you use it. For
+example, calling `fatal` on it will both log your message and send it to the
+Airbrake dashboard:
+
+```
+logger.fatal('oops')
+```
+
+The Logger class will attempt to utilize the default Airbrake notifier to
+deliver messages. It's possible to redefine it via `#airbrake_notifier`:
+
+```ruby
+# Assign your own notifier.
+logger.airbrake_notifier = Airbrake[:other_notifier]
+```
+
+#### Airbrake severity level
+
+In order to reduce the noise from the Logger integration it's possible to
+configure Airbrake severity level. For example, if you want to send only fatal
+messages from Logger, then configure it as follows:
+
+```ruby
+# Send only fatal messages to Airbrake, ignore anything below this level.
+logger.airbrake_level = Logger::FATAL
+```
+
+By default, `airbrake_level` is set to `Logger::WARN`, which means it
+sends warnings, errors and fatal error messages to Airbrake.
+
+#### Configuring Airbrake logger integration with a Rails application
+
+In order to configure a production logger with Airbrake integration, simply
+overwrite `Rails.logger` with a wrapped logger in an `after_initialize`
+callback:
+
+```ruby
+# config/environments/production.rb
+config.after_initialize do
+  # Standard logger with Airbrake integration:
+  # https://github.com/airbrake/airbrake#logger
+  Rails.logger = Airbrake::AirbrakeLogger.new(Rails.logger)
 end
 ```
 
@@ -362,7 +509,7 @@ Capfile:
 
 ```ruby
 # Capfile
-require 'airbrake/capistrano/tasks'
+require 'airbrake/capistrano'
 ```
 
 If you use Capistrano 3, define the `after :finished` hook, which executes the
@@ -417,8 +564,8 @@ Then, invoke it like shown in the example for Rails.
 Supported Rubies
 ----------------
 
-* CRuby >= 1.9.2
-* JRuby >= 1.9-mode
+* CRuby >= 2.0.0
+* JRuby >= 9k
 * Rubinius >= 2.2.10
 
 Contact
@@ -484,6 +631,8 @@ commands to invoke them.
 [pricing]: https://airbrake.io/pricing
 [heroku-addon]: https://elements.heroku.com/addons/airbrake
 [heroku-docs]: https://devcenter.heroku.com/articles/airbrake
-[migration-guide]: https://github.com/airbrake/airbrake/blob/master/docs/Migration_guide_from_v4_to_v5.md
 [dashboard]: https://s3.amazonaws.com/airbrake-github-assets/airbrake/airbrake-dashboard.png
 [arthur-ruby]: https://s3.amazonaws.com/airbrake-github-assets/airbrake/arthur-ruby.jpg
+[rails-13897]: https://github.com/rails/rails/pull/13897
+[rails-sub-keys]: https://github.com/airbrake/airbrake-ruby/issues/137
+[airbrake-notify]: https://github.com/airbrake/airbrake-ruby#airbrakenotify
