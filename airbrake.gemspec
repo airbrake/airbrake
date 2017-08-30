@@ -1,4 +1,4 @@
-require './lib/airbrake/version'
+require File.expand_path("../lib/airbrake/version", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = 'airbrake'
