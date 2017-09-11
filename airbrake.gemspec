@@ -47,6 +47,10 @@ DESC
   s.add_development_dependency 'rack-test', '~> 0'
   s.add_development_dependency 'rubocop', '~> 0.47'
 
+  # Fixes build failure with public_suffix v3
+  # https://circleci.com/gh/airbrake/airbrake-ruby/889
+  s.add_development_dependency 'public_suffix', '~> 2.0', '< 3.0'
+
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
     s.add_development_dependency 'sidekiq', '~> 5'
   end
