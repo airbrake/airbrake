@@ -20,7 +20,7 @@ module Airbrake
 
                 bundle exec rake airbrake:deploy \
                   USERNAME=#{username} \
-                  ENVIRONMENT=#{fetch(:rails_env, 'production')} \
+                  ENVIRONMENT=#{fetch(:airbrake_env, fetch(:rails_env, 'production'))} \
                   REVISION=#{current_revision.strip} \
                   REPOSITORY=#{repository} \
                   VERSION=#{fetch(:app_version, nil)}
