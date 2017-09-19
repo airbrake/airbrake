@@ -99,11 +99,11 @@ AirbrakeTestError = Class.new(StandardError)
 
 # Print header with versions information. This simplifies debugging of build
 # failures on CircleCI.
-versions = <<EOS
+versions = <<BANNER
 #{'#' * 80}
 # RUBY_VERSION: #{RUBY_VERSION}
 # RUBY_ENGINE: #{RUBY_ENGINE}
-EOS
+BANNER
 versions << "# JRUBY_VERSION #{JRUBY_VERSION}\n" if defined?(JRUBY_VERSION)
 versions << "# Rails version: #{Rails.version}\n" if defined?(Rails)
 versions << "# Rack release: #{Rack.release}\n"
