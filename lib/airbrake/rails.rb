@@ -12,11 +12,10 @@ module Airbrake
         # DebugExceptions, so we don't notify Airbrake about local requests.
 
         if ::Rails.version.start_with?('5.')
-          # Avoid the warning about deprecated strings.
-          # Insert after DebugExceptions, since ConnectionManagement doesn't
-          # exist in Rails 5 anymore.
-          app.config.middleware.insert_after(
-            ActionDispatch::DebugExceptions,
+          # Avoid the warning about deprecated strings. Insert before Executor,
+          # since ConnectionManagement doesn't exist in Rails 5 anymore.
+          app.config.middleware.insert_before(
+            ActionDispatch::Executor,
             Airbrake::Rack::Middleware
           )
         elsif defined?(ActiveRecord)
