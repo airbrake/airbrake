@@ -5,22 +5,13 @@ AllCops:
   DisplayCopNames: true
   DisplayStyleGuide: true
 
-Lint/HandleExceptions:
-  Enabled: true
-
 Metrics/MethodLength:
   Max: 25
-
-Style/SpaceInsideBrackets:
-  Enabled: true
 
 Metrics/LineLength:
   Max: 90
 
-Style/AccessorMethodName:
-  Enabled: true
-
-Style/DotPosition:
+Layout/DotPosition:
   EnforcedStyle: trailing
 
 # Details:
@@ -36,45 +27,15 @@ Style/StringLiterals:
 Style/HashSyntax:
   EnforcedStyle: ruby19
 
-Style/GuardClause:
-  Enabled: true
-
-Style/SpaceInsideHashLiteralBraces:
-  Enabled: true
-
 Style/NumericLiterals:
   Enabled: false
-
-Style/ParallelAssignment:
-  Enabled: true
-
-Style/SpaceAroundOperators:
-  Enabled: true
 
 Style/SignalException:
   EnforcedStyle: only_raise
 
-Style/RedundantSelf:
-  Enabled: true
-
-Style/SpaceInsideParens:
-  Enabled: true
-
 # TODO: enable this when Ruby 3.0 is out.
 Style/FrozenStringLiteralComment:
   Enabled: false
-
-Style/ConditionalAssignment:
-  Enabled: true
-
-Performance/StartWith:
-  Enabled: true
-
-Style/Alias:
-  Enabled: true
-
-Style/MultilineArrayBraceLayout:
-  Enabled: true
 
 Metrics/BlockLength:
   CountComments: false
@@ -86,10 +47,9 @@ Metrics/BlockLength:
     - 'airbrake.gemspec'
     - 'lib/airbrake/rake/tasks.rb'
 
-Style/IndentHeredoc:
+Layout/IndentHeredoc:
   Enabled: false
 
-Style/FileName:
-  Enabled: true
+Naming/FileName:
   Exclude:
     - 'Appraisals'
