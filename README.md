@@ -352,7 +352,10 @@ new initializer in `config/initializers/resque.rb` with the following content:
 ```ruby
 # config/initializers/resque.rb
 require 'airbrake/resque'
-Resque::Failure.backend = Resque::Failure::Airbrake
+require 'resque/failure/redis'
+require 'resque/failure/multiple'
+Resque::Failure::Multiple.classes = [Resque::Failure::Redis, Resque::Failure::Airbrake]
+Resque::Failure.backend = Resque::Failure::Multiple
 ```
 
 Now you're all set.
