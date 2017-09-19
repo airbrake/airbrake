@@ -7,6 +7,9 @@ Airbrake Changelog
   `airbrake/capistrano` ([#778](https://github.com/airbrake/airbrake/pull/778))
 * Port the `airbrake_env` variable to Capistrano 2 integration from airbrake v4
   ([#784](https://github.com/airbrake/airbrake/pull/784))
+* Fixed `NameError: uninitialized constant
+  Airbrake::Rails::ActiveRecord::ConnectionAdapters`
+  ([#780](https://github.com/airbrake/airbrake/pull/780))
 
 ### [v6.2.1][v6.2.1] (July 15, 2017)
 
