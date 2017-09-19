@@ -11,7 +11,7 @@ Metrics/MethodLength:
 Metrics/LineLength:
   Max: 90
 
-Style/DotPosition:
+Layout/DotPosition:
   EnforcedStyle: trailing
 
 # Details:
@@ -47,9 +47,9 @@ Metrics/BlockLength:
     - 'airbrake.gemspec'
     - 'lib/airbrake/rake/tasks.rb'
 
-Style/IndentHeredoc:
+Layout/IndentHeredoc:
   Enabled: false
 
-Style/FileName:
+Naming/FileName:
   Exclude:
     - 'Appraisals'
