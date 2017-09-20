@@ -17,8 +17,18 @@ module Airbrake
       def notify_airbrake(exception, context)
         Airbrake.notify(exception, context) do |notice|
           notice[:context][:component] = 'sidekiq'
-          notice[:context][:action] = context['class']
+          notice[:context][:action] = action(context)
         end
+      end
+
+      ##
+      # @return [String] job's name. When ActiveJob is present, retrieve
+      #   job_class. When used directly, use worker's name
+      def action(context)
+        klass = context['class'] || context[:job] && context[:job]['class']
+        return klass unless context[:job] && context[:job]['args'].first
+        return klass unless (job_class = context[:job]['args'].first['job_class'])
+        job_class
       end
     end
   end
