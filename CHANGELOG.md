@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v6.3.0][v6.3.0] (September 20, 2017)
+
 * Deprecated requiring `airbrake/capistrano/tasks` in favour of
   `airbrake/capistrano` ([#778](https://github.com/airbrake/airbrake/pull/778))
 * Port the `airbrake_env` variable to Capistrano 2 integration from airbrake v4
@@ -339,3 +341,4 @@ Airbrake Changelog
 [v6.1.2]: https://github.com/airbrake/airbrake/releases/tag/v6.1.2
 [v6.2.0]: https://github.com/airbrake/airbrake/releases/tag/v6.2.0
 [v6.2.1]: https://github.com/airbrake/airbrake/releases/tag/v6.2.1
+[v6.3.0]: https://github.com/airbrake/airbrake/releases/tag/v6.3.0
