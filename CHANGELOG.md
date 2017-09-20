@@ -12,6 +12,9 @@ Airbrake Changelog
   ([#780](https://github.com/airbrake/airbrake/pull/780))
 * Fixed duplicate errors for ActiveJob integration
   ([#789](https://github.com/airbrake/airbrake/pull/789))
+* Started depending on
+  [airbrake-ruby-2.4.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v2.4.0)
+  ([#790](https://github.com/airbrake/airbrake/pull/790))
 
 ### [v6.2.1][v6.2.1] (July 15, 2017)
 
