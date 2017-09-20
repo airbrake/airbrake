@@ -5,29 +5,28 @@ module Airbrake
     module ActiveJob
       extend ActiveSupport::Concern
 
-      included do
-        if ::Rails.application.config.respond_to?(:active_job)
-          active_job_cfg = ::Rails.application.config.active_job
-          is_resque_adapter = (active_job_cfg.queue_adapter == :resque)
+      ##
+      # @return [Array<Regexp>] the list of known adapters
+      ADAPTERS = [/Resque/, /Sidekiq/, /DelayedJob/].freeze
+
+      def self.notify_airbrake(exception, job)
+        queue_adapter = job.class.queue_adapter.to_s
+
+        # Do not notify twice if a queue_adapter is configured already.
+        raise exception if ADAPTERS.any? { |a| a =~ queue_adapter }
+
+        Airbrake.notify(exception) do |notice|
+          notice[:context][:component] = 'active_job'
+          notice[:context][:action] = job.class.name
+          notice[:params] = job.serialize
         end
 
+        raise exception
+      end
+
+      included do
         rescue_from(Exception) do |exception|
-          if (notice = Airbrake.build_notice(exception))
-            notice[:context][:component] = 'active_job'
-            notice[:context][:action] = self.class.name
-
-            notice[:params] = serialize
-
-            # We special case Resque because it kills our workers by forking, so
-            # we use synchronous delivery instead.
-            if is_resque_adapter
-              Airbrake.notify_sync(notice)
-            else
-              Airbrake.notify(notice)
-            end
-          end
-
-          raise exception
+          Airbrake::Rails::ActiveJob.notify_airbrake(exception, self)
         end
       end
     end

@@ -10,6 +10,8 @@ Airbrake Changelog
 * Fixed `NameError: uninitialized constant
   Airbrake::Rails::ActiveRecord::ConnectionAdapters`
   ([#780](https://github.com/airbrake/airbrake/pull/780))
+* Fixed duplicate errors for ActiveJob integration
+  ([#789](https://github.com/airbrake/airbrake/pull/789))
 
 ### [v6.2.1][v6.2.1] (July 15, 2017)
 

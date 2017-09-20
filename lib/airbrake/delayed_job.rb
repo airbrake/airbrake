@@ -15,11 +15,12 @@ module Delayed
             # If DelayedJob is used through ActiveJob, it contains extra info.
             if job.payload_object.respond_to?(:job_data)
               params[:active_job] = job.payload_object.job_data
+              job_class = job.payload_object.job_data['job_class']
             end
 
             ::Airbrake.notify(exception, params) do |notice|
               notice[:context][:component] = 'delayed_job'
-              notice[:context][:action] = job.payload_object.class.name
+              notice[:context][:action] = job_class || job.payload_object.class.name
             end
 
             raise exception

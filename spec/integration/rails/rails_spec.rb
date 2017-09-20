@@ -147,7 +147,6 @@ RSpec.describe "Rails integration specs" do
         end
 
         it "doesn't report errors" do
-          allow(Airbrake).to receive(:build_notice).and_return(nil)
           allow(Airbrake).to receive(:notify)
 
           # Make sure we don't call `build_notice` more than 1 time. Rack
@@ -165,9 +164,6 @@ RSpec.describe "Rails integration specs" do
             a_request(:post, endpoint).
             with(body: /"message":"active_job error"/)
           ).not_to have_been_made
-
-          expect(Airbrake).to have_received(:build_notice)
-          expect(Airbrake).not_to have_received(:notify)
         end
       end
     end
