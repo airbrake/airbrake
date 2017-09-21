@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v7.0.0][v7.0.0] (September 21, 2017)
+
 * Deleted deprecated require paths for Capistrano, DelayedJob, Logger, Rails,
   Rake, Resque, Shoryuken & Sidekiq integrations
   ([#792](https://github.com/airbrake/airbrake/pull/792))
@@ -346,3 +348,4 @@ Airbrake Changelog
 [v6.2.0]: https://github.com/airbrake/airbrake/releases/tag/v6.2.0
 [v6.2.1]: https://github.com/airbrake/airbrake/releases/tag/v6.2.1
 [v6.3.0]: https://github.com/airbrake/airbrake/releases/tag/v6.3.0
+[v7.0.0]: https://github.com/airbrake/airbrake/releases/tag/v7.0.0
