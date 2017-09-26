@@ -2,6 +2,7 @@ module Airbrake
   ##
   # The Capistrano v2 integration.
   module Capistrano
+    # rubocop:disable Metrics/AbcSize
     def self.load_into(config)
       config.load do
         after 'deploy',            'airbrake:deploy'
@@ -19,7 +20,7 @@ module Airbrake
                 RAILS_ENV=#{fetch(:rails_env, nil)} \
 
                 bundle exec rake airbrake:deploy \
-                  USERNAME=#{username} \
+                  USERNAME=#{Shellwords.shellescape(ENV['USER'] || ENV['USERNAME'])} \
                   ENVIRONMENT=#{fetch(:airbrake_env, fetch(:rails_env, 'production'))} \
                   REVISION=#{current_revision.strip} \
                   REPOSITORY=#{repository} \
@@ -31,11 +32,7 @@ module Airbrake
         end
       end
     end
-
-    def self.username
-      Shellwords.shellescape(ENV['USER'] || ENV['USERNAME'])
-    end
-    private_class_method :username
+    # rubocop:enable Metrics:AbcSize
   end
 end
 
