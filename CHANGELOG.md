@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v7.0.1][v7.0.1] (September 26, 2017)
+
 * Fix error message for `rake airbrake:test` when current environment is ignored
   ([#796](https://github.com/airbrake/airbrake/pull/796))
 * Fix `undefined local variable or method 'username'` for the Capistrano 2
@@ -354,3 +356,4 @@ Airbrake Changelog
 [v6.2.1]: https://github.com/airbrake/airbrake/releases/tag/v6.2.1
 [v6.3.0]: https://github.com/airbrake/airbrake/releases/tag/v6.3.0
 [v7.0.0]: https://github.com/airbrake/airbrake/releases/tag/v7.0.0
+[v7.0.1]: https://github.com/airbrake/airbrake/releases/tag/v7.0.1
