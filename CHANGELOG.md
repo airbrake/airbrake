@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fix error message for `rake airbrake:test` when current environment is ignored
+  ([#796](https://github.com/airbrake/airbrake/pull/796))
+
 ### [v7.0.0][v7.0.0] (September 21, 2017)
 
 * Deleted deprecated require paths for Capistrano, DelayedJob, Logger, Rails,
