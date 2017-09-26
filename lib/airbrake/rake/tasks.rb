@@ -10,21 +10,29 @@ namespace :airbrake do
     require 'pp'
 
     response = Airbrake.notify_sync('Exception from the test Rake task')
-    if response['code']
+    if response['error']
+      puts "Error: #{response['error']}"
+    elsif response.nil? || response['code']
       puts <<-ERROR.gsub(/^\s+\|/, '')
-        |Couldn't send a test exception:
         |#{response['type']}: #{response['message']} (#{response['code']})
         |
         |Possible problems:
-        |  1. Project ID or project key is incorrect
-        |  2. Exception was ignored due to misconfigured filters
-        |  3. The environment this task runs in is ignored by Airbrake
+        |  1. Project id/key is incorrect
+        |  2. Custom filters ignore the exception we try to send
+        |  3. Environment this task runs in is ignored (see `ignored_environments`)
+        |
+        |If nothing works, please file an issue at: https://github.com/airbrake/airbrake/issues
       ERROR
-    else
-      puts <<-OUTPUT.gsub(/^\s+\|/, '')
+    elsif response['url']
+      puts <<-SUCCESS.gsub(/^\s+\|/, '')
         |A test exception was sent to Airbrake.
         |Find it here: #{response['url']}
-      OUTPUT
+      SUCCESS
+    else
+      puts <<-ERROR.gsub(/^\s+\|/, '')
+        |Unexpected error occurred. Response from Airbrake:
+        |#{response}
+      ERROR
     end
   end
 
