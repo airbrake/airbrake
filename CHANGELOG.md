@@ -3,11 +3,16 @@ Airbrake Changelog
 
 ### master
 
+### [v7.0.2][v7.0.2] (September 29, 2017)
+
+* Fixed Sidekiq error `no implicit conversion of String into Integer` when
+  ActiveJob is not used ([#799](https://github.com/airbrake/airbrake/pull/799))
+
 ### [v7.0.1][v7.0.1] (September 26, 2017)
 
-* Fix error message for `rake airbrake:test` when current environment is ignored
-  ([#796](https://github.com/airbrake/airbrake/pull/796))
-* Fix `undefined local variable or method 'username'` for the Capistrano 2
+* Fixed error message for `rake airbrake:test` when current environment is
+  ignored ([#796](https://github.com/airbrake/airbrake/pull/796))
+* Fixed `undefined local variable or method 'username'` for the Capistrano 2
   integration ([#797](https://github.com/airbrake/airbrake/pull/797))
 
 ### [v7.0.0][v7.0.0] (September 21, 2017)
@@ -357,3 +362,4 @@ Airbrake Changelog
 [v6.3.0]: https://github.com/airbrake/airbrake/releases/tag/v6.3.0
 [v7.0.0]: https://github.com/airbrake/airbrake/releases/tag/v7.0.0
 [v7.0.1]: https://github.com/airbrake/airbrake/releases/tag/v7.0.1
+[v7.0.2]: https://github.com/airbrake/airbrake/releases/tag/v7.0.2
