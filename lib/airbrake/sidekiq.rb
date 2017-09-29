@@ -26,7 +26,7 @@ module Airbrake
       #   job_class. When used directly, use worker's name
       def action(context)
         klass = context['class'] || context[:job] && context[:job]['class']
-        return klass unless context[:job] && context[:job]['args'].first
+        return klass unless context[:job] && context[:job]['args'].first.is_a?(Hash)
         return klass unless (job_class = context[:job]['args'].first['job_class'])
         job_class
       end
