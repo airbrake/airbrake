@@ -68,7 +68,15 @@ module Airbrake
         notice = @notifier.build_notice(exception)
         return unless notice
 
-        notice.stash[:rack_request] = ::Rack::Request.new(env)
+        # ActionDispatch::Request correctly captures server port when using SSL:
+        # See: https://github.com/airbrake/airbrake/issues/802
+        notice.stash[:rack_request] =
+          if defined?(ActionDispatch::Request)
+            ActionDispatch::Request.new(env)
+          else
+            ::Rack::Request.new(env)
+          end
+
         @notifier.notify(notice)
       end
 
