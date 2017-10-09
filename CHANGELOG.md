@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fix URL port reporting for Rails apps running through SSL
+  ([#803](https://github.com/airbrake/airbrake/pull/803))
+
 ### [v7.0.2][v7.0.2] (September 29, 2017)
 
 * Fixed Sidekiq error `no implicit conversion of String into Integer` when
