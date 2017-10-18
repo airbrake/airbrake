@@ -70,7 +70,7 @@ notifier_version | removed | n/a
 user_information | removed | n/a
 framework | removed | n/a
 rescue_rake_exceptions | removed | n/a
-user_attributes | removed | n/a
+user_attributes | removed ([autodetected](#user-attributes))| n/a
 test_mode | removed | n/a
 
 * <a name="api-key"></a>
@@ -285,6 +285,8 @@ test_mode | removed | n/a
 
 * <a name="user-attributes"></a>
   The `user_attributes` option was removed.
+  Airbrake will automatically include `:id`, `:name`, `:username` and `:email` attributes.
+  If `:name` is not available Airbrake will build it from `:first_name` and `:last_name`.
 <sup>[[link](#user-attributes)]</sup>
 
 * <a name="test-mode"></a>
