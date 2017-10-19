@@ -53,3 +53,6 @@ Layout/IndentHeredoc:
 Naming/FileName:
   Exclude:
     - 'Appraisals'
+
+Gemspec/OrderedDependencies:
+  Enabled: false
