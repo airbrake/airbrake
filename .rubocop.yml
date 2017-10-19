@@ -1,7 +1,7 @@
 # Explanations of all possible options:
 #   https://github.com/bbatsov/rubocop/blob/master/config/default.yml
 AllCops:
-  TargetRubyVersion: 2.0
+  TargetRubyVersion: 2.1
   DisplayCopNames: true
   DisplayStyleGuide: true
 
@@ -53,3 +53,6 @@ Layout/IndentHeredoc:
 Naming/FileName:
   Exclude:
     - 'Appraisals'
+
+Gemspec/OrderedDependencies:
+  Enabled: false

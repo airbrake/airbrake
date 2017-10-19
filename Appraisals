@@ -85,14 +85,8 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
     gem 'resque', '~> 1.26'
     gem 'resque_spec', github: 'airbrake/resque_spec'
 
-    # delayed_job_active_record is unmaintained. This fixes:
-    # https://github.com/collectiveidea/delayed_job_active_record/pull/134
-    gem 'delayed_job', github: 'gogovan/delayed_job', branch: 'rails-5.1'
-    gem(
-      'delayed_job_active_record',
-      github: 'gogovan/delayed_job_active_record',
-      branch: 'rails-5.1'
-    )
+    gem 'delayed_job', github: 'collectiveidea/delayed_job'
+    gem 'delayed_job_active_record', github: 'collectiveidea/delayed_job_active_record'
 
     gem 'mime-types', '~> 3.1'
   end
@@ -112,14 +106,8 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
     # to test our Resque integration.
     gem 'resque_spec', github: 'airbrake/resque_spec'
 
-    # delayed_job_active_record is unmaintained. This fixes:
-    # https://github.com/collectiveidea/delayed_job_active_record/pull/134
-    gem 'delayed_job', github: 'gogovan/delayed_job', branch: 'rails-5.1'
-    gem(
-      'delayed_job_active_record',
-      github: 'gogovan/delayed_job_active_record',
-      branch: 'rails-5.1'
-    )
+    gem 'delayed_job', github: 'collectiveidea/delayed_job'
+    gem 'delayed_job_active_record', github: 'collectiveidea/delayed_job_active_record'
   end
 end
 

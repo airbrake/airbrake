@@ -45,7 +45,6 @@ DESC
   s.add_development_dependency 'nokogiri', '= 1.6.8.1'
 
   s.add_development_dependency 'rack-test', '~> 0'
-  s.add_development_dependency 'rubocop', '~> 0.47'
 
   # Fixes build failure with public_suffix v3
   # https://circleci.com/gh/airbrake/airbrake-ruby/889

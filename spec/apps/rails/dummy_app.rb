@@ -161,11 +161,11 @@ migration_template = File.open(
 
 # need to eval the template with the migration_version intact
 migration_context = Class.new do
-  # rubocop:disable Style/AccessorMethodName
+  # rubocop:disable Naming/AccessorMethodName
   def get_binding
     binding
   end
-  # rubocop:enable Style/AccessorMethodName
+  # rubocop:enable Naming/AccessorMethodName
 
   def migration_version
     return unless ActiveRecord::VERSION::MAJOR >= 5
