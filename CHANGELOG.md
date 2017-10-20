@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Started depending on
+  [airbrake-ruby-2.5.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v2.5.0)
+  ([#807](https://github.com/airbrake/airbrake/pull/807))
+
 ### [v7.0.3][v7.0.3] (October 12, 2017)
 
 * Fix URL port reporting for Rails apps running through SSL
