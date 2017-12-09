@@ -19,7 +19,7 @@ module Airbrake
             ActionDispatch::DebugExceptions,
             Airbrake::Rack::Middleware
           )
-        elsif defined?(::ActiveRecord) && defined?(::ActiveRecord::ConnectionAdapters)
+        elsif defined?(::ActiveRecord::ConnectionAdapters::ConnectionManagement)
           # Insert after ConnectionManagement to avoid DB connection leakage:
           # https://github.com/airbrake/airbrake/pull/568
           app.config.middleware.insert_after(
