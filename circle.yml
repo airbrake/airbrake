@@ -1,3 +1,7 @@
+machine:
+  ruby:
+    version: 2.4.2
+
 dependencies:
   override:
     - ? |
