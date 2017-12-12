@@ -3,10 +3,7 @@ require 'spec_helper'
 RSpec.describe Airbrake::AirbrakeLogger do
   let(:project_id) { 113743 }
   let(:project_key) { 'fd04e13d806a90f96614ad8e529b2822' }
-
-  let(:endpoint) do
-    "https://airbrake.io/api/v3/projects/#{project_id}/notices?key=#{project_key}"
-  end
+  let(:endpoint) { "https://airbrake.io/api/v3/projects/#{project_id}/notices" }
 
   let(:airbrake) do
     Airbrake::Notifier.new(project_id: project_id, project_key: project_key)
