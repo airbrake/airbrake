@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 RSpec.describe "airbrake/rake/tasks" do
-  let(:endpoint) { 'https://airbrake.io/api/v4/projects/113743/deploys' }
+  let(:endpoint) do
+    'https://airbrake.io/api/v4/projects/113743/deploys?key=fd04e13d806a90f96614ad8e529b2822'
+  end
 
   def wait_for_a_request_with_body(body)
     wait_for(a_request(:post, endpoint).with(body: body)).to have_been_made.once
