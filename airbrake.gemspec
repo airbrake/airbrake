@@ -46,7 +46,8 @@ DESC
   # We still support Ruby 2.0.0+, but nokogiri 1.7.0+ doesn't.
   s.add_development_dependency 'nokogiri', '= 1.6.8.1'
 
-  s.add_development_dependency 'rack-test', '~> 0'
+  s.add_development_dependency 'rack-test', '= 0.6.3'
+  s.add_development_dependency 'redis', '= 3.3.3'
 
   # Fixes build failure with public_suffix v3
   # https://circleci.com/gh/airbrake/airbrake-ruby/889

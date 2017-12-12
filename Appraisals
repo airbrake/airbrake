@@ -113,7 +113,6 @@ end
 
 appraise 'sinatra' do
   gem 'sinatra', '~> 1.4.7'
-  gem 'rack-test', '~> 0.6.3'
   gem 'warden', '~> 1.2.6'
 end
 
