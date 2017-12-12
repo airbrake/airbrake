@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe Airbrake::Rack::User do
-  let(:endpoint) do
-    'https://airbrake.io/api/v3/projects/113743/notices?key=fd04e13d806a90f96614ad8e529b2822'
-  end
+  let(:endpoint) { 'https://airbrake.io/api/v3/projects/113743/notices' }
 
   let(:user) do
     OpenStruct.new(
