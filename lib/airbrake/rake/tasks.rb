@@ -3,9 +3,7 @@ require 'airbrake-ruby'
 namespace :airbrake do
   desc 'Verify your gem installation by sending a test exception'
   task test: (:environment if defined?(Rails)) do
-    unless Airbrake.configured?
-      raise Airbrake::Error, 'airbrake-ruby is not configured'
-    end
+    raise Airbrake::Error, 'airbrake-ruby is not configured' unless Airbrake.configured?
 
     require 'pp'
 
@@ -50,9 +48,7 @@ namespace :airbrake do
       end
     end
 
-    unless Airbrake.configured?
-      raise Airbrake::Error, 'airbrake-ruby is not configured'
-    end
+    raise Airbrake::Error, 'airbrake-ruby is not configured' unless Airbrake.configured?
 
     deploy_params = {
       environment: ENV['ENVIRONMENT'],

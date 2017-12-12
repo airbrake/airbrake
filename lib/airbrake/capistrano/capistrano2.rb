@@ -1,5 +1,4 @@
 module Airbrake
-  ##
   # The Capistrano v2 integration.
   module Capistrano
     # rubocop:disable Metrics/AbcSize
@@ -32,7 +31,7 @@ module Airbrake
         end
       end
     end
-    # rubocop:enable Metrics:AbcSize
+    # rubocop:enable Metrics/AbcSize
   end
 end
 
