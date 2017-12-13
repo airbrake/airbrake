@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v7.1.1][v7.1.1] (December 13, 2017)
+
 * Better fix for apps which don't use ActiveRecord. In some scenarios some pieces
   of ActiveRecord may still be loaded, e.g. the ActiveRecord errors, causing airbrake
   to still fail to startup.
@@ -381,3 +383,4 @@ Airbrake Changelog
 [v7.0.2]: https://github.com/airbrake/airbrake/releases/tag/v7.0.2
 [v7.0.3]: https://github.com/airbrake/airbrake/releases/tag/v7.0.3
 [v7.1.0]: https://github.com/airbrake/airbrake/releases/tag/v7.1.0
+[v7.1.1]: https://github.com/airbrake/airbrake/releases/tag/v7.1.1
