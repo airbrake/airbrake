@@ -3,6 +3,11 @@ Airbrake Changelog
 
 ### master
 
+* Better fix for apps which don't use ActiveRecord. In some scenarios some pieces
+  of ActiveRecord may still be loaded, e.g. the ActiveRecord errors, causing airbrake
+  to still fail to startup.
+  ([#810](https://github.com/airbrake/airbrake/pull/810))
+
 ### [v7.1.0][v7.1.0] (October 20, 2017)
 
 * Started depending on
