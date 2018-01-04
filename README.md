@@ -54,6 +54,7 @@ The list of integrations that are available in this gem includes:
   * Sidekiq<sup>[[link](#sidekiq)]</sup>
   * DelayedJob<sup>[[link](#delayedjob)]</sup>
   * Shoryuken<sup>[[link](#shoryuken)]</sup>
+  * Sneakers<sup>[[link](#sneakers)]</sup>
 * Other libraries
   * Rake<sup>[[link](#rake)]</sup>
   * Logger<sup>[[link](#logger)]</sup>
@@ -383,6 +384,17 @@ require 'airbrake/shoryuken'
 ```
 
 If you required Shoryuken before Airbrake, then you don't even have to `require`
+anything manually and it should just work out-of-box.
+
+### Sneakers
+
+Simply `require` our integration and you're done:
+
+```ruby
+require 'airbrake/sneakers'
+```
+
+If you required Sneakers before Airbrake, then you don't even have to `require`
 anything manually and it should just work out-of-box.
 
 ### Rake
