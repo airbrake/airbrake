@@ -389,3 +389,4 @@ Airbrake Changelog
 [v7.0.3]: https://github.com/airbrake/airbrake/releases/tag/v7.0.3
 [v7.1.0]: https://github.com/airbrake/airbrake/releases/tag/v7.1.0
 [v7.1.1]: https://github.com/airbrake/airbrake/releases/tag/v7.1.1
+[v7.2.0]: https://github.com/airbrake/airbrake/releases/tag/v7.2.0
