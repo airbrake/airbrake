@@ -19,6 +19,7 @@ require 'airbrake/resque' if defined?(Resque)
 require 'airbrake/sidekiq' if defined?(Sidekiq)
 require 'airbrake/shoryuken' if defined?(Shoryuken)
 require 'airbrake/delayed_job' if defined?(Delayed)
+require 'airbrake/sneakers' if defined?(Sneakers)
 
 require 'airbrake/logger'
 

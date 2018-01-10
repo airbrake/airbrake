@@ -40,6 +40,7 @@ DESC
   s.add_development_dependency 'appraisal', '~> 2'
   s.add_development_dependency 'rack', '~> 1'
   s.add_development_dependency 'webmock', '~> 2'
+  s.add_development_dependency 'sneakers', '~> 2'
 
   # We still support Ruby 2.0.0+, but nokogiri 1.7.0+ doesn't.
   s.add_development_dependency 'nokogiri', '= 1.6.8.1'
