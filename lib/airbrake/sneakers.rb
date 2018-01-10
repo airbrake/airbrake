@@ -4,6 +4,7 @@ module Airbrake
     # Provides integration with Sneakers.
     #
     # @see https://github.com/jondot/sneakers
+    # @since v7.2.0
     class ErrorReporter
       def call(exception, worker = nil, **context)
         Airbrake.notify(exception, context) do |notice|
