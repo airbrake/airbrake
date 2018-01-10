@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Added support for Sneakers error handling
+  ([#817](https://github.com/airbrake/airbrake/pull/817))
+
 ### [v7.1.1][v7.1.1] (December 13, 2017)
 
 * Better fix for apps which don't use ActiveRecord. In some scenarios some pieces
