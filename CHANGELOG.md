@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v7.2.0][v7.2.0] (January 10, 2018)
+
 * Added support for Sneakers error handling
   ([#817](https://github.com/airbrake/airbrake/pull/817))
 
