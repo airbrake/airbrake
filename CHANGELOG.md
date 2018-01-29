@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v7.2.1][v7.2.1] (January 29, 2018)
+
 * Fixed support for Rails API/Metal
   ([#822](https://github.com/airbrake/airbrake/pull/822))
 
@@ -393,3 +395,4 @@ Airbrake Changelog
 [v7.1.0]: https://github.com/airbrake/airbrake/releases/tag/v7.1.0
 [v7.1.1]: https://github.com/airbrake/airbrake/releases/tag/v7.1.1
 [v7.2.0]: https://github.com/airbrake/airbrake/releases/tag/v7.2.0
+[v7.2.1]: https://github.com/airbrake/airbrake/releases/tag/v7.2.1
