@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed support for Rails API/Metal
+  ([#822](https://github.com/airbrake/airbrake/pull/822))
+
 ### [v7.2.0][v7.2.0] (January 10, 2018)
 
 * Added support for Sneakers error handling
