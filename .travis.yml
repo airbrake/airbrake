@@ -2,7 +2,7 @@ language: ruby
 sudo: false
 
 rvm:
-  - jruby-9.1.8.0
+  - jruby-9.1.15.0
 
 env:
   global:
