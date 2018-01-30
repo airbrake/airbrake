@@ -1,5 +1,5 @@
 appraise 'rails-3.2' do
-  gem 'rails', '~> 3.2.22'
+  gem 'rails', '~> 3.2.22.5'
   gem 'warden', '~> 1.2.3'
 
   gem 'activerecord-jdbcsqlite3-adapter', '~> 1.3.18', platforms: :jruby
@@ -27,7 +27,7 @@ appraise 'rails-4.0' do
 end
 
 appraise 'rails-4.1' do
-  gem 'rails', '~> 4.1.13'
+  gem 'rails', '~> 4.1.16'
   gem 'warden', '~> 1.2.3'
 
   gem 'activerecord-jdbcsqlite3-adapter', '~> 1.3.18', platforms: :jruby
@@ -42,7 +42,7 @@ appraise 'rails-4.1' do
 end
 
 appraise 'rails-4.2' do
-  gem 'rails', '~> 4.2.4'
+  gem 'rails', '~> 4.2.10'
   gem 'warden', '~> 1.2.3'
 
   gem 'activerecord-jdbcsqlite3-adapter', '~> 1.3.18', platforms: :jruby
@@ -59,7 +59,7 @@ end
 # Rails 5+ supports only modern Rubies (2.2.2+)
 if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
   appraise 'rails-5.0' do
-    gem 'rails', '~> 5.0.0'
+    gem 'rails', '~> 5.0.6'
     gem 'warden', '~> 1.2.6'
     gem 'rack', '~> 2.0'
 
@@ -75,7 +75,7 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
   end
 
   appraise 'rails-5.1' do
-    gem 'rails', '~> 5.1.0'
+    gem 'rails', '~> 5.1.4'
     gem 'warden', '~> 1.2.6'
     gem 'rack', '~> 2.0'
 
