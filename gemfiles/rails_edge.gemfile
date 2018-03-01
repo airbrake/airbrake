@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 
 gem "rubocop", "~> 0.51", require: false
-gem "rails", github: "rails/rails"
+gem "rails", github: "rails/rails", branch: "5-2-stable"
 gem "arel", github: "rails/arel"
 gem "rack", "~> 2.0"
 gem "warden", "~> 1.2.6"

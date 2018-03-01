@@ -92,7 +92,7 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
   end
 
   appraise 'rails-edge' do
-    gem 'rails', github: 'rails/rails'
+    gem 'rails', github: 'rails/rails', branch: '5-2-stable'
     gem 'arel', github: 'rails/arel'
     gem 'rack', '~> 2.0'
     gem 'warden', '~> 1.2.6'
