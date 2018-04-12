@@ -1,0 +1,44 @@
+module Airbrake
+  module Sidekiq
+    ##
+    # Filter that can ignore notices from jobs that failed but will be retried
+    # by Sidekiq
+    class RetryableJobsFilter
+      if Gem::Version.new(::Sidekiq::VERSION) < Gem::Version.new('5.0.0')
+        require 'sidekiq/middleware/server/retry_jobs'
+        DEFAULT_MAX_RETRY_ATTEMPTS = \
+          ::Sidekiq::Middleware::Server::RetryJobs::DEFAULT_MAX_RETRY_ATTEMPTS
+      else
+        require 'sidekiq/job_retry'
+        DEFAULT_MAX_RETRY_ATTEMPTS = ::Sidekiq::JobRetry::DEFAULT_MAX_RETRY_ATTEMPTS
+      end
+
+      def call(notice)
+        job = notice[:params][:job]
+
+        notice.ignore! if retryable?(job)
+      end
+
+      private
+
+      def retryable?(job)
+        return false unless job && job['retry']
+
+        max_attempts = max_attempts_for(job)
+        job['retry_count'] < max_attempts
+      end
+
+      def max_attempts_for(job)
+        if job['retry'].is_a?(Integer)
+          job['retry']
+        else
+          max_retries
+        end
+      end
+
+      def max_retries
+        @max_retries ||= ::Sidekiq.options[:max_retries] || DEFAULT_MAX_RETRY_ATTEMPTS
+      end
+    end
+  end
+end
