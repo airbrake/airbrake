@@ -25,22 +25,22 @@ references:
     run:
       name: Test Rails 3.2
       command: bundle exec appraisal rails-3.2 rake spec:integration:rails
-  rails40: &rails40
-    run:
-      name: Test Rails 4.0
-      command: bundle exec appraisal rails-4.0 rake spec:integration:rails
-  rails41: &rails41
-    run:
-      name: Test Rails 4.1
-      command: bundle exec appraisal rails-4.1 rake spec:integration:rails
   rails42: &rails42
     run:
       name: Test Rails 4.2
       command: bundle exec appraisal rails-4.2 rake spec:integration:rails
+  rails41: &rails50
+    run:
+      name: Test Rails 5.0
+      command: bundle exec appraisal rails-5.0 rake spec:integration:rails
   rails51: &rails51
     run:
       name: Test Rails 5.1
       command: bundle exec appraisal rails-5.1 rake spec:integration:rails
+  rails51: &rails52
+    run:
+      name: Test Rails 5.2
+      command: bundle exec appraisal rails-5.2 rake spec:integration:rails
   sinatra: &sinatra
     run:
       name: Test Sinatra
@@ -71,8 +71,6 @@ jobs:
       - <<: *appraisal_install
       - <<: *unit
       - <<: *rails32
-      - <<: *rails40
-      - <<: *rails41
       - <<: *rails42
       - <<: *sinatra
       - <<: *rack
@@ -86,8 +84,6 @@ jobs:
       - <<: *appraisal_install
       - <<: *unit
       - <<: *rails32
-      - <<: *rails40
-      - <<: *rails41
       - <<: *rails42
       - <<: *sinatra
       - <<: *rack
@@ -104,10 +100,9 @@ jobs:
       - <<: *appraisal_install
       - <<: *unit
       - <<: *rails32
-      - <<: *rails40
-      - <<: *rails41
       - <<: *rails42
       - <<: *rails51
+      - <<: *rails52
       - <<: *sinatra
       - <<: *rack
   "ruby-2.3":
@@ -120,10 +115,9 @@ jobs:
       - <<: *appraisal_install
       - <<: *unit
       - <<: *rails32
-      - <<: *rails40
-      - <<: *rails41
       - <<: *rails42
       - <<: *rails51
+      - <<: *rails52
       - <<: *sinatra
       - <<: *rack
   "ruby-2.4":
@@ -136,12 +130,9 @@ jobs:
       - <<: *appraisal_install
       - <<: *unit
       - <<: *rails32
-      # Not possible to test due to a Rails bug:
-      # https://github.com/rails/rails/issues/25125
-      # - <<: *rails40
-      # - <<: *rails41
       - <<: *rails42
       - <<: *rails51
+      - <<: *rails52
       - <<: *sinatra
       - <<: *rack
   "ruby-2.5":
@@ -154,12 +145,9 @@ jobs:
       - <<: *appraisal_install
       - <<: *unit
       - <<: *rails32
-      # Not possible to test due to a Rails bug:
-      # https://github.com/rails/rails/issues/25125
-      # - <<: *rails40
-      # - <<: *rails41
       - <<: *rails42
       - <<: *rails51
+      - <<: *rails52
       - <<: *sinatra
       - <<: *rack
   "jruby-9.1.16":
@@ -172,12 +160,10 @@ jobs:
       - <<: *appraisal_install
       - <<: *unit
       - <<: *rails32
-      - <<: *rails40
-      - <<: *rails41
       - <<: *rails42
-      # activerecord-jdbc-adapter doesn't support Rails v5.1 yet:
-      # https://github.com/jruby/activerecord-jdbc-adapter/issues/780
-      # - <<: *rails51
+      - <<: *rails51
+      # https://github.com/jruby/activerecord-jdbc-adapter doesn't support it yet.
+      # - <<: *rails52
       - <<: *sinatra
       - <<: *rack
 
