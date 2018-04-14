@@ -42,6 +42,9 @@ DESC
   s.add_development_dependency 'webmock', '~> 2'
   s.add_development_dependency 'sneakers', '~> 2'
 
+  # We still support Ruby 2.0.0+, but sneakers 2 doesn't.
+  s.add_development_dependency 'amq-protocol', '= 2.2.0'
+
   # We still support Ruby 2.0.0+, but nokogiri 1.7.0+ doesn't.
   s.add_development_dependency 'nokogiri', '= 1.6.8.1'
 
