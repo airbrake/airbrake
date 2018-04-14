@@ -1,3 +1,5 @@
+require 'airbrake/sidekiq/retryable_jobs_filter'
+
 module Airbrake
   module Sidekiq
     ##
