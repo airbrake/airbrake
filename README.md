@@ -311,8 +311,8 @@ use Airbrake::Rack::Middleware, :app2
 
 ### Sidekiq
 
-We support Sidekiq v2, v3 and v4. The configurations steps for them are
-identical. Simply `require` our integration and you're done:
+We support Sidekiq v2+. The configurations steps for them are identical. Simply
+`require` our integration and you're done:
 
 ```ruby
 require 'airbrake/sidekiq'
@@ -321,9 +321,9 @@ require 'airbrake/sidekiq'
 If you required Sidekiq before Airbrake, then you don't even have to `require`
 anything manually and it should just work out-of-box.
 
-By default, Airbrake notifies of all errors, including reoccurring errors during a
-retry attempt. To filter out these errors and only get notified when Sidekiq has
-exhausted its retries you can add the `RetryableJobsFilter`:
+By default, Airbrake notifies of all errors, including reoccurring errors during
+a retry attempt. To filter out these errors and only get notified when Sidekiq
+has exhausted its retries you can add the `RetryableJobsFilter`:
 
 ```ruby
 Airbrake.add_filter(Airbrake::Sidekiq::RetryableJobsFilter.new)
