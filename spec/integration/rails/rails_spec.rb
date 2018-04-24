@@ -88,6 +88,8 @@ RSpec.describe "Rails integration specs" do
     if Gem::Version.new(Rails.version) >= Gem::Version.new('5.1.0.alpha')
       it "reports exceptions in after_commit callbacks" do
         get '/active_record_after_commit'
+        sleep 2
+
         wait_for(
           a_request(:post, endpoint).
           with(body: /"type":"AirbrakeTestError","message":"after_commit"/)
@@ -96,6 +98,8 @@ RSpec.describe "Rails integration specs" do
 
       it "reports exceptions in after_rollback callbacks" do
         get '/active_record_after_rollback'
+        sleep 2
+
         wait_for(
           a_request(:post, endpoint).
           with(body: /"type":"AirbrakeTestError","message":"after_rollback"/)
