@@ -3,7 +3,7 @@ require 'airbrake/sidekiq/retryable_jobs_filter'
 module Airbrake
   module Sidekiq
     ##
-    # Provides integration with Sidekiq 2, 4, 5.
+    # Provides integration with Sidekiq v2+.
     class ErrorHandler
       # rubocop:disable Lint/RescueException
       def call(_worker, context, _queue)
