@@ -3,6 +3,11 @@ Airbrake Changelog
 
 ### master
 
+### [v7.3.0][v7.3.0] (April 25, 2018)
+
+* New Sidekiq feature: added a filter that ignores error reporting until
+  the last try ([#831](https://github.com/airbrake/airbrake/pull/831))
+
 ### [v7.2.1][v7.2.1] (January 29, 2018)
 
 * Fixed support for Rails API/Metal
@@ -396,3 +401,4 @@ Airbrake Changelog
 [v7.1.1]: https://github.com/airbrake/airbrake/releases/tag/v7.1.1
 [v7.2.0]: https://github.com/airbrake/airbrake/releases/tag/v7.2.0
 [v7.2.1]: https://github.com/airbrake/airbrake/releases/tag/v7.2.1
+[v7.3.0]: https://github.com/airbrake/airbrake/releases/tag/v7.3.0
