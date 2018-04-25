@@ -3,6 +3,7 @@ module Airbrake
     ##
     # Filter that can ignore notices from jobs that failed but will be retried
     # by Sidekiq
+    # @since v7.3.0
     class RetryableJobsFilter
       if Gem::Version.new(::Sidekiq::VERSION) < Gem::Version.new('5.0.0')
         require 'sidekiq/middleware/server/retry_jobs'
