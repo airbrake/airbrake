@@ -69,3 +69,7 @@ Bundler/OrderedGems:
 
 Naming/UncommunicativeMethodParamName:
   Enabled: false
+
+Style/SymbolArray:
+  Exclude:
+    - gemfiles/*.gemfile
