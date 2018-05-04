@@ -65,6 +65,13 @@ end
 # https://github.com/airbrake/airbrake#requestbodyfilter
 # Airbrake.add_filter(Airbrake::Rack::RequestBodyFilter.new)
 
+# Attaches thread & fiber local variables along with general thread information.
+# Airbrake.add_filter(Airbrake::Filters::ThreadFilter.new)
+
+# Attaches loaded dependencies to the notice object
+# (under context/versions/dependencies).
+# Airbrake.add_filter(Airbrake::Filters::DependencyFilter.new)
+
 # If you want to convert your log messages to Airbrake errors, we offer an
 # integration with the Logger class from stdlib.
 # https://github.com/airbrake/airbrake#logger
