@@ -10,7 +10,7 @@ RSpec.describe "Rack integration specs" do
     it "includes version" do
       get '/crash'
       wait_for_a_request_with_body(
-        /"context":{.*"version":"1.2.3 Rack\.version.+Rack\.release/
+        /"context":{.*"versions":{"rack_version":"\d\..+","rack_release":"\d\..+"}/
       )
     end
   end

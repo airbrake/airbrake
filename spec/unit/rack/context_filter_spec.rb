@@ -18,8 +18,10 @@ RSpec.describe Airbrake::Rack::ContextFilter do
 
   it "adds framework version to the context" do
     subject.call(notice)
-    expect(notice[:context][:version]).
-      to match(/\d.\d.\d Rack\.version.+Rack\.release/)
+    expect(notice[:context][:versions]).to include(
+      'rack_version' => a_string_matching(/\d.\d/),
+      'rack_release' => a_string_matching(/\d.\d\.\d/)
+    )
   end
 
   context "when URL is present" do

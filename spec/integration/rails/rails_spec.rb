@@ -53,7 +53,7 @@ RSpec.describe "Rails integration specs" do
     end
 
     it "includes version" do
-      wait_for_a_request_with_body(/"context":{.*"version":"1.2.3 Rails/)
+      wait_for_a_request_with_body(/"context":{.*"versions":{"rails":"\d\./)
     end
 
     it "includes session" do
