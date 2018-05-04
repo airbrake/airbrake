@@ -63,3 +63,13 @@ Gemspec/RequiredRubyVersion:
 # Broken behaviour: https://github.com/bbatsov/rubocop/issues/5224
 Layout/EmptyLinesAroundArguments:
   Enabled: false
+
+Bundler/OrderedGems:
+  Enabled: false
+
+Naming/UncommunicativeMethodParamName:
+  Enabled: false
+
+Style/SymbolArray:
+  Exclude:
+    - gemfiles/*.gemfile
