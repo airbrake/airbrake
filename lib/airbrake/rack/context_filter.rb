@@ -10,11 +10,14 @@ module Airbrake
       def initialize
         @framework_version =
           if defined?(::Rails) && ::Rails.respond_to?(:version)
-            "Rails/#{::Rails.version}"
+            { 'rails' => ::Rails.version }
           elsif defined?(::Sinatra)
-            "Sinatra/#{Sinatra::VERSION}"
+            { 'sinatra' => Sinatra::VERSION }
           else
-            "Rack.version/#{::Rack.version} Rack.release/#{::Rack.release}"
+            {
+              'rack_version' => ::Rack.version,
+              'rack_release' => ::Rack.release
+            }
           end.freeze
         @weight = 99
       end
@@ -44,10 +47,10 @@ module Airbrake
       private
 
       def add_framework_version(context)
-        if context.key?(:version)
-          context[:version] += " #{@framework_version}"
+        if context.key?(:versions)
+          context[:versions].merge!(@framework_version)
         else
-          context[:version] = @framework_version
+          context[:versions] = @framework_version
         end
       end
     end

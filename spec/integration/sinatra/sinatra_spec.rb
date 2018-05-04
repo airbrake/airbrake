@@ -15,7 +15,7 @@ RSpec.describe "Sinatra integration specs" do
   describe "context payload" do
     it "includes version" do
       get '/crash'
-      wait_for_a_request_with_body(/"context":{.*"version":"1.2.3 Sinatra/)
+      wait_for_a_request_with_body(/"context":{.*"versions":{"sinatra":"\d\./)
     end
   end
 
