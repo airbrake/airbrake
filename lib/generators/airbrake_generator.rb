@@ -6,7 +6,7 @@
 #
 class AirbrakeGenerator < Rails::Generators::Base
   # Adds current directory to source paths, so we can find the template file.
-  source_root File.expand_path('..', __FILE__)
+  source_root File.expand_path(__dir__)
 
   argument :project_id, required: false
   argument :project_key, required: false
