@@ -1,11 +1,9 @@
 module Airbrake
   module Rails
-    ##
     # Enables support for exceptions occurring in ActiveJob jobs.
     module ActiveJob
       extend ActiveSupport::Concern
 
-      ##
       # @return [Array<Regexp>] the list of known adapters
       ADAPTERS = [/Resque/, /Sidekiq/, /DelayedJob/].freeze
 

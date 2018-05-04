@@ -1,11 +1,9 @@
 module Airbrake
   module Rack
-    ##
     # Adds HTTP request parameters.
     #
     # @since v5.7.0
     class HttpHeadersFilter
-      ##
       # @return [Array<String>] the prefixes of the majority of HTTP headers in
       #   Rack (some prefixes match the header names for simplicity)
       HTTP_HEADER_PREFIXES = [
@@ -14,7 +12,6 @@ module Airbrake
         'CONTENT_LENGTH'.freeze
       ].freeze
 
-      ##
       # @return [Integer]
       attr_reader :weight
 
@@ -22,7 +19,6 @@ module Airbrake
         @weight = 98
       end
 
-      ##
       # @see Airbrake::FilterChain#refine
       def call(notice)
         return unless (request = notice.stash[:rack_request])

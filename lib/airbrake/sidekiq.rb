@@ -2,7 +2,6 @@ require 'airbrake/sidekiq/retryable_jobs_filter'
 
 module Airbrake
   module Sidekiq
-    ##
     # Provides integration with Sidekiq v2+.
     class ErrorHandler
       # rubocop:disable Lint/RescueException
@@ -23,7 +22,6 @@ module Airbrake
         end
       end
 
-      ##
       # @return [String] job's name. When ActiveJob is present, retrieve
       #   job_class. When used directly, use worker's name
       def action(context)

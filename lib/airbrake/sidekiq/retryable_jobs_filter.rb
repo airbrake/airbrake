@@ -1,6 +1,5 @@
 module Airbrake
   module Sidekiq
-    ##
     # Filter that can ignore notices from jobs that failed but will be retried
     # by Sidekiq
     # @since v7.3.0

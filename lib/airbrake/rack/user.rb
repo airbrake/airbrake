@@ -1,6 +1,5 @@
 module Airbrake
   module Rack
-    ##
     # Represents an authenticated user, which can be converted to Airbrake's
     # payload format. Supports Warden and Omniauth authentication frameworks.
     class User
