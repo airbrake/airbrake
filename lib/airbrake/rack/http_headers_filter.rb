@@ -23,7 +23,7 @@ module Airbrake
       end
 
       ##
-      # @see {Airbrake::FilterChain#refine}
+      # @see Airbrake::FilterChain#refine
       def call(notice)
         return unless (request = notice.stash[:rack_request])
 
