@@ -3,6 +3,12 @@ Airbrake Changelog
 
 ### master
 
+### [v7.3.1][v7.3.1] (May 4, 2018)
+
+* Rack/Rails/Sinatra integrations started attaching their versions to
+  `context/versions` (was `context/version`)
+  ([#843](https://github.com/airbrake/airbrake/pull/843))
+
 ### [v7.3.0][v7.3.0] (April 25, 2018)
 
 * New Sidekiq feature: added a filter that ignores error reporting until
@@ -402,3 +408,4 @@ Airbrake Changelog
 [v7.2.0]: https://github.com/airbrake/airbrake/releases/tag/v7.2.0
 [v7.2.1]: https://github.com/airbrake/airbrake/releases/tag/v7.2.1
 [v7.3.0]: https://github.com/airbrake/airbrake/releases/tag/v7.3.0
+[v7.3.1]: https://github.com/airbrake/airbrake/releases/tag/v7.3.1
