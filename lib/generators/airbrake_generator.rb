@@ -1,4 +1,3 @@
-##
 # Creates the Airbrake initializer file for Rails apps.
 #
 # @example Invokation from terminal
@@ -11,7 +10,6 @@ class AirbrakeGenerator < Rails::Generators::Base
   argument :project_id, required: false
   argument :project_key, required: false
 
-  ##
   # Makes the NAME option optional, which allows to subclass from Base, so we
   # can pass arguments to the ERB template.
   #

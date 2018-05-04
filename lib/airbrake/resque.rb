@@ -1,6 +1,5 @@
 module Resque
   module Failure
-    ##
     # Provides Resque integration with Airbrake.
     #
     # @since v5.0.0
@@ -15,7 +14,6 @@ module Resque
 
       private
 
-      ##
       # @return [String] job's name. When ActiveJob is present, retrieve
       #   job_class. When used directly, use worker's name
       def action(payload)

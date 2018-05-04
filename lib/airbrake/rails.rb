@@ -1,6 +1,5 @@
 module Airbrake
   module Rails
-    ##
     # This railtie works for any Rails application that supports railties (Rails
     # 3.2+ apps). It makes Airbrake Ruby work with Rails and report errors
     # occurring in the application automatically.

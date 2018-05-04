@@ -2,7 +2,6 @@ require 'logger'
 require 'delegate'
 
 module Airbrake
-  ##
   # Decorator for +Logger+ from stdlib. Endows loggers the ability to both log
   # and report errors to Airbrake.
   #
@@ -13,14 +12,12 @@ module Airbrake
   #   # Just use the logger like you normally do.
   #   logger.fatal('oops')
   class AirbrakeLogger < SimpleDelegator
-    ##
     # @example
     #   # Assign a default Airbrake notifier
     #   logger.airbrake_notifier = Airbrake[:default]
     # @return [Airbrake::Notifier] notifier to be used to send notices
     attr_accessor :airbrake_notifier
 
-    ##
     # @return [Integer]
     attr_reader :airbrake_level
 
@@ -30,35 +27,30 @@ module Airbrake
       @airbrake_level = Logger::WARN
     end
 
-    ##
     # @see Logger#warn
     def warn(progname = nil, &block)
       notify_airbrake(Logger::WARN, progname)
       super
     end
 
-    ##
     # @see Logger#error
     def error(progname = nil, &block)
       notify_airbrake(Logger::ERROR, progname)
       super
     end
 
-    ##
     # @see Logger#fatal
     def fatal(progname = nil, &block)
       notify_airbrake(Logger::FATAL, progname)
       super
     end
 
-    ##
     # @see Logger#unknown
     def unknown(progname = nil, &block)
       notify_airbrake(Logger::UNKNOWN, progname)
       super
     end
 
-    ##
     # Sets airbrake severity level. Does not permit values below `Logger::WARN`.
     #
     # @example

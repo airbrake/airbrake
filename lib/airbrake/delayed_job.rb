@@ -1,6 +1,5 @@
 module Delayed
   module Plugins
-    ##
     # Provides integration with Delayed Job.
     # rubocop:disable Lint/RescueException
     class Airbrake < ::Delayed::Plugin
@@ -33,7 +32,6 @@ module Delayed
 end
 
 if RUBY_ENGINE == 'jruby' && defined?(Delayed::Backend::ActiveRecord::Job)
-  ##
   # Workaround against JRuby bug:
   # https://github.com/jruby/jruby/issues/3338
   # rubocop:disable Style/ClassAndModuleChildren

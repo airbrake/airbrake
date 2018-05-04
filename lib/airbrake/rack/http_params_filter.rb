@@ -1,11 +1,9 @@
 module Airbrake
   module Rack
-    ##
     # Adds HTTP request parameters.
     #
     # @since v5.7.0
     class HttpParamsFilter
-      ##
       # @return [Integer]
       attr_reader :weight
 
@@ -13,7 +11,6 @@ module Airbrake
         @weight = 97
       end
 
-      ##
       # @see Airbrake::FilterChain#refine
       def call(notice)
         return unless (request = notice.stash[:rack_request])

@@ -1,6 +1,5 @@
 module Airbrake
   module Rails
-    ##
     # Rails <4.2 has a bug with regard to swallowing exceptions in the
     # +after_commit+ and the +after_rollback+ hooks: it doesn't bubble up
     # exceptions from there.
@@ -12,7 +11,6 @@ module Airbrake
     # @see https://goo.gl/348lor Rails 4.2+ implementation (fixed)
     # @see https://goo.gl/ddFNg7 Rails <4.2 implementation (bugged)
     module ActiveRecord
-      ##
       # Patches default +run_callbacks+ with our version, which is capable of
       # notifying about exceptions.
       #

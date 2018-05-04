@@ -1,6 +1,5 @@
 module Airbrake
   module Shoryuken
-    ##
     # Provides integration with Shoryuken.
     class ErrorHandler
       # rubocop:disable Lint/RescueException

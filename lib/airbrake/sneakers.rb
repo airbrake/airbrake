@@ -1,6 +1,5 @@
 module Airbrake
   module Sneakers
-    ##
     # Provides integration with Sneakers.
     #
     # @see https://github.com/jondot/sneakers
