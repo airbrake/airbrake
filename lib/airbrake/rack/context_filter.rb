@@ -18,7 +18,7 @@ module Airbrake
               'rack_version' => ::Rack.version,
               'rack_release' => ::Rack.release
             }
-          end.freeze
+          end
         @weight = 99
       end
 
