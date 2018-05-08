@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Fixed `can't modify frozen Hash` error when using the Rack/Rails integration
+  along with `DependencyFilter` from airbrake-ruby
+  ([#847](https://github.com/airbrake/airbrake/pull/847))
+
 ### [v7.3.1][v7.3.1] (May 4, 2018)
 
 * Rack/Rails/Sinatra integrations started attaching their versions to
