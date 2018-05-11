@@ -3,6 +3,11 @@ Airbrake Changelog
 
 ### master
 
+### [v7.3.3][v7.3.3] (May 11, 2018)
+
+* Fixed Resque failure when the first item in payload args is not a hash
+  ([#846](https://github.com/airbrake/airbrake/pull/846))
+
 ### [v7.3.2][v7.3.2] (May 8, 2018)
 
 * Fixed `can't modify frozen Hash` error when using the Rack/Rails integration
@@ -416,3 +421,4 @@ Airbrake Changelog
 [v7.3.0]: https://github.com/airbrake/airbrake/releases/tag/v7.3.0
 [v7.3.1]: https://github.com/airbrake/airbrake/releases/tag/v7.3.1
 [v7.3.2]: https://github.com/airbrake/airbrake/releases/tag/v7.3.2
+[v7.3.3]: https://github.com/airbrake/airbrake/releases/tag/v7.3.3
