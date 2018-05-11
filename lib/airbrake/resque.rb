@@ -17,10 +17,12 @@ module Resque
       # @return [String] job's name. When ActiveJob is present, retrieve
       #   job_class. When used directly, use worker's name
       def action(payload)
-        klass = payload['class'].to_s
-        return klass unless payload['args'] && payload['args'].first
-        return klass unless (job_class = payload['args'].first['job_class'])
-        job_class
+        active_job_args = payload['args'].first if payload['args']
+        if active_job_args.is_a?(Hash) && active_job_args['job_class']
+          active_job_args['job_class']
+        else
+          payload['class'].to_s
+        end
       end
     end
   end
