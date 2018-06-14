@@ -49,20 +49,36 @@ RSpec.describe Airbrake::Sneakers::ErrorReporter do
   end
 
   it "should support call without worker" do
-    subject.call(error, message: 'my_glorious_message')
+    subject.call(error, message: 'my_glorious_messsage', delivery_info: {})
     wait_for_a_request_with_body(/"message":"Something is wrong"/)
-    wait_for_a_request_with_body(/"params":{"message":"my_glorious_message"}/)
+    wait_for_a_request_with_body(/"params":{"message":"my_glorious_messsage"/)
     # worker class is nil so action is NilClass
     wait_for_a_request_with_body(/"action":"NilClass"/)
     wait_for_a_request_with_body(/"component":"sneakers"/)
   end
 
   it "should support call with worker" do
-    subject.call(error, '', message: 'my_special_message')
+    subject.call(error, '', message: 'my_special_message', delivery_info: {})
     wait_for_a_request_with_body(/"message":"Something is wrong"/)
-    wait_for_a_request_with_body(/"params":{"message":"my_special_message"}/)
+    wait_for_a_request_with_body(/"params":{"message":"my_special_message"/)
     # worker class is a String so action is String
     wait_for_a_request_with_body(/"action":"String"/)
     wait_for_a_request_with_body(/"component":"sneakers"/)
+    wait_for_a_request_with_body(
+      /"params":{"message":"my_special_message","delivery_info":{}}/
+    )
+  end
+
+  described_class::IGNORED_KEYS.each do |key|
+    context "when delivery_info/#{key} is present" do
+      it "filters out #{key}" do
+        subject.call(
+          error, '', message: 'msg', delivery_info: { key => 'a', foo: 'b' }
+        )
+        wait_for_a_request_with_body(
+          /"params":{"message":"msg","delivery_info":{"foo":"b"}}/
+        )
+      end
+    end
   end
 end
