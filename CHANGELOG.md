@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v7.3.4][v7.3.4] (June 14, 2018)
+
 * Fixed SystemStackError in the Sneakers integration
   ([#852](https://github.com/airbrake/airbrake/pull/852))
 
@@ -425,3 +427,4 @@ Airbrake Changelog
 [v7.3.1]: https://github.com/airbrake/airbrake/releases/tag/v7.3.1
 [v7.3.2]: https://github.com/airbrake/airbrake/releases/tag/v7.3.2
 [v7.3.3]: https://github.com/airbrake/airbrake/releases/tag/v7.3.3
+[v7.3.4]: https://github.com/airbrake/airbrake/releases/tag/v7.3.4
