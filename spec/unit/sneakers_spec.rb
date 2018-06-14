@@ -22,7 +22,6 @@ RSpec.describe Airbrake::Sneakers::ErrorReporter do
   end
 
   let(:error) { StandardError.new('Something is wrong') }
-
   let(:endpoint) { 'https://airbrake.io/api/v3/projects/113743/notices' }
 
   def wait_for_a_request_with_body(body)
@@ -36,9 +35,7 @@ RSpec.describe Airbrake::Sneakers::ErrorReporter do
     Sneakers::Worker.configure_metrics
   end
 
-  after do
-    Sneakers.clear!
-  end
+  after { Sneakers.clear! }
 
   it "should send a notice" do
     handler = instance_double('handler')
@@ -46,13 +43,13 @@ RSpec.describe Airbrake::Sneakers::ErrorReporter do
     allow(worker.logger).to receive(:error)
     worker.do_work(nil, nil, "msg", handler)
 
-    wait_for_a_request_with_body(/"message":"oops\serror"/)
+    wait_for_a_request_with_body(/"message":"oops error"/)
     wait_for_a_request_with_body(/test-queue/)
     wait_for_a_request_with_body(/"component":"sneakers"/)
   end
 
   it "should support call without worker" do
-    Airbrake::Sneakers::ErrorReporter.new.call(error, message: 'my_glorious_message')
+    subject.call(error, message: 'my_glorious_message')
     wait_for_a_request_with_body(/"message":"Something is wrong"/)
     wait_for_a_request_with_body(/"params":{"message":"my_glorious_message"}/)
     # worker class is nil so action is NilClass
@@ -61,7 +58,7 @@ RSpec.describe Airbrake::Sneakers::ErrorReporter do
   end
 
   it "should support call with worker" do
-    Airbrake::Sneakers::ErrorReporter.new.call(error, '', message: 'my_special_message')
+    subject.call(error, '', message: 'my_special_message')
     wait_for_a_request_with_body(/"message":"Something is wrong"/)
     wait_for_a_request_with_body(/"params":{"message":"my_special_message"}/)
     # worker class is a String so action is String
