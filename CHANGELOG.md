@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed SystemStackError in the Sneakers integration
+  ([#852](https://github.com/airbrake/airbrake/pull/852))
+
 ### [v7.3.3][v7.3.3] (May 11, 2018)
 
 * Fixed Resque failure when the first item in payload args is not a hash
