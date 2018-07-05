@@ -34,12 +34,16 @@ RSpec.describe "airbrake/sidekiq/ignorable_class_filter" do
   end
 
   it "ignore notices from jobs that is an ignorable class" do
-    notice = build_notice('retry' => true, 'retry_count' => 0, 'class' => 'OneIgnorableClass')
+    notice = build_notice(
+      'retry' => true,
+      'retry_count' => 0,
+      'class' => 'OneIgnorableClass'
+    )
     filter.call(notice)
     expect(notice).to be_ignored
   end
 
-  it "does not ignore notices from jobs that is an ignorable class with higher retry count" do
+  it "does not ignore notices from ignorable class with higher retry count" do
     notice = build_notice(
       'retry' => true,
       'retry_count' => retry_attempts_before_airbrake + 1,

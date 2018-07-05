@@ -15,7 +15,8 @@ module Airbrake
       attr_accessor :ignorable_classes
 
       def initialize(retry_attempts_before_airbrake: nil, ignorable_classes: nil)
-        @retry_attempts_before_airbrake = [retry_attempts_before_airbrake.to_i, DEFAULT_MAX_RETRY_ATTEMPTS].min
+        @retry_attempts_before_airbrake = \
+          [retry_attempts_before_airbrake.to_i, DEFAULT_MAX_RETRY_ATTEMPTS].min
         @ignorable_classes = Array(ignorable_classes)
       end
 
@@ -31,17 +32,13 @@ module Airbrake
         # DO NOT IGNORE if not a job or does not have a retry
         return false unless job && job['retry']
 
-        # IGNORE if an ignorable class and retry attempts less than RETRY_ATTEMPTS_BEFORE_AIRBRAKE
-        if @ignorable_classes.include?(job['class'])
-          if job['retry_count'] > @retry_attempts_before_airbrake
-            return false
-          else
-            return true
-          end
-        end
+        # IGNORE if an ignorable class and
+        # retry attempts less than RETRY_ATTEMPTS_BEFORE_AIRBRAKE
+        return true if @ignorable_classes.include?(job['class']) &&
+                         job['retry_count'] <= @retry_attempts_before_airbrake
 
         # DO NOT IGNORE all the others
-        return false
+        false
       end
     end
   end
