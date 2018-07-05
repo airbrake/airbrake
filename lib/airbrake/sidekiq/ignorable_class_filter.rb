@@ -35,7 +35,7 @@ module Airbrake
         # IGNORE if an ignorable class and
         # retry attempts less than RETRY_ATTEMPTS_BEFORE_AIRBRAKE
         return true if @ignorable_classes.include?(job['class']) &&
-                         job['retry_count'] <= @retry_attempts_before_airbrake
+                       job['retry_count'] <= @retry_attempts_before_airbrake
 
         # DO NOT IGNORE all the others
         false
