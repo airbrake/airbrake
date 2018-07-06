@@ -1,7 +1,7 @@
 module Airbrake
   module Sidekiq
     # Filter that ignores classes a minimum number of times before sending to airbrake
-    class IgnorableClassFilter
+    class IgnorableErrorClassFilter
       if Gem::Version.new(::Sidekiq::VERSION) < Gem::Version.new('5.0.0')
         require 'sidekiq/middleware/server/retry_jobs'
         DEFAULT_MAX_RETRY_ATTEMPTS = \
@@ -34,7 +34,7 @@ module Airbrake
 
         # IGNORE if an ignorable class and
         # retry attempts less than RETRY_ATTEMPTS_BEFORE_AIRBRAKE
-        return true if @ignorable_classes.include?(job['class']) &&
+        return true if @ignorable_classes.include?(job['error_class']) &&
                        job['retry_count'] <= @retry_attempts_before_airbrake
 
         # DO NOT IGNORE all the others

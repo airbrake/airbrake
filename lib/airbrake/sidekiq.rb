@@ -1,5 +1,5 @@
 require 'airbrake/sidekiq/retryable_jobs_filter'
-require 'airbrake/sidekiq/ignorable_class_filter'
+require 'airbrake/sidekiq/ignorable_error_class_filter'
 
 module Airbrake
   module Sidekiq

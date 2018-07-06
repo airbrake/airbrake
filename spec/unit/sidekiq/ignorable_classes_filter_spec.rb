@@ -5,9 +5,9 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
   require 'sidekiq/cli'
   require 'airbrake/sidekiq'
 
-  RSpec.describe "airbrake/sidekiq/ignorable_class_filter" do
+  RSpec.describe "airbrake/sidekiq/ignorable_error_class_filter" do
     subject(:filter) do
-      Airbrake::Sidekiq::IgnorableClassFilter.new(
+      Airbrake::Sidekiq::IgnorableErrorClassFilter.new(
         retry_attempts_before_airbrake: retry_attempts_before_airbrake,
         ignorable_classes: ignorable_classes
       )
@@ -15,7 +15,7 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
 
     let(:retry_attempts_before_airbrake) { 2 }
     let(:ignorable_classes) do
-      ["OneIgnorableClass"]
+      ["OneIgnorableErrorClass"]
     end
 
     def build_notice(job = nil)
@@ -38,7 +38,7 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
       notice = build_notice(
         'retry' => true,
         'retry_count' => 0,
-        'class' => 'OneIgnorableClass'
+        'error_class' => 'OneIgnorableErrorClass'
       )
       filter.call(notice)
       expect(notice).to be_ignored
@@ -48,7 +48,7 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
       notice = build_notice(
         'retry' => true,
         'retry_count' => retry_attempts_before_airbrake + 1,
-        'class' => 'OneIgnorableClass'
+        'error_class' => 'OneIgnorableErrorClass'
       )
       filter.call(notice)
       expect(build_notice).to_not be_ignored
