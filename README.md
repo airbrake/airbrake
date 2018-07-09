@@ -329,6 +329,17 @@ has exhausted its retries you can add the `RetryableJobsFilter`:
 Airbrake.add_filter(Airbrake::Sidekiq::RetryableJobsFilter.new)
 ```
 
+To ignore certain classes `x` times use the `IgnorableClassFilter`
+
+```ruby
+Airbrake.add_filter(
+  Airbrake::Sidekiq::IgnorableClassFilter.new(
+    ignorable_classes: ['SomeIgnorableClass'],
+    retry_attempts_before_airbrake: x
+  )
+)
+```
+
 ### ActiveJob
 
 No additional configuration is needed. Simply ensure that you have configured
