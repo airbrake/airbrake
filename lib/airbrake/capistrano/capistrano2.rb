@@ -18,7 +18,7 @@ module Airbrake
                 RACK_ENV=#{fetch(:rack_env, nil)} \
                 RAILS_ENV=#{fetch(:rails_env, nil)} \
 
-                bundle exec rake #{fetch(:airbrake_load_environment, nil)} airbrake:deploy \
+                bundle exec rake airbrake:deploy \
                   USERNAME=#{Shellwords.shellescape(ENV['USER'] || ENV['USERNAME'])} \
                   ENVIRONMENT=#{fetch(:airbrake_env, fetch(:rails_env, 'production'))} \
                   REVISION=#{current_revision.strip} \
