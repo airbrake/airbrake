@@ -5,7 +5,7 @@ namespace :airbrake do
     on role do
       within release_path do
         with rails_env: fetch(:rails_env, fetch(:stage)) do
-          environment = fetch(:airbreak_load_environment) ? :environment : nil
+          environment = fetch(:airbrake_load_environment) ? :environment : nil
           command = <<-CMD
             airbrake:deploy USERNAME=#{Shellwords.shellescape(local_user)} \
                             ENVIRONMENT=#{fetch(:airbrake_env, fetch(:rails_env, fetch(:stage)))} \
