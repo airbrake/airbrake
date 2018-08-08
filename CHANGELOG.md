@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed overwriting `notice[:params]` in the Rake and ActiveJob integrations
+  ([#859](https://github.com/airbrake/airbrake/pull/859))
+
 ### [v7.3.4][v7.3.4] (June 14, 2018)
 
 * Fixed SystemStackError in the Sneakers integration

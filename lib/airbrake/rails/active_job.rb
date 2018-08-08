@@ -16,7 +16,7 @@ module Airbrake
         Airbrake.notify(exception) do |notice|
           notice[:context][:component] = 'active_job'
           notice[:context][:action] = job.class.name
-          notice[:params] = job.serialize
+          notice[:params].merge!(job.serialize)
         end
 
         raise exception
