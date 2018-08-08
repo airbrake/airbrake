@@ -27,11 +27,11 @@ module Rake
       Airbrake.notify_sync(exception) do |notice|
         notice[:context][:component] = 'rake'
         notice[:context][:action] = name
-        notice[:params] = {
+        notice[:params].merge!(
           rake_task: task_info,
           execute_args: args,
           argv: ARGV.join(' ')
-        }
+        )
       end
     end
 
