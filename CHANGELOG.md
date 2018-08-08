@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v7.3.5][v7.3.5] (August 9, 2018)
+
 * Fixed overwriting `notice[:params]` in the Rake and ActiveJob integrations
   ([#859](https://github.com/airbrake/airbrake/pull/859))
 
@@ -431,3 +433,4 @@ Airbrake Changelog
 [v7.3.2]: https://github.com/airbrake/airbrake/releases/tag/v7.3.2
 [v7.3.3]: https://github.com/airbrake/airbrake/releases/tag/v7.3.3
 [v7.3.4]: https://github.com/airbrake/airbrake/releases/tag/v7.3.4
+[v7.3.5]: https://github.com/airbrake/airbrake/releases/tag/v7.3.5
