@@ -68,6 +68,10 @@ RSpec.describe "Rails integration specs" do
         /"context":{.*"params":{.*"controller":"dummy","action":"#{action}".*}/
       )
     end
+
+    it "includes route" do
+      wait_for_a_request_with_body(/"context":{.*"route":"#{route}\(\.:format\)".*}/)
+    end
   end
 
   describe "context payload" do

@@ -13,7 +13,8 @@ module Airbrake
         Airbrake::Rack::ContextFilter,
         Airbrake::Rack::SessionFilter,
         Airbrake::Rack::HttpParamsFilter,
-        Airbrake::Rack::HttpHeadersFilter
+        Airbrake::Rack::HttpHeadersFilter,
+        Airbrake::Rack::RouteFilter,
 
         # Optional filters (must be included by users):
         # Airbrake::Rack::RequestBodyFilter
@@ -69,6 +70,8 @@ module Airbrake
         notice.stash[:rack_request] =
           if defined?(ActionDispatch::Request)
             ActionDispatch::Request.new(env)
+          elsif defined?(Sinatra::Request)
+            Sinatra::Request.new(env)
           else
             ::Rack::Request.new(env)
           end
