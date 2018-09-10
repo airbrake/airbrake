@@ -6,6 +6,8 @@ module Airbrake
     #
     # The middleware automatically sends information about the framework that
     # uses it (name and version).
+    #
+    # For Rails apps the middleware collects route performance statistics.
     class Middleware
       # @return [Array<Class>] the list of Rack filters that read Rack request
       #   information and append it to notices
@@ -38,6 +40,14 @@ module Airbrake
         RACK_FILTERS.each do |filter|
           @notifier.add_filter(filter.new)
         end
+
+        return unless defined?(Rails)
+
+        # Rails v3.2 doesn't support the newest route API, so we have to special
+        # case it.
+        @legacy_route_api =
+          Gem::Version.new(::Rails.version) <= Gem::Version.new('4.2.0')
+        subscribe_route_stats_hook
       end
 
       # Rescues any exceptions, sends them to Airbrake and re-raises the
@@ -89,6 +99,37 @@ module Airbrake
         env['action_dispatch.exception'] ||
           env['sinatra.error'] ||
           env['rack.exception']
+      end
+
+      def subscribe_route_stats_hook
+        ActiveSupport::Notifications.subscribe(
+          'process_action.action_controller'
+        ) do |*args|
+          event = ActiveSupport::Notifications::Event.new(*args)
+
+          payload = event.payload
+          @notifier.inc_request(
+            payload[:method],
+            find_route(payload[:path]),
+            payload[:status],
+            event.duration,
+            event.time
+          )
+        end
+      end
+
+      def find_route(path)
+        path = Addressable::URI.parse(path).normalized_path
+        simulator = ::Rails.application.routes.routes.simulator
+
+        memos =
+          if @legacy_route_api
+            simulator.match(path).memos
+          else
+            simulator.memos(path)
+          end
+
+        memos.first.path.spec.to_s
       end
     end
   end

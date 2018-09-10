@@ -8,6 +8,12 @@ RSpec.describe "Rails integration specs" do
 
   include_examples 'rack examples'
 
+  # Airbrake Ruby has a background thread that sends requests to
+  # `/routes-stats` periodically. We don't want this to get in the way.
+  before do
+    allow(Airbrake[:default]).to receive(:inc_request).and_return(nil)
+  end
+
   if ::Rails.version.start_with?('5.')
     it "inserts the Airbrake Rack middleware after DebugExceptions" do
       middlewares = Rails.configuration.middleware.middlewares.map(&:inspect)
@@ -275,6 +281,34 @@ RSpec.describe "Rails integration specs" do
           /"user":{"id":"1","username":"qa-dept","email":"qa@example.com"}/
         )
       end
+    end
+  end
+
+  describe "the route stats hook" do
+    let(:routes_endpoint) do
+      'https://api.airbrake.io/api/v4/projects/113743/routes-stats'
+    end
+
+    before do
+      stub_request(:put, routes_endpoint).to_return(status: 200, body: '')
+
+      # Speed up flushing so we don't wait forever.
+      Airbrake[:default].
+        instance_variable_get(:@route_sender).
+        instance_variable_set(:@flush_period, 1)
+    end
+
+    it "increments the request count" do
+      expect(Airbrake[:default]).to receive(:inc_request).and_call_original
+
+      get '/crash'
+      sleep 2
+
+      wait_for_a_request_with_body(/"errors"/)
+
+      body = %r|{"routes":\[{"method":"GET","route":"\/crash\(\.:format\)"|
+      wait_for(a_request(:put, routes_endpoint).with(body: body)).
+        to have_been_made.once
     end
   end
 end

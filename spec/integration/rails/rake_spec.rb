@@ -106,7 +106,7 @@ RSpec.describe "Rake integration" do
 
       it "includes argv info" do
         wait_for_a_request_with_body(
-          %r("params":{.*"argv":"--pattern spec/integration/rails/\*_spec.rb".*})
+          %r("params":{.*"argv":".*spec/integration/rails/.+_spec.rb".*})
         )
       end
 
