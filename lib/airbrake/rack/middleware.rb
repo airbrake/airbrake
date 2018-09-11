@@ -42,11 +42,6 @@ module Airbrake
         end
 
         return unless defined?(Rails)
-
-        # Rails v3.2 doesn't support the newest route API, so we have to special
-        # case it.
-        @legacy_route_api =
-          Gem::Version.new(::Rails.version) <= Gem::Version.new('4.2.0')
         subscribe_route_stats_hook
       end
 
@@ -105,31 +100,44 @@ module Airbrake
         ActiveSupport::Notifications.subscribe(
           'process_action.action_controller'
         ) do |*args|
-          event = ActiveSupport::Notifications::Event.new(*args)
+          @all_routes ||= find_all_routes
 
+          event = ActiveSupport::Notifications::Event.new(*args)
           payload = event.payload
-          @notifier.inc_request(
-            payload[:method],
-            find_route(payload[:path]),
-            payload[:status],
-            event.duration,
-            event.time
-          )
+
+          if (route = find_route(payload[:params]))
+            @notifier.inc_request(
+              payload[:method],
+              route,
+              payload[:status],
+              event.duration,
+              event.time
+            )
+          else
+            @config.logger.info(
+              "#{LOG_LABEL} Rack::Middleware#route_stats_hook: couldn't find " \
+              "a route for path: #{payload[:path]}"
+            )
+          end
         end
       end
 
-      def find_route(path)
-        path = Addressable::URI.parse(path).normalized_path
-        simulator = ::Rails.application.routes.routes.simulator
-
-        memos =
-          if @legacy_route_api
-            simulator.match(path).memos
-          else
-            simulator.memos(path)
+      def find_route(params)
+        @all_routes.each do |r|
+          if r.defaults[:controller] == params['controller'] &&
+             r.defaults[:action] == params['action']
+            return r.path.spec.to_s
           end
+        end
+      end
 
-        memos.first.path.spec.to_s
+      # Finds all routes that the app supports, including engines.
+      def find_all_routes
+        routes = [*::Rails.application.routes.routes.routes]
+        ::Rails::Engine.subclasses.each do |engine|
+          routes.push(*engine.routes.routes.routes)
+        end
+        routes
       end
     end
   end
