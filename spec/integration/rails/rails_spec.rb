@@ -291,11 +291,6 @@ RSpec.describe "Rails integration specs" do
 
     before do
       stub_request(:put, routes_endpoint).to_return(status: 200, body: '')
-
-      # Speed up flushing so we don't wait forever.
-      Airbrake[:default].
-        instance_variable_get(:@route_sender).
-        instance_variable_set(:@flush_period, 1)
     end
 
     it "increments the request count" do
