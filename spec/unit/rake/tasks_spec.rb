@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe "airbrake/rake/tasks" do
   let(:endpoint) do
-    'https://airbrake.io/api/v4/projects/113743/deploys?key=fd04e13d806a90f96614ad8e529b2822'
+    'https://api.airbrake.io/api/v4/projects/113743/deploys'
   end
 
   def wait_for_a_request_with_body(body)
@@ -37,7 +37,7 @@ RSpec.describe "airbrake/rake/tasks" do
     end
 
     context "when Airbrake is not configured" do
-      let(:deploy_endpoint) { 'https://airbrake.io/api/v3/projects/113743/notices' }
+      let(:deploy_endpoint) { 'https://api.airbrake.io/api/v3/projects/113743/notices' }
 
       before do
         stub_request(:post, deploy_endpoint)

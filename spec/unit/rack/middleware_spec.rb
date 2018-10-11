@@ -3,7 +3,7 @@ require 'spec_helper'
 RSpec.describe Airbrake::Rack::Middleware do
   let(:app) { proc { |env| [200, env, 'Bingo bango content'] } }
   let(:faulty_app) { proc { raise AirbrakeTestError } }
-  let(:endpoint) { 'https://airbrake.io/api/v3/projects/113743/notices' }
+  let(:endpoint) { 'https://api.airbrake.io/api/v3/projects/113743/notices' }
   let(:middleware) { described_class.new(app) }
 
   def env_for(url, opts = {})
@@ -30,7 +30,7 @@ RSpec.describe Airbrake::Rack::Middleware do
     context "when app raises an exception" do
       context "and when the notifier name is specified" do
         let(:notifier_name) { :rack_middleware_initialize }
-        let(:bingo_endpoint) { 'https://airbrake.io/api/v3/projects/92123/notices' }
+        let(:bingo_endpoint) { 'https://api.airbrake.io/api/v3/projects/92123/notices' }
         let(:expected_body) { /"errors":\[{"type":"AirbrakeTestError"/ }
 
         before do
