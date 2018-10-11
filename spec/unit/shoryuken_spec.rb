@@ -14,7 +14,7 @@ RSpec.describe Airbrake::Shoryuken::ErrorHandler do
     end.new
   end
 
-  let(:endpoint) { 'https://airbrake.io/api/v3/projects/113743/notices' }
+  let(:endpoint) { 'https://api.airbrake.io/api/v3/projects/113743/notices' }
 
   def wait_for_a_request_with_body(body)
     wait_for(a_request(:post, endpoint).with(body: body)).to have_been_made.once

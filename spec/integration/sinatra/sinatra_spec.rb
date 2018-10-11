@@ -20,8 +20,8 @@ RSpec.describe "Sinatra integration specs" do
   end
 
   context "when multiple apps are mounted" do
-    let(:endpoint1) { 'https://airbrake.io/api/v3/projects/113743/notices' }
-    let(:endpoint2) { 'https://airbrake.io/api/v3/projects/99123/notices' }
+    let(:endpoint1) { 'https://api.airbrake.io/api/v3/projects/113743/notices' }
+    let(:endpoint2) { 'https://api.airbrake.io/api/v3/projects/99123/notices' }
 
     def env_for(url, opts = {})
       Rack::MockRequest.env_for(url, opts)
