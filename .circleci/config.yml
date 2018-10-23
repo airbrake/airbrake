@@ -63,7 +63,7 @@ jobs:
           command: bundle exec rubocop --parallel
   "ruby-2.0":
     docker:
-      - image: kyrylo/ruby-2.0.0p648
+      - image: kyrylo/ruby-2.0.0p648-airbrake
     working_directory: /home/circleci/airbrake
     steps:
       - <<: *repo_restore_cache
