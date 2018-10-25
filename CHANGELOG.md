@@ -3,6 +3,11 @@ Airbrake Changelog
 
 ### master
 
+### [v7.5.0.pre.1][v7.5.0.pre.1] (October 26, 2018)
+
+* Added support for route stats for Rails, Sinatra & Rack
+  ([#866](https://github.com/airbrake/airbrake/pull/866))
+
 ### [v7.4.0][v7.4.0] (October 11, 2018)
 
 * Started depending on
@@ -440,4 +445,5 @@ Airbrake Changelog
 [v7.3.3]: https://github.com/airbrake/airbrake/releases/tag/v7.3.3
 [v7.3.4]: https://github.com/airbrake/airbrake/releases/tag/v7.3.4
 [v7.3.5]: https://github.com/airbrake/airbrake/releases/tag/v7.3.5
-[v7.4.0]: https://github.com/airbrake/airbrake/releases/tag/v7.3.6
+[v7.4.0]: https://github.com/airbrake/airbrake/releases/tag/v7.4.0
+[v7.5.0.pre.1]: https://github.com/airbrake/airbrake/releases/tag/v7.5.0.pre.1

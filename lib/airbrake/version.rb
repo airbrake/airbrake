@@ -1,5 +1,5 @@
 # We use Semantic Versioning v2.0.0
 # More information: http://semver.org/
 module Airbrake
-  AIRBRAKE_VERSION = '7.4.0'.freeze
+  AIRBRAKE_VERSION = '7.5.0.pre.1'.freeze
 end
