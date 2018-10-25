@@ -6,6 +6,8 @@ module Airbrake
     #
     # The middleware automatically sends information about the framework that
     # uses it (name and version).
+    #
+    # For Rails apps the middleware collects route performance statistics.
     class Middleware
       # @return [Array<Class>] the list of Rack filters that read Rack request
       #   information and append it to notices
@@ -13,7 +15,8 @@ module Airbrake
         Airbrake::Rack::ContextFilter,
         Airbrake::Rack::SessionFilter,
         Airbrake::Rack::HttpParamsFilter,
-        Airbrake::Rack::HttpHeadersFilter
+        Airbrake::Rack::HttpHeadersFilter,
+        Airbrake::Rack::RouteFilter,
 
         # Optional filters (must be included by users):
         # Airbrake::Rack::RequestBodyFilter
@@ -37,6 +40,9 @@ module Airbrake
         RACK_FILTERS.each do |filter|
           @notifier.add_filter(filter.new)
         end
+
+        return unless defined?(Rails)
+        subscribe_route_stats_hook
       end
 
       # Rescues any exceptions, sends them to Airbrake and re-raises the
@@ -69,6 +75,8 @@ module Airbrake
         notice.stash[:rack_request] =
           if defined?(ActionDispatch::Request)
             ActionDispatch::Request.new(env)
+          elsif defined?(Sinatra::Request)
+            Sinatra::Request.new(env)
           else
             ::Rack::Request.new(env)
           end
@@ -86,6 +94,50 @@ module Airbrake
         env['action_dispatch.exception'] ||
           env['sinatra.error'] ||
           env['rack.exception']
+      end
+
+      def subscribe_route_stats_hook
+        ActiveSupport::Notifications.subscribe(
+          'process_action.action_controller'
+        ) do |*args|
+          @all_routes ||= find_all_routes
+
+          event = ActiveSupport::Notifications::Event.new(*args)
+          payload = event.payload
+
+          if (route = find_route(payload[:params]))
+            @notifier.inc_request(
+              payload[:method],
+              route,
+              payload[:status],
+              event.duration,
+              event.time
+            )
+          else
+            @config.logger.info(
+              "#{LOG_LABEL} Rack::Middleware#route_stats_hook: couldn't find " \
+              "a route for path: #{payload[:path]}"
+            )
+          end
+        end
+      end
+
+      def find_route(params)
+        @all_routes.each do |r|
+          if r.defaults[:controller] == params['controller'] &&
+             r.defaults[:action] == params['action']
+            return r.path.spec.to_s
+          end
+        end
+      end
+
+      # Finds all routes that the app supports, including engines.
+      def find_all_routes
+        routes = [*::Rails.application.routes.routes.routes]
+        ::Rails::Engine.subclasses.each do |engine|
+          routes.push(*engine.routes.routes.routes)
+        end
+        routes
       end
     end
   end

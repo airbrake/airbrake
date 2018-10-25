@@ -2,7 +2,8 @@
 
 source "https://rubygems.org"
 
-gem "rubocop", "= 0.51", require: false
+gem "airbrake-ruby", "= 2.13.0.pre.1"
+gem "rubocop", "= 0.55", require: false
 gem "rails", "~> 5.0.7"
 gem "warden", "~> 1.2.3"
 gem "rack", "~> 2.0"

@@ -16,6 +16,7 @@ Airbrake.configure do |c|
   c.logger = Logger.new('/dev/null')
   c.app_version = '1.2.3'
   c.workers = 5
+  c.route_stats_flush_period = 1
 end
 
 RSpec.configure do |c|
