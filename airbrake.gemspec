@@ -29,9 +29,9 @@ DESC
   s.files        = ['lib/airbrake.rb', *Dir.glob('lib/**/*')]
   s.test_files   = Dir.glob('spec/**/*')
 
-  s.required_ruby_version = '>= 2.0'
+  s.required_ruby_version = '>= 2.1'
 
-  s.add_dependency 'airbrake-ruby', '= 2.13.0.pre.1'
+  s.add_dependency 'airbrake-ruby', '= 3.0.0.rc.2'
 
   s.add_development_dependency 'rspec', '~> 3'
   s.add_development_dependency 'rspec-wait', '~> 0'
@@ -40,13 +40,10 @@ DESC
   s.add_development_dependency 'appraisal', '~> 2'
   s.add_development_dependency 'rack', '~> 1'
   s.add_development_dependency 'webmock', '~> 2'
+
   s.add_development_dependency 'sneakers', '~> 2'
-
-  # We still support Ruby 2.0.0+, but sneakers 2 doesn't.
+  # We still support Ruby 2.1.0+, but sneakers 2 wants 2.2+.
   s.add_development_dependency 'amq-protocol', '= 2.2.0'
-
-  # We still support Ruby 2.0.0+, but nokogiri 1.7.0+ doesn't.
-  s.add_development_dependency 'nokogiri', '= 1.6.8.1'
 
   s.add_development_dependency 'rack-test', '= 0.6.3'
   s.add_development_dependency 'redis', '= 3.3.3'

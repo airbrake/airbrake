@@ -61,19 +61,6 @@ jobs:
       - run:
           name: Run RuboCop linting
           command: bundle exec rubocop --parallel
-  "ruby-2.0":
-    docker:
-      - image: kyrylo/ruby-2.0.0p648-airbrake
-    working_directory: /home/circleci/airbrake
-    steps:
-      - <<: *repo_restore_cache
-      - <<: *bundle_install
-      - <<: *appraisal_install
-      - <<: *unit
-      - <<: *rails32
-      - <<: *rails42
-      - <<: *sinatra
-      - <<: *rack
   "ruby-2.1":
     docker:
       - image: circleci/ruby:2.1
@@ -172,9 +159,6 @@ workflows:
   build:
     jobs:
       - lint
-      - "ruby-2.0":
-          requires:
-            - lint
       - "ruby-2.1":
           requires:
             - lint
