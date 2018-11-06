@@ -286,7 +286,7 @@ RSpec.describe "Rails integration specs" do
 
   describe "the route stats hook" do
     let(:routes_endpoint) do
-      'https://api.airbrake.io/api/v4/projects/113743/routes-stats'
+      'https://api.airbrake.io/api/v5/projects/113743/routes-stats'
     end
 
     before do
