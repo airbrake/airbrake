@@ -106,12 +106,12 @@ module Airbrake
           payload = event.payload
 
           if (route = find_route(payload[:params]))
-            @notifier.inc_request(
-              payload[:method],
-              route,
-              payload[:status],
-              event.duration,
-              event.time
+            @notifier.notify_request(
+              method: payload[:method],
+              route: route,
+              status_code: payload[:status],
+              start_time: event.time,
+              end_time: Time.new
             )
           else
             @config.logger.info(
