@@ -11,7 +11,7 @@ RSpec.describe "Rails integration specs" do
   # Airbrake Ruby has a background thread that sends requests to
   # `/routes-stats` periodically. We don't want this to get in the way.
   before do
-    allow(Airbrake[:default]).to receive(:inc_request).and_return(nil)
+    allow(Airbrake[:default]).to receive(:notify_request).and_return(nil)
   end
 
   if ::Rails.version.start_with?('5.')
@@ -293,8 +293,8 @@ RSpec.describe "Rails integration specs" do
       stub_request(:put, routes_endpoint).to_return(status: 200, body: '')
     end
 
-    it "increments the request count" do
-      expect(Airbrake[:default]).to receive(:inc_request).and_call_original
+    it "notifies request" do
+      expect(Airbrake[:default]).to receive(:notify_request).and_call_original
 
       get '/crash'
       sleep 2
