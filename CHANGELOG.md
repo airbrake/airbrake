@@ -3,6 +3,16 @@ Airbrake Changelog
 
 ### master
 
+### [v8.0.0.rc.6][v8.0.0.rc.6] (November 12, 2018)
+
+* Updated Request API to support latest changes in Airbrake Ruby
+  ([#874](https://github.com/airbrake/airbrake/pull/874))
+
+### [v8.0.0.rc.5][v8.0.0.rc.5] (November 6, 2018)
+
+* Started depending on
+  ([airbrake-ruby-3.0.0.rc.5](https://github.com/airbrake/airbrake-ruby/releases/tag/v3.0.0.rc.5))
+
 ### [v8.0.0.rc.4][v8.0.0.rc.4] (November 6, 2018)
 
 * Started depending on
@@ -468,3 +478,4 @@ Airbrake Changelog
 [v8.0.0.rc.2]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.2
 [v8.0.0.rc.3]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.3
 [v8.0.0.rc.4]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.4
+[v8.0.0.rc.5]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.5
