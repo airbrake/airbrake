@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed route reporting for routes that raise
+  errors([#876](https://github.com/airbrake/airbrake/pull/876))
+
 ### [v8.0.0.rc.6][v8.0.0.rc.6] (November 12, 2018)
 
 * Updated Request API to support latest changes in Airbrake Ruby

@@ -109,7 +109,7 @@ module Airbrake
             @notifier.notify_request(
               method: payload[:method],
               route: route,
-              status_code: payload[:status],
+              status_code: find_status_code(payload),
               start_time: event.time,
               end_time: Time.new
             )
@@ -138,6 +138,19 @@ module Airbrake
           routes.push(*engine.routes.routes.routes)
         end
         routes
+      end
+
+      def find_status_code(payload)
+        return payload[:status] if payload[:status]
+
+        if payload[:exception]
+          status = ActionDispatch::ExceptionWrapper.status_code_for_exception(
+            payload[:exception].first
+          )
+          return status
+        end
+
+        0
       end
     end
   end
