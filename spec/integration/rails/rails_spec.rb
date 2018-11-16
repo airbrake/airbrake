@@ -269,7 +269,11 @@ RSpec.describe "Rails integration specs" do
   describe "notice payload when a user is authenticated without Warden" do
     context "when the current_user method is defined" do
       before do
-        allow(Warden::Proxy).to receive(:new) { nil }
+        allow_message_expectations_on_nil
+        allow(Warden::Proxy).to receive(:new).and_return(nil)
+        # Mock on_request to make the test pass. Started failing in warden 1.2.8
+        # due to: https://github.com/wardencommunity/warden/pull/162
+        allow(nil).to receive(:on_request).and_return(nil)
       end
 
       it "contains the user information" do
