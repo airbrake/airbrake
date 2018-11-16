@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v8.0.0.rc.7][v8.0.0.rc.7] (November 16, 2018)
+
 * Fixed route reporting for routes that raise
   errors([#876](https://github.com/airbrake/airbrake/pull/876))
 
@@ -482,3 +484,5 @@ Airbrake Changelog
 [v8.0.0.rc.3]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.3
 [v8.0.0.rc.4]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.4
 [v8.0.0.rc.5]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.5
+[v8.0.0.rc.6]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.6
+[v8.0.0.rc.7]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.7
