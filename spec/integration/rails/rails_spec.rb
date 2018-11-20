@@ -311,5 +311,22 @@ RSpec.describe "Rails integration specs" do
       wait_for(a_request(:put, routes_endpoint).with(body: body)).
         to have_been_made.once
     end
+
+    it "defaults to 500 when status code for exception returns 0" do
+      expect(Airbrake[:default]).to receive(:notify_request).and_call_original
+      allow(ActionDispatch::ExceptionWrapper).
+        to receive(:status_code_for_exception).and_return(0)
+
+      head '/crash'
+      sleep 2
+
+      wait_for_a_request_with_body(/"errors"/)
+
+      body = %r|
+        {"routes":\[{"method":"HEAD","route":"\/crash\(\.:format\)","status_code":500
+      |x
+      wait_for(a_request(:put, routes_endpoint).with(body: body)).
+        to have_been_made.once
+    end
   end
 end
