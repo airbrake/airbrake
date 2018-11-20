@@ -147,6 +147,8 @@ module Airbrake
           status = ActionDispatch::ExceptionWrapper.status_code_for_exception(
             payload[:exception].first
           )
+          status = 500 if status == 0
+
           return status
         end
 

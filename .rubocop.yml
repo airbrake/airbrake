@@ -73,3 +73,6 @@ Naming/UncommunicativeMethodParamName:
 Style/SymbolArray:
   Exclude:
     - gemfiles/*.gemfile
+
+Style/NumericPredicate:
+  Enabled: false
