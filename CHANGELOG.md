@@ -3,6 +3,12 @@ Airbrake Changelog
 
 ### master
 
+### [v8.0.0.rc.8][v8.0.0.rc.8] (November 21, 2018)
+
+* Fixed bug when routes that raise exceptions would sometimes return 0 as their
+  `status_code`. Such routes return 500 now
+  ([#878](https://github.com/airbrake/airbrake/pull/878))
+
 ### [v8.0.0.rc.7][v8.0.0.rc.7] (November 16, 2018)
 
 * Fixed route reporting for routes that raise
@@ -486,3 +492,4 @@ Airbrake Changelog
 [v8.0.0.rc.5]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.5
 [v8.0.0.rc.6]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.6
 [v8.0.0.rc.7]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.7
+[v8.0.0.rc.8]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.8
