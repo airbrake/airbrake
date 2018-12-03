@@ -3,6 +3,12 @@ Airbrake Changelog
 
 ### master
 
+### [v8.0.0.rc.9][v8.0.0.rc.9] (December 3, 2018)
+
+* Bumped minimum requirement for airbrake-ruby to
+  [v3.0.0.rc.9](https://github.com/airbrake/airbrake-ruby/releases/tag/v3.0.0.rc.9)
+  or higher ([#881](https://github.com/airbrake/airbrake/pull/881))
+
 ### [v8.0.0.rc.8][v8.0.0.rc.8] (November 21, 2018)
 
 * Fixed bug when routes that raise exceptions would sometimes return 0 as their
@@ -493,3 +499,4 @@ Airbrake Changelog
 [v8.0.0.rc.6]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.6
 [v8.0.0.rc.7]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.7
 [v8.0.0.rc.8]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.8
+[v8.0.0.rc.9]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.9
