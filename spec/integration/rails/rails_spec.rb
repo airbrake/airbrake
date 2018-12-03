@@ -306,7 +306,7 @@ RSpec.describe "Rails integration specs" do
       wait_for_a_request_with_body(/"errors"/)
 
       body = %r|
-        {"routes":\[{"method":"GET","route":"\/crash\(\.:format\)","status_code":500
+        {"routes":\[{"method":"GET","route":"\/crash\(\.:format\)","statusCode":500
       |x
       wait_for(a_request(:put, routes_endpoint).with(body: body)).
         to have_been_made.once
@@ -323,7 +323,7 @@ RSpec.describe "Rails integration specs" do
       wait_for_a_request_with_body(/"errors"/)
 
       body = %r|
-        {"routes":\[{"method":"HEAD","route":"\/crash\(\.:format\)","status_code":500
+        {"routes":\[{"method":"HEAD","route":"\/crash\(\.:format\)","statusCode":500
       |x
       wait_for(a_request(:put, routes_endpoint).with(body: body)).
         to have_been_made.once
