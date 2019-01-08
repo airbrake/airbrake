@@ -52,6 +52,9 @@ DESC
   # https://circleci.com/gh/airbrake/airbrake-ruby/889
   s.add_development_dependency 'public_suffix', '~> 2.0', '< 3.0'
 
+  # Newer versions don't support Ruby 2.2.0 and lower.
+  s.add_development_dependency 'nokogiri', '= 1.9.1'
+
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
     s.add_development_dependency 'sidekiq', '~> 5'
   end
