@@ -42,7 +42,11 @@ module Airbrake
         end
 
         return unless defined?(Rails)
-        subscribe_route_stats_hook
+
+        ActiveSupport::Notifications.subscribe(
+          'process_action.action_controller',
+          Airbrake::Rails::ActionControllerSubscriber.new(@notifier)
+        )
       end
 
       # Rescues any exceptions, sends them to Airbrake and re-raises the
@@ -94,65 +98,6 @@ module Airbrake
         env['action_dispatch.exception'] ||
           env['sinatra.error'] ||
           env['rack.exception']
-      end
-
-      def subscribe_route_stats_hook
-        ActiveSupport::Notifications.subscribe(
-          'process_action.action_controller'
-        ) do |*args|
-          @all_routes ||= find_all_routes
-
-          event = ActiveSupport::Notifications::Event.new(*args)
-          payload = event.payload
-
-          if (route = find_route(payload[:params]))
-            @notifier.notify_request(
-              method: payload[:method],
-              route: route,
-              status_code: find_status_code(payload),
-              start_time: event.time,
-              end_time: Time.new
-            )
-          else
-            @config.logger.info(
-              "#{LOG_LABEL} Rack::Middleware#route_stats_hook: couldn't find " \
-              "a route for path: #{payload[:path]}"
-            )
-          end
-        end
-      end
-
-      def find_route(params)
-        @all_routes.each do |r|
-          if r.defaults[:controller] == params['controller'] &&
-             r.defaults[:action] == params['action']
-            return r.path.spec.to_s
-          end
-        end
-      end
-
-      # Finds all routes that the app supports, including engines.
-      def find_all_routes
-        routes = [*::Rails.application.routes.routes.routes]
-        ::Rails::Engine.subclasses.each do |engine|
-          routes.push(*engine.routes.routes.routes)
-        end
-        routes
-      end
-
-      def find_status_code(payload)
-        return payload[:status] if payload[:status]
-
-        if payload[:exception]
-          status = ActionDispatch::ExceptionWrapper.status_code_for_exception(
-            payload[:exception].first
-          )
-          status = 500 if status == 0
-
-          return status
-        end
-
-        0
       end
     end
   end
