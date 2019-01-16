@@ -13,6 +13,7 @@ module Airbrake
       #   information and append it to notices
       RACK_FILTERS = [
         Airbrake::Rack::ContextFilter,
+        Airbrake::Rack::UserFilter,
         Airbrake::Rack::SessionFilter,
         Airbrake::Rack::HttpParamsFilter,
         Airbrake::Rack::HttpHeadersFilter,

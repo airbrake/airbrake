@@ -35,13 +35,10 @@ module Airbrake
         add_framework_version(context)
 
         controller = request.env['action_controller.instance']
-        if controller
-          context[:component] = controller.controller_name
-          context[:action] = controller.action_name
-        end
+        return unless controller
 
-        user = Airbrake::Rack::User.extract(request.env)
-        notice[:context].merge!(user.as_json) if user
+        context[:component] = controller.controller_name
+        context[:action] = controller.action_name
       end
 
       private
