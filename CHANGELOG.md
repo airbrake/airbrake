@@ -3,6 +3,12 @@ Airbrake Changelog
 
 ### master
 
+### [v8.0.0][v8.0.0] (January 16, 2019)
+
+* Bumped minimum requirement for airbrake-ruby to
+  [v3.0.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v3.0.0)
+  or higher ([#889](https://github.com/airbrake/airbrake/pull/889))
+
 ### [v8.0.0.rc.9][v8.0.0.rc.9] (December 3, 2018)
 
 * Bumped minimum requirement for airbrake-ruby to
@@ -500,3 +506,4 @@ Airbrake Changelog
 [v8.0.0.rc.7]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.7
 [v8.0.0.rc.8]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.8
 [v8.0.0.rc.9]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.9
+[v8.0.0]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0
