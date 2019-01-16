@@ -3,7 +3,7 @@ module Airbrake
     # ActionControllerSubscriber sends route stat information, including
     # performance data.
     #
-    # @since v3.0.0
+    # @since v8.0.0
     class ActionControllerSubscriber
       def initialize(notifier)
         @notifier = notifier
