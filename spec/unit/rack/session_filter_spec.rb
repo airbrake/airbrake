@@ -5,8 +5,6 @@ RSpec.describe Airbrake::Rack::SessionFilter do
     Rack::MockRequest.env_for(url, opts)
   end
 
-  subject { described_class.new }
-
   let(:notice) do
     Airbrake.build_notice('oops').tap do |notice|
       notice.stash[:rack_request] = Rack::Request.new(env_for(uri, opts))
