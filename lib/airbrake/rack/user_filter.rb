@@ -1,8 +1,8 @@
 module Airbrake
   module Rack
-    # Adds current user information
+    # Adds current user information.
     #
-    # @since v8.0.x
+    # @since v8.0.1
     class UserFilter
       # @return [Integer]
       attr_reader :weight

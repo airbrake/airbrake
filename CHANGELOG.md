@@ -3,6 +3,16 @@ Airbrake Changelog
 
 ### master
 
+### [v8.0.1][v8.0.1] (January 23, 2019)
+
+* Moved user extraction logic from `Airbrake::Rack::ContextFilter` to
+  `Airbrake::Rack::UserFilter`. This allows you writing your own `UserFilter`
+  implementation (if you are not satisfied with the default one): step 1 is to
+  delete the default filter by means of
+  [`Airbrake.delete_filter`](https://github.com/airbrake/airbrake-ruby/tree/v3.1.0#airbrakedelete_filter),
+  step 2 is to `add_filter(BetterUserFilter.new)`
+  ([#890](https://github.com/airbrake/airbrake/pull/890))
+
 ### [v8.0.0][v8.0.0] (January 16, 2019)
 
 * Bumped minimum requirement for airbrake-ruby to
@@ -507,3 +517,4 @@ Airbrake Changelog
 [v8.0.0.rc.8]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.8
 [v8.0.0.rc.9]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.9
 [v8.0.0]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0
+[v8.0.1]: https://github.com/airbrake/airbrake/releases/tag/v8.0.1
