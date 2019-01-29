@@ -8,10 +8,11 @@ RSpec.describe "Rails integration specs" do
 
   include_examples 'rack examples'
 
-  # Airbrake Ruby has a background thread that sends requests to
-  # `/routes-stats` periodically. We don't want this to get in the way.
+  # Airbrake Ruby has a background thread that sends performance requests
+  # periodically. We don't want this to get in the way.
   before do
-    allow(Airbrake[:default]).to receive(:notify_request).and_return(nil)
+    allow(Airbrake.notifiers[:performance][:default]).
+      to receive(:notify).and_return(nil)
   end
 
   if ::Rails.version.start_with?('5.')
@@ -35,6 +36,7 @@ RSpec.describe "Rails integration specs" do
     before do
       login_as(OpenStruct.new(id: 1, email: 'qa@example.com', username: 'qa-dept'))
       get(route, foo: :bar)
+      sleep 2
     end
 
     it "includes component information" do
@@ -281,6 +283,7 @@ RSpec.describe "Rails integration specs" do
         allow_any_instance_of(DummyController).to receive(:current_user) { user }
 
         get '/crash'
+        sleep 2
         wait_for_a_request_with_body(
           /"user":{"id":"1","username":"qa-dept","email":"qa@example.com"}/
         )
@@ -288,32 +291,37 @@ RSpec.describe "Rails integration specs" do
     end
   end
 
-  describe "the route stats hook" do
-    let(:routes_endpoint) do
-      'https://api.airbrake.io/api/v5/projects/113743/routes-stats'
-    end
-
+  describe "the performance hook" do
     before do
-      stub_request(:put, routes_endpoint).to_return(status: 200, body: '')
+      expect(Airbrake.notifiers[:performance][:default]).
+        to receive(:notify).at_least(:once).and_call_original
     end
 
     it "notifies request" do
-      expect(Airbrake[:default]).to receive(:notify_request).and_call_original
-
       get '/crash'
       sleep 2
 
       wait_for_a_request_with_body(/"errors"/)
 
       body = %r|
-        {"routes":\[{"method":"GET","route":"\/crash\(\.:format\)","statusCode":500
+        {"routes":\[.*{"method":"GET","route":"\/crash\(\.:format\)","statusCode":500
       |x
       wait_for(a_request(:put, routes_endpoint).with(body: body)).
         to have_been_made.once
     end
 
+    it "notifies query" do
+      get '/crash'
+      sleep 2
+
+      body = %r|
+        {"queries":.*"method":"GET","route":"/crash\(\.:format\)","query":
+      |x
+      wait_for(a_request(:put, queries_endpoint).with(body: body)).
+        to have_been_made.once
+    end
+
     it "defaults to 500 when status code for exception returns 0" do
-      expect(Airbrake[:default]).to receive(:notify_request).and_call_original
       allow(ActionDispatch::ExceptionWrapper).
         to receive(:status_code_for_exception).and_return(0)
 
@@ -323,7 +331,7 @@ RSpec.describe "Rails integration specs" do
       wait_for_a_request_with_body(/"errors"/)
 
       body = %r|
-        {"routes":\[{"method":"HEAD","route":"\/crash\(\.:format\)","statusCode":500
+        {"routes":\[.*{"method":"HEAD","route":"\/crash\(\.:format\)","statusCode":500
       |x
       wait_for(a_request(:put, routes_endpoint).with(body: body)).
         to have_been_made.once

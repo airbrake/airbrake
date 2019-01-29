@@ -107,6 +107,7 @@ class DummyController < ActionController::Base
   def index; end
 
   def crash
+    Book.create(title: 'book')
     raise AirbrakeTestError
   end
 
