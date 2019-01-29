@@ -1,16 +1,18 @@
 module Airbrake
   module Rails
-    # ActionControllerSubscriber sends route stat information, including
+    # ActionControllerRouteSubscriber sends route stat information, including
     # performance data.
     #
     # @since v8.0.0
-    class ActionControllerSubscriber
+    class ActionControllerRouteSubscriber
       def initialize(notifier)
         @notifier = notifier
         @all_routes = nil
       end
 
       def call(*args)
+        # We cannot move this to #initialize because Rails initializes routes
+        # after hooks.
         @all_routes ||= find_all_routes
 
         event = ActiveSupport::Notifications::Event.new(*args)

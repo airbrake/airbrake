@@ -5,7 +5,7 @@ module Airbrake
     # occurring in the application automatically.
     class Railtie < ::Rails::Railtie
       initializer('airbrake.middleware') do |app|
-        require 'airbrake/rails/action_controller_subscriber'
+        require 'airbrake/rails/action_controller_route_subscriber'
 
         # Since Rails 3.2 the ActionDispatch::DebugExceptions middleware is
         # responsible for logging exceptions and showing a debugging page in

@@ -46,7 +46,7 @@ module Airbrake
 
         ActiveSupport::Notifications.subscribe(
           'process_action.action_controller',
-          Airbrake::Rails::ActionControllerSubscriber.new(@notifier)
+          Airbrake::Rails::ActionControllerRouteSubscriber.new(@notifier)
         )
       end
 
