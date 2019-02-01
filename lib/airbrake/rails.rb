@@ -12,7 +12,7 @@ module Airbrake
         # case the request is local. We want to insert our middleware after
         # DebugExceptions, so we don't notify Airbrake about local requests.
 
-        if ::Rails.version.start_with?('5.')
+        if ::Rails.version.to_i >= 5
           # Avoid the warning about deprecated strings.
           # Insert after DebugExceptions, since ConnectionManagement doesn't
           # exist in Rails 5 anymore.
