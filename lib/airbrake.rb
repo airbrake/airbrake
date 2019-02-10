@@ -20,6 +20,7 @@ require 'airbrake/sidekiq' if defined?(Sidekiq)
 require 'airbrake/shoryuken' if defined?(Shoryuken)
 require 'airbrake/delayed_job' if defined?(Delayed)
 require 'airbrake/sneakers' if defined?(Sneakers)
+require 'airbrake/action_cable' if defined?(ActionCable)
 
 require 'airbrake/logger'
 
