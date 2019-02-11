@@ -34,7 +34,7 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
 
     context "when Airbrake is not configured" do
       before do
-        @notifiers = Airbrake.instance_variable_get(:@notifiers)
+        @notifiers = Airbrake.notifiers[:notice]
         @default_notifier = @notifiers.delete(:default)
       end
 

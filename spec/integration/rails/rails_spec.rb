@@ -197,7 +197,7 @@ RSpec.describe "Rails integration specs" do
 
     context "when Airbrake is not configured" do
       before do
-        @notifiers = Airbrake.instance_variable_get(:@notifiers)
+        @notifiers = Airbrake.notifiers[:notice]
         @default_notifier = @notifiers.delete(:default)
       end
 
@@ -238,7 +238,7 @@ RSpec.describe "Rails integration specs" do
         # Make sure the Logger intergration doesn't get in the way.
         allow_any_instance_of(Logger).to receive(:airbrake_notifier).and_return(nil)
 
-        @notifiers = Airbrake.instance_variable_get(:@notifiers)
+        @notifiers = Airbrake.notifiers[:notice]
         @default_notifier = @notifiers.delete(:default)
       end
 
