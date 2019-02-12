@@ -3,6 +3,16 @@ Airbrake Changelog
 
 ### master
 
+### [v8.1.0][v8.1.0] (February 12, 2019)
+
+* Fixed warning coming from our middleware when using with Rails 6
+  ([#893](https://github.com/airbrake/airbrake/pull/893))
+* Started depending on airbrake-ruby
+  [v3.2](https://github.com/airbrake/airbrake-ruby/releases/tag/v3.2.3) and
+  higher ([#897](https://github.com/airbrake/airbrake/pull/897))
+* Started sending SQL queries to Airbrake
+  ([#892](https://github.com/airbrake/airbrake/pull/892))
+
 ### [v8.0.1][v8.0.1] (January 23, 2019)
 
 * Moved user extraction logic from `Airbrake::Rack::ContextFilter` to
@@ -518,3 +528,4 @@ Airbrake Changelog
 [v8.0.0.rc.9]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0.rc.9
 [v8.0.0]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0
 [v8.0.1]: https://github.com/airbrake/airbrake/releases/tag/v8.0.1
+[v8.1.0]: https://github.com/airbrake/airbrake/releases/tag/v8.1.0
