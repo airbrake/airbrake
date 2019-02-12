@@ -3,6 +3,14 @@ require 'spec_helper'
 RSpec.describe "Rake integration" do
   let(:endpoint) { 'https://api.airbrake.io/api/v3/projects/113743/notices' }
 
+  let(:routes_endpoint) do
+    'https://api.airbrake.io/api/v5/projects/113743/routes-stats'
+  end
+
+  let(:queries_endpoint) do
+    'https://api.airbrake.io/api/v5/projects/113743/queries-stats'
+  end
+
   def wait_for_a_request_with_body(body)
     wait_for(a_request(:post, endpoint).with(body: body)).to have_been_made.once
   end
@@ -13,8 +21,16 @@ RSpec.describe "Rake integration" do
   end
 
   before do
-    Rails.application.load_tasks
     stub_request(:post, endpoint).to_return(status: 201, body: '{}')
+
+    # Airbrake Ruby has a background thread that sends performance requests
+    # periodically. We don't want this to get in the way.
+    [routes_endpoint, queries_endpoint].each do |e|
+      stub_request(:put, e).to_return(status: 200, body: '')
+    end
+
+    Rails.application.load_tasks
+
     expect { faulty_task.invoke }.to raise_error(AirbrakeTestError)
   end
 

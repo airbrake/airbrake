@@ -5,15 +5,31 @@ RSpec.shared_examples 'rack examples' do
 
   let(:endpoint) { 'https://api.airbrake.io/api/v3/projects/113743/notices' }
 
+  let(:routes_endpoint) do
+    'https://api.airbrake.io/api/v5/projects/113743/routes-stats'
+  end
+
+  let(:queries_endpoint) do
+    'https://api.airbrake.io/api/v5/projects/113743/queries-stats'
+  end
+
   def wait_for_a_request_with_body(body)
-    wait_for(a_request(:post, endpoint).with(body: body)).to have_been_made.once
+    allow(Airbrake.notifiers[:performance][:default]).
+      to receive(:notify).and_return(nil)
+    wait_for(a_request(:post, endpoint).with(body: body)).
+      to have_been_made.at_least_once
   end
 
   before do
     # Make sure the Logger integration doesn't get in the way.
     allow_any_instance_of(Logger).to receive(:airbrake_notifier).and_return(nil)
 
-    stub_request(:post, endpoint).to_return(status: 201, body: '{}')
+    allow(Airbrake.notifiers[:performance][:default]).
+      to receive(:notify).and_return(nil)
+    stub_request(:post, endpoint).to_return(status: 200, body: '')
+    [routes_endpoint, queries_endpoint].each do |endpoint|
+      stub_request(:put, endpoint).to_return(status: 200, body: '')
+    end
   end
 
   describe "application routes" do
@@ -47,6 +63,7 @@ RSpec.shared_examples 'rack examples' do
       before do
         login_as(OpenStruct.new(user_params))
         get '/crash'
+        sleep 2
       end
 
       context "when the user has first and last names" do
@@ -87,6 +104,7 @@ RSpec.shared_examples 'rack examples' do
     context "when additional parameters present" do
       before do
         get '/crash', nil, 'HTTP_USER_AGENT' => 'Bot', 'HTTP_REFERER' => 'bingo.com'
+        sleep 2
       end
 
       it "contains url" do

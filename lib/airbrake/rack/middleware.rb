@@ -31,23 +31,19 @@ module Airbrake
 
       def initialize(app, notifier_name = :default)
         @app = app
-        @notifier = Airbrake[notifier_name]
+        @notice_notifier = Airbrake.notifiers[:notice][notifier_name]
+        @performance_notifier = Airbrake.notifiers[:performance][notifier_name]
 
         # Prevent adding same filters to the same notifier.
         return if @@known_notifiers.include?(notifier_name)
         @@known_notifiers << notifier_name
 
-        return unless @notifier
+        return unless @notice_notifier
         RACK_FILTERS.each do |filter|
-          @notifier.add_filter(filter.new)
+          @notice_notifier.add_filter(filter.new)
         end
 
-        return unless defined?(Rails)
-
-        ActiveSupport::Notifications.subscribe(
-          'process_action.action_controller',
-          Airbrake::Rails::ActionControllerSubscriber.new(@notifier)
-        )
+        install_rails_hooks if defined?(Rails)
       end
 
       # Rescues any exceptions, sends them to Airbrake and re-raises the
@@ -72,7 +68,7 @@ module Airbrake
       private
 
       def notify_airbrake(exception, env)
-        notice = @notifier.build_notice(exception)
+        notice = @notice_notifier.build_notice(exception)
         return unless notice
 
         # ActionDispatch::Request correctly captures server port when using SSL:
@@ -86,7 +82,7 @@ module Airbrake
             ::Rack::Request.new(env)
           end
 
-        @notifier.notify(notice)
+        @notice_notifier.notify(notice)
       end
 
       # Web framework middlewares often store rescued exceptions inside the
@@ -99,6 +95,31 @@ module Airbrake
         env['action_dispatch.exception'] ||
           env['sinatra.error'] ||
           env['rack.exception']
+      end
+
+      def install_rails_hooks
+        @performance_notifier.add_filter(
+          Airbrake::Filters::SqlFilter.new(
+            ActiveRecord::Base.connection_config[:adapter]
+          )
+        )
+
+        ActiveSupport::Notifications.subscribe(
+          'start_processing.action_controller',
+          Airbrake::Rails::ActionControllerRouteSubscriber.new
+        )
+
+        ActiveSupport::Notifications.subscribe(
+          'sql.active_record',
+          Airbrake::Rails::ActiveRecordSubscriber.new(@performance_notifier)
+        )
+
+        ActiveSupport::Notifications.subscribe(
+          'process_action.action_controller',
+          Airbrake::Rails::ActionControllerNotifySubscriber.new(
+            @performance_notifier
+          )
+        )
       end
     end
   end
