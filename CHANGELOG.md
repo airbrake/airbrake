@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v8.1.1][v8.1.1] (February 14, 2019)
+
 * Fixed `uninitialized constant Airbrake::Rack::Middleware::ActiveRecord` for
   apps that don't use ActiveRecord
   ([#899](https://github.com/airbrake/airbrake/pull/899))
@@ -533,3 +535,4 @@ Airbrake Changelog
 [v8.0.0]: https://github.com/airbrake/airbrake/releases/tag/v8.0.0
 [v8.0.1]: https://github.com/airbrake/airbrake/releases/tag/v8.0.1
 [v8.1.0]: https://github.com/airbrake/airbrake/releases/tag/v8.1.0
+[v8.1.1]: https://github.com/airbrake/airbrake/releases/tag/v8.1.1
