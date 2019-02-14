@@ -34,6 +34,10 @@ module Airbrake
         @notice_notifier = Airbrake.notifiers[:notice][notifier_name]
         @performance_notifier = Airbrake.notifiers[:performance][notifier_name]
 
+        # This object is shared among hooks. ActionControllerRouteSubscriber
+        # writes it and other hooks read it.
+        @routes = {}
+
         # Prevent adding same filters to the same notifier.
         return if @@known_notifiers.include?(notifier_name)
         @@known_notifiers << notifier_name
@@ -57,6 +61,9 @@ module Airbrake
         rescue Exception => ex
           notify_airbrake(ex, env)
           raise ex
+        ensure
+          # Clear routes for the next request.
+          @routes.clear
         end
         # rubocop:enable Lint/RescueException
 
@@ -101,13 +108,13 @@ module Airbrake
       def install_action_controller_hooks
         ActiveSupport::Notifications.subscribe(
           'start_processing.action_controller',
-          Airbrake::Rails::ActionControllerRouteSubscriber.new
+          Airbrake::Rails::ActionControllerRouteSubscriber.new(@routes)
         )
 
         ActiveSupport::Notifications.subscribe(
           'process_action.action_controller',
           Airbrake::Rails::ActionControllerNotifySubscriber.new(
-            @performance_notifier
+            @performance_notifier, @routes
           )
         )
       end
@@ -120,7 +127,9 @@ module Airbrake
         )
         ActiveSupport::Notifications.subscribe(
           'sql.active_record',
-          Airbrake::Rails::ActiveRecordSubscriber.new(@performance_notifier)
+          Airbrake::Rails::ActiveRecordSubscriber.new(
+            @performance_notifier, @routes
+          )
         )
       end
     end
