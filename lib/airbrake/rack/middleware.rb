@@ -43,7 +43,8 @@ module Airbrake
           @notice_notifier.add_filter(filter.new)
         end
 
-        install_rails_hooks if defined?(Rails)
+        install_action_controller_hooks if defined?(Rails)
+        install_active_record_hooks if defined?(ActiveRecord)
       end
 
       # Rescues any exceptions, sends them to Airbrake and re-raises the
@@ -97,21 +98,10 @@ module Airbrake
           env['rack.exception']
       end
 
-      def install_rails_hooks
-        @performance_notifier.add_filter(
-          Airbrake::Filters::SqlFilter.new(
-            ActiveRecord::Base.connection_config[:adapter]
-          )
-        )
-
+      def install_action_controller_hooks
         ActiveSupport::Notifications.subscribe(
           'start_processing.action_controller',
           Airbrake::Rails::ActionControllerRouteSubscriber.new
-        )
-
-        ActiveSupport::Notifications.subscribe(
-          'sql.active_record',
-          Airbrake::Rails::ActiveRecordSubscriber.new(@performance_notifier)
         )
 
         ActiveSupport::Notifications.subscribe(
@@ -119,6 +109,18 @@ module Airbrake
           Airbrake::Rails::ActionControllerNotifySubscriber.new(
             @performance_notifier
           )
+        )
+      end
+
+      def install_active_record_hooks
+        @performance_notifier.add_filter(
+          Airbrake::Filters::SqlFilter.new(
+            ActiveRecord::Base.connection_config[:adapter]
+          )
+        )
+        ActiveSupport::Notifications.subscribe(
+          'sql.active_record',
+          Airbrake::Rails::ActiveRecordSubscriber.new(@performance_notifier)
         )
       end
     end

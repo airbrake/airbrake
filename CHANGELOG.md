@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Fixed `uninitialized constant Airbrake::Rack::Middleware::ActiveRecord` for
+  apps that don't use ActiveRecord
+  ([#899](https://github.com/airbrake/airbrake/pull/899))
+
 ### [v8.1.0][v8.1.0] (February 12, 2019)
 
 * Fixed warning coming from our middleware when using with Rails 6
