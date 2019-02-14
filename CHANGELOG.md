@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed performance stats not being sent
+  ([#901](https://github.com/airbrake/airbrake/pull/901))
+
 ### [v8.1.1][v8.1.1] (February 14, 2019)
 
 * Fixed `uninitialized constant Airbrake::Rack::Middleware::ActiveRecord` for

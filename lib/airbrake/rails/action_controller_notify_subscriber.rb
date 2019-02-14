@@ -5,25 +5,28 @@ module Airbrake
     #
     # @since v8.0.0
     class ActionControllerNotifySubscriber
-      def initialize(notifier)
+      def initialize(notifier, routes)
         @notifier = notifier
+        @routes = routes
       end
 
       def call(*args)
-        return unless (route = Thread.current[:airbrake_rails_route])
+        return if @routes.none?
 
         event = ActiveSupport::Notifications::Event.new(*args)
         payload = event.payload
 
-        @notifier.notify(
-          Airbrake::Request.new(
-            method: payload[:method],
-            route: route,
-            status_code: find_status_code(payload),
-            start_time: event.time,
-            end_time: Time.new
+        @routes.each do |route, method|
+          @notifier.notify(
+            Airbrake::Request.new(
+              method: method,
+              route: route,
+              status_code: find_status_code(payload),
+              start_time: event.time,
+              end_time: Time.new
+            )
           )
-        )
+        end
       end
 
       private
