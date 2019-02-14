@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v8.1.2][v8.1.2] (February 14, 2019)
+
 * Fixed performance stats not being sent
   ([#901](https://github.com/airbrake/airbrake/pull/901))
 
@@ -539,3 +541,4 @@ Airbrake Changelog
 [v8.0.1]: https://github.com/airbrake/airbrake/releases/tag/v8.0.1
 [v8.1.0]: https://github.com/airbrake/airbrake/releases/tag/v8.1.0
 [v8.1.1]: https://github.com/airbrake/airbrake/releases/tag/v8.1.1
+[v8.1.2]: https://github.com/airbrake/airbrake/releases/tag/v8.1.2
