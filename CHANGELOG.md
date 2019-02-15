@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed Logger integration not respecting level of the logger that is being
+  wrapped ([#903](https://github.com/airbrake/airbrake/pull/903))
+
 ### [v8.1.2][v8.1.2] (February 14, 2019)
 
 * Fixed performance stats not being sent

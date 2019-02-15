@@ -6,7 +6,9 @@ RSpec.describe Airbrake::AirbrakeLogger do
   let(:endpoint) { "https://api.airbrake.io/api/v3/projects/#{project_id}/notices" }
 
   let(:airbrake) do
-    Airbrake::Notifier.new(project_id: project_id, project_key: project_key)
+    Airbrake::NoticeNotifier.new(
+      Airbrake::Config.new(project_id: project_id, project_key: project_key)
+    )
   end
 
   let(:logger) { Logger.new('/dev/null') }
@@ -23,7 +25,7 @@ RSpec.describe Airbrake::AirbrakeLogger do
 
   describe "#airbrake_notifier" do
     it "has the default notifier installed by default" do
-      expect(subject.airbrake_notifier).to be_an(Airbrake::Notifier)
+      expect(subject.airbrake_notifier).to be_an(Airbrake::NoticeNotifier)
     end
 
     it "installs Airbrake notifier" do
@@ -113,6 +115,23 @@ RSpec.describe Airbrake::AirbrakeLogger do
           subject.airbrake_level = Logger::DEBUG
         end.to raise_error(/severity level \d is not allowed/)
       end
+    end
+  end
+
+  describe "#level=" do
+    it "sets logger level" do
+      subject.level = Logger::FATAL
+      expect(subject.level).to eq(Logger::FATAL)
+    end
+
+    it "sets airbrake level" do
+      subject.level = Logger::FATAL
+      expect(subject.airbrake_level).to eq(Logger::FATAL)
+    end
+
+    it "normalizes airbrake logger level when provided level is below WARN" do
+      subject.level = Logger::DEBUG
+      expect(subject.airbrake_level).to eq(Logger::WARN)
     end
   end
 end
