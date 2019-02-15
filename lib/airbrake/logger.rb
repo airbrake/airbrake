@@ -24,7 +24,7 @@ module Airbrake
     def initialize(logger)
       __setobj__(logger)
       @airbrake_notifier = Airbrake[:default]
-      @airbrake_level = Logger::WARN
+      self.level = logger.level
     end
 
     # @see Logger#warn
@@ -48,6 +48,12 @@ module Airbrake
     # @see Logger#unknown
     def unknown(progname = nil, &block)
       notify_airbrake(Logger::UNKNOWN, progname)
+      super
+    end
+
+    # @see Logger#level=
+    def level=(value)
+      self.airbrake_level = value < Logger::WARN ? Logger::WARN : value
       super
     end
 
