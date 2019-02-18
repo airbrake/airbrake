@@ -5,8 +5,7 @@ module Airbrake
     #
     # @since v8.0.0
     class ActionControllerRouteSubscriber
-      def initialize(routes)
-        @routes = routes
+      def initialize
         @all_routes = nil
       end
 
@@ -18,7 +17,8 @@ module Airbrake
         event = ActiveSupport::Notifications::Event.new(*args)
         payload = event.payload
 
-        @routes[find_route(payload[:params])] = payload[:method]
+        key = find_route(payload[:params])
+        Airbrake::Rack::RequestStore[:routes][key] = payload[:method]
       end
 
       private

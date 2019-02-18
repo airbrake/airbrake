@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed `can't add a new key into hash during iteration` coming from
+  ActionControllerRouteSubscriber
+  ([#905](https://github.com/airbrake/airbrake/pull/905))
 * Fixed Logger integration not respecting level of the logger that is being
   wrapped ([#903](https://github.com/airbrake/airbrake/pull/903))
 
