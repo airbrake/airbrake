@@ -18,6 +18,9 @@ module Airbrake
         payload = event.payload
 
         key = find_route(payload[:params])
+
+        # We don't track routeless events.
+        return unless Airbrake::Rack::RequestStore[:routes]
         Airbrake::Rack::RequestStore[:routes][key] = payload[:method]
       end
 
