@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v8.1.3][v8.1.3] (February 19, 2019)
+
 * Fixed `can't add a new key into hash during iteration` coming from
   ActionControllerRouteSubscriber
   ([#905](https://github.com/airbrake/airbrake/pull/905))
@@ -548,3 +550,4 @@ Airbrake Changelog
 [v8.1.0]: https://github.com/airbrake/airbrake/releases/tag/v8.1.0
 [v8.1.1]: https://github.com/airbrake/airbrake/releases/tag/v8.1.1
 [v8.1.2]: https://github.com/airbrake/airbrake/releases/tag/v8.1.2
+[v8.1.3]: https://github.com/airbrake/airbrake/releases/tag/v8.1.3
