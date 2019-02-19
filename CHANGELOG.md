@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v8.1.4][v8.1.4] (February 19, 2019)
+
 * Fixed `ActionControllerRouteSubscriber` trying to track routeless events,
   which results into a `NoMethodError`
   ([#907](https://github.com/airbrake/airbrake/pull/907))
@@ -555,3 +557,4 @@ Airbrake Changelog
 [v8.1.1]: https://github.com/airbrake/airbrake/releases/tag/v8.1.1
 [v8.1.2]: https://github.com/airbrake/airbrake/releases/tag/v8.1.2
 [v8.1.3]: https://github.com/airbrake/airbrake/releases/tag/v8.1.3
+[v8.1.4]: https://github.com/airbrake/airbrake/releases/tag/v8.1.4
