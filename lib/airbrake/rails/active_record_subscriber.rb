@@ -4,14 +4,16 @@ module Airbrake
     #
     # @since v8.1.0
     class ActiveRecordSubscriber
-      def initialize(notifier, routes)
+      def initialize(notifier)
         @notifier = notifier
-        @routes = routes
       end
 
       def call(*args)
+        routes = Airbrake::Rack::RequestStore[:routes]
+        return if !routes || routes.none?
+
         event = ActiveSupport::Notifications::Event.new(*args)
-        @routes.each do |route, method|
+        routes.each do |route, method|
           @notifier.notify(
             Airbrake::Query.new(
               route: route,

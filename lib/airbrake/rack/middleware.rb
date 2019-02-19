@@ -34,10 +34,6 @@ module Airbrake
         @notice_notifier = Airbrake.notifiers[:notice][notifier_name]
         @performance_notifier = Airbrake.notifiers[:performance][notifier_name]
 
-        # This object is shared among hooks. ActionControllerRouteSubscriber
-        # writes it and other hooks read it.
-        @routes = {}
-
         # Prevent adding same filters to the same notifier.
         return if @@known_notifiers.include?(notifier_name)
         @@known_notifiers << notifier_name
@@ -51,21 +47,31 @@ module Airbrake
         install_active_record_hooks if defined?(ActiveRecord)
       end
 
-      # Rescues any exceptions, sends them to Airbrake and re-raises the
-      # exception.
+      # Thread-safe {call!}.
+      #
       # @param [Hash] env the Rack environment
+      # @see https://github.com/airbrake/airbrake/issues/904
       def call(env)
-        # rubocop:disable Lint/RescueException
+        dup.call!(env)
+      end
+
+      # Rescues any exceptions, sends them to Airbrake and re-raises the
+      # exception. We also duplicate middleware to guarantee thread-safety.
+      #
+      # @param [Hash] env the Rack environment
+      def call!(env)
+        # Rails hooks such as ActionControllerRouteSubscriber rely on this.
+        RequestStore[:routes] = {}
+
         begin
           response = @app.call(env)
-        rescue Exception => ex
+        rescue Exception => ex # rubocop:disable Lint/RescueException
           notify_airbrake(ex, env)
           raise ex
         ensure
           # Clear routes for the next request.
-          @routes.clear
+          RequestStore.clear
         end
-        # rubocop:enable Lint/RescueException
 
         exception = framework_exception(env)
         notify_airbrake(exception, env) if exception
@@ -108,13 +114,13 @@ module Airbrake
       def install_action_controller_hooks
         ActiveSupport::Notifications.subscribe(
           'start_processing.action_controller',
-          Airbrake::Rails::ActionControllerRouteSubscriber.new(@routes)
+          Airbrake::Rails::ActionControllerRouteSubscriber.new
         )
 
         ActiveSupport::Notifications.subscribe(
           'process_action.action_controller',
           Airbrake::Rails::ActionControllerNotifySubscriber.new(
-            @performance_notifier, @routes
+            @performance_notifier
           )
         )
       end
@@ -127,9 +133,7 @@ module Airbrake
         )
         ActiveSupport::Notifications.subscribe(
           'sql.active_record',
-          Airbrake::Rails::ActiveRecordSubscriber.new(
-            @performance_notifier, @routes
-          )
+          Airbrake::Rails::ActiveRecordSubscriber.new(@performance_notifier)
         )
       end
     end
