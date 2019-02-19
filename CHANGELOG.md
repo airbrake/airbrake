@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Fixed `ActionControllerRouteSubscriber` trying to track routeless events,
+  which results into a `NoMethodError`
+  ([#907](https://github.com/airbrake/airbrake/pull/907))
+
 ### [v8.1.3][v8.1.3] (February 19, 2019)
 
 * Fixed `can't add a new key into hash during iteration` coming from
