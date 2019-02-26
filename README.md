@@ -288,27 +288,6 @@ filter. For example, read up to 512 bytes:
 Airbrake.add_filter(Airbrake::Rack::RequestBodyFilter.new(512))
 ```
 
-#### Configuring individual notifier for each subproject
-
-If your app consists of multiple components and you want to log errors from each
-component to its own Airbrake project, you can pass second argument to our Rack
-middleware. First, make sure to [configure a named
-notifier](https://github.com/airbrake/airbrake-ruby#creating-a-named-notifier).
-Next, pass the name to the middleware:
-
-```ruby
-require 'airbrake'
-
-# 1 - Configure a notifier for :app2.
-Airbrake.configure(:app2) do |c|
-  c.project_id = 113743
-  c.project_key = 'fd04e13d806a90f96614ad8e529b2822'
-end
-
-# 2 - Let Airbrake Rack middleware use the :app2 notifier to send errors.
-use Airbrake::Rack::Middleware, :app2
-```
-
 ### Sidekiq
 
 We support Sidekiq v2+. The configurations steps for them are identical. Simply
