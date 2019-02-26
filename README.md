@@ -455,7 +455,7 @@ deliver messages. It's possible to redefine it via `#airbrake_notifier`:
 
 ```ruby
 # Assign your own notifier.
-logger.airbrake_notifier = Airbrake[:other_notifier]
+logger.airbrake_notifier = Airbrake::NoticeNotifier.new
 ```
 
 #### Airbrake severity level

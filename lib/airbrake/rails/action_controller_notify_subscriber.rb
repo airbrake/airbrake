@@ -17,14 +17,12 @@ module Airbrake
         payload = event.payload
 
         routes.each do |route, method|
-          @notifier.notify(
-            Airbrake::Request.new(
-              method: method,
-              route: route,
-              status_code: find_status_code(payload),
-              start_time: event.time,
-              end_time: Time.new
-            )
+          @notifier.notify_request(
+            method: method,
+            route: route,
+            status_code: find_status_code(payload),
+            start_time: event.time,
+            end_time: Time.new
           )
         end
       end

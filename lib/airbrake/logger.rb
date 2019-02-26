@@ -13,8 +13,8 @@ module Airbrake
   #   logger.fatal('oops')
   class AirbrakeLogger < SimpleDelegator
     # @example
-    #   # Assign a default Airbrake notifier
-    #   logger.airbrake_notifier = Airbrake[:default]
+    #   # Assign a custom Airbrake notifier
+    #   logger.airbrake_notifier = Airbrake::NoticeNotifier.new
     # @return [Airbrake::Notifier] notifier to be used to send notices
     attr_accessor :airbrake_notifier
 
@@ -23,7 +23,7 @@ module Airbrake
 
     def initialize(logger)
       __setobj__(logger)
-      @airbrake_notifier = Airbrake[:default]
+      @airbrake_notifier = Airbrake
       self.level = logger.level
     end
 

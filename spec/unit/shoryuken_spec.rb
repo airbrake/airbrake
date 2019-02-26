@@ -53,21 +53,4 @@ RSpec.describe Airbrake::Shoryuken::ErrorHandler do
       end
     end
   end
-
-  context 'when Airbrake is not configured' do
-    before do
-      @notifiers = Airbrake.notifiers[:notice]
-      @default_notifier = @notifiers.delete(:default)
-    end
-
-    after do
-      @notifiers[:default] = @default_notifier
-    end
-
-    it "raises error" do
-      expect do
-        subject.call(worker, queue, nil, body) { raise error }
-      end.to raise_error(error)
-    end
-  end
 end

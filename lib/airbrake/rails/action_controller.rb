@@ -10,23 +10,23 @@ module Airbrake
       # A helper method for sending notices to Airbrake *asynchronously*.
       # Attaches information from the Rack env.
       # @see Airbrake#notify, #notify_airbrake_sync
-      def notify_airbrake(exception, params = {}, notifier_name = :default)
-        return unless (notice = build_notice(exception, params, notifier_name))
-        Airbrake[notifier_name].notify(notice, params)
+      def notify_airbrake(exception, params = {})
+        return unless (notice = build_notice(exception, params))
+        Airbrake.notify(notice, params)
       end
 
       # A helper method for sending notices to Airbrake *synchronously*.
       # Attaches information from the Rack env.
       # @see Airbrake#notify_sync, #notify_airbrake
-      def notify_airbrake_sync(exception, params = {}, notifier_name = :default)
-        return unless (notice = build_notice(exception, params, notifier_name))
-        Airbrake[notifier_name].notify_sync(notice, params)
+      def notify_airbrake_sync(exception, params = {})
+        return unless (notice = build_notice(exception, params))
+        Airbrake.notify_sync(notice, params)
       end
 
       # @param [Exception] exception
       # @return [Airbrake::Notice] the notice with information from the Rack env
-      def build_notice(exception, params = {}, notifier_name = :default)
-        return unless (notice = Airbrake[notifier_name].build_notice(exception, params))
+      def build_notice(exception, params = {})
+        return unless (notice = Airbrake.build_notice(exception, params))
         notice.stash[:rack_request] = request
         notice
       end

@@ -31,20 +31,5 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
       wait_for_a_request_with_body(/"params":{.*"args":\["bango","bongo"\]/)
       wait_for_a_request_with_body(/"component":"sidekiq","action":"HardSidekiqWorker"/)
     end
-
-    context "when Airbrake is not configured" do
-      before do
-        @notifiers = Airbrake.notifiers[:notice]
-        @default_notifier = @notifiers.delete(:default)
-      end
-
-      after do
-        @notifiers[:default] = @default_notifier
-      end
-
-      it "returns nil" do
-        expect(call_handler).to be_nil
-      end
-    end
   end
 end
