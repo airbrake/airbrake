@@ -5,10 +5,6 @@ module Airbrake
     #
     # @since v8.0.0
     class ActionControllerNotifySubscriber
-      def initialize(notifier)
-        @notifier = notifier
-      end
-
       def call(*args)
         routes = Airbrake::Rack::RequestStore[:routes]
         return if !routes || routes.none?
@@ -17,7 +13,7 @@ module Airbrake
         payload = event.payload
 
         routes.each do |route, method|
-          @notifier.notify_request(
+          Airbrake.notify_request(
             method: method,
             route: route,
             status_code: find_status_code(payload),

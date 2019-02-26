@@ -23,24 +23,10 @@ module Airbrake
         # Airbrake::Rack::RequestBodyFilter
       ].freeze
 
-      # An Array that holds notifier names, which are known to be associated
-      # with particular Airbrake Rack middleware.
-      # rubocop:disable Style/ClassVars
-      @@known_notifiers = []
-      # rubocop:enable Style/ClassVars
-
-      def initialize(app, notifier_name = :default)
+      def initialize(app)
         @app = app
-        @notifier = Airbrake
 
-        # Prevent adding same filters to the same notifier.
-        return if @@known_notifiers.include?(notifier_name)
-        @@known_notifiers << notifier_name
-
-        return unless @notifier
-        RACK_FILTERS.each do |filter|
-          @notifier.add_filter(filter.new)
-        end
+        RACK_FILTERS.each { |filter| Airbrake.add_filter(filter.new) }
 
         install_action_controller_hooks if defined?(Rails)
         install_active_record_hooks if defined?(ActiveRecord)
@@ -81,7 +67,7 @@ module Airbrake
       private
 
       def notify_airbrake(exception, env)
-        notice = @notifier.build_notice(exception)
+        notice = Airbrake.build_notice(exception)
         return unless notice
 
         # ActionDispatch::Request correctly captures server port when using SSL:
@@ -95,7 +81,7 @@ module Airbrake
             ::Rack::Request.new(env)
           end
 
-        @notifier.notify(notice)
+        Airbrake.notify(notice)
       end
 
       # Web framework middlewares often store rescued exceptions inside the
@@ -118,21 +104,19 @@ module Airbrake
 
         ActiveSupport::Notifications.subscribe(
           'process_action.action_controller',
-          Airbrake::Rails::ActionControllerNotifySubscriber.new(
-            @notifier
-          )
+          Airbrake::Rails::ActionControllerNotifySubscriber.new
         )
       end
 
       def install_active_record_hooks
-        @notifier.add_filter(
+        Airbrake.add_performance_filter(
           Airbrake::Filters::SqlFilter.new(
             ActiveRecord::Base.connection_config[:adapter]
           )
         )
         ActiveSupport::Notifications.subscribe(
           'sql.active_record',
-          Airbrake::Rails::ActiveRecordSubscriber.new(@notifier)
+          Airbrake::Rails::ActiveRecordSubscriber.new
         )
       end
     end
