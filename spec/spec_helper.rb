@@ -13,11 +13,10 @@ require 'airbrake/rake/tasks'
 Airbrake.configure do |c|
   c.project_id = 113743
   c.project_key = 'fd04e13d806a90f96614ad8e529b2822'
-  c.logger = Logger.new('/dev/null')
   c.app_version = '1.2.3'
   c.workers = 5
-  c.route_stats = true
-  c.route_stats_flush_period = 1
+  c.performance_stats = true
+  c.performance_stats_flush_period = 1
 end
 
 RSpec.configure do |c|
