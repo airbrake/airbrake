@@ -287,5 +287,20 @@ RSpec.describe "Rails integration specs" do
       wait_for(a_request(:put, queries_endpoint).with(body: body)).
         to have_been_made.once
     end
+
+    it "attaches file/line/func" do
+      get '/crash'
+      sleep 2
+
+      body = %r|
+        {"queries":.*"method":"GET",
+         "route":"/crash\(\.:format\)",.+
+         "function":"tap",
+         "file":"lib/airbrake/rails/active_record_subscriber.rb",
+         "line":\d+
+      |x
+      wait_for(a_request(:put, queries_endpoint).with(body: body)).
+        to have_been_made.once
+    end
   end
 end

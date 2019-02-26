@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* `ActiveRecordSubscriber` started to attach file/line/func information to
+  queries ([#913](https://github.com/airbrake/airbrake/pull/913))
+
 ### [v8.1.4][v8.1.4] (February 19, 2019)
 
 * Fixed `ActionControllerRouteSubscriber` trying to track routeless events,
