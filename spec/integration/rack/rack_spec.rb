@@ -22,8 +22,8 @@ RSpec.describe "Rack integration specs" do
     # Airbrake Ruby has a background thread that sends performance requests
     # periodically. We don't want this to get in the way.
     before do
-      allow(Airbrake.notifiers[:performance][:default]).
-        to receive(:notify).and_return(nil)
+      allow(Airbrake).to receive(:notify_request).and_return(nil)
+      allow(Airbrake).to receive(:notify_query).and_return(nil)
 
       stub_request(:post, endpoint).to_return(status: 200, body: '')
       [routes_endpoint, queries_endpoint].each do |endpoint|

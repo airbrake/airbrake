@@ -8,7 +8,7 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
   RSpec.describe "airbrake/sidekiq/retryable_jobs_filter" do
     subject(:filter) { Airbrake::Sidekiq::RetryableJobsFilter.new }
     def build_notice(job = nil)
-      Airbrake::Notice.new(Airbrake::Config.new, StandardError.new, job: job)
+      Airbrake::Notice.new(StandardError.new, job: job)
     end
 
     it "does not ignore notices that are not from jobs" do
