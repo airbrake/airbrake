@@ -24,10 +24,6 @@ RSpec.describe Airbrake::AirbrakeLogger do
   end
 
   describe "#airbrake_notifier" do
-    it "has the default notifier installed by default" do
-      expect(subject.airbrake_notifier).to be_an(Airbrake::NoticeNotifier)
-    end
-
     it "installs Airbrake notifier" do
       notifier_id = airbrake.object_id
       expect(subject.airbrake_notifier.object_id).not_to eq(notifier_id)

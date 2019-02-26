@@ -55,6 +55,9 @@ DESC
   # Newer versions don't support Ruby 2.2.0 and lower.
   s.add_development_dependency 'nokogiri', '= 1.9.1'
 
+  # Parallel above v1.13.0 doesn't support Ruby v2.1 and lower (and we do).
+  s.add_development_dependency 'parallel', '= 1.13.0'
+
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
     s.add_development_dependency 'sidekiq', '~> 5'
   end

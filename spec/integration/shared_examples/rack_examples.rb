@@ -14,8 +14,8 @@ RSpec.shared_examples 'rack examples' do
   end
 
   def wait_for_a_request_with_body(body)
-    allow(Airbrake.notifiers[:performance][:default]).
-      to receive(:notify).and_return(nil)
+    allow(Airbrake).to receive(:notify_request).and_return(nil)
+    allow(Airbrake).to receive(:notify_query).and_return(nil)
     wait_for(a_request(:post, endpoint).with(body: body)).
       to have_been_made.at_least_once
   end
@@ -24,8 +24,8 @@ RSpec.shared_examples 'rack examples' do
     # Make sure the Logger integration doesn't get in the way.
     allow_any_instance_of(Logger).to receive(:airbrake_notifier).and_return(nil)
 
-    allow(Airbrake.notifiers[:performance][:default]).
-      to receive(:notify).and_return(nil)
+    allow(Airbrake).to receive(:notify_request).and_return(nil)
+    allow(Airbrake).to receive(:notify_query).and_return(nil)
     stub_request(:post, endpoint).to_return(status: 200, body: '')
     [routes_endpoint, queries_endpoint].each do |endpoint|
       stub_request(:put, endpoint).to_return(status: 200, body: '')

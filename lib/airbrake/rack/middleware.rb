@@ -31,16 +31,15 @@ module Airbrake
 
       def initialize(app, notifier_name = :default)
         @app = app
-        @notice_notifier = Airbrake.notifiers[:notice][notifier_name]
-        @performance_notifier = Airbrake.notifiers[:performance][notifier_name]
+        @notifier = Airbrake
 
         # Prevent adding same filters to the same notifier.
         return if @@known_notifiers.include?(notifier_name)
         @@known_notifiers << notifier_name
 
-        return unless @notice_notifier
+        return unless @notifier
         RACK_FILTERS.each do |filter|
-          @notice_notifier.add_filter(filter.new)
+          @notifier.add_filter(filter.new)
         end
 
         install_action_controller_hooks if defined?(Rails)
@@ -82,7 +81,7 @@ module Airbrake
       private
 
       def notify_airbrake(exception, env)
-        notice = @notice_notifier.build_notice(exception)
+        notice = @notifier.build_notice(exception)
         return unless notice
 
         # ActionDispatch::Request correctly captures server port when using SSL:
@@ -96,7 +95,7 @@ module Airbrake
             ::Rack::Request.new(env)
           end
 
-        @notice_notifier.notify(notice)
+        @notifier.notify(notice)
       end
 
       # Web framework middlewares often store rescued exceptions inside the
@@ -120,20 +119,20 @@ module Airbrake
         ActiveSupport::Notifications.subscribe(
           'process_action.action_controller',
           Airbrake::Rails::ActionControllerNotifySubscriber.new(
-            @performance_notifier
+            @notifier
           )
         )
       end
 
       def install_active_record_hooks
-        @performance_notifier.add_filter(
+        @notifier.add_filter(
           Airbrake::Filters::SqlFilter.new(
             ActiveRecord::Base.connection_config[:adapter]
           )
         )
         ActiveSupport::Notifications.subscribe(
           'sql.active_record',
-          Airbrake::Rails::ActiveRecordSubscriber.new(@performance_notifier)
+          Airbrake::Rails::ActiveRecordSubscriber.new(@notifier)
         )
       end
     end

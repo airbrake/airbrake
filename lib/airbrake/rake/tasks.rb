@@ -57,7 +57,7 @@ namespace :airbrake do
       repository: ENV['REPOSITORY'],
       version: ENV['VERSION']
     }
-    promise = Airbrake.create_deploy(deploy_params)
+    promise = Airbrake.notify_deploy(deploy_params)
     promise.then do
       puts "The #{deploy_params[:environment]} environment was deployed."
     end

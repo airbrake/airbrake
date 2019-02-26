@@ -11,8 +11,8 @@ RSpec.describe "Rails integration specs" do
   # Airbrake Ruby has a background thread that sends performance requests
   # periodically. We don't want this to get in the way.
   before do
-    allow(Airbrake.notifiers[:performance][:default]).
-      to receive(:notify).and_return(nil)
+    allow(Airbrake).to receive(:notify_request).and_return(nil)
+    allow(Airbrake).to receive(:notify_query).and_return(nil)
   end
 
   if ::Rails.version.start_with?('5.')
@@ -186,35 +186,13 @@ RSpec.describe "Rails integration specs" do
   end
 
   describe "Resque workers" do
-    context "when Airbrake is configured" do
-      it "reports exceptions occurring in Resque workers" do
-        with_resque { get '/resque' }
+    it "reports exceptions occurring in Resque workers" do
+      with_resque { get '/resque' }
 
-        wait_for_a_request_with_body(
-          /"message":"resque\serror".*"params":{.*
-         "class":"BingoWorker","args":\["bango","bongo"\].*}/x
-        )
-      end
-    end
-
-    context "when Airbrake is not configured" do
-      before do
-        @notifiers = Airbrake.notifiers[:notice]
-        @default_notifier = @notifiers.delete(:default)
-      end
-
-      after do
-        @notifiers[:default] = @default_notifier
-      end
-
-      it "doesn't report errors" do
-        with_resque { get '/resque' }
-
-        wait_for(
-          a_request(:post, endpoint).
-            with(body: /"message":"resque error"/)
-        ).not_to have_been_made
-      end
+      wait_for_a_request_with_body(
+        /"message":"resque\serror".*"params":{.*
+        "class":"BingoWorker","args":\["bango","bongo"\].*}/x
+      )
     end
   end
 
@@ -233,38 +211,6 @@ RSpec.describe "Rails integration specs" do
       # Sleep guarantees that we let the unimportant request occur here and not
       # elsewhere.
       sleep 2
-    end
-
-    context "when Airbrake is not configured" do
-      before do
-        # Make sure the Logger intergration doesn't get in the way.
-        allow_any_instance_of(Logger).to receive(:airbrake_notifier).and_return(nil)
-
-        @notifiers = Airbrake.notifiers[:notice]
-        @default_notifier = @notifiers.delete(:default)
-      end
-
-      after do
-        @notifiers[:default] = @default_notifier
-      end
-
-      it "doesn't report errors" do
-        # Make sure we don't call `build_notice` more than 1 time. Rack
-        # integration will try to handle error 500 and we want to prevent
-        # that: https://github.com/airbrake/airbrake/pull/583
-        allow_any_instance_of(Airbrake::Rack::Middleware).to(
-          receive(:notify_airbrake).
-            and_return(nil)
-        )
-
-        get '/delayed_job'
-        sleep 2
-
-        wait_for(
-          a_request(:post, endpoint).
-            with(body: /"message":"delayed_job error"/)
-        ).not_to have_been_made
-      end
     end
   end
 
@@ -291,10 +237,9 @@ RSpec.describe "Rails integration specs" do
     end
   end
 
-  describe "the performance hook" do
+  describe "request performance hook" do
     before do
-      expect(Airbrake.notifiers[:performance][:default]).
-        to receive(:notify).at_least(:once).and_call_original
+      expect(Airbrake).to receive(:notify_request).at_least(:once).and_call_original
     end
 
     it "notifies request" do
@@ -307,17 +252,6 @@ RSpec.describe "Rails integration specs" do
         {"routes":\[.*{"method":"GET","route":"\/crash\(\.:format\)","statusCode":500
       |x
       wait_for(a_request(:put, routes_endpoint).with(body: body)).
-        to have_been_made.once
-    end
-
-    it "notifies query" do
-      get '/crash'
-      sleep 2
-
-      body = %r|
-        {"queries":.*"method":"GET","route":"/crash\(\.:format\)","query":
-      |x
-      wait_for(a_request(:put, queries_endpoint).with(body: body)).
         to have_been_made.once
     end
 
@@ -334,6 +268,23 @@ RSpec.describe "Rails integration specs" do
         {"routes":\[.*{"method":"HEAD","route":"\/crash\(\.:format\)","statusCode":500
       |x
       wait_for(a_request(:put, routes_endpoint).with(body: body)).
+        to have_been_made.once
+    end
+  end
+
+  describe "query performance hook" do
+    before do
+      expect(Airbrake).to receive(:notify_query).at_least(:once).and_call_original
+    end
+
+    it "notifies query" do
+      get '/crash'
+      sleep 2
+
+      body = %r|
+        {"queries":.*"method":"GET","route":"/crash\(\.:format\)","query":
+      |x
+      wait_for(a_request(:put, queries_endpoint).with(body: body)).
         to have_been_made.once
     end
   end
