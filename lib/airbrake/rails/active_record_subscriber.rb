@@ -36,3 +36,13 @@ module Airbrake
     end
   end
 end
+
+Airbrake.add_performance_filter(
+  Airbrake::Filters::SqlFilter.new(
+    ActiveRecord::Base.connection_config[:adapter]
+  )
+)
+
+ActiveSupport::Notifications.subscribe(
+  'sql.active_record', Airbrake::Rails::ActiveRecordSubscriber.new
+)

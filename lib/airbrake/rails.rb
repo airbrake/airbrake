@@ -52,6 +52,11 @@ module Airbrake
           # interesting request data. Appends that information to notices.
           require 'airbrake/rails/action_controller'
           include Airbrake::Rails::ActionController
+
+          # Cache route information for the duration of the request.
+          require 'airbrake/rails/action_controller_route_subscriber'
+          # Send route stats.
+          require 'airbrake/rails/action_controller_notify_subscriber'
         end
       end
 
@@ -61,6 +66,9 @@ module Airbrake
           # Applicable only to the versions of Rails lower than 4.2.
           require 'airbrake/rails/active_record'
           include Airbrake::Rails::ActiveRecord
+
+          # Send SQL queries.
+          require 'airbrake/rails/active_record_subscriber'
         end
       end
 
