@@ -24,15 +24,16 @@ module Rake
     private
 
     def notify_airbrake(exception, args)
-      Airbrake.notify_sync(exception) do |notice|
-        notice[:context][:component] = 'rake'
-        notice[:context][:action] = name
-        notice[:params].merge!(
-          rake_task: task_info,
-          execute_args: args,
-          argv: ARGV.join(' ')
-        )
-      end
+      notice = Airbrake.build_notice(exception)
+      notice[:context][:component] = 'rake'
+      notice[:context][:action] = name
+      notice[:params].merge!(
+        rake_task: task_info,
+        execute_args: args,
+        argv: ARGV.join(' ')
+      )
+
+      Airbrake.notify_sync(notice)
     end
 
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/AbcSize

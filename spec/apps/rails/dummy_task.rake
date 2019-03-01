@@ -9,11 +9,6 @@ namespace :bingo do
     raise AirbrakeTestError
   end
 
-  # This task contains *minimum* amount of information.
-  task :bongo do
-    raise AirbrakeTestError
-  end
-
   task :environment do
     # No-op.
   end
