@@ -27,8 +27,8 @@ RSpec.describe "Rails integration specs" do
       middlewares = Rails.configuration.middleware.middlewares.map(&:inspect)
       own_idx = middlewares.index('Airbrake::Rack::Middleware')
 
-      expect(middlewares[own_idx - 1]).
-        to eq('ActiveRecord::ConnectionAdapters::ConnectionManagement')
+      expect(middlewares[own_idx - 1])
+        .to eq('ActiveRecord::ConnectionAdapters::ConnectionManagement')
     end
   end
 
@@ -102,20 +102,18 @@ RSpec.describe "Rails integration specs" do
         get '/active_record_after_commit'
         sleep 2
 
-        wait_for(
-          a_request(:post, endpoint).
-          with(body: /"type":"AirbrakeTestError","message":"after_commit"/)
-        ).to have_been_made.twice
+        body = /"type":"AirbrakeTestError","message":"after_commit"/
+        wait_for(a_request(:post, endpoint).with(body: body))
+          .to have_been_made.twice
       end
 
       it "reports exceptions in after_rollback callbacks" do
         get '/active_record_after_rollback'
         sleep 2
 
-        wait_for(
-          a_request(:post, endpoint).
-          with(body: /"type":"AirbrakeTestError","message":"after_rollback"/)
-        ).to have_been_made.twice
+        body = /"type":"AirbrakeTestError","message":"after_rollback"/
+        wait_for(a_request(:post, endpoint).with(body: body))
+          .to have_been_made.twice
       end
     else
       it "reports exceptions in after_commit callbacks" do
@@ -140,20 +138,18 @@ RSpec.describe "Rails integration specs" do
         get '/active_job'
         sleep 2
 
-        wait_for(
-          a_request(:post, endpoint).
-          with(body: /"message":"active_job error"/)
-        ).to have_been_made.at_least_once
+        body = /"message":"active_job error"/
+        wait_for(a_request(:post, endpoint).with(body: body))
+          .to have_been_made.at_least_once
       end
 
       it "does not raise SystemStackError" do
         get '/active_job'
         sleep 2
 
-        wait_for(
-          a_request(:post, endpoint).
-          with(body: /"type":"SystemStackError"/)
-        ).not_to have_been_made
+        body = /"type":"SystemStackError"/
+        wait_for(a_request(:post, endpoint).with(body: body))
+          .not_to have_been_made
       end
 
       context "when Airbrake is not configured" do
@@ -169,17 +165,15 @@ RSpec.describe "Rails integration specs" do
           # integration will try to handle error 500 and we want to prevent
           # that: https://github.com/airbrake/airbrake/pull/583
           allow_any_instance_of(Airbrake::Rack::Middleware).to(
-            receive(:notify_airbrake).
-            and_return(nil)
+            receive(:notify_airbrake).and_return(nil)
           )
 
           get '/active_job'
           sleep 2
 
-          wait_for(
-            a_request(:post, endpoint).
-            with(body: /"message":"active_job error"/)
-          ).not_to have_been_made
+          body = /"message":"active_job error"/
+          wait_for(a_request(:post, endpoint).with(body: body))
+            .not_to have_been_made
         end
       end
     end
@@ -251,13 +245,13 @@ RSpec.describe "Rails integration specs" do
       body = %r|
         {"routes":\[.*{"method":"GET","route":"\/crash\(\.:format\)","statusCode":500
       |x
-      wait_for(a_request(:put, routes_endpoint).with(body: body)).
-        to have_been_made.once
+      wait_for(a_request(:put, routes_endpoint).with(body: body))
+        .to have_been_made.once
     end
 
     it "defaults to 500 when status code for exception returns 0" do
-      allow(ActionDispatch::ExceptionWrapper).
-        to receive(:status_code_for_exception).and_return(0)
+      allow(ActionDispatch::ExceptionWrapper)
+        .to receive(:status_code_for_exception).and_return(0)
 
       head '/crash'
       sleep 2
@@ -267,8 +261,8 @@ RSpec.describe "Rails integration specs" do
       body = %r|
         {"routes":\[.*{"method":"HEAD","route":"\/crash\(\.:format\)","statusCode":500
       |x
-      wait_for(a_request(:put, routes_endpoint).with(body: body)).
-        to have_been_made.once
+      wait_for(a_request(:put, routes_endpoint).with(body: body))
+        .to have_been_made.once
     end
   end
 
@@ -284,8 +278,8 @@ RSpec.describe "Rails integration specs" do
       body = %r|
         {"queries":.*"method":"GET","route":"/crash\(\.:format\)","query":
       |x
-      wait_for(a_request(:put, queries_endpoint).with(body: body)).
-        to have_been_made.once
+      wait_for(a_request(:put, queries_endpoint).with(body: body))
+        .to have_been_made.once
     end
 
     it "attaches file/line/func" do
@@ -299,8 +293,8 @@ RSpec.describe "Rails integration specs" do
          "file":"lib/airbrake/rails/active_record_subscriber.rb",
          "line":\d+
       |x
-      wait_for(a_request(:put, queries_endpoint).with(body: body)).
-        to have_been_made.once
+      wait_for(a_request(:put, queries_endpoint).with(body: body))
+        .to have_been_made.once
     end
   end
 end

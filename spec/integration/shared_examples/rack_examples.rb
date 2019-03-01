@@ -16,8 +16,8 @@ RSpec.shared_examples 'rack examples' do
   def wait_for_a_request_with_body(body)
     allow(Airbrake).to receive(:notify_request).and_return(nil)
     allow(Airbrake).to receive(:notify_query).and_return(nil)
-    wait_for(a_request(:post, endpoint).with(body: body)).
-      to have_been_made.at_least_once
+    wait_for(a_request(:post, endpoint).with(body: body))
+      .to have_been_made.at_least_once
   end
 
   before do

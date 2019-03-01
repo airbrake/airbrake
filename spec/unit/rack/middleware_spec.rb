@@ -21,15 +21,15 @@ RSpec.describe Airbrake::Rack::Middleware do
   describe "#call" do
     context "when app raises an exception" do
       it "rescues the exception, notifies Airbrake & re-raises it" do
-        expect { described_class.new(faulty_app).call(env_for('/')) }.
-          to raise_error(AirbrakeTestError)
+        expect { described_class.new(faulty_app).call(env_for('/')) }
+          .to raise_error(AirbrakeTestError)
 
         wait_for_a_request_with_body(/"errors":\[{"type":"AirbrakeTestError"/)
       end
 
       it "sends framework version and name" do
-        expect { described_class.new(faulty_app).call(env_for('/bingo/bango')) }.
-          to raise_error(AirbrakeTestError)
+        expect { described_class.new(faulty_app).call(env_for('/bingo/bango')) }
+          .to raise_error(AirbrakeTestError)
 
         wait_for_a_request_with_body(
           /"context":{.*"versions":{"(rails|sinatra|rack_version)"/
@@ -74,8 +74,8 @@ RSpec.describe Airbrake::Rack::Middleware do
       allow(Airbrake).to receive(:build_notice).and_return(nil)
       allow(Airbrake).to receive(:notify)
 
-      expect { described_class.new(faulty_app).call(env_for('/')) }.
-        to raise_error(AirbrakeTestError)
+      expect { described_class.new(faulty_app).call(env_for('/')) }
+        .to raise_error(AirbrakeTestError)
 
       expect(Airbrake).to have_received(:build_notice)
       expect(Airbrake).not_to have_received(:notify)
