@@ -7,35 +7,14 @@ RSpec.describe "Rack integration specs" do
   include_examples 'rack examples'
 
   describe "context payload" do
-    let(:endpoint) do
-      'https://api.airbrake.io/api/v3/projects/113743/notices'
-    end
-
-    let(:routes_endpoint) do
-      'https://api.airbrake.io/api/v5/projects/113743/routes-stats'
-    end
-
-    let(:queries_endpoint) do
-      'https://api.airbrake.io/api/v5/projects/113743/queries-stats'
-    end
-
-    # Airbrake Ruby has a background thread that sends performance requests
-    # periodically. We don't want this to get in the way.
-    before do
-      allow(Airbrake).to receive(:notify_request).and_return(nil)
-      allow(Airbrake).to receive(:notify_query).and_return(nil)
-
-      stub_request(:post, endpoint).to_return(status: 200, body: '')
-      [routes_endpoint, queries_endpoint].each do |endpoint|
-        stub_request(:put, endpoint).to_return(status: 200, body: '')
-      end
-    end
+    before { stub_request(:post, endpoint).to_return(status: 200, body: '') }
 
     it "includes version" do
       get '/crash'
-      wait_for_a_request_with_body(
-        /"context":{.*"versions":{"rack_version":"\d\..+","rack_release":"\d\..+"}/
-      )
+      sleep 2
+
+      body = /"context":{.*"versions":{"rack_version":"\d\..+","rack_release":"\d\..+"}/
+      expect(a_request(:post, endpoint).with(body: body)).to have_been_made
     end
   end
 end

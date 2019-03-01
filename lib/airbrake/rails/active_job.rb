@@ -13,11 +13,12 @@ module Airbrake
         # Do not notify twice if a queue_adapter is configured already.
         raise exception if ADAPTERS.any? { |a| a =~ queue_adapter }
 
-        Airbrake.notify(exception) do |notice|
-          notice[:context][:component] = 'active_job'
-          notice[:context][:action] = job.class.name
-          notice[:params].merge!(job.serialize)
-        end
+        notice = Airbrake.build_notice(exception)
+        notice[:context][:component] = 'active_job'
+        notice[:context][:action] = job.class.name
+        notice[:params].merge!(job.serialize)
+
+        Airbrake.notify(notice)
 
         raise exception
       end
