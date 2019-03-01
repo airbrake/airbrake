@@ -10,6 +10,12 @@ require 'pry'
 require 'airbrake'
 require 'airbrake/rake/tasks'
 
+Dir[
+  File.expand_path(File.join(File.dirname(__FILE__), 'support', '**', '*.rb'))
+].each do |file|
+  require file
+end
+
 Airbrake.configure do |c|
   c.project_id = 113743
   c.project_key = 'fd04e13d806a90f96614ad8e529b2822'

@@ -1,173 +1,98 @@
 require 'spec_helper'
 
 RSpec.describe "Rake integration" do
-  let(:endpoint) { 'https://api.airbrake.io/api/v3/projects/113743/notices' }
+  let(:task) { Rake::Task['bingo:bango'] }
 
-  let(:routes_endpoint) do
-    'https://api.airbrake.io/api/v5/projects/113743/routes-stats'
-  end
-
-  let(:queries_endpoint) do
-    'https://api.airbrake.io/api/v5/projects/113743/queries-stats'
-  end
-
-  def wait_for_a_request_with_body(body)
-    wait_for(a_request(:post, endpoint).with(body: body)).to have_been_made.once
-  end
-
-  def expect_no_requests_with_body(body)
-    sleep 1
-    expect(a_request(:post, endpoint).with(body: body)).not_to have_been_made
-  end
-
-  before do
-    stub_request(:post, endpoint).to_return(status: 201, body: '{}')
-
-    # Airbrake Ruby has a background thread that sends performance requests
-    # periodically. We don't want this to get in the way.
-    [routes_endpoint, queries_endpoint].each do |e|
-      stub_request(:put, e).to_return(status: 200, body: '')
-    end
-
-    Rails.application.load_tasks
-
-    expect { faulty_task.invoke }.to raise_error(AirbrakeTestError)
-  end
+  before { Rails.application.load_tasks }
 
   after do
+    expect { task.invoke }.to raise_error(AirbrakeTestError)
+
     # Rake ensures that each task is executed only once per session. For testing
     # purposes, we run the task multiple times.
-    faulty_task.reenable
+    task.reenable
   end
 
-  describe "a task with maximum information, which raises an exception" do
-    let(:faulty_task) { Rake::Task['bingo:bango'] }
+  it "sends the exception to Airbrake" do
+    expect(Airbrake).to receive(:notify_sync)
+      .with(an_instance_of(Airbrake::Notice))
+  end
 
-    it "sends the exception to Airbrake" do
-      wait_for_a_request_with_body(/"errors":\[{"type":"AirbrakeTestError"/)
+  describe "contains the context payload, which" do
+    it "includes correct component" do
+      expect(Airbrake).to receive(:notify_sync)
+        .with(a_notice_with(%i[context component], 'rake'))
     end
 
-    describe "contains the context payload, which" do
-      it "includes correct component" do
-        wait_for_a_request_with_body(/"context":{.*"component":"rake".*}/)
-      end
-
-      it "includes correct action" do
-        wait_for_a_request_with_body(
-          /"context":{.*"action":"bingo:bango".*/
-        )
-      end
-    end
-
-    describe "contains the params payload, which" do
-      it "includes a task name" do
-        wait_for_a_request_with_body(
-          /"params":{.*"rake_task":{.*"name":"bingo:bango".*}.*}/
-        )
-      end
-
-      it "includes a timestamp" do
-        wait_for_a_request_with_body(
-          /"params":{.*"rake_task":{.*"timestamp":"201\d\-\d\d-\d\d.+".*}.*}/
-        )
-      end
-
-      it "includes investigation" do
-        # rubocop:disable Metrics/LineLength
-        wait_for_a_request_with_body(
-          /"params":{.*"rake_task":{.*"investigation":".+Investigating bingo:bango.+".*}.*}/
-        )
-        # rubocop:enable Metrics/LineLength
-      end
-
-      it "includes full comment" do
-        wait_for_a_request_with_body(
-          /"params":{.*"rake_task":{.*"full_comment":"Dummy description".*}.*}/
-        )
-      end
-
-      it "includes arg names" do
-        wait_for_a_request_with_body(
-          /"params":{.*"rake_task":{.*"arg_names":\["dummy_arg"\].*}.*}/
-        )
-      end
-
-      it "includes arg description" do
-        wait_for_a_request_with_body(
-          /"params":{.*"rake_task":{.*"arg_description":"\[dummy_arg\]".*}.*}/
-        )
-      end
-
-      it "includes locations" do
-        # rubocop:disable Metrics/LineLength
-        wait_for_a_request_with_body(
-          %r("params":{.*"rake_task":{.*"locations":\[".+spec/apps/rails/dummy_task.rake:\d+:in.+"\].*}.*})
-        )
-        # rubocop:enable Metrics/LineLength
-      end
-
-      it "includes sources" do
-        wait_for_a_request_with_body(
-          /"params":{.*"rake_task":{.*"sources":\["environment"\].*}.*}/
-        )
-      end
-
-      it "includes prerequisite tasks" do
-        # rubocop:disable Metrics/LineLength
-        wait_for_a_request_with_body(
-          /"params":{.*"rake_task":{.*"prerequisite_tasks":\[{"name":"bingo:environment".+\].*}.*}/
-        )
-        # rubocop:enable Metrics/LineLength
-      end
-
-      it "includes argv info" do
-        wait_for_a_request_with_body(
-          %r("params":{.*"argv":".*spec/integration/rails/.+_spec.rb".*})
-        )
-      end
-
-      it "includes #execute args" do
-        wait_for_a_request_with_body(
-          /"params":{.*"execute_args":\[\].*}/
-        )
-      end
+    it "includes correct action" do
+      expect(Airbrake).to receive(:notify_sync)
+        .with(a_notice_with(%i[context action], 'bingo:bango'))
     end
   end
 
-  describe "a task with minimum information, which raises an exception" do
-    let(:faulty_task) { Rake::Task['bingo:bongo'] }
+  describe "contains the params payload, which" do
+    it "includes a task name" do
+      expect(Airbrake).to receive(:notify_sync)
+        .with(a_notice_with(%i[params rake_task name], 'bingo:bango'))
+    end
 
-    describe "doesn't contain in the params payload" do
-      it "full comment" do
-        expect_no_requests_with_body(
-          /"params":{.*"rake_task":{.*"full_comment":"Dummy description".*}.*}/
-        )
+    it "includes a timestamp" do
+      expected_notice = a_notice_with(
+        %i[params rake_task timestamp], /20\d\d\-\d\d-\d\d.+/
+      )
+      expect(Airbrake).to receive(:notify_sync).with(expected_notice)
+    end
+
+    it "includes investigation" do
+      expected_notice = a_notice_with(
+        %i[params rake_task investigation], /Investigating bingo:bango/
+      )
+      expect(Airbrake).to receive(:notify_sync).with(expected_notice)
+    end
+
+    it "includes full comment" do
+      expect(Airbrake).to receive(:notify_sync)
+        .with(a_notice_with(%i[params rake_task full_comment], 'Dummy description'))
+    end
+
+    it "includes arg names" do
+      expect(Airbrake).to receive(:notify_sync)
+        .with(a_notice_with(%i[params rake_task arg_names], [:dummy_arg]))
+    end
+
+    it "includes arg description" do
+      expect(Airbrake).to receive(:notify_sync)
+        .with(a_notice_with(%i[params rake_task arg_description], '[dummy_arg]'))
+    end
+
+    it "includes locations" do
+      expect(Airbrake).to receive(:notify_sync) do |notice|
+        expect(notice[:params][:rake_task][:locations])
+          .to match(array_including(%r{spec/apps/rails/dummy_task.rake:\d+:in}))
       end
+    end
 
-      it "arg names" do
-        expect_no_requests_with_body(
-          /"params":{.*"rake_task":{.*"arg_names":\["dummy_arg"\].*}.*}/
-        )
+    it "includes sources" do
+      expect(Airbrake).to receive(:notify_sync)
+        .with(a_notice_with(%i[params rake_task sources], ['environment']))
+    end
+
+    it "includes prerequisite tasks" do
+      expect(Airbrake).to receive(:notify_sync) do |notice|
+        expect(notice[:params][:rake_task][:prerequisite_tasks])
+          .to match(array_including(hash_including(name: 'bingo:environment')))
       end
+    end
 
-      it "arg description" do
-        expect_no_requests_with_body(
-          /"params":{.*"rake_task":{.*"arg_description":"\[dummy_arg\]".*}.*}/
-        )
-      end
+    it "includes argv info" do
+      expect(Airbrake).to receive(:notify_sync)
+        .with(a_notice_with(%i[params argv], %r{spec/integration/rails/.+_spec.rb}))
+    end
 
-      it "sources" do
-        expect_no_requests_with_body(
-          /"params":{.*"rake_task":{.*"sources":\["environment"\].*}.*}/
-        )
-      end
-
-      it "prerequisite tasks" do
-        # rubocop:disable Metrics/LineLength
-        expect_no_requests_with_body(
-          /"params":{.*"rake_task":{.*"prerequisite_tasks":\[{"name":"bingo:environment".+\].*}.*}/
-        )
-        # rubocop:enable Metrics/LineLength
+    it "includes execute args" do
+      expect(Airbrake).to receive(:notify_sync) do |notice|
+        expect(notice[:params][:execute_args])
+          .to be_an_instance_of(Rake::TaskArguments)
       end
     end
   end
