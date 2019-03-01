@@ -8,13 +8,6 @@ RSpec.describe "Rails integration specs" do
 
   include_examples 'rack examples'
 
-  # Airbrake Ruby has a background thread that sends performance requests
-  # periodically. We don't want this to get in the way.
-  before do
-    allow(Airbrake).to receive(:notify_request).and_return(nil)
-    allow(Airbrake).to receive(:notify_query).and_return(nil)
-  end
-
   if ::Rails.version.start_with?('5.')
     it "inserts the Airbrake Rack middleware after DebugExceptions" do
       middlewares = Rails.configuration.middleware.middlewares.map(&:inspect)
@@ -32,53 +25,60 @@ RSpec.describe "Rails integration specs" do
     end
   end
 
-  shared_examples 'context payload content' do |route|
+  shared_examples "context payload content" do |route|
+    let(:user) do
+      OpenStruct.new(
+        id: 1,
+        email: 'qa@example.com',
+        username: 'qa-dept'
+      )
+    end
+
     before do
-      login_as(OpenStruct.new(id: 1, email: 'qa@example.com', username: 'qa-dept'))
+      login_as(user)
       get(route, foo: :bar)
       sleep 2
     end
 
     it "includes component information" do
-      wait_for_a_request_with_body(/"context":{.*"component":"dummy".*}/)
+      body = /"context":{.*"component":"dummy".*}/
+      expect(a_request(:post, endpoint).with(body: body)).to have_been_made
     end
 
     it "includes action information" do
-      case route
-      when '/crash'
-        wait_for_a_request_with_body(/"context":{.*"action":"crash".*}/)
-      when '/notify_airbrake_helper'
-        wait_for_a_request_with_body(
+      body =
+        case route
+        when '/crash'
+          /"context":{.*"action":"crash".*}/
+        when '/notify_airbrake_helper'
           /"context":{.*"action":"notify_airbrake_helper".*}/
-        )
-      when '/notify_airbrake_sync_helper'
-        wait_for_a_request_with_body(
+        when '/notify_airbrake_sync_helper'
           /"context":{.*"action":"notify_airbrake_sync_helper".*}/
-        )
-      else
-        raise 'Unknown route'
-      end
+        else
+          raise 'Unknown route'
+        end
+      expect(a_request(:post, endpoint).with(body: body)).to have_been_made
     end
 
     it "includes version" do
-      wait_for_a_request_with_body(/"context":{.*"versions":{"rails":"\d\./)
+      body = /"context":{.*"versions":{"rails":"\d\./
+      expect(a_request(:post, endpoint).with(body: body)).to have_been_made
     end
 
     it "includes session" do
-      wait_for_a_request_with_body(
-        /"context":{.*"session":{.*"session_id":"\w+".*}/
-      )
+      body = /"context":{.*"session":{.*"session_id":"\w+".*}/
+      expect(a_request(:post, endpoint).with(body: body)).to have_been_made
     end
 
     it "includes params" do
       action = route[1..-1]
-      wait_for_a_request_with_body(
-        /"context":{.*"params":{.*"controller":"dummy","action":"#{action}".*}/
-      )
+      body = /"context":{.*"params":{.*"controller":"dummy","action":"#{action}".*}/
+      expect(a_request(:post, endpoint).with(body: body)).to have_been_made
     end
 
     it "includes route" do
-      wait_for_a_request_with_body(/"context":{.*"route":"#{route}\(\.:format\)".*}/)
+      body = /"context":{.*"route":"#{route}\(\.:format\)".*}/
+      expect(a_request(:post, endpoint).with(body: body)).to have_been_made
     end
   end
 
@@ -96,84 +96,62 @@ RSpec.describe "Rails integration specs" do
     end
   end
 
-  describe "Active Record callbacks" do
-    if Gem::Version.new(Rails.version) >= Gem::Version.new('5.1.0.alpha')
-      it "reports exceptions in after_commit callbacks" do
-        get '/active_record_after_commit'
-        sleep 2
-
-        body = /"type":"AirbrakeTestError","message":"after_commit"/
-        wait_for(a_request(:post, endpoint).with(body: body))
-          .to have_been_made.twice
+  describe(
+    "Active Record callbacks",
+    skip: Gem::Version.new(Rails.version) < Gem::Version.new('5.1.0')
+  ) do
+    it "reports exceptions in after_commit callbacks" do
+      expect(Airbrake).to receive(:notify).with(
+        an_instance_of(AirbrakeTestError)
+      ) do |exception|
+        expect(exception.message).to eq('after_commit')
       end
 
-      it "reports exceptions in after_rollback callbacks" do
-        get '/active_record_after_rollback'
-        sleep 2
+      get '/active_record_after_commit'
+    end
 
-        body = /"type":"AirbrakeTestError","message":"after_rollback"/
-        wait_for(a_request(:post, endpoint).with(body: body))
-          .to have_been_made.twice
-      end
-    else
-      it "reports exceptions in after_commit callbacks" do
-        get '/active_record_after_commit'
-        wait_for_a_request_with_body(
-          /"type":"AirbrakeTestError","message":"after_commit"/
-        )
+    it "reports exceptions in after_rollback callbacks" do
+      expect(Airbrake).to receive(:notify).with(
+        an_instance_of(AirbrakeTestError)
+      ) do |exception|
+        expect(exception.message).to eq('after_rollback')
       end
 
-      it "reports exceptions in after_rollback callbacks" do
-        get '/active_record_after_rollback'
-        wait_for_a_request_with_body(
-          /"type":"AirbrakeTestError","message":"after_rollback"/
-        )
-      end
+      get '/active_record_after_rollback'
     end
   end
 
   if Gem::Version.new(Rails.version) >= Gem::Version.new('4.2')
     describe "ActiveJob jobs" do
       it "reports exceptions occurring in ActiveJob workers" do
+        expect(Airbrake).to receive(:notify)
+          .with(an_instance_of(Airbrake::Notice)).at_least(:once)
+
         get '/active_job'
-        sleep 2
-
-        body = /"message":"active_job error"/
-        wait_for(a_request(:post, endpoint).with(body: body))
-          .to have_been_made.at_least_once
-      end
-
-      it "does not raise SystemStackError" do
-        get '/active_job'
-        sleep 2
-
-        body = /"type":"SystemStackError"/
-        wait_for(a_request(:post, endpoint).with(body: body))
-          .not_to have_been_made
+        sleep 2 # Wait for ActiveJob job exiting
       end
 
       context "when Airbrake is not configured" do
         before do
-          # Make sure the Logger intergration doesn't get in the way.
-          allow_any_instance_of(Logger).to receive(:airbrake_notifier).and_return(nil)
-        end
-
-        it "doesn't report errors" do
-          allow(Airbrake).to receive(:notify)
-
           # Make sure we don't call `build_notice` more than 1 time. Rack
           # integration will try to handle error 500 and we want to prevent
           # that: https://github.com/airbrake/airbrake/pull/583
           allow_any_instance_of(Airbrake::Rack::Middleware).to(
             receive(:notify_airbrake).and_return(nil)
           )
+        end
+
+        it "doesn't report errors" do
+          expect(Airbrake).to receive(:notify).with(
+            an_instance_of(Airbrake::Notice)
+          ) { |notice|
+            # TODO: this doesn't actually fail but prints a failure. Figure
+            # out how to test properly.
+            expect(notice[:errors].first[:message]).to eq('active_job error')
+          }.at_least(:once)
 
           get '/active_job'
           sleep 2
-
-          body = /"message":"active_job error"/
-          wait_for(a_request(:post, endpoint).with(body: body))
-            .not_to have_been_made
         end
       end
     end
@@ -181,120 +159,117 @@ RSpec.describe "Rails integration specs" do
 
   describe "Resque workers" do
     it "reports exceptions occurring in Resque workers" do
-      with_resque { get '/resque' }
-
-      wait_for_a_request_with_body(
-        /"message":"resque\serror".*"params":{.*
-        "class":"BingoWorker","args":\["bango","bongo"\].*}/x
+      expect(Airbrake).to receive(:notify_sync).with(
+        anything,
+        hash_including(
+          'class' => 'BingoWorker',
+          'args' => %w[bango bongo]
+        )
       )
+      with_resque { get '/resque' }
     end
   end
 
   describe "DelayedJob jobs" do
     it "reports exceptions occurring in DelayedJob jobs" do
-      get '/delayed_job'
-      sleep 2
+      skip if Gem::Version.new(Rails.version) > Gem::Version.new('3.2.22.5')
 
-      wait_for_a_request_with_body(
-        %r("message":"delayed_job\serror".*"params":{.*
-           "handler":"---\s!ruby/struct:BangoJob\\nbingo:\s
-                     bingo\\nbongo:\sbongo\\n".*})x
+      expect(Airbrake).to receive(:notify).with(
+        anything,
+        'job' => hash_including(
+          'handler' => "--- !ruby/struct:BangoJob\nbingo: bingo\nbongo: bongo\n"
+        )
       )
 
-      # Two requests are performed during this example. We care only about one.
-      # Sleep guarantees that we let the unimportant request occur here and not
-      # elsewhere.
-      sleep 2
+      get '/delayed_job'
+    end
+
+    it "reports exceptions occurring in DelayedJob jobs on Rails 4.2" do
+      skip if Gem::Version.new(Rails.version) == Gem::Version.new('3.2.22.5')
+
+      expect(Airbrake).to receive(:notify).with(
+        anything,
+        hash_including(
+          'handler' => "--- !ruby/struct:BangoJob\nbingo: bingo\nbongo: bongo\n"
+        )
+      )
+
+      get '/delayed_job'
     end
   end
 
-  describe "notice payload when a user is authenticated without Warden" do
-    context "when the current_user method is defined" do
+  describe "user extraction" do
+    context "when Warden is not available but 'current_user' is defined" do
+      let(:user) do
+        OpenStruct.new(
+          id: 1,
+          email: 'qa@example.com',
+          username: 'qa-dept'
+        )
+      end
+
       before do
         allow_message_expectations_on_nil
         allow(Warden::Proxy).to receive(:new).and_return(nil)
         # Mock on_request to make the test pass. Started failing in warden 1.2.8
         # due to: https://github.com/wardencommunity/warden/pull/162
         allow(nil).to receive(:on_request).and_return(nil)
+        allow_any_instance_of(DummyController).to receive(:current_user) { user }
       end
 
-      it "contains the user information" do
-        user = OpenStruct.new(id: 1, email: 'qa@example.com', username: 'qa-dept')
-        allow_any_instance_of(DummyController).to receive(:current_user) { user }
-
+      it "sends user info" do
         get '/crash'
         sleep 2
-        wait_for_a_request_with_body(
-          /"user":{"id":"1","username":"qa-dept","email":"qa@example.com"}/
-        )
+
+        body = /"user":{"id":"1","username":"qa-dept","email":"qa@example.com"}/
+        wait_for(a_request(:post, endpoint).with(body: body)).to have_been_made
       end
     end
   end
 
   describe "request performance hook" do
-    before do
-      expect(Airbrake).to receive(:notify_request).at_least(:once).and_call_original
-    end
+    before { allow(Airbrake).to receive(:notify).and_return(nil) }
 
     it "notifies request" do
+      expect(Airbrake).to receive(:notify_request).with(
+        hash_including(
+          route: '/crash(.:format)',
+          method: 'GET'
+        )
+      )
       get '/crash'
-      sleep 2
-
-      wait_for_a_request_with_body(/"errors"/)
-
-      body = %r|
-        {"routes":\[.*{"method":"GET","route":"\/crash\(\.:format\)","statusCode":500
-      |x
-      wait_for(a_request(:put, routes_endpoint).with(body: body))
-        .to have_been_made.once
     end
 
     it "defaults to 500 when status code for exception returns 0" do
       allow(ActionDispatch::ExceptionWrapper)
         .to receive(:status_code_for_exception).and_return(0)
 
+      expect(Airbrake).to receive(:notify_request).with(
+        hash_including(
+          route: '/crash(.:format)',
+          method: 'HEAD',
+          status_code: 500
+        )
+      )
       head '/crash'
-      sleep 2
-
-      wait_for_a_request_with_body(/"errors"/)
-
-      body = %r|
-        {"routes":\[.*{"method":"HEAD","route":"\/crash\(\.:format\)","statusCode":500
-      |x
-      wait_for(a_request(:put, routes_endpoint).with(body: body))
-        .to have_been_made.once
     end
   end
 
   describe "query performance hook" do
-    before do
-      expect(Airbrake).to receive(:notify_query).at_least(:once).and_call_original
-    end
+    before { allow(Airbrake).to receive(:notify).and_return(nil) }
 
-    it "notifies query" do
+    it "sends queries to Airbrake" do
+      expect(Airbrake).to receive(:notify_query).with(
+        hash_including(
+          route: '/crash(.:format)',
+          method: 'GET',
+          func: 'tap',
+          file: 'lib/airbrake/rails/active_record_subscriber.rb',
+          line: anything
+        )
+      ).at_least(:once)
+
       get '/crash'
-      sleep 2
-
-      body = %r|
-        {"queries":.*"method":"GET","route":"/crash\(\.:format\)","query":
-      |x
-      wait_for(a_request(:put, queries_endpoint).with(body: body))
-        .to have_been_made.once
-    end
-
-    it "attaches file/line/func" do
-      get '/crash'
-      sleep 2
-
-      body = %r|
-        {"queries":.*"method":"GET",
-         "route":"/crash\(\.:format\)",.+
-         "function":"tap",
-         "file":"lib/airbrake/rails/active_record_subscriber.rb",
-         "line":\d+
-      |x
-      wait_for(a_request(:put, queries_endpoint).with(body: body))
-        .to have_been_made.once
     end
   end
 end
