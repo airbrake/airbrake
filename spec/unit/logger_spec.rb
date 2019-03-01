@@ -56,8 +56,8 @@ RSpec.describe Airbrake::AirbrakeLogger do
         subject.fatal('bongo')
 
         wait_for(
-          a_request(:post, endpoint).
-            with(body: %r{"file":".+/logger.rb"})
+          a_request(:post, endpoint)
+            .with(body: %r{"file":".+/logger.rb"})
         ).not_to have_been_made
         wait_for(a_request(:post, endpoint)).to have_been_made.once
       end

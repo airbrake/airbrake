@@ -45,8 +45,8 @@ RSpec.describe "airbrake/rake/tasks" do
       end
 
       it "raises error" do
-        expect { task.invoke }.
-          to raise_error(Airbrake::Error, 'airbrake-ruby is not configured')
+        expect { task.invoke }
+          .to raise_error(Airbrake::Error, 'airbrake-ruby is not configured')
       end
     end
   end
