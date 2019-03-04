@@ -31,7 +31,7 @@ module Airbrake
         exception = StandardError.new.tap do |ex|
           ex.set_backtrace(::Rails.backtrace_cleaner.clean(Kernel.caller).first(1))
         end
-        Airbrake::Backtrace.parse(exception).first
+        Airbrake::Backtrace.parse(exception).first || {}
       end
     end
   end

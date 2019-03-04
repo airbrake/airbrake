@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fix `NoMethodError` in `ActiveRecordSubscriber` when a caller of SQL query
+  cannot be defined ([#920](https://github.com/airbrake/airbrake/pull/920))
+
 ### [v8.2.0][v8.2.0] (March 4, 2019)
 
 * Started depending on airbrake-ruby
