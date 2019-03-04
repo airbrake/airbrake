@@ -271,5 +271,23 @@ RSpec.describe "Rails integration specs" do
 
       get '/crash'
     end
+
+    context "when caller location cannot be found for a query" do
+      before { allow(Kernel).to receive(:caller).and_return([]) }
+
+      it "sends query to Airbrake without caller location" do
+        expect(Airbrake).to receive(:notify_query).with(
+          hash_including(
+            route: '/crash(.:format)',
+            method: 'GET',
+            func: nil,
+            file: nil,
+            line: nil
+          )
+        ).at_least(:once)
+
+        get '/crash'
+      end
+    end
   end
 end
