@@ -9,27 +9,8 @@ module Airbrake
     #
     # For Rails apps the middleware collects route performance statistics.
     class Middleware
-      # @return [Array<Class>] the list of Rack filters that read Rack request
-      #   information and append it to notices
-      RACK_FILTERS = [
-        Airbrake::Rack::ContextFilter,
-        Airbrake::Rack::UserFilter,
-        Airbrake::Rack::SessionFilter,
-        Airbrake::Rack::HttpParamsFilter,
-        Airbrake::Rack::HttpHeadersFilter,
-        Airbrake::Rack::RouteFilter,
-
-        # Optional filters (must be included by users):
-        # Airbrake::Rack::RequestBodyFilter
-      ].freeze
-
       def initialize(app)
         @app = app
-
-        RACK_FILTERS.each { |filter| Airbrake.add_filter(filter.new) }
-
-        install_action_controller_hooks if defined?(Rails)
-        install_active_record_hooks if defined?(ActiveRecord)
       end
 
       # Thread-safe {call!}.
@@ -95,30 +76,22 @@ module Airbrake
           env['sinatra.error'] ||
           env['rack.exception']
       end
-
-      def install_action_controller_hooks
-        ActiveSupport::Notifications.subscribe(
-          'start_processing.action_controller',
-          Airbrake::Rails::ActionControllerRouteSubscriber.new
-        )
-
-        ActiveSupport::Notifications.subscribe(
-          'process_action.action_controller',
-          Airbrake::Rails::ActionControllerNotifySubscriber.new
-        )
-      end
-
-      def install_active_record_hooks
-        Airbrake.add_performance_filter(
-          Airbrake::Filters::SqlFilter.new(
-            ActiveRecord::Base.connection_config[:adapter]
-          )
-        )
-        ActiveSupport::Notifications.subscribe(
-          'sql.active_record',
-          Airbrake::Rails::ActiveRecordSubscriber.new
-        )
-      end
     end
   end
+end
+
+# The list of Rack filters that read Rack request information and append it to
+# notices.
+[
+  Airbrake::Rack::ContextFilter,
+  Airbrake::Rack::UserFilter,
+  Airbrake::Rack::SessionFilter,
+  Airbrake::Rack::HttpParamsFilter,
+  Airbrake::Rack::HttpHeadersFilter,
+  Airbrake::Rack::RouteFilter,
+
+  # Optional filters (must be included by users):
+  # Airbrake::Rack::RequestBodyFilter
+].each do |filter|
+  Airbrake.add_filter(filter.new)
 end
