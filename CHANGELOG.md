@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v8.2.1][v8.2.1] (March 4, 2019)
+
 * Fix `NoMethodError` in `ActiveRecordSubscriber` when a caller of SQL query
   cannot be defined ([#920](https://github.com/airbrake/airbrake/pull/920))
 
@@ -570,3 +572,4 @@ Airbrake Changelog
 [v8.1.3]: https://github.com/airbrake/airbrake/releases/tag/v8.1.3
 [v8.1.4]: https://github.com/airbrake/airbrake/releases/tag/v8.1.4
 [v8.2.0]: https://github.com/airbrake/airbrake/releases/tag/v8.2.0
+[v8.2.1]: https://github.com/airbrake/airbrake/releases/tag/v8.2.1
