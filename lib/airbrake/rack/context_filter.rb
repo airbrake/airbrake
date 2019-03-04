@@ -8,17 +8,6 @@ module Airbrake
       attr_reader :weight
 
       def initialize
-        @framework_version =
-          if defined?(::Rails) && ::Rails.respond_to?(:version)
-            { 'rails' => ::Rails.version }
-          elsif defined?(::Sinatra)
-            { 'sinatra' => Sinatra::VERSION }
-          else
-            {
-              'rack_version' => ::Rack.version,
-              'rack_release' => ::Rack.release
-            }
-          end
         @weight = 99
       end
 
@@ -45,10 +34,24 @@ module Airbrake
 
       def add_framework_version(context)
         if context.key?(:versions)
-          context[:versions].merge!(@framework_version)
+          context[:versions].merge!(framework_version)
         else
-          context[:versions] = @framework_version
+          context[:versions] = framework_version
         end
+      end
+
+      def framework_version
+        @framework_version ||=
+          if defined?(::Rails) && ::Rails.respond_to?(:version)
+            { 'rails' => ::Rails.version }
+          elsif defined?(::Sinatra)
+            { 'sinatra' => Sinatra::VERSION }
+          else
+            {
+              'rack_version' => ::Rack.version,
+              'rack_release' => ::Rack.release
+            }
+          end
       end
     end
   end
