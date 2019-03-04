@@ -3,7 +3,12 @@ Airbrake Changelog
 
 ### master
 
-* `ActiveRecordSubscriber` started to attach file/line/func information to
+### [v8.2.0][v8.2.0] (March 4, 2019)
+
+* Started depending on airbrake-ruby
+  [v4.1.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v4.1.0) and
+  higher ([#915](https://github.com/airbrake/airbrake/pull/915))
+* `ActiveRecordSubscriber` started attaching file/line/func information to
   queries ([#913](https://github.com/airbrake/airbrake/pull/913))
 
 ### [v8.1.4][v8.1.4] (February 19, 2019)
@@ -561,3 +566,4 @@ Airbrake Changelog
 [v8.1.2]: https://github.com/airbrake/airbrake/releases/tag/v8.1.2
 [v8.1.3]: https://github.com/airbrake/airbrake/releases/tag/v8.1.3
 [v8.1.4]: https://github.com/airbrake/airbrake/releases/tag/v8.1.4
+[v8.2.0]: https://github.com/airbrake/airbrake/releases/tag/v8.2.0
