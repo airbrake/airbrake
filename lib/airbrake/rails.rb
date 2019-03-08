@@ -80,6 +80,13 @@ module Airbrake
         end
       end
 
+      initializer('airbrake.action_cable') do
+        ActiveSupport.on_load(:action_cable) do
+          # Reports exceptions occurring in ActionCable connections.
+          require 'airbrake/action_cable'
+        end
+      end
+
       runner do
         at_exit do
           Airbrake.notify_sync($ERROR_INFO) if $ERROR_INFO
