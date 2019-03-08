@@ -83,7 +83,7 @@ module Airbrake
       initializer('airbrake.action_cable') do
         ActiveSupport.on_load(:action_cable) do
           # Reports exceptions occurring in ActionCable connections.
-          require 'airbrake/action_cable'
+          require 'airbrake/rails/action_cable'
         end
       end
 

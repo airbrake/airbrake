@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Added `ActionCable` integration
+  ([#926](https://github.com/airbrake/airbrake/pull/920),
+  [#896](https://github.com/airbrake/airbrake/pull/896))
+
 ### [v8.2.1][v8.2.1] (March 4, 2019)
 
 * Fix `NoMethodError` in `ActiveRecordSubscriber` when a caller of SQL query
