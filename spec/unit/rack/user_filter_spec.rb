@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 RSpec.describe Airbrake::Rack::UserFilter do
   def env_for(url, opts = {})
     Rack::MockRequest.env_for(url, opts)

@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'sneakers'
 require 'airbrake/sneakers'
 

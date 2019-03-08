@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 RSpec.describe "Rake integration" do
   let(:task) { Rake::Task['bingo:bango'] }
 

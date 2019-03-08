@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 RSpec.describe "airbrake/rake/tasks" do
   let(:endpoint) do
     'https://api.airbrake.io/api/v4/projects/113743/deploys'

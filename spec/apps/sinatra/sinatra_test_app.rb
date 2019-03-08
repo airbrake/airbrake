@@ -1,4 +1,4 @@
-class DummyApp < Sinatra::Base
+class SinatraTestApp < Sinatra::Base
   use Airbrake::Rack::Middleware
   use Warden::Manager
 
