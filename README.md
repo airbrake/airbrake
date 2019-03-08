@@ -56,6 +56,7 @@ The list of integrations that are available in this gem includes:
   * Shoryuken<sup>[[link](#shoryuken)]</sup>
   * Sneakers<sup>[[link](#sneakers)]</sup>
 * Other libraries
+  * ActionCable<sup>[[link](#actioncable)]</sup>
   * Rake<sup>[[link](#rake)]</sup>
   * Logger<sup>[[link](#logger)]</sup>
 * Plain Ruby scripts<sup>[[link](#plain-ruby-scripts)]</sup>
@@ -383,6 +384,17 @@ require 'airbrake/sneakers'
 
 If you required Sneakers before Airbrake, then you don't even have to `require`
 anything manually and it should just work out-of-box.
+
+### ActionCable
+
+The ActionCable integration sends errors occurring in ActionCable actions and
+subscribed/unsubscribed events. If you use Rails with ActionCable, there's
+nothing to do, it's already loaded. If you use ActionCable outside Rails, simply
+require it:
+
+```ruby
+require 'airbrake/rails/action_cable'
+```
 
 ### Rake
 
