@@ -6,6 +6,8 @@ Airbrake Changelog
 * Added `ActionCable` integration
   ([#926](https://github.com/airbrake/airbrake/pull/920),
   [#896](https://github.com/airbrake/airbrake/pull/896))
+* Added `ActionControllerPerformanceBreakdownSubscriber`
+  ([#929](https://github.com/airbrake/airbrake/pull/929))
 
 ### [v8.2.1][v8.2.1] (March 4, 2019)
 

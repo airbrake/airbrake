@@ -289,4 +289,24 @@ RSpec.describe "Rails integration specs" do
       end
     end
   end
+
+  describe "performance breakdown hook" do
+    before { allow(Airbrake).to receive(:notify).and_return(nil) }
+
+    it "sends performance breakdown info to Airbrake" do
+      expect(Airbrake).to receive(:notify_performance_breakdown).with(
+        hash_including(
+          route: '/crash(.:format)',
+          method: 'GET',
+          response_type: :html,
+          groups: {
+            db: anything,
+            view: anything
+          }
+        )
+      ).at_least(:once)
+
+      get '/crash'
+    end
+  end
 end
