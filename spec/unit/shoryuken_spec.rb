@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'airbrake/shoryuken'
 
 RSpec.describe Airbrake::Shoryuken::ErrorHandler do

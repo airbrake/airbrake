@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 RSpec.describe Airbrake::Rack::Middleware do
   let(:app) { proc { |env| [200, env, 'Bingo bango content'] } }
   let(:faulty_app) { proc { raise AirbrakeTestError } }

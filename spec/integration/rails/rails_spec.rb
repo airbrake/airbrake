@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'integration/shared_examples/rack_examples'
 
 RSpec.describe "Rails integration specs" do

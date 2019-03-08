@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'airbrake/rails/action_cable/notify_callback'
 
 RSpec.describe Airbrake::Rails::ActionCable::NotifyCallback do

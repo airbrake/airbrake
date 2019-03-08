@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 RSpec.describe Airbrake::Rack::RequestStore do
   after { described_class.clear }
 
