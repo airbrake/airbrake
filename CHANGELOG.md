@@ -3,10 +3,14 @@ Airbrake Changelog
 
 ### master
 
+* Fixes `TypeError` in the `ActionControllerPerformanceBreakdownSubscriber` when
+  it tries to pass `nil` as a `db` or `view` value
+  ([#932](https://github.com/airbrake/airbrake/pull/932)
+
 ### [v8.3.0][v8.3.0] (March 11, 2019)
 
 * Added `ActionCable` integration
-  ([#926](https://github.com/airbrake/airbrake/pull/920),
+  ([#926](https://github.com/airbrake/airbrake/pull/926),
   [#896](https://github.com/airbrake/airbrake/pull/896))
 * Added `ActionControllerPerformanceBreakdownSubscriber`
   ([#929](https://github.com/airbrake/airbrake/pull/929))

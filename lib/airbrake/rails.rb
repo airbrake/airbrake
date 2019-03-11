@@ -9,6 +9,11 @@ module Airbrake
         require 'airbrake/rails/action_controller_notify_subscriber'
         require 'airbrake/rails/action_controller_performance_breakdown_subscriber'
 
+        ActiveSupport::Notifications.subscribe(
+          'process_action.action_controller',
+          Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber.new
+        )
+
         require 'airbrake/rails/active_record_subscriber' if defined?(ActiveRecord)
 
         # Since Rails 3.2 the ActionDispatch::DebugExceptions middleware is
