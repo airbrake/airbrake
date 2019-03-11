@@ -3,11 +3,15 @@ Airbrake Changelog
 
 ### master
 
+### [v8.3.0][v8.3.0] (March 11, 2019)
+
 * Added `ActionCable` integration
   ([#926](https://github.com/airbrake/airbrake/pull/920),
   [#896](https://github.com/airbrake/airbrake/pull/896))
 * Added `ActionControllerPerformanceBreakdownSubscriber`
   ([#929](https://github.com/airbrake/airbrake/pull/929))
+* Fixed broken Rails integration for apps that don't use ActiveRecord
+  ([#924](https://github.com/airbrake/airbrake/pull/924))
 
 ### [v8.2.1][v8.2.1] (March 4, 2019)
 
@@ -579,3 +583,4 @@ Airbrake Changelog
 [v8.1.4]: https://github.com/airbrake/airbrake/releases/tag/v8.1.4
 [v8.2.0]: https://github.com/airbrake/airbrake/releases/tag/v8.2.0
 [v8.2.1]: https://github.com/airbrake/airbrake/releases/tag/v8.2.1
+[v8.3.0]: https://github.com/airbrake/airbrake/releases/tag/v8.3.0
