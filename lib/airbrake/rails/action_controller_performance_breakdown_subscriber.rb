@@ -15,8 +15,8 @@ module Airbrake
             route: route,
             response_type: payload[:format],
             groups: {
-              db: payload[:db_runtime],
-              view: payload[:view_runtime]
+              db: payload[:db_runtime].to_i,
+              view: payload[:view_runtime].to_i
             },
             start_time: event.time
           )
@@ -25,8 +25,3 @@ module Airbrake
     end
   end
 end
-
-ActiveSupport::Notifications.subscribe(
-  'process_action.action_controller',
-  Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber.new
-)
