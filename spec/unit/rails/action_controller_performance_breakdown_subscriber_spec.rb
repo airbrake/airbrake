@@ -1,7 +1,7 @@
 require 'airbrake/rails/action_controller_performance_breakdown_subscriber'
 
 RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber do
-  after { Airbrake::Rack::RequestStore[:routes] = nil }
+  after { Airbrake::Rack::RequestStore.clear }
 
   context "when routes are not set in the request store" do
     before { Airbrake::Rack::RequestStore[:routes] = nil }
