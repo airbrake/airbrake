@@ -5,12 +5,14 @@ Airbrake Changelog
 
 * Fixed the Rails performance breakdown hook not maintaining performance
   precision ([#936](https://github.com/airbrake/airbrake/pull/936))
+* Fix Rails performance breakdown not being sent if one of the groups is zero
+  ([#935](https://github.com/airbrake/airbrake/pull/935))
 
 ### [v8.3.1][v8.3.1] (March 11, 2019)
 
 * Fixes `TypeError` in the `ActionControllerPerformanceBreakdownSubscriber` when
   it tries to pass `nil` as a `db` or `view` value
-  ([#932](https://github.com/airbrake/airbrake/pull/932)
+  ([#932](https://github.com/airbrake/airbrake/pull/932))
 
 ### [v8.3.0][v8.3.0] (March 11, 2019)
 

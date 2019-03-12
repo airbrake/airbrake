@@ -55,13 +55,13 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
     context "and when view_runtime is nil" do
       before { event.payload[:view_runtime] = nil }
 
-      it "sets the view group runtime to 0" do
+      it "omits view_runtime" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
           hash_including(
             route: '/test-route',
             method: 'GET',
             response_type: :html,
-            groups: { db: 0.5, view: 0 }
+            groups: { db: 0.5 }
           )
         )
         subject.call([])
@@ -71,15 +71,59 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
     context "and when db_runtime is nil" do
       before { event.payload[:db_runtime] = nil }
 
-      it "sets the view group runtime to 0" do
+      it "omits db_runtime" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
           hash_including(
             route: '/test-route',
             method: 'GET',
             response_type: :html,
-            groups: { db: 0, view: 0.5 }
+            groups: { view: 0.5 }
           )
         )
+        subject.call([])
+      end
+    end
+
+    context "when db_runtime is zero" do
+      before { event.payload[:db_runtime] = 0 }
+
+      it "omits db_runtime" do
+        expect(Airbrake).to receive(:notify_performance_breakdown).with(
+          hash_including(
+            route: '/test-route',
+            method: 'GET',
+            response_type: :html,
+            groups: { view: 0.5 }
+          )
+        )
+        subject.call([])
+      end
+    end
+
+    context "when view_runtime is zero" do
+      before { event.payload[:view_runtime] = 0 }
+
+      it "omits view_runtime" do
+        expect(Airbrake).to receive(:notify_performance_breakdown).with(
+          hash_including(
+            route: '/test-route',
+            method: 'GET',
+            response_type: :html,
+            groups: { db: 0.5 }
+          )
+        )
+        subject.call([])
+      end
+    end
+
+    context "when db_runtime and view_runtime are both zero" do
+      before do
+        event.payload[:db_runtime] = 0
+        event.payload[:view_runtime] = 0
+      end
+
+      it "doesn't notify Airbrake" do
+        expect(Airbrake).not_to receive(:notify_performance_breakdown)
         subject.call([])
       end
     end
