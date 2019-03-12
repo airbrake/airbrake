@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed the Rails performance breakdown hook not maintaining performance
+  precision ([#936](https://github.com/airbrake/airbrake/pull/936))
+
 ### [v8.3.1][v8.3.1] (March 11, 2019)
 
 * Fixes `TypeError` in the `ActionControllerPerformanceBreakdownSubscriber` when

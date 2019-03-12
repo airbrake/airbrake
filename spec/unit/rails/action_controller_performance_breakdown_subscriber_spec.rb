@@ -26,8 +26,8 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
       OpenStruct.new(
         payload: {
           format: :html,
-          view_runtime: 1.0,
-          db_runtime: 1.0
+          view_runtime: 0.5,
+          db_runtime: 0.5
         }
       )
     end
@@ -46,7 +46,7 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
           route: '/test-route',
           method: 'GET',
           response_type: :html,
-          groups: { db: 1.0, view: 1.0 }
+          groups: { db: 0.5, view: 0.5 }
         )
       )
       subject.call([])
@@ -61,7 +61,7 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
             route: '/test-route',
             method: 'GET',
             response_type: :html,
-            groups: { db: 1.0, view: 0 }
+            groups: { db: 0.5, view: 0 }
           )
         )
         subject.call([])
@@ -77,7 +77,7 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
             route: '/test-route',
             method: 'GET',
             response_type: :html,
-            groups: { db: 0, view: 1.0 }
+            groups: { db: 0, view: 0.5 }
           )
         )
         subject.call([])

@@ -15,8 +15,8 @@ module Airbrake
             route: route,
             response_type: payload[:format],
             groups: {
-              db: payload[:db_runtime].to_i,
-              view: payload[:view_runtime].to_i
+              db: payload[:db_runtime] || 0,
+              view: payload[:view_runtime] || 0
             },
             start_time: event.time
           )
