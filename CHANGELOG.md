@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed `NoMethodError` in `route_filter.rb` on 404 in Sinatra apps
+  ([#939](https://github.com/airbrake/airbrake/pull/939))
+
 ### [v8.3.2][v8.3.2] (March 12, 2019)
 
 * Fixed the Rails performance breakdown hook not maintaining performance
