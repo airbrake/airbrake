@@ -13,11 +13,9 @@ module Airbrake
         return unless (request = notice.stash[:rack_request])
 
         notice[:context][:route] =
-          if defined?(ActionDispatch::Request) &&
-             request.instance_of?(ActionDispatch::Request)
+          if action_dispatch_request?(request)
             rails_route(request)
-          elsif defined?(Sinatra::Request) &&
-                request.instance_of?(Sinatra::Request)
+          elsif sinatra_request?(request)
             sinatra_route(request)
           end
       end
@@ -39,6 +37,15 @@ module Airbrake
 
       def sinatra_route(request)
         request.env['sinatra.route'].split(' ').drop(1).join(' ')
+      end
+
+      def action_dispatch_request?(request)
+        defined?(ActionDispatch::Request) &&
+          request.instance_of?(ActionDispatch::Request)
+      end
+
+      def sinatra_request?(request)
+        defined?(Sinatra::Request) && request.instance_of?(Sinatra::Request)
       end
     end
   end
