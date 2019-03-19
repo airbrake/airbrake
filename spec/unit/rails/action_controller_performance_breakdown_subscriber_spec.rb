@@ -46,7 +46,7 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
           route: '/test-route',
           method: 'GET',
           response_type: :html,
-          groups: { db: 0.5, view: 0.5 }
+          groups: { 'db' => 0.5, 'view' => 0.5 }
         )
       )
       subject.call([])
@@ -61,7 +61,7 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
             route: '/test-route',
             method: 'GET',
             response_type: :html,
-            groups: { db: 0.5 }
+            groups: { 'db' => 0.5 }
           )
         )
         subject.call([])
@@ -77,7 +77,7 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
             route: '/test-route',
             method: 'GET',
             response_type: :html,
-            groups: { view: 0.5 }
+            groups: { 'view' => 0.5 }
           )
         )
         subject.call([])
@@ -93,7 +93,7 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
             route: '/test-route',
             method: 'GET',
             response_type: :html,
-            groups: { view: 0.5 }
+            groups: { 'view' => 0.5 }
           )
         )
         subject.call([])
@@ -109,7 +109,7 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
             route: '/test-route',
             method: 'GET',
             response_type: :html,
-            groups: { db: 0.5 }
+            groups: { 'db' => 0.5 }
           )
         )
         subject.call([])

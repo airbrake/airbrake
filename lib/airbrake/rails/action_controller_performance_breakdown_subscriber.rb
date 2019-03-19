@@ -22,16 +22,16 @@ module Airbrake
         end
       end
 
+      private
+
       def build_groups(payload)
-        groups = {}
+        groups = %i[db_runtime view_runtime].map do |metric|
+          ms = payload[metric] || 0
+          next if ms == 0
 
-        db_runtime = payload[:db_runtime] || 0
-        groups[:db] = db_runtime if db_runtime > 0
-
-        view_runtime = payload[:view_runtime] || 0
-        groups[:view] = view_runtime if view_runtime > 0
-
-        groups
+          [metric.to_s.split('_').first, ms]
+        end
+        groups.compact.to_h
       end
     end
   end
