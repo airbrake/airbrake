@@ -187,7 +187,9 @@ the [dedicated issue][rails-sub-keys].
 ### Sinatra
 
 To use Airbrake with Sinatra, simply `require` the gem, [configure][config] it
-and `use` our Rack middleware.
+and `use` our Rack middleware. To use default filters that append information
+about routes, HTTP headers and more, invoke `Airbrake::Rack.add_default_filters`
+after `Airbrake.configure`.
 
 ```ruby
 # myapp.rb
@@ -201,6 +203,8 @@ Airbrake.configure do |c|
   # Display debug output.
   c.logger.level = Logger::DEBUG
 end
+
+Airbrake::Rack.add_default_filters
 
 class MyApp < Sinatra::Base
   use Airbrake::Rack::Middleware
@@ -233,7 +237,9 @@ accordingly](#configuring-individual-notifier-for-each-subproject).
 ### Rack
 
 To send exceptions to Airbrake from any Rack application, simply `use` our Rack
-middleware, and [configure][config] the default notifier.
+middleware, and [configure][config] the default notifier. To use default filters
+that append information about routes, HTTP headers and more, invoke
+`Airbrake::Rack.add_default_filters` after `Airbrake.configure`.
 
 ```ruby
 require 'airbrake'
@@ -243,6 +249,8 @@ Airbrake.configure do |c|
   c.project_id = 113743
   c.project_key = 'fd04e13d806a90f96614ad8e529b2822'
 end
+
+Airbrake::Rack.add_default_filters
 
 use Airbrake::Rack::Middleware
 ```
@@ -267,9 +275,18 @@ The `notice` object carries a real `Rack::Request` object in
 its [stash](https://github.com/airbrake/airbrake-ruby#noticestash--noticestash).
 Rack requests will always be accessible through the `:rack_request` stash key.
 
-#### Optional Rack request filters
+#### Default Rack filters
 
-The library comes with optional predefined builders listed below.
+Default Rack request filters are loaded with
+`Airbrake::Rack.add_default_filters`. These filters provide additonal
+information about Rack requests, such as route info, certain HTTP parameters,
+session and more. These filters are considered essential for every app.
+
+#### Optional Rack filters
+
+The library comes with optional predefined builders listed below. These filters
+are not essential and therefore `Airbrake::Rack.add_default_filters` doesn't
+load them.
 
 ##### RequestBodyFilter
 

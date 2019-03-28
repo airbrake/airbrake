@@ -79,19 +79,3 @@ module Airbrake
     end
   end
 end
-
-# The list of Rack filters that read Rack request information and append it to
-# notices.
-[
-  Airbrake::Rack::ContextFilter,
-  Airbrake::Rack::UserFilter,
-  Airbrake::Rack::SessionFilter,
-  Airbrake::Rack::HttpParamsFilter,
-  Airbrake::Rack::HttpHeadersFilter,
-  Airbrake::Rack::RouteFilter,
-
-  # Optional filters (must be included by users):
-  # Airbrake::Rack::RequestBodyFilter
-].each do |filter|
-  Airbrake.add_filter(filter.new)
-end

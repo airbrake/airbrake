@@ -1,4 +1,20 @@
 RSpec.describe Airbrake::Rack::Middleware do
+  # The list of Rack filters that read Rack request information and append it to
+  # notices.
+  [
+    Airbrake::Rack::ContextFilter,
+    Airbrake::Rack::UserFilter,
+    Airbrake::Rack::SessionFilter,
+    Airbrake::Rack::HttpParamsFilter,
+    Airbrake::Rack::HttpHeadersFilter,
+    Airbrake::Rack::RouteFilter,
+
+    # Optional filters (must be included by users):
+    # Airbrake::Rack::RequestBodyFilter
+  ].each do |filter|
+    Airbrake.add_filter(filter.new)
+  end
+
   let(:app) { proc { |env| [200, env, 'Bingo bango content'] } }
   let(:faulty_app) { proc { raise AirbrakeTestError } }
   let(:endpoint) { 'https://api.airbrake.io/api/v3/projects/113743/notices' }
