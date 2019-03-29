@@ -5,17 +5,6 @@ module Airbrake
     # occurring in the application automatically.
     class Railtie < ::Rails::Railtie
       initializer('airbrake.middleware') do |app|
-        require 'airbrake/rails/action_controller_route_subscriber'
-        require 'airbrake/rails/action_controller_notify_subscriber'
-        require 'airbrake/rails/action_controller_performance_breakdown_subscriber'
-
-        ActiveSupport::Notifications.subscribe(
-          'process_action.action_controller',
-          Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber.new
-        )
-
-        require 'airbrake/rails/active_record_subscriber' if defined?(ActiveRecord)
-
         # Since Rails 3.2 the ActionDispatch::DebugExceptions middleware is
         # responsible for logging exceptions and showing a debugging page in
         # case the request is local. We want to insert our middleware after
@@ -60,10 +49,28 @@ module Airbrake
           require 'airbrake/rails/action_controller'
           include Airbrake::Rails::ActionController
 
-          # Cache route information for the duration of the request.
-          require 'airbrake/rails/action_controller_route_subscriber'
-          # Send route stats.
-          require 'airbrake/rails/action_controller_notify_subscriber'
+          if Airbrake::Config.instance.performance_stats
+            # Cache route information for the duration of the request.
+            require 'airbrake/rails/action_controller_route_subscriber'
+            ActiveSupport::Notifications.subscribe(
+              'start_processing.action_controller',
+              Airbrake::Rails::ActionControllerRouteSubscriber.new
+            )
+
+            # Send route stats.
+            require 'airbrake/rails/action_controller_notify_subscriber'
+            ActiveSupport::Notifications.subscribe(
+              'process_action.action_controller',
+              Airbrake::Rails::ActionControllerNotifySubscriber.new
+            )
+
+            # Send performance breakdown: where a request spends its time.
+            require 'airbrake/rails/action_controller_performance_breakdown_subscriber'
+            ActiveSupport::Notifications.subscribe(
+              'process_action.action_controller',
+              Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber.new
+            )
+          end
         end
       end
 
@@ -74,8 +81,20 @@ module Airbrake
           require 'airbrake/rails/active_record'
           include Airbrake::Rails::ActiveRecord
 
-          # Send SQL queries.
-          require 'airbrake/rails/active_record_subscriber'
+          if defined?(ActiveRecord) && Airbrake::Config.instance.performance_stats
+            # Send SQL queries.
+            require 'airbrake/rails/active_record_subscriber'
+            ActiveSupport::Notifications.subscribe(
+              'sql.active_record', Airbrake::Rails::ActiveRecordSubscriber.new
+            )
+
+            # Filter out parameters from SQL body.
+            Airbrake.add_performance_filter(
+              Airbrake::Filters::SqlFilter.new(
+                ::ActiveRecord::Base.connection_config[:adapter]
+              )
+            )
+          end
         end
       end
 
@@ -98,6 +117,10 @@ module Airbrake
         at_exit do
           Airbrake.notify_sync($ERROR_INFO) if $ERROR_INFO
         end
+      end
+
+      config.after_initialize do
+        Airbrake::Rack.add_default_filters
       end
     end
   end
