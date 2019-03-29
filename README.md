@@ -613,8 +613,8 @@ bundle exec appraisal rails-4.2 rake spec:integration:rails
 bundle exec appraisal sinatra rake spec:integration:sinatra
 ```
 
-Pro tip: [`circle.yml`](/circle.yml) has the list of all integration tests and
-commands to invoke them.
+Pro tip: [CircleCI config](/.circleci/config.yml) has the list of all
+integration tests and commands to invoke them.
 
 [airbrake.io]: https://airbrake.io
 [airbrake-ruby]: https://github.com/airbrake/airbrake-ruby
