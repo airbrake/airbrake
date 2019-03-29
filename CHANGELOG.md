@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v9.0.0][v9.0.0] (March 29, 2019)
+
 * Fixed `NoMethodError` in `route_filter.rb` on 404 in Sinatra apps
   ([#939](https://github.com/airbrake/airbrake/pull/939))
 * Stopped loading Rails performance hooks for apps that don't use performance
@@ -11,6 +13,9 @@ Airbrake Changelog
   not affected). You must load them manually after you `configure` your notifier
   with help of `Airbrake::Rack.add_default_filters`. Please refer to the README
   ([#942](https://github.com/airbrake/airbrake/pull/942))
+* Started depending on airbrake-ruby
+  [v4.2.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v4.2.0) and
+  higher ([#946](https://github.com/airbrake/airbrake/pull/946))
 
 ### [v8.3.2][v8.3.2] (March 12, 2019)
 
@@ -608,3 +613,4 @@ Airbrake Changelog
 [v8.3.0]: https://github.com/airbrake/airbrake/releases/tag/v8.3.0
 [v8.3.1]: https://github.com/airbrake/airbrake/releases/tag/v8.3.1
 [v8.3.2]: https://github.com/airbrake/airbrake/releases/tag/v8.3.2
+[v9.0.0]: https://github.com/airbrake/airbrake/releases/tag/v9.0.0
