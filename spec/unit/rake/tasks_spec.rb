@@ -9,6 +9,7 @@ RSpec.describe "airbrake/rake/tasks" do
 
   before do
     stub_request(:post, endpoint).to_return(status: 201, body: '{}')
+    allow(STDOUT).to receive(:puts).and_return(nil)
   end
 
   describe "airbrake:deploy" do
@@ -56,16 +57,6 @@ RSpec.describe "airbrake/rake/tasks" do
 
     let(:airbrake_vars) { "AIRBRAKE_PROJECT_ID=1\nAIRBRAKE_API_KEY=2\nRAILS_ENV=3\n" }
     let(:silenced_stdout) { File.new(File::NULL, 'w') }
-
-    before do
-      @original_stdout = $stdout
-      $stdout = silenced_stdout
-    end
-
-    after do
-      $stdout.close
-      $stdout = @original_stdout
-    end
 
     describe "parsing environment variables" do
       it "does not raise when an env variable value contains '='" do
