@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v9.0.1][v9.0.1] (April 4, 2019)
+
 * Started treating `*/*` response type as `:html` in
   `ActionControllerPerformanceBreakdownSubscriber`
   ([#949](https://github.com/airbrake/airbrake/pull/949))
@@ -618,3 +620,4 @@ Airbrake Changelog
 [v8.3.1]: https://github.com/airbrake/airbrake/releases/tag/v8.3.1
 [v8.3.2]: https://github.com/airbrake/airbrake/releases/tag/v8.3.2
 [v9.0.0]: https://github.com/airbrake/airbrake/releases/tag/v9.0.0
+[v9.0.1]: https://github.com/airbrake/airbrake/releases/tag/v9.0.1
