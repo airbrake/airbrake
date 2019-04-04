@@ -2,6 +2,9 @@ module Airbrake
   module Rails
     # @since v8.3.0
     class ActionControllerPerformanceBreakdownSubscriber
+      # @see https://github.com/rails/rails/issues/8987
+      HTML_RESPONSE_WILDCARD = "*/*".freeze
+
       def call(*args)
         routes = Airbrake::Rack::RequestStore[:routes]
         return if !routes || routes.none?
@@ -15,12 +18,14 @@ module Airbrake
           Airbrake.notify_performance_breakdown(
             method: method,
             route: route,
-            response_type: payload[:format],
+            response_type: normalize_response_type(payload[:format]),
             groups: groups,
             start_time: event.time
           )
         end
       end
+
+      private
 
       def build_groups(payload)
         groups = {}
@@ -32,6 +37,10 @@ module Airbrake
         groups[:view] = view_runtime if view_runtime > 0
 
         groups
+      end
+
+      def normalize_response_type(response_type)
+        response_type == HTML_RESPONSE_WILDCARD ? :html : response_type
       end
     end
   end

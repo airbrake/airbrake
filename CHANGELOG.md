@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Started treating `*/*` response type as `:html` in
+  `ActionControllerPerformanceBreakdownSubscriber`
+  ([#949](https://github.com/airbrake/airbrake/pull/949))
+
 ### [v9.0.0][v9.0.0] (March 29, 2019)
 
 * Fixed `NoMethodError` in `route_filter.rb` on 404 in Sinatra apps

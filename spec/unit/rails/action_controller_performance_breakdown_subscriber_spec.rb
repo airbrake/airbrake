@@ -127,5 +127,16 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
         subject.call([])
       end
     end
+
+    context "when response format is */*" do
+      before { event.payload[:format] = "*/*" }
+
+      it "normalizes it to :html" do
+        expect(Airbrake).to receive(:notify_performance_breakdown).with(
+          hash_including(response_type: :html)
+        )
+        subject.call([])
+      end
+    end
   end
 end
