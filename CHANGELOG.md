@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Delete `Airbrake::Rack.add_default_filters`
+  ([#951](https://github.com/airbrake/airbrake/pull/951))
+
 ### [v9.0.1][v9.0.1] (April 4, 2019)
 
 * Started treating `*/*` response type as `:html` in
