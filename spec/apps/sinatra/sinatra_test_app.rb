@@ -10,5 +10,3 @@ class SinatraTestApp < Sinatra::Base
     raise AirbrakeTestError
   end
 end
-
-Airbrake::Rack.add_default_filters

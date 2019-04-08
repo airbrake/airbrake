@@ -79,3 +79,14 @@ module Airbrake
     end
   end
 end
+
+[
+  Airbrake::Rack::ContextFilter,
+  Airbrake::Rack::UserFilter,
+  Airbrake::Rack::SessionFilter,
+  Airbrake::Rack::HttpParamsFilter,
+  Airbrake::Rack::HttpHeadersFilter,
+  Airbrake::Rack::RouteFilter
+].each do |filter|
+  Airbrake.add_filter(filter.new)
+end

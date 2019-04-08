@@ -118,10 +118,6 @@ module Airbrake
           Airbrake.notify_sync($ERROR_INFO) if $ERROR_INFO
         end
       end
-
-      config.after_initialize do
-        Airbrake::Rack.add_default_filters
-      end
     end
   end
 end
