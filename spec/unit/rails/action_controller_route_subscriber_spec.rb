@@ -30,6 +30,7 @@ RSpec.describe Airbrake::Rails::ActionControllerRouteSubscriber do
         allow(app).to receive(:routes).and_return(routes)
         allow(event).to receive(:params).and_return(params)
         allow(event).to receive(:method).and_return('HEAD')
+        allow(event).to receive(:response_type).and_return(:html)
 
         Airbrake::Rack::RequestStore[:routes] = {}
       end
@@ -44,7 +45,7 @@ RSpec.describe Airbrake::Rails::ActionControllerRouteSubscriber do
         it "stores a route in the request store under :routes" do
           subject.call(event_params)
           expect(Airbrake::Rack::RequestStore[:routes])
-            .to eq('/crash' => 'HEAD')
+            .to eq('/crash' => { method: 'HEAD', response_type: :html })
         end
       end
 

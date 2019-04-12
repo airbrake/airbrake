@@ -31,6 +31,7 @@ class DummyApp < Rails::Application
     get '/' => 'dummy#index'
     get '/crash' => 'dummy#crash'
     get '/breakdown' => 'dummy#breakdown'
+    get '/breakdown_view_only' => 'dummy#breakdown_view_only'
     get '/notify_airbrake_helper' => 'dummy#notify_airbrake_helper'
     get '/notify_airbrake_sync_helper' => 'dummy#notify_airbrake_sync_helper'
     get '/active_record_after_commit' => 'dummy#active_record_after_commit'
@@ -102,7 +103,8 @@ class DummyController < ActionController::Base
       'dummy/active_job.html.erb' => 'active_job',
       'dummy/resque.html.erb' => 'resque',
       'dummy/delayed_job.html.erb' => 'delayed_job',
-      'dummy/breakdown.html.erb' => 'breakdown'
+      'dummy/breakdown.html.erb' => 'breakdown',
+      'dummy/breakdown_view_only.html.erb' => 'breakdown_view_only'
     )
   ]
 
@@ -116,6 +118,10 @@ class DummyController < ActionController::Base
   def breakdown
     Book.create(title: 'breakdown')
     Book.all
+  end
+
+  def breakdown_view_only
+    render 'dummy/breakdown.html.erb'
   end
 
   def notify_airbrake_helper
