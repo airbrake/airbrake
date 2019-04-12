@@ -1,3 +1,6 @@
+require 'airbrake/rails/event'
+require 'airbrake/rails/backtrace_cleaner'
+
 module Airbrake
   module Rails
     # ActiveRecordSubscriber sends SQL information, including performance data.
@@ -8,14 +11,14 @@ module Airbrake
         routes = Airbrake::Rack::RequestStore[:routes]
         return if !routes || routes.none?
 
-        event = ActiveSupport::Notifications::Event.new(*args)
+        event = Airbrake::Rails::Event.new(*args)
         frame = last_caller
 
-        routes.each do |route, method|
+        routes.each do |route, params|
           Airbrake.notify_query(
             route: route,
-            method: method,
-            query: event.payload[:sql],
+            method: params[:method],
+            query: event.sql,
             func: frame[:function],
             file: frame[:file],
             line: frame[:line],
@@ -28,9 +31,10 @@ module Airbrake
       private
 
       def last_caller
-        exception = StandardError.new.tap do |ex|
-          ex.set_backtrace(::Rails.backtrace_cleaner.clean(Kernel.caller).first(1))
-        end
+        exception = StandardError.new
+        exception.set_backtrace(
+          Airbrake::Rails::BacktraceCleaner.clean(Kernel.caller)
+        )
         Airbrake::Backtrace.parse(exception).first || {}
       end
     end

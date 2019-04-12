@@ -14,13 +14,16 @@ module Airbrake
 
       def call(*args)
         # We don't track routeless events.
-        return unless Airbrake::Rack::RequestStore[:routes]
+        return unless (routes = Airbrake::Rack::RequestStore[:routes])
 
         event = Airbrake::Rails::Event.new(*args)
         route = find_route(event.params)
         return unless route
 
-        Airbrake::Rack::RequestStore[:routes][route.path] = event.method
+        routes[route.path] = {
+          method: event.method,
+          response_type: event.response_type
+        }
       end
 
       private

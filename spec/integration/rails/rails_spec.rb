@@ -262,7 +262,7 @@ RSpec.describe "Rails integration specs" do
         hash_including(
           route: '/crash(.:format)',
           method: 'GET',
-          func: 'tap',
+          func: 'call',
           file: 'lib/airbrake/rails/active_record_subscriber.rb',
           line: anything
         )
@@ -304,6 +304,22 @@ RSpec.describe "Rails integration specs" do
       ).at_least(:once)
 
       get '/breakdown'
+    end
+
+    context "when response format is */*" do
+      it "normalizes it to :html" do
+        expect(Airbrake).to receive(:notify_performance_breakdown)
+          .with(hash_including(response_type: :html))
+        get '/breakdown', {}, 'HTTP_ACCEPT' => '*/*'
+      end
+    end
+
+    context "when db_runtime is nil" do
+      it "omits the db group" do
+        expect(Airbrake).to receive(:notify_performance_breakdown)
+          .with(hash_including(groups: { view: be > 0 }))
+        get '/breakdown_view_only'
+      end
     end
   end
 end
