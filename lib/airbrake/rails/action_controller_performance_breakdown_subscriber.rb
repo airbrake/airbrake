@@ -10,8 +10,9 @@ module Airbrake
 
         event = Airbrake::Rails::Event.new(*args)
 
-        routes.each do |route, _params|
-          next if (groups = event.groups).none?
+        routes.each do |route, params|
+          groups = event.groups.merge(params[:groups])
+          next if groups.none?
 
           Airbrake.notify_performance_breakdown(
             method: event.method,

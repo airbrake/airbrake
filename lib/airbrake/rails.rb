@@ -70,6 +70,8 @@ module Airbrake
               'process_action.action_controller',
               Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber.new
             )
+
+            require 'airbrake/rails/net_http'
           end
         end
       end
