@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v9.1.0][v9.1.0] (April 17, 2019)
+
 * Rails: added HTTP performance breakdown (`Net::HTTP` support only)
   ([#955](https://github.com/airbrake/airbrake/pull/955))
 
@@ -630,3 +632,4 @@ Airbrake Changelog
 [v9.0.0]: https://github.com/airbrake/airbrake/releases/tag/v9.0.0
 [v9.0.1]: https://github.com/airbrake/airbrake/releases/tag/v9.0.1
 [v9.0.2]: https://github.com/airbrake/airbrake/releases/tag/v9.0.2
+[v9.1.0]: https://github.com/airbrake/airbrake/releases/tag/v9.1.0
