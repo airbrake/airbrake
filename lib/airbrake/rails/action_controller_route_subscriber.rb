@@ -22,7 +22,8 @@ module Airbrake
 
         routes[route.path] = {
           method: event.method,
-          response_type: event.response_type
+          response_type: event.response_type,
+          groups: {}
         }
       end
 

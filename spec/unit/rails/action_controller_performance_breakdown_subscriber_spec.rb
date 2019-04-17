@@ -30,26 +30,34 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
 
   context "when there's a route in the request store" do
     before do
-      Airbrake::Rack::RequestStore[:routes] = {
-        '/test-route' => { method: 'GET', response_type: :html }
-      }
-
       expect(event).to receive(:groups).and_return(db: 0.5, view: 0.5)
       expect(event).to receive(:method).and_return('GET')
       expect(event).to receive(:response_type).and_return(:html)
       expect(event).to receive(:time).and_return(Time.new)
     end
 
-    it "sends performance info to Airbrake" do
-      expect(Airbrake).to receive(:notify_performance_breakdown).with(
-        hash_including(
-          route: '/test-route',
-          method: 'GET',
-          response_type: :html,
-          groups: { db: 0.5, view: 0.5 }
+    context "when request store routes have extra groups" do
+      before do
+        Airbrake::Rack::RequestStore[:routes] = {
+          '/test-route' => {
+            method: 'GET',
+            response_type: :html,
+            groups: { http: 0.5 }
+          }
+        }
+      end
+
+      it "sends performance info to Airbrake with extra groups" do
+        expect(Airbrake).to receive(:notify_performance_breakdown).with(
+          hash_including(
+            route: '/test-route',
+            method: 'GET',
+            response_type: :html,
+            groups: { db: 0.5, view: 0.5, http: 0.5 }
+          )
         )
-      )
-      subject.call([])
+        subject.call([])
+      end
     end
   end
 end

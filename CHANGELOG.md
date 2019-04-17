@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Rails: added HTTP performance breakdown (`Net::HTTP` support only)
+  ([#955](https://github.com/airbrake/airbrake/pull/955))
+
 ### [v9.0.2][v9.0.2] (April 8, 2019)
 
 * Delete `Airbrake::Rack.add_default_filters`
