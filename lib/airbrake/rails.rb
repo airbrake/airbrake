@@ -63,17 +63,20 @@ module Airbrake
               'process_action.action_controller',
               Airbrake::Rails::ActionControllerNotifySubscriber.new
             )
-
-            # Send performance breakdown: where a request spends its time.
-            require 'airbrake/rails/action_controller_performance_breakdown_subscriber'
-            ActiveSupport::Notifications.subscribe(
-              'process_action.action_controller',
-              Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber.new
-            )
-
-            require 'airbrake/rails/net_http'
           end
         end
+      end
+
+      initializer('airbrake.http_breakdown') do
+        # Send performance breakdown: where a request spends its time.
+        require 'airbrake/rails/action_controller_performance_breakdown_subscriber'
+        ActiveSupport::Notifications.subscribe(
+          'process_action.action_controller',
+          Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber.new
+        )
+
+        require 'airbrake/rails/net_http' if defined?(Net) && defined?(Net::HTTP)
+        require 'airbrake/rails/curb' if defined?(Curl) && defined?(Curl::CURB_VERSION)
       end
 
       initializer('airbrake.active_record') do

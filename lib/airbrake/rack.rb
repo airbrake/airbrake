@@ -8,3 +8,27 @@ require 'airbrake/rack/request_body_filter'
 require 'airbrake/rack/route_filter'
 require 'airbrake/rack/middleware'
 require 'airbrake/rack/request_store'
+
+module Airbrake
+  # Rack is a namespace for all Rack-related code.
+  module Rack
+    # @api private
+    # @since 9.2.0
+    def self.capture_http_performance
+      routes = Airbrake::Rack::RequestStore[:routes]
+      if !routes || routes.none?
+        response = yield
+      else
+        elapsed = Airbrake::Benchmark.measure do
+          response = yield
+        end
+
+        routes.each do |_route_path, params|
+          params[:groups][:http] = elapsed
+        end
+      end
+
+      response
+    end
+  end
+end

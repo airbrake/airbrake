@@ -61,4 +61,6 @@ DESC
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
     s.add_development_dependency 'sidekiq', '~> 5'
   end
+
+  s.add_development_dependency 'curb', '~> 0.9' if RUBY_ENGINE == 'ruby'
 end

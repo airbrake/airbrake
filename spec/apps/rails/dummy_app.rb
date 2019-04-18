@@ -1,3 +1,5 @@
+require 'curb' unless Airbrake::JRUBY
+
 class DummyApp < Rails::Application
   # Rails requires these two keys.
   config.session_store :cookie_store, key: 'jiez4Mielu1AiHugog3shiiPhe3lai3faer'
@@ -33,6 +35,9 @@ class DummyApp < Rails::Application
     get '/breakdown' => 'dummy#breakdown'
     get '/breakdown_view_only' => 'dummy#breakdown_view_only'
     get '/breakdown_http' => 'dummy#breakdown_http'
+    get '/breakdown_curl_http' => 'dummy#breakdown_curl_http'
+    get '/breakdown_curl_http_easy' => 'dummy#breakdown_curl_http_easy'
+    get '/breakdown_curl_http_multi' => 'dummy#breakdown_curl_http_multi'
     get '/notify_airbrake_helper' => 'dummy#notify_airbrake_helper'
     get '/notify_airbrake_sync_helper' => 'dummy#notify_airbrake_sync_helper'
     get '/active_record_after_commit' => 'dummy#active_record_after_commit'
@@ -106,7 +111,10 @@ class DummyController < ActionController::Base
       'dummy/delayed_job.html.erb' => 'delayed_job',
       'dummy/breakdown.html.erb' => 'breakdown',
       'dummy/breakdown_view_only.html.erb' => 'breakdown_view_only',
-      'dummy/breakdown_http.html.erb' => 'breakdown_http'
+      'dummy/breakdown_http.html.erb' => 'breakdown_http',
+      'dummy/breakdown_curl_http.html.erb' => 'breakdown_curl_http',
+      'dummy/breakdown_curl_http_easy.html.erb' => 'breakdown_curl_http_easy',
+      'dummy/breakdown_curl_http_multi.html.erb' => 'breakdown_curl_http_multi'
     )
   ]
 
@@ -129,6 +137,21 @@ class DummyController < ActionController::Base
   def breakdown_http
     Net::HTTP.get('example.com', '/')
     render 'dummy/breakdown_http.html.erb'
+  end
+
+  def breakdown_curl_http
+    Curl.get('example.com')
+    render 'dummy/breakdown_curl_http.html.erb'
+  end
+
+  def breakdown_curl_http_easy
+    Curl::Easy.perform('example.com')
+    render 'dummy/breakdown_curl_http_easy.html.erb'
+  end
+
+  def breakdown_curl_http_multi
+    Curl::Multi.get(['example.com'])
+    render 'dummy/breakdown_curl_http_multi.html.erb'
   end
 
   def notify_airbrake_helper
