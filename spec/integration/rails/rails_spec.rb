@@ -322,7 +322,7 @@ RSpec.describe "Rails integration specs" do
       end
     end
 
-    context "when an action performs a HTTP request" do
+    context "when an action performs a Net::HTTP request" do
       let!(:example_request) do
         stub_request(:get, 'http://example.com').to_return(body: '')
       end
@@ -332,6 +332,46 @@ RSpec.describe "Rails integration specs" do
           .with(hash_including(groups: { view: be > 0, http: be > 0 }))
         get '/breakdown_http'
         expect(example_request).to have_been_made
+      end
+    end
+
+    context "when an action performs a Curl request" do
+      let!(:example_request) do
+        stub_request(:get, 'http://example.com').to_return(body: '')
+      end
+
+      before { skip("JRuby doesn't support Curb") if Airbrake::JRUBY }
+
+      it "includes the http breakdown" do
+        expect(Airbrake).to receive(:notify_performance_breakdown)
+          .with(hash_including(groups: { view: be > 0, http: be > 0 }))
+        get '/breakdown_curl_http'
+        expect(example_request).to have_been_made
+      end
+    end
+
+    context "when an action performs a Curl::Easy request" do
+      let!(:example_request) do
+        stub_request(:get, 'http://example.com').to_return(body: '')
+      end
+
+      before { skip("JRuby doesn't support Curb") if Airbrake::JRUBY }
+
+      it "includes the http breakdown" do
+        expect(Airbrake).to receive(:notify_performance_breakdown)
+          .with(hash_including(groups: { view: be > 0, http: be > 0 }))
+        get '/breakdown_curl_http_easy'
+        expect(example_request).to have_been_made
+      end
+    end
+
+    context "when an action performs a Curl::Multi request" do
+      before { skip("JRuby doesn't support Curb") if Airbrake::JRUBY }
+
+      it "includes the http breakdown" do
+        expect(Airbrake).to receive(:notify_performance_breakdown)
+          .with(hash_including(groups: { view: be > 0, http: be > 0 }))
+        get '/breakdown_curl_http_multi'
       end
     end
   end

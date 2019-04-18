@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Rails: added support for Curb for HTTP performance breakdown
+  ([#957](https://github.com/airbrake/airbrake/pull/957))
+
 ### [v9.1.0][v9.1.0] (April 17, 2019)
 
 * Rails: added HTTP performance breakdown (`Net::HTTP` support only)
