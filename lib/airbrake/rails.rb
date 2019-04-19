@@ -77,6 +77,12 @@ module Airbrake
 
         require 'airbrake/rails/net_http' if defined?(Net) && defined?(Net::HTTP)
         require 'airbrake/rails/curb' if defined?(Curl) && defined?(Curl::CURB_VERSION)
+
+        if defined?(Excon)
+          require 'airbrake/rails/excon_subscriber'
+          ActiveSupport::Notifications.subscribe(/excon/, Airbrake::Rails::Excon.new)
+          ::Excon.defaults[:instrumentor] = ActiveSupport::Notifications
+        end
       end
 
       initializer('airbrake.active_record') do
