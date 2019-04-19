@@ -40,6 +40,7 @@ class DummyApp < Rails::Application
     get '/breakdown_curl_http_easy' => 'dummy#breakdown_curl_http_easy'
     get '/breakdown_curl_http_multi' => 'dummy#breakdown_curl_http_multi'
     get '/breakdown_excon' => 'dummy#breakdown_excon'
+    get '/breakdown_http_rb' => 'dummy#breakdown_http_rb'
     get '/notify_airbrake_helper' => 'dummy#notify_airbrake_helper'
     get '/notify_airbrake_sync_helper' => 'dummy#notify_airbrake_sync_helper'
     get '/active_record_after_commit' => 'dummy#active_record_after_commit'
@@ -117,7 +118,8 @@ class DummyController < ActionController::Base
       'dummy/breakdown_curl_http.html.erb' => 'breakdown_curl_http',
       'dummy/breakdown_curl_http_easy.html.erb' => 'breakdown_curl_http_easy',
       'dummy/breakdown_curl_http_multi.html.erb' => 'breakdown_curl_http_multi',
-      'dummy/breakdown_excon.erb' => 'breakdown_excon'
+      'dummy/breakdown_excon.erb' => 'breakdown_excon',
+      'dummy/breakdown_http_rb.erb' => 'breakdown_http_rb'
     )
   ]
 
@@ -160,6 +162,11 @@ class DummyController < ActionController::Base
   def breakdown_excon
     Excon.get('http://example.com')
     render 'dummy/breakdown_excon.html.erb'
+  end
+
+  def breakdown_http_rb
+    HTTP.get('http://example.com')
+    render 'dummy/breakdown_http_rb.html.erb'
   end
 
   def notify_airbrake_helper

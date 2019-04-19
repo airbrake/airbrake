@@ -77,6 +77,7 @@ module Airbrake
 
         require 'airbrake/rails/net_http' if defined?(Net) && defined?(Net::HTTP)
         require 'airbrake/rails/curb' if defined?(Curl) && defined?(Curl::CURB_VERSION)
+        require 'airbrake/rails/http' if defined?(HTTP) && defined?(HTTP::Client)
 
         if defined?(Excon)
           require 'airbrake/rails/excon_subscriber'
