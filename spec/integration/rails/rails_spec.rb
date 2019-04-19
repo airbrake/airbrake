@@ -374,5 +374,18 @@ RSpec.describe "Rails integration specs" do
         get '/breakdown_curl_http_multi'
       end
     end
+
+    context "when an action performs an Excon request" do
+      let!(:example_request) do
+        stub_request(:get, 'http://example.com').to_return(body: '')
+      end
+
+      it "includes the http breakdown" do
+        expect(Airbrake).to receive(:notify_performance_breakdown)
+          .with(hash_including(groups: { http: be > 0 }))
+        get '/breakdown_excon'
+        expect(example_request).to have_been_made
+      end
+    end
   end
 end

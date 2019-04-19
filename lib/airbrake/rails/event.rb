@@ -66,6 +66,10 @@ module Airbrake
 
         0
       end
+
+      def duration
+        @event.duration
+      end
     end
   end
 end

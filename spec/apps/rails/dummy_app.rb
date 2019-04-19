@@ -1,4 +1,5 @@
 require 'curb' unless Airbrake::JRUBY
+require 'excon'
 
 class DummyApp < Rails::Application
   # Rails requires these two keys.
@@ -38,6 +39,7 @@ class DummyApp < Rails::Application
     get '/breakdown_curl_http' => 'dummy#breakdown_curl_http'
     get '/breakdown_curl_http_easy' => 'dummy#breakdown_curl_http_easy'
     get '/breakdown_curl_http_multi' => 'dummy#breakdown_curl_http_multi'
+    get '/breakdown_excon' => 'dummy#breakdown_excon'
     get '/notify_airbrake_helper' => 'dummy#notify_airbrake_helper'
     get '/notify_airbrake_sync_helper' => 'dummy#notify_airbrake_sync_helper'
     get '/active_record_after_commit' => 'dummy#active_record_after_commit'
@@ -114,7 +116,8 @@ class DummyController < ActionController::Base
       'dummy/breakdown_http.html.erb' => 'breakdown_http',
       'dummy/breakdown_curl_http.html.erb' => 'breakdown_curl_http',
       'dummy/breakdown_curl_http_easy.html.erb' => 'breakdown_curl_http_easy',
-      'dummy/breakdown_curl_http_multi.html.erb' => 'breakdown_curl_http_multi'
+      'dummy/breakdown_curl_http_multi.html.erb' => 'breakdown_curl_http_multi',
+      'dummy/breakdown_excon.erb' => 'breakdown_excon'
     )
   ]
 
@@ -152,6 +155,11 @@ class DummyController < ActionController::Base
   def breakdown_curl_http_multi
     Curl::Multi.get(['example.com'])
     render 'dummy/breakdown_curl_http_multi.html.erb'
+  end
+
+  def breakdown_excon
+    Excon.get('http://example.com')
+    render 'dummy/breakdown_excon.html.erb'
   end
 
   def notify_airbrake_helper

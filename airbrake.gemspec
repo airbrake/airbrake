@@ -63,4 +63,5 @@ DESC
   end
 
   s.add_development_dependency 'curb', '~> 0.9' if RUBY_ENGINE == 'ruby'
+  s.add_development_dependency 'excon', '~> 0.64'
 end
