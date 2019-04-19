@@ -387,5 +387,18 @@ RSpec.describe "Rails integration specs" do
         expect(example_request).to have_been_made
       end
     end
+
+    context "when an action performs a HTTP.rb request" do
+      let!(:example_request) do
+        stub_request(:get, 'http://example.com').to_return(body: '')
+      end
+
+      it "includes the http breakdown" do
+        expect(Airbrake).to receive(:notify_performance_breakdown)
+          .with(hash_including(groups: { http: be > 0 }))
+        get '/breakdown_http_rb'
+        expect(example_request).to have_been_made
+      end
+    end
   end
 end
