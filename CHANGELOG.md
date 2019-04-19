@@ -7,6 +7,8 @@ Airbrake Changelog
   ([#957](https://github.com/airbrake/airbrake/pull/957))
 * Rails: added support for Excon for HTTP performance breakdown
   ([#958](https://github.com/airbrake/airbrake/pull/958))
+* Rails: added support for http.rb for HTTP performance breakdown
+  ([#959](https://github.com/airbrake/airbrake/pull/959))
 
 ### [v9.1.0][v9.1.0] (April 17, 2019)
 
