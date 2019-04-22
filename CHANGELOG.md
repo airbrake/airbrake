@@ -9,6 +9,8 @@ Airbrake Changelog
   ([#958](https://github.com/airbrake/airbrake/pull/958))
 * Rails: added support for http.rb for HTTP performance breakdown
   ([#959](https://github.com/airbrake/airbrake/pull/959))
+* Rails: added support for HTTPClient for HTTP performance breakdown
+  ([#960](https://github.com/airbrake/airbrake/pull/960))
 
 ### [v9.1.0][v9.1.0] (April 17, 2019)
 
