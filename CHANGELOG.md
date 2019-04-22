@@ -11,6 +11,8 @@ Airbrake Changelog
   ([#959](https://github.com/airbrake/airbrake/pull/959))
 * Rails: added support for HTTPClient for HTTP performance breakdown
   ([#960](https://github.com/airbrake/airbrake/pull/960))
+* Rails: added support for Typhoeus for HTTP performance breakdown
+  ([#961](https://github.com/airbrake/airbrake/pull/961))
 
 ### [v9.1.0][v9.1.0] (April 17, 2019)
 
