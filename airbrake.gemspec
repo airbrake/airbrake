@@ -66,4 +66,5 @@ DESC
   s.add_development_dependency 'excon', '~> 0.64'
   s.add_development_dependency 'http', '~> 2.2'
   s.add_development_dependency 'httpclient', '~> 2.8'
+  s.add_development_dependency 'typhoeus', '~> 1.3'
 end
