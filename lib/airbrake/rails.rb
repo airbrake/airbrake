@@ -42,6 +42,7 @@ module Airbrake
         require 'airbrake/rake/tasks'
       end
 
+      # rubocop:disable Metrics/BlockLength
       initializer('airbrake.action_controller') do
         ActiveSupport.on_load(:action_controller) do
           # Patches ActionController with methods that allow us to retrieve
@@ -63,30 +64,33 @@ module Airbrake
               'process_action.action_controller',
               Airbrake::Rails::ActionControllerNotifySubscriber.new
             )
+
+            # Send performance breakdown: where a request spends its time.
+            require 'airbrake/rails/action_controller_performance_breakdown_subscriber'
+            ActiveSupport::Notifications.subscribe(
+              'process_action.action_controller',
+              Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber.new
+            )
+
+            require 'airbrake/rails/net_http' if defined?(Net) && defined?(Net::HTTP)
+
+            if defined?(Curl) && defined?(Curl::CURB_VERSION)
+              require 'airbrake/rails/curb'
+            end
+
+            require 'airbrake/rails/http' if defined?(HTTP) && defined?(HTTP::Client)
+            require 'airbrake/rails/http_client' if defined?(HTTPClient)
+            require 'airbrake/rails/typhoeus' if defined?(Typhoeus)
+
+            if defined?(Excon)
+              require 'airbrake/rails/excon_subscriber'
+              ActiveSupport::Notifications.subscribe(/excon/, Airbrake::Rails::Excon.new)
+              ::Excon.defaults[:instrumentor] = ActiveSupport::Notifications
+            end
           end
         end
       end
-
-      initializer('airbrake.http_breakdown') do
-        # Send performance breakdown: where a request spends its time.
-        require 'airbrake/rails/action_controller_performance_breakdown_subscriber'
-        ActiveSupport::Notifications.subscribe(
-          'process_action.action_controller',
-          Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber.new
-        )
-
-        require 'airbrake/rails/net_http' if defined?(Net) && defined?(Net::HTTP)
-        require 'airbrake/rails/curb' if defined?(Curl) && defined?(Curl::CURB_VERSION)
-        require 'airbrake/rails/http' if defined?(HTTP) && defined?(HTTP::Client)
-        require 'airbrake/rails/http_client' if defined?(HTTPClient)
-        require 'airbrake/rails/typhoeus' if defined?(Typhoeus)
-
-        if defined?(Excon)
-          require 'airbrake/rails/excon_subscriber'
-          ActiveSupport::Notifications.subscribe(/excon/, Airbrake::Rails::Excon.new)
-          ::Excon.defaults[:instrumentor] = ActiveSupport::Notifications
-        end
-      end
+      # rubocop:enable Metrics/BlockLength
 
       initializer('airbrake.active_record') do
         ActiveSupport.on_load(:active_record) do
