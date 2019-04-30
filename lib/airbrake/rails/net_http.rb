@@ -3,7 +3,7 @@ Net::HTTP.class_eval do
   alias_method :request_without_airbrake, :request
 
   def request(request, *args, &block)
-    Airbrake::Rack.capture_http_performance do
+    Airbrake::Rack.capture_timing(:http) do
       request_without_airbrake(request, *args, &block)
     end
   end

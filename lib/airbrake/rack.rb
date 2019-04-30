@@ -8,27 +8,28 @@ require 'airbrake/rack/request_body_filter'
 require 'airbrake/rack/route_filter'
 require 'airbrake/rack/middleware'
 require 'airbrake/rack/request_store'
+require 'airbrake/rack/instrumentable'
 
 module Airbrake
   # Rack is a namespace for all Rack-related code.
   module Rack
-    # @api private
-    # @since 9.2.0
-    def self.capture_http_performance
+    # @since v9.2.0
+    # @api public
+    def self.capture_timing(label)
       routes = Airbrake::Rack::RequestStore[:routes]
       if !routes || routes.none?
-        response = yield
+        result = yield
       else
-        elapsed = Airbrake::Benchmark.measure do
-          response = yield
+        timed_trace = Airbrake::TimedTrace.span(label) do
+          result = yield
         end
 
         routes.each do |_route_path, params|
-          params[:groups][:http] = elapsed
+          params[:groups].merge!(timed_trace.spans)
         end
       end
 
-      response
+      result
     end
   end
 end

@@ -4,7 +4,7 @@ module Curl
     alias http_without_airbrake http
 
     def http(verb)
-      Airbrake::Rack.capture_http_performance do
+      Airbrake::Rack.capture_timing(:http) do
         http_without_airbrake(verb)
       end
     end
@@ -12,7 +12,7 @@ module Curl
     alias perform_without_airbrake perform
 
     def perform(&block)
-      Airbrake::Rack.capture_http_performance do
+      Airbrake::Rack.capture_timing(:http) do
         perform_without_airbrake(&block)
       end
     end
@@ -26,7 +26,7 @@ module Curl
       alias http_without_airbrake http
 
       def http(urls_with_config, multi_options = {}, &block)
-        Airbrake::Rack.capture_http_performance do
+        Airbrake::Rack.capture_timing(:http) do
           http_without_airbrake(urls_with_config, multi_options, &block)
         end
       end

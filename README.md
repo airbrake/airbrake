@@ -289,6 +289,45 @@ filter. For example, read up to 512 bytes:
 Airbrake.add_filter(Airbrake::Rack::RequestBodyFilter.new(512))
 ```
 
+#### Sending custom route breakdown performance
+
+##### Arbitrary code performance instrumentation
+
+For every route in your app Airbrake collects performance breakdown
+statistics. If you need to monitor a specific operation, you can capture your
+own breakdown:
+
+```ruby
+def index
+  Airbrake::Rack.capture_timing('operation name') do
+    call_operation(...)
+  end
+
+  call_other_operation
+end
+```
+
+That will benchmark `call_operation` and send performance information to
+Airbrake, to the corresponding route (under the 'operation name' label).
+
+##### Method performance instrumentation
+
+Alternatively, you can measure performance of a specific method:
+
+```ruby
+class UsersController
+  extend Airbrake::Rack::Instrumentable
+
+  def index
+    call_operation(...)
+  end
+  airbrake_capture_timing :index
+end
+```
+
+Similarly to the previous example, performance information of the `index` method
+will be sent to Airbrake.
+
 ### Sidekiq
 
 We support Sidekiq v2+. The configurations steps for them are identical. Simply
