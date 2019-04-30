@@ -4,7 +4,7 @@ module HTTP
     alias perform_without_airbrake perform
 
     def perform(request, options)
-      Airbrake::Rack.capture_http_performance do
+      Airbrake::Rack.capture_timing(:http) do
         perform_without_airbrake(request, options)
       end
     end

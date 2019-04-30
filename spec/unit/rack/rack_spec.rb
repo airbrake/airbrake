@@ -1,21 +1,21 @@
 RSpec.describe Airbrake::Rack do
-  describe ".capture_http_performance" do
+  describe ".timing" do
+    let(:routes) { Airbrake::Rack::RequestStore[:routes] }
+
     context "when request store doesn't have any routes" do
       before { Airbrake::Rack::RequestStore.clear }
 
-      it "doesn't store http time" do
-        described_class.capture_http_performance {}
+      it "doesn't store timing" do
+        described_class.capture_timing('operation') {}
         expect(Airbrake::Rack::RequestStore.store).to be_empty
       end
 
-      it "returns what the given block returns" do
-        expect(described_class.capture_http_performance { 1 }).to eq(1)
+      it "returns the value of the block" do
+        expect(described_class.capture_timing('operation') { 1 }).to eq(1)
       end
     end
 
     context "when request store has a route" do
-      let(:routes) { Airbrake::Rack::RequestStore[:routes] }
-
       before do
         Airbrake::Rack::RequestStore[:routes] = {
           '/about' => {
@@ -26,11 +26,20 @@ RSpec.describe Airbrake::Rack do
         }
       end
 
-      after { Airbrake::Rack::RequestStore.clear }
+      it "attaches all timings for different operations to the request store" do
+        described_class.capture_timing('operation 1') {}
+        described_class.capture_timing('operation 2') {}
+        described_class.capture_timing('operation 3') {}
 
-      it "attaches http timing to the route" do
-        described_class.capture_http_performance {}
-        expect(routes['/about'][:groups][:http]).to be > 0
+        expect(routes['/about'][:groups]).to match(
+          'operation 1' => be > 0,
+          'operation 2' => be > 0,
+          'operation 3' => be > 0
+        )
+      end
+
+      it "returns the value of the block" do
+        expect(described_class.capture_timing('operation') { 1 }).to eq(1)
       end
     end
   end

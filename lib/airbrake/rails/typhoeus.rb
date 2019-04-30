@@ -4,7 +4,7 @@ module Typhoeus
     alias run_without_airbrake run
 
     def run
-      Airbrake::Rack.capture_http_performance do
+      Airbrake::Rack.capture_timing(:http) do
         run_without_airbrake
       end
     end
