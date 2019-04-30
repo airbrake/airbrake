@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v9.2.0][v9.2.0] (April 30, 2019)
+
 * Rails: added support for Curb for HTTP performance breakdown
   ([#957](https://github.com/airbrake/airbrake/pull/957))
 * Rails: added support for Excon for HTTP performance breakdown
@@ -647,3 +649,4 @@ Airbrake Changelog
 [v9.0.1]: https://github.com/airbrake/airbrake/releases/tag/v9.0.1
 [v9.0.2]: https://github.com/airbrake/airbrake/releases/tag/v9.0.2
 [v9.1.0]: https://github.com/airbrake/airbrake/releases/tag/v9.1.0
+[v9.2.0]: https://github.com/airbrake/airbrake/releases/tag/v9.2.0
