@@ -1,4 +1,6 @@
 RSpec.describe Airbrake::Rack::Instrumentable do
+  after { Airbrake::Rack::RequestStore.clear }
+
   describe ".airbrake_capture_timing" do
     let(:routes) { Airbrake::Rack::RequestStore[:routes] }
 
