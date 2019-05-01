@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Added the ability to provide a custom optional label for
+  `Airbrake::Rack::Instrumentable#airbrake_capture_timing`
+  ([#968](https://github.com/airbrake/airbrake/pull/968))
+
 ### [v9.2.0][v9.2.0] (April 30, 2019)
 
 * Rails: added support for Curb for HTTP performance breakdown

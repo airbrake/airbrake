@@ -84,6 +84,22 @@ RSpec.describe Airbrake::Rack::Instrumentable do
           'method_with_arg' => be > 0
         )
       end
+
+      context "and when a custom label was provided" do
+        let(:klass) do
+          Class.new do
+            extend Airbrake::Rack::Instrumentable
+
+            def method; end
+            airbrake_capture_timing :method, label: 'custom label'
+          end
+        end
+
+        it "attaches timing under the provided label" do
+          klass.new.method
+          expect(groups).to match('custom label' => be > 0)
+        end
+      end
     end
   end
 end
