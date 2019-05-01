@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v9.2.1][v9.2.1] (May 1, 2019)
+
 * Added the ability to provide a custom optional label for
   `Airbrake::Rack::Instrumentable#airbrake_capture_timing`
   ([#968](https://github.com/airbrake/airbrake/pull/968))
@@ -654,3 +656,4 @@ Airbrake Changelog
 [v9.0.2]: https://github.com/airbrake/airbrake/releases/tag/v9.0.2
 [v9.1.0]: https://github.com/airbrake/airbrake/releases/tag/v9.1.0
 [v9.2.0]: https://github.com/airbrake/airbrake/releases/tag/v9.2.0
+[v9.2.1]: https://github.com/airbrake/airbrake/releases/tag/v9.2.1
