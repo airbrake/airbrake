@@ -300,7 +300,8 @@ RSpec.describe "Rails integration specs" do
           method: 'GET',
           response_type: :html,
           groups: hash_including(db: an_instance_of(Float))
-        )
+        ),
+        an_instance_of(Hash)
       ).at_least(:once)
 
       get '/breakdown'
@@ -309,7 +310,7 @@ RSpec.describe "Rails integration specs" do
     context "when response format is */*" do
       it "normalizes it to :html" do
         expect(Airbrake).to receive(:notify_performance_breakdown)
-          .with(hash_including(response_type: :html))
+          .with(hash_including(response_type: :html), an_instance_of(Hash))
         get '/breakdown', {}, 'HTTP_ACCEPT' => '*/*'
       end
     end
@@ -317,7 +318,7 @@ RSpec.describe "Rails integration specs" do
     context "when db_runtime is nil" do
       it "omits the db group" do
         expect(Airbrake).to receive(:notify_performance_breakdown)
-          .with(hash_including(groups: { view: be > 0 }))
+          .with(hash_including(groups: { view: be > 0 }), an_instance_of(Hash))
         get '/breakdown_view_only'
       end
     end
@@ -328,8 +329,10 @@ RSpec.describe "Rails integration specs" do
       end
 
       it "includes the http breakdown" do
-        expect(Airbrake).to receive(:notify_performance_breakdown)
-          .with(hash_including(groups: { view: be > 0, http: be > 0 }))
+        expect(Airbrake).to receive(:notify_performance_breakdown).with(
+          hash_including(groups: { view: be > 0, http: be > 0 }),
+          an_instance_of(Hash)
+        )
         get '/breakdown_http'
         expect(example_request).to have_been_made
       end
@@ -343,8 +346,10 @@ RSpec.describe "Rails integration specs" do
       before { skip("JRuby doesn't support Curb") if Airbrake::JRUBY }
 
       it "includes the http breakdown" do
-        expect(Airbrake).to receive(:notify_performance_breakdown)
-          .with(hash_including(groups: { view: be > 0, http: be > 0 }))
+        expect(Airbrake).to receive(:notify_performance_breakdown).with(
+          hash_including(groups: { view: be > 0, http: be > 0 }),
+          an_instance_of(Hash)
+        )
         get '/breakdown_curl_http'
         expect(example_request).to have_been_made
       end
@@ -358,8 +363,10 @@ RSpec.describe "Rails integration specs" do
       before { skip("JRuby doesn't support Curb") if Airbrake::JRUBY }
 
       it "includes the http breakdown" do
-        expect(Airbrake).to receive(:notify_performance_breakdown)
-          .with(hash_including(groups: { view: be > 0, http: be > 0 }))
+        expect(Airbrake).to receive(:notify_performance_breakdown).with(
+          hash_including(groups: { view: be > 0, http: be > 0 }),
+          an_instance_of(Hash)
+        )
         get '/breakdown_curl_http_easy'
         expect(example_request).to have_been_made
       end
@@ -369,8 +376,10 @@ RSpec.describe "Rails integration specs" do
       before { skip("JRuby doesn't support Curb") if Airbrake::JRUBY }
 
       it "includes the http breakdown" do
-        expect(Airbrake).to receive(:notify_performance_breakdown)
-          .with(hash_including(groups: { view: be > 0, http: be > 0 }))
+        expect(Airbrake).to receive(:notify_performance_breakdown).with(
+          hash_including(groups: { view: be > 0, http: be > 0 }),
+          an_instance_of(Hash)
+        )
         get '/breakdown_curl_http_multi'
       end
     end
@@ -381,8 +390,10 @@ RSpec.describe "Rails integration specs" do
       end
 
       it "includes the http breakdown" do
-        expect(Airbrake).to receive(:notify_performance_breakdown)
-          .with(hash_including(groups: { http: be > 0 }))
+        expect(Airbrake).to receive(:notify_performance_breakdown).with(
+          hash_including(groups: { http: be > 0 }),
+          an_instance_of(Hash)
+        )
         get '/breakdown_excon'
         expect(example_request).to have_been_made
       end
@@ -394,8 +405,10 @@ RSpec.describe "Rails integration specs" do
       end
 
       it "includes the http breakdown" do
-        expect(Airbrake).to receive(:notify_performance_breakdown)
-          .with(hash_including(groups: { http: be > 0 }))
+        expect(Airbrake).to receive(:notify_performance_breakdown).with(
+          hash_including(groups: { http: be > 0 }),
+          an_instance_of(Hash)
+        )
         get '/breakdown_http_rb'
         expect(example_request).to have_been_made
       end
@@ -407,8 +420,10 @@ RSpec.describe "Rails integration specs" do
       end
 
       it "includes the http breakdown" do
-        expect(Airbrake).to receive(:notify_performance_breakdown)
-          .with(hash_including(groups: { http: be > 0 }))
+        expect(Airbrake).to receive(:notify_performance_breakdown).with(
+          hash_including(groups: { http: be > 0 }),
+          an_instance_of(Hash)
+        )
         get '/breakdown_http_client'
         expect(example_request).to have_been_made
       end
@@ -420,10 +435,35 @@ RSpec.describe "Rails integration specs" do
       end
 
       it "includes the http breakdown" do
-        expect(Airbrake).to receive(:notify_performance_breakdown)
-          .with(hash_including(groups: { http: be > 0 }))
+        expect(Airbrake).to receive(:notify_performance_breakdown).with(
+          hash_including(groups: { http: be > 0 }),
+          an_instance_of(Hash)
+        )
         get '/breakdown_typhoeus'
         expect(example_request).to have_been_made
+      end
+    end
+
+    context "when current user is logged in" do
+      let(:user) do
+        OpenStruct.new(id: 1, email: 'qa@example.com', username: 'qa-dept')
+      end
+
+      before do
+        login_as(user)
+        sleep 2
+      end
+
+      it "includes current user into the performance breakdown stash" do
+        expect(Airbrake).to receive(:notify_performance_breakdown).with(
+          an_instance_of(Hash),
+          hash_including(
+            request: anything,
+            user: { id: '1', username: 'qa-dept', email: 'qa@example.com' }
+          )
+        )
+
+        get '/breakdown'
       end
     end
   end

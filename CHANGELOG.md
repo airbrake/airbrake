@@ -3,6 +3,17 @@ Airbrake Changelog
 
 ### master
 
+* Rails: started attaching Rack request and User info to the resource object,
+  which is accessible through performance hooks:
+
+  ```ruby
+  Airbrake.add_performance_hook do |resource|
+    if resource.stash.key?(:user)
+      # custom logic
+    end
+  end
+  ```
+
 ### [v9.2.1][v9.2.1] (May 1, 2019)
 
 * Added the ability to provide a custom optional label for
