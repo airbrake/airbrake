@@ -26,13 +26,12 @@ module Airbrake
       #
       # @param [Hash] env the Rack environment
       def call!(env)
-        # Rails hooks such as ActionControllerRouteSubscriber rely on this.
-        RequestStore[:routes] = {}
+        before_call(env)
 
         begin
           response = @app.call(env)
         rescue Exception => ex # rubocop:disable Lint/RescueException
-          notify_airbrake(ex, env)
+          notify_airbrake(ex)
           raise ex
         ensure
           # Clear routes for the next request.
@@ -40,27 +39,36 @@ module Airbrake
         end
 
         exception = framework_exception(env)
-        notify_airbrake(exception, env) if exception
+        notify_airbrake(exception) if exception
 
         response
       end
 
       private
 
-      def notify_airbrake(exception, env)
+      def before_call(env)
+        # Rails hooks such as ActionControllerRouteSubscriber rely on this.
+        RequestStore[:routes] = {}
+        RequestStore[:request] = find_request(env)
+      end
+
+      def find_request(env)
+        if defined?(ActionDispatch::Request)
+          ActionDispatch::Request.new(env)
+        elsif defined?(Sinatra::Request)
+          Sinatra::Request.new(env)
+        else
+          ::Rack::Request.new(env)
+        end
+      end
+
+      def notify_airbrake(exception)
         notice = Airbrake.build_notice(exception)
         return unless notice
 
         # ActionDispatch::Request correctly captures server port when using SSL:
         # See: https://github.com/airbrake/airbrake/issues/802
-        notice.stash[:rack_request] =
-          if defined?(ActionDispatch::Request)
-            ActionDispatch::Request.new(env)
-          elsif defined?(Sinatra::Request)
-            Sinatra::Request.new(env)
-          else
-            ::Rack::Request.new(env)
-          end
+        notice.stash[:rack_request] = RequestStore[:request]
 
         Airbrake.notify(notice)
       end
