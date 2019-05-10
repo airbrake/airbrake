@@ -9,7 +9,7 @@ Airbrake Changelog
   which is accessible through performance hooks:
 
   ```ruby
-  Airbrake.add_performance_hook do |resource|
+  Airbrake.add_performance_filter do |resource|
     if resource.stash.key?(:user)
       # custom logic
     end
