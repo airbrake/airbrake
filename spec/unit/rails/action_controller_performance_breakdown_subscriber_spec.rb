@@ -54,9 +54,50 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
             method: 'GET',
             response_type: :html,
             groups: { db: 0.5, view: 0.5, http: 0.5 }
-          )
+          ),
+          {}
         )
         subject.call([])
+      end
+    end
+
+    context "when there's a request in the request store" do
+      let(:request) { instance_double('Rack::Request') }
+
+      before do
+        expect(request).to receive(:env).and_return({})
+        Airbrake::Rack::RequestStore[:request] = request
+
+        Airbrake::Rack::RequestStore[:routes] = {
+          '/test-route' => { method: 'GET', response_type: :html, groups: {} }
+        }
+      end
+
+      it "sends request info as resource stash" do
+        expect(Airbrake).to receive(:notify_performance_breakdown).with(
+          an_instance_of(Hash),
+          hash_including(request: request)
+        )
+        subject.call([])
+      end
+
+      context "and when a user can be found" do
+        let(:user) { instance_double('User') }
+
+        before do
+          expect(Airbrake::Rack::User).to receive(:extract).and_return(user)
+          expect(user).to receive(:as_json).and_return(
+            user: { 'id' => 1, 'name' => 'Arthur' }
+          )
+        end
+
+        it "sends user info as resource stash" do
+          expect(Airbrake).to receive(:notify_performance_breakdown).with(
+            an_instance_of(Hash),
+            hash_including(user: { 'id' => 1, 'name' => 'Arthur' })
+          )
+          subject.call([])
+        end
       end
     end
   end
