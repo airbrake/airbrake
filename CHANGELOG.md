@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v9.2.2][v9.2.2] (May 10, 2019)
+
 * Rails: started attaching Rack request and User info to the resource object,
   which is accessible through performance hooks:
 
@@ -668,3 +670,4 @@ Airbrake Changelog
 [v9.1.0]: https://github.com/airbrake/airbrake/releases/tag/v9.1.0
 [v9.2.0]: https://github.com/airbrake/airbrake/releases/tag/v9.2.0
 [v9.2.1]: https://github.com/airbrake/airbrake/releases/tag/v9.2.1
+[v9.2.2]: https://github.com/airbrake/airbrake/releases/tag/v9.2.2
