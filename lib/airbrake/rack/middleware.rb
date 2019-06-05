@@ -33,15 +33,15 @@ module Airbrake
         rescue Exception => ex # rubocop:disable Lint/RescueException
           notify_airbrake(ex)
           raise ex
-        ensure
-          # Clear routes for the next request.
-          RequestStore.clear
         end
 
         exception = framework_exception(env)
         notify_airbrake(exception) if exception
 
         response
+      ensure
+        # Clear routes for the next request.
+        RequestStore.clear
       end
 
       private

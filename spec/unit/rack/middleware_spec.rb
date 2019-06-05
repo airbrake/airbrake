@@ -41,6 +41,15 @@ RSpec.describe Airbrake::Rack::Middleware do
         wait_for_a_request_with_body(/"errors":\[{"type":"AirbrakeTestError"/)
       end
 
+      it "sends the notice with the Rack request attached" do
+        expect(Airbrake).to receive(:notify) do |notice|
+          expect(notice.stash[:rack_request]).to be_a(Rack::Request)
+        end
+
+        expect { described_class.new(faulty_app).call(env_for('/')) }
+          .to raise_error(AirbrakeTestError)
+      end
+
       it "sends framework version and name" do
         expect { described_class.new(faulty_app).call(env_for('/bingo/bango')) }
           .to raise_error(AirbrakeTestError)
@@ -54,11 +63,18 @@ RSpec.describe Airbrake::Rack::Middleware do
     context "when app doesn't raise" do
       context "and previous middleware stored an exception in env" do
         shared_examples 'stored exception' do |type|
-          it "notifies on #{type}, but doesn't raise" do
-            env = env_for('/').merge(type => AirbrakeTestError.new)
-            described_class.new(app).call(env)
+          let(:env) { env_for('/').merge(type => AirbrakeTestError.new) }
 
+          it "notifies on #{type}, but doesn't raise" do
+            described_class.new(app).call(env)
             wait_for_a_request_with_body(/"errors":\[{"type":"AirbrakeTestError"/)
+          end
+
+          it "sends the notice with the Rack request attached" do
+            expect(Airbrake).to receive(:notify) do |notice|
+              expect(notice.stash[:rack_request]).to be_a(Rack::Request)
+            end
+            described_class.new(app).call(env)
           end
         end
 
