@@ -13,6 +13,10 @@ module Airbrake
         DEFAULT_MAX_RETRY_ATTEMPTS = ::Sidekiq::JobRetry::DEFAULT_MAX_RETRY_ATTEMPTS
       end
 
+      def initialize(notify_after: nil)
+        @notify_after = notify_after
+      end
+
       def call(notice)
         job = notice[:params][:job]
 
@@ -30,7 +34,9 @@ module Airbrake
       end
 
       def max_attempts_for(job)
-        if job['retry'].is_a?(Integer)
+        if @notify_after
+          @notify_after
+        elsif job['retry'].is_a?(Integer)
           job['retry']
         else
           max_retries
