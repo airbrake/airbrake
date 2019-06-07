@@ -25,7 +25,8 @@ module Airbrake
         return false unless job && job['retry']
 
         max_attempts = max_attempts_for(job)
-        job['retry_count'] < max_attempts
+        retry_count = (job['retry_count'] || -1) + 1
+        retry_count < max_attempts
       end
 
       def max_attempts_for(job)
