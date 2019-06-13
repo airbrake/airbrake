@@ -6,6 +6,9 @@ Airbrake Changelog
 * Fixed `notice.stash[:rack_request]` not being attached for exceptions that are
   reported through Rack environment (such as `rack.exception`)
   ([#977](https://github.com/airbrake/airbrake/pull/977))
+* Fixed `Sidekiq RetryableJobsFilter` when `job['retry_count']` is `nil` (which
+  happens the first time a job fails)
+  ([#980](https://github.com/airbrake/airbrake/pull/980))
 
 ### [v9.2.2][v9.2.2] (May 10, 2019)
 
