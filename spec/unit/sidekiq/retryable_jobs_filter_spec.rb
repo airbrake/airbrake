@@ -13,13 +13,13 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
     it "does not ignore notices that are not from jobs" do
       notice = build_notice
       filter.call(notice)
-      expect(build_notice).to_not be_ignored
+      expect(notice).to_not be_ignored
     end
 
     it "does not ignore notices from jobs that have retries disabled" do
       notice = build_notice('retry' => false)
       filter.call(notice)
-      expect(build_notice).to_not be_ignored
+      expect(notice).to_not be_ignored
     end
 
     it "ignore notices from jobs that will be retried" do
