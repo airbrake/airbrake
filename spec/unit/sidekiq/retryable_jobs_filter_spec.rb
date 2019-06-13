@@ -28,9 +28,14 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
     end
 
     it "does not ignore notices from jobs that will not be retried" do
-      notice = build_notice('retry' => 5, 'retry_count' => 5)
+      notice = build_notice('retry' => 5, 'retry_count' => 4)
       filter.call(notice)
-      expect(build_notice).to_not be_ignored
+      expect(notice).to_not be_ignored
+    end
+
+    it "does not error if retry_count is missing" do
+      notice = build_notice('retry' => 3)
+      expect { filter.call(notice) }.to_not raise_error
     end
   end
 end
