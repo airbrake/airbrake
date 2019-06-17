@@ -3,8 +3,9 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
   require 'sidekiq/cli'
   require 'airbrake/sidekiq'
 
-  RSpec.describe "airbrake/sidekiq/retryable_jobs_filter" do
-    subject(:filter) { Airbrake::Sidekiq::RetryableJobsFilter.new }
+  RSpec.describe Airbrake::Sidekiq::RetryableJobsFilter do
+    subject(:filter) { described_class.new }
+
     def build_notice(job = nil)
       Airbrake::Notice.new(StandardError.new, job: job)
     end
