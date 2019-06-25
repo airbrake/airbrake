@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v9.3.0][v9.3.0] (June 25, 2019)
+
 * Fixed `notice.stash[:rack_request]` not being attached for exceptions that are
   reported through Rack environment (such as `rack.exception`)
   ([#977](https://github.com/airbrake/airbrake/pull/977))
@@ -682,3 +684,4 @@ Airbrake Changelog
 [v9.2.0]: https://github.com/airbrake/airbrake/releases/tag/v9.2.0
 [v9.2.1]: https://github.com/airbrake/airbrake/releases/tag/v9.2.1
 [v9.2.2]: https://github.com/airbrake/airbrake/releases/tag/v9.2.2
+[v9.3.0]: https://github.com/airbrake/airbrake/releases/tag/v9.3.0
