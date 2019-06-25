@@ -9,6 +9,10 @@ Airbrake Changelog
 * Fixed `Sidekiq RetryableJobsFilter` when `job['retry_count']` is `nil` (which
   happens the first time a job fails)
   ([#980](https://github.com/airbrake/airbrake/pull/980))
+* Started depending on airbrake-ruby
+  [v4.5.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v4.5.0) and
+  higher ([#982](https://github.com/airbrake/airbrake/pull/982))
+
 
 ### [v9.2.2][v9.2.2] (May 10, 2019)
 
