@@ -42,6 +42,9 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
     gem 'delayed_job_active_record', '~> 4.1.0'
 
     gem 'mime-types', '~> 3.1'
+
+    # i18n 2+ supports only Ruby 2.3+.
+    gem 'i18n', '~> 1.5'
   end
 
   appraise 'rails-5.1' do
@@ -59,6 +62,9 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
     gem 'delayed_job_active_record', '~> 4.1'
 
     gem 'mime-types', '~> 3.1'
+
+    # i18n 2+ supports only Ruby 2.3+.
+    gem 'i18n', '~> 1.5'
   end
 
   appraise 'rails-5.2' do
@@ -77,6 +83,9 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
     gem 'delayed_job_active_record', '~> 4.1'
 
     gem 'mime-types', '~> 3.1'
+
+    # i18n 2+ supports only Ruby 2.3+.
+    gem 'i18n', '~> 1.5'
   end
 end
 
