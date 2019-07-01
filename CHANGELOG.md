@@ -3,6 +3,17 @@ Airbrake Changelog
 
 ### master
 
+* Added the new `max_retries` optional parameter to
+  `Airbrake::Sidekiq::RetryableJobsFilter`:
+
+  ```ruby
+  Airbrake::Sidekiq::RetryableJobsFilter.new(max_retries: 10)
+  ```
+
+  It configures the amount of allowed job retries that won't trigger an Airbrake
+  notification. After it's exhausted, Airbrake will start sending errors again
+  ([#979](https://github.com/airbrake/airbrake/pull/979))
+
 ### [v9.3.0][v9.3.0] (June 25, 2019)
 
 * Fixed `notice.stash[:rack_request]` not being attached for exceptions that are

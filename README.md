@@ -340,12 +340,27 @@ require 'airbrake/sidekiq'
 If you required Sidekiq before Airbrake, then you don't even have to `require`
 anything manually and it should just work out-of-box.
 
+
+#### Airbrake::Sidekiq::RetryableJobsFilter
+
 By default, Airbrake notifies of all errors, including reoccurring errors during
 a retry attempt. To filter out these errors and only get notified when Sidekiq
 has exhausted its retries you can add the `RetryableJobsFilter`:
 
 ```ruby
 Airbrake.add_filter(Airbrake::Sidekiq::RetryableJobsFilter.new)
+```
+
+The filter accepts an optional `max_retries` parameter. When set, it configures
+the amount of allowed job retries that won't trigger an Airbrake notification.
+Normally, this parameter is configured by the job itself but this setting takes
+the highest precedence and forces the value upon all jobs, so be careful when
+you use it. By default, it's not set.
+
+```ruby
+Airbrake.add_filter(
+  Airbrake::Sidekiq::RetryableJobsFilter.new(max_retries: 10)
+)
 ```
 
 ### ActiveJob
