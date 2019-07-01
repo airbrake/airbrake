@@ -175,7 +175,6 @@ Consult the
 [example application](https://github.com/kyrylo/airbrake-ruby-issue108), which
 was created to show how to configure `filter_parameters`.
 
-
 ##### filter_parameters dot notation warning
 
 The dot notation introduced in [rails/pull/13897][rails-13897] for
@@ -183,6 +182,28 @@ The dot notation introduced in [rails/pull/13897][rails-13897] for
 performance reasons. Instead, simply specify the `code` key. If you have a
 strong opinion on this, leave a comment in
 the [dedicated issue][rails-sub-keys].
+
+##### Logging
+
+In new Rails apps, by default, all the Airbrake logs are written into
+`log/airbrake.log`. In older versions we used to write to wherever
+`Rails.logger` writes. If you wish to upgrade your app to the new behaviour,
+please configure your logger the following way:
+
+```ruby
+c.logger =
+  if ENV['RAILS_LOG_TO_STDOUT'].present?
+    Logger.new(STDOUT, level: Rails.logger.level)
+  else
+    Logger.new(
+      File.join(Rails.root, 'log', 'airbrake.log', level: Rails.logger.level)
+    )
+  end
+```
+
+Note the `RAILS_LOG_TO_STDOUT` environment variable. This variable is supported
+by Rails 5+ only. When set, it would redirect all `Rails.logger` (and
+`Airbrake.logger`) output to STDOUT, despite the configured logger.
 
 ### Sinatra
 
