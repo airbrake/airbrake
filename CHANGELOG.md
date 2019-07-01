@@ -13,6 +13,13 @@ Airbrake Changelog
   It configures the amount of allowed job retries that won't trigger an Airbrake
   notification. After it's exhausted, Airbrake will start sending errors again
   ([#979](https://github.com/airbrake/airbrake/pull/979))
+* Rails: started logging to `airbrake.log` by default. This affects only new
+  Rails apps. Apps that already use Airbrake have to update the logger manually
+  (not mandatory). Please consult README for instructions
+  ([#986](https://github.com/airbrake/airbrake/pull/986))
+* Added support for `RAILS_LOG_TO_STDOUT`. This variable redirects all Airbrake
+  logging to STDOUT, despite the configured logger
+  ([#986](https://github.com/airbrake/airbrake/pull/986))
 
 ### [v9.3.0][v9.3.0] (June 25, 2019)
 
