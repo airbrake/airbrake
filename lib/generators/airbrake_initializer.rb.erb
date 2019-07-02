@@ -38,7 +38,7 @@ Airbrake.configure do |c|
       Logger.new(STDOUT, level: Rails.logger.level)
     else
       Logger.new(
-        File.join(Rails.root, 'log', 'airbrake.log'),
+        Rails.root.join('log', 'airbrake.log'),
         level: Rails.logger.level
       )
     end
