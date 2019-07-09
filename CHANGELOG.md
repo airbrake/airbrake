@@ -31,7 +31,10 @@ Airbrake Changelog
   ([#980](https://github.com/airbrake/airbrake/pull/980))
 * Started depending on airbrake-ruby
   [v4.5.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v4.5.0) and
-  higher ([#982](https://github.com/airbrake/airbrake/pull/982))
+  higher ([#982](https://github.com/airbrake/airbrake/pull/982)).
+  **IMPORTANT:** in this update we enabled `performance_stats` by default. If
+  you wish to disable it, set `config.performance_stats = false`
+  ([#485](https://github.com/airbrake/airbrake-ruby/pull/485))
 
 
 ### [v9.2.2][v9.2.2] (May 10, 2019)
