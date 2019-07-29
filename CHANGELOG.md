@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v9.4.0][v9.4.0] (July 29, 2019)
+
 * Added the new `max_retries` optional parameter to
   `Airbrake::Sidekiq::RetryableJobsFilter`:
 
@@ -706,3 +708,4 @@ Airbrake Changelog
 [v9.2.1]: https://github.com/airbrake/airbrake/releases/tag/v9.2.1
 [v9.2.2]: https://github.com/airbrake/airbrake/releases/tag/v9.2.2
 [v9.3.0]: https://github.com/airbrake/airbrake/releases/tag/v9.3.0
+[v9.4.0]: https://github.com/airbrake/airbrake/releases/tag/v9.4.0
