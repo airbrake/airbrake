@@ -196,7 +196,7 @@ c.logger =
     Logger.new(STDOUT, level: Rails.logger.level)
   else
     Logger.new(
-      File.join(Rails.root, 'log', 'airbrake.log', level: Rails.logger.level)
+      File.join(Rails.root, 'log', 'airbrake.log'), level: Rails.logger.level
     )
   end
 ```
