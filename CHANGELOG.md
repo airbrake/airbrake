@@ -3,6 +3,12 @@ Airbrake Changelog
 
 ### master
 
+* Started depending on airbrake-ruby
+  [v4.6.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v4.6.0) and
+  higher ([#982](https://github.com/airbrake/airbrake/pull/982))
+* Disabled SQL query collection by default because it's in alpha
+  ([#982](https://github.com/airbrake/airbrake/pull/982))
+
 ### [v9.4.0][v9.4.0] (July 29, 2019)
 
 * Added the new `max_retries` optional parameter to

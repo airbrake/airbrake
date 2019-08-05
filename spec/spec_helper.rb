@@ -23,6 +23,7 @@ Airbrake.configure do |c|
   c.workers = 5
   c.performance_stats = true
   c.performance_stats_flush_period = 1
+  c.query_stats = true
 end
 
 RSpec.configure do |c|
