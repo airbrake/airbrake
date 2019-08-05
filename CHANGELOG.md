@@ -7,9 +7,9 @@ Airbrake Changelog
 
 * Started depending on airbrake-ruby
   [v4.6.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v4.6.0) and
-  higher ([#982](https://github.com/airbrake/airbrake/pull/982))
+  higher ([#995](https://github.com/airbrake/airbrake/pull/995))
 * Disabled SQL query collection by default because it's in alpha
-  ([#982](https://github.com/airbrake/airbrake/pull/982))
+  ([#995](https://github.com/airbrake/airbrake/pull/995))
 
 ### [v9.4.0][v9.4.0] (July 29, 2019)
 
