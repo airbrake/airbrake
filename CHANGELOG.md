@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v9.4.1][v9.4.1] (August 5, 2019)
+
 * Started depending on airbrake-ruby
   [v4.6.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v4.6.0) and
   higher ([#982](https://github.com/airbrake/airbrake/pull/982))
@@ -715,3 +717,4 @@ Airbrake Changelog
 [v9.2.2]: https://github.com/airbrake/airbrake/releases/tag/v9.2.2
 [v9.3.0]: https://github.com/airbrake/airbrake/releases/tag/v9.3.0
 [v9.4.0]: https://github.com/airbrake/airbrake/releases/tag/v9.4.0
+[v9.4.1]: https://github.com/airbrake/airbrake/releases/tag/v9.4.1
