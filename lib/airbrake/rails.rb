@@ -99,7 +99,7 @@ module Airbrake
           require 'airbrake/rails/active_record'
           include Airbrake::Rails::ActiveRecord
 
-          if defined?(ActiveRecord) && Airbrake::Config.instance.performance_stats
+          if defined?(ActiveRecord) && Airbrake::Config.instance.query_stats
             # Send SQL queries.
             require 'airbrake/rails/active_record_subscriber'
             ActiveSupport::Notifications.subscribe(
