@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Rails: engine routes are now being marked with the engine name prefix
+  ([#997](https://github.com/airbrake/airbrake/pull/997))
+
 ### [v9.4.1][v9.4.1] (August 5, 2019)
 
 * Started depending on airbrake-ruby
