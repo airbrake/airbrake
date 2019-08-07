@@ -8,6 +8,8 @@ module Airbrake
       # @see https://github.com/rails/rails/issues/8987
       HTML_RESPONSE_WILDCARD = "*/*".freeze
 
+      include Airbrake::Loggable
+
       def initialize(*args)
         @event = ActiveSupport::Notifications::Event.new(*args)
       end
@@ -62,6 +64,10 @@ module Airbrake
           status = 500 if status == 0
 
           return status
+        end
+
+        logger.error do
+          "#{Airbrake::LOG_LABEL} unknown status code for: #{@event.payload}"
         end
 
         0
