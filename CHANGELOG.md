@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Rails: report unauthorized requests properly. Instead of 0 HTTP code the
+  library sends 401 now ([#997](https://github.com/airbrake/airbrake/pull/997))
+
 ### [v9.4.2][v9.4.2] (August 7, 2019)
 
 * Rails: engine routes are now being marked with the engine name prefix

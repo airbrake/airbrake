@@ -66,11 +66,13 @@ module Airbrake
           return status
         end
 
-        logger.error do
-          "#{Airbrake::LOG_LABEL} unknown status code for: #{@event.payload}"
-        end
-
-        0
+        # The ActiveSupport event doesn't have status only in two cases:
+        #   - an exception was thrown
+        #   - unauthorized access
+        # We have already handled the exception so what's left is unauthorized
+        # access. There's no way to know for sure it's unauthorized access, so
+        # we are rather optimistic here.
+        401
       end
 
       def duration
