@@ -191,19 +191,8 @@ In new Rails apps, by default, all the Airbrake logs are written into
 please configure your logger the following way:
 
 ```ruby
-c.logger =
-  if ENV['RAILS_LOG_TO_STDOUT'].present?
-    Logger.new(STDOUT, level: Rails.logger.level)
-  else
-    Logger.new(
-      File.join(Rails.root, 'log', 'airbrake.log'), level: Rails.logger.level
-    )
-  end
+c.logger = Airbrake::Rails.logger
 ```
-
-Note the `RAILS_LOG_TO_STDOUT` environment variable. This variable is supported
-by Rails 5+ only. When set, it would redirect all `Rails.logger` (and
-`Airbrake.logger`) output to STDOUT, despite the configured logger.
 
 ### Sinatra
 

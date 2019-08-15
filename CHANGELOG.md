@@ -3,6 +3,16 @@ Airbrake Changelog
 
 ### master
 
+* Fixed broken `bundle exec rake airbrake:deploy`
+  ([#1003](https://github.com/airbrake/airbrake/pull/1003))
+* Introduced `Airbrake::Rails.logger`, which replaces the old way of configuring
+  Rails apps. The logging setup becomes as simple as
+  ([#1003](https://github.com/airbrake/airbrake/pull/1003)):
+
+  ```ruby
+  c.logger = Airbrake::Rails.logger
+  ```
+
 ### [v9.4.3][v9.4.3] (August 8, 2019)
 
 * Rails: report unauthorized requests properly. Instead of 0 HTTP code the
