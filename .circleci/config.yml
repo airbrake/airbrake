@@ -25,6 +25,10 @@ references:
     run:
       name: Test Rails 3.2
       command: bundle exec appraisal rails-3.2 rake spec:integration:rails
+  rails41: &rails41
+    run:
+      name: Test Rails 4.1
+      command: bundle exec appraisal rails-4.1 rake spec:integration:rails
   rails42: &rails42
     run:
       name: Test Rails 4.2
@@ -71,6 +75,7 @@ jobs:
       - <<: *appraisal_install
       - <<: *unit
       - <<: *rails32
+      - <<: *rails41
       - <<: *rails42
       - <<: *sinatra
       - <<: *rack
@@ -87,6 +92,7 @@ jobs:
       - <<: *appraisal_install
       - <<: *unit
       - <<: *rails32
+      - <<: *rails41
       - <<: *rails42
       - <<: *rails50
       - <<: *rails51
@@ -103,6 +109,7 @@ jobs:
       - <<: *appraisal_install
       - <<: *unit
       - <<: *rails32
+      - <<: *rails41
       - <<: *rails42
       - <<: *rails50
       - <<: *rails51
