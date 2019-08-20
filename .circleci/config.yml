@@ -29,7 +29,7 @@ references:
     run:
       name: Test Rails 4.2
       command: bundle exec appraisal rails-4.2 rake spec:integration:rails
-  rails41: &rails50
+  rails50: &rails50
     run:
       name: Test Rails 5.0
       command: bundle exec appraisal rails-5.0 rake spec:integration:rails
@@ -88,6 +88,7 @@ jobs:
       - <<: *unit
       - <<: *rails32
       - <<: *rails42
+      - <<: *rails50
       - <<: *rails51
       - <<: *rails52
       - <<: *sinatra
@@ -103,6 +104,7 @@ jobs:
       - <<: *unit
       - <<: *rails32
       - <<: *rails42
+      - <<: *rails50
       - <<: *rails51
       - <<: *rails52
       - <<: *sinatra
@@ -118,6 +120,7 @@ jobs:
       - <<: *unit
       - <<: *rails32
       - <<: *rails42
+      - <<: *rails50
       - <<: *rails51
       - <<: *rails52
       - <<: *sinatra
@@ -148,6 +151,7 @@ jobs:
       - <<: *unit
       - <<: *rails32
       - <<: *rails42
+      - <<: *rails50
       - <<: *rails51
       - <<: *rails52
       - <<: *sinatra
