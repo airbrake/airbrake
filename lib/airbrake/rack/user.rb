@@ -27,6 +27,8 @@ module Airbrake
         return unless controller.respond_to?(:current_user, true)
         return unless [-1, 0].include?(controller.method(:current_user).arity)
         controller.__send__(:current_user)
+      rescue Exception => e
+        nil
       end
       private_class_method :try_current_user
 

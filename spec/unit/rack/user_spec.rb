@@ -60,6 +60,15 @@ RSpec.describe Airbrake::Rack::User do
         end
       end
 
+      context 'and it throw exception' do
+        it 'returns nil' do
+          allow(controller).to receive(:current_user) { raise 'Error' }
+
+          retval = described_class.extract(env)
+          expect(retval).to be_nil
+        end
+      end
+
       context "and it is not nil" do
         it "returns the wrapped user" do
           allow(controller).to receive(:current_user) { user }
