@@ -22,6 +22,7 @@ module Airbrake
         new(user) if user
       end
 
+      # rubocop:disable Lint/RescueException
       def self.try_current_user(rack_env)
         controller = rack_env['action_controller.instance']
         return unless controller.respond_to?(:current_user, true)
@@ -30,6 +31,7 @@ module Airbrake
       rescue Exception => e
         nil
       end
+      # rubocop:enable Lint/RescueException
       private_class_method :try_current_user
 
       def initialize(user)
