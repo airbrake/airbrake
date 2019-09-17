@@ -32,7 +32,6 @@ module Airbrake
           nil
         end
       end
-
       private_class_method :try_current_user
 
       def initialize(user)
