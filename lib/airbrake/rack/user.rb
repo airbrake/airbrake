@@ -22,16 +22,17 @@ module Airbrake
         new(user) if user
       end
 
-      # rubocop:disable Lint/RescueException
       def self.try_current_user(rack_env)
         controller = rack_env['action_controller.instance']
         return unless controller.respond_to?(:current_user, true)
         return unless [-1, 0].include?(controller.method(:current_user).arity)
-        controller.__send__(:current_user)
-      rescue Exception => _e
-        nil
+        begin
+          controller.__send__(:current_user)
+        rescue Exception => _e # rubocop:disable Lint/RescueException
+          nil
+        end
       end
-      # rubocop:enable Lint/RescueException
+
       private_class_method :try_current_user
 
       def initialize(user)

@@ -60,9 +60,9 @@ RSpec.describe Airbrake::Rack::User do
         end
       end
 
-      context 'and it throw exception' do
+      context 'and when it throws an exception' do
         it 'returns nil' do
-          allow(controller).to receive(:current_user) { raise 'Error' }
+          allow(controller).to receive(:current_user).and_raise
 
           retval = described_class.extract(env)
           expect(retval).to be_nil
