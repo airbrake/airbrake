@@ -10,17 +10,17 @@ module Airbrake
       # A helper method for sending notices to Airbrake *asynchronously*.
       # Attaches information from the Rack env.
       # @see Airbrake#notify, #notify_airbrake_sync
-      def notify_airbrake(exception, params = {})
+      def notify_airbrake(exception, params = {}, &block)
         return unless (notice = build_notice(exception, params))
-        Airbrake.notify(notice, params)
+        Airbrake.notify(notice, params, &block)
       end
 
       # A helper method for sending notices to Airbrake *synchronously*.
       # Attaches information from the Rack env.
       # @see Airbrake#notify_sync, #notify_airbrake
-      def notify_airbrake_sync(exception, params = {})
+      def notify_airbrake_sync(exception, params = {}, &block)
         return unless (notice = build_notice(exception, params))
-        Airbrake.notify_sync(notice, params)
+        Airbrake.notify_sync(notice, params, &block)
       end
 
       # @param [Exception] exception

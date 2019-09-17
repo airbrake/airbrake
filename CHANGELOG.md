@@ -14,6 +14,8 @@ Airbrake Changelog
   ```
 * Exceptions occurring in `current_user` no longer crash the library
   ([#1007](https://github.com/airbrake/airbrake/pull/1007))
+* Rails controller helpers started supporting the block argument for notifying
+  ([#1010](https://github.com/airbrake/airbrake/pull/1010))
 
 ### [v9.4.3][v9.4.3] (August 8, 2019)
 
