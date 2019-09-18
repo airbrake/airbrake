@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v9.4.4][v9.4.4] (September 18, 2019)
+
 * Fixed broken `bundle exec rake airbrake:deploy`
   ([#1003](https://github.com/airbrake/airbrake/pull/1003))
 * Introduced `Airbrake::Rails.logger`, which replaces the old way of configuring
@@ -744,3 +746,4 @@ Airbrake Changelog
 [v9.4.1]: https://github.com/airbrake/airbrake/releases/tag/v9.4.1
 [v9.4.2]: https://github.com/airbrake/airbrake/releases/tag/v9.4.2
 [v9.4.3]: https://github.com/airbrake/airbrake/releases/tag/v9.4.3
+[v9.4.4]: https://github.com/airbrake/airbrake/releases/tag/v9.4.4
