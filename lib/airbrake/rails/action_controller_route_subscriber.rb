@@ -3,6 +3,12 @@ require 'airbrake/rails/app'
 
 module Airbrake
   module Rails
+    # @return [String]
+    CONTROLLER_KEY = 'controller'.freeze
+
+    # @return [String]
+    ACTION_KEY = 'action'.freeze
+
     # ActionControllerRouteSubscriber sends route stat information, including
     # performance data.
     #
@@ -31,8 +37,8 @@ module Airbrake
 
       def find_route(params)
         @app.routes.find do |route|
-          route.controller == params['controller'] &&
-            route.action == params['action']
+          route.controller == params[CONTROLLER_KEY] &&
+            route.action == params[ACTION_KEY]
         end
       end
     end
