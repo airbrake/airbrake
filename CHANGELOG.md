@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed duplicate APM data that we used to send in Rails apps for some
+  controller actions ([#1013](https://github.com/airbrake/airbrake/pull/1013))
+
 ### [v9.4.4][v9.4.4] (September 18, 2019)
 
 * Fixed broken `bundle exec rake airbrake:deploy`
