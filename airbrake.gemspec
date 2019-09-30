@@ -57,6 +57,9 @@ DESC
   # Parallel above v1.13.0 doesn't support Ruby v2.1 and lower (and we do).
   s.add_development_dependency 'parallel', '= 1.13.0'
 
+  # minitest > 5.12.0 wants Ruby >= 2.2
+  s.add_development_dependency 'minitest', '= 5.11.3'
+
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
     s.add_development_dependency 'sidekiq', '~> 5'
   end
