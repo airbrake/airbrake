@@ -44,7 +44,7 @@ module Airbrake
 
       # rubocop:disable Metrics/BlockLength
       initializer('airbrake.action_controller') do
-        ActiveSupport.on_load(:action_controller) do
+        ActiveSupport.on_load(:action_controller, run_once: true) do
           # Patches ActionController with methods that allow us to retrieve
           # interesting request data. Appends that information to notices.
           require 'airbrake/rails/action_controller'
@@ -93,7 +93,7 @@ module Airbrake
       # rubocop:enable Metrics/BlockLength
 
       initializer('airbrake.active_record') do
-        ActiveSupport.on_load(:active_record) do
+        ActiveSupport.on_load(:active_record, run_once: true) do
           # Reports exceptions occurring in some bugged ActiveRecord callbacks.
           # Applicable only to the versions of Rails lower than 4.2.
           require 'airbrake/rails/active_record'
@@ -117,7 +117,7 @@ module Airbrake
       end
 
       initializer('airbrake.active_job') do
-        ActiveSupport.on_load(:active_job) do
+        ActiveSupport.on_load(:active_job, run_once: true) do
           # Reports exceptions occurring in ActiveJob jobs.
           require 'airbrake/rails/active_job'
           include Airbrake::Rails::ActiveJob
@@ -125,7 +125,7 @@ module Airbrake
       end
 
       initializer('airbrake.action_cable') do
-        ActiveSupport.on_load(:action_cable) do
+        ActiveSupport.on_load(:action_cable, run_once: true) do
           # Reports exceptions occurring in ActionCable connections.
           require 'airbrake/rails/action_cable'
         end
