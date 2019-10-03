@@ -3,8 +3,15 @@ Airbrake Changelog
 
 ### master
 
+### [v9.4.5][v9.4.5] (October 3, 2019)
+
 * Fixed duplicate APM data that we used to send in Rails apps for some
   controller actions ([#1013](https://github.com/airbrake/airbrake/pull/1013))
+* Memory usage improvements
+  ([#1012](https://github.com/airbrake/airbrake/pull/1012))
+* Started depending on airbrake-ruby
+  [v4.7.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v4.7.0) and
+  higher ([#1015](https://github.com/airbrake/airbrake/pull/1015))
 
 ### [v9.4.4][v9.4.4] (September 18, 2019)
 
@@ -750,3 +757,4 @@ Airbrake Changelog
 [v9.4.2]: https://github.com/airbrake/airbrake/releases/tag/v9.4.2
 [v9.4.3]: https://github.com/airbrake/airbrake/releases/tag/v9.4.3
 [v9.4.4]: https://github.com/airbrake/airbrake/releases/tag/v9.4.4
+[v9.4.5]: https://github.com/airbrake/airbrake/releases/tag/v9.4.5
