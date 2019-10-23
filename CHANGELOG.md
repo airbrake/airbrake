@@ -3,9 +3,12 @@ Airbrake Changelog
 
 ### master
 
+### [v9.5.0][v9.5.0] (October 23, 2019)
+
 * Started depending on airbrake-ruby
   [v4.8.0](https://github.com/airbrake/airbrake-ruby/releases/tag/v4.8.0) and
   higher ([#1016](https://github.com/airbrake/airbrake/pull/1016))
+  **This update enables `query_stats` by default.**
 
 ### [v9.4.5][v9.4.5] (October 3, 2019)
 
