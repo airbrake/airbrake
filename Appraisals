@@ -1,47 +1,49 @@
-appraise 'rails-3.2' do
-  gem 'rails', '~> 3.2.22.5'
-  gem 'warden', '~> 1.2.3'
+unless Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.7.0')
+  appraise 'rails-3.2' do
+    gem 'rails', '~> 3.2.22.5'
+    gem 'warden', '~> 1.2.3'
 
-  gem 'activerecord-jdbcsqlite3-adapter', '~> 1.3.18', platforms: :jruby
-  gem 'sqlite3', '~> 1.3.11', platforms: %i[mri rbx]
+    gem 'activerecord-jdbcsqlite3-adapter', '~> 1.3.18', platforms: :jruby
+    gem 'sqlite3', '~> 1.3.11', platforms: %i[mri rbx]
 
-  gem 'resque', '~> 1.25.2'
-  gem 'resque_spec', github: 'airbrake/resque_spec'
+    gem 'resque', '~> 1.25.2'
+    gem 'resque_spec', github: 'airbrake/resque_spec'
 
-  gem 'delayed_job_active_record', '~> 4.1.0'
-  gem 'sprockets', '~> 2.2'
-end
+    gem 'delayed_job_active_record', '~> 4.1.0'
+    gem 'sprockets', '~> 2.2'
+  end
 
-appraise 'rails-4.1' do
-  gem 'rails', '~> 4.1.16'
-  gem 'warden', '~> 1.2.3'
+  appraise 'rails-4.1' do
+    gem 'rails', '~> 4.1.16'
+    gem 'warden', '~> 1.2.3'
 
-  gem 'activerecord-jdbcsqlite3-adapter', '~> 1.3.18', platforms: :jruby
-  gem 'sqlite3', '~> 1.3.11', platforms: %i[mri rbx]
+    gem 'activerecord-jdbcsqlite3-adapter', '~> 1.3.18', platforms: :jruby
+    gem 'sqlite3', '~> 1.3.11', platforms: %i[mri rbx]
 
-  gem 'resque', '~> 1.25.2'
-  gem 'resque_spec', github: 'airbrake/resque_spec'
+    gem 'resque', '~> 1.25.2'
+    gem 'resque_spec', github: 'airbrake/resque_spec'
 
-  gem 'delayed_job_active_record', '~> 4.1.0'
+    gem 'delayed_job_active_record', '~> 4.1.0'
 
-  gem 'mime-types', '~> 3.1'
-  gem 'sprockets', '~> 3.7'
-end
+    gem 'mime-types', '~> 3.1'
+    gem 'sprockets', '~> 3.7'
+  end
 
-appraise 'rails-4.2' do
-  gem 'rails', '~> 4.2.10'
-  gem 'warden', '~> 1.2.3'
+  appraise 'rails-4.2' do
+    gem 'rails', '~> 4.2.10'
+    gem 'warden', '~> 1.2.3'
 
-  gem 'activerecord-jdbcsqlite3-adapter', '~> 1.3.18', platforms: :jruby
-  gem 'sqlite3', '~> 1.3.11', platforms: %i[mri rbx]
+    gem 'activerecord-jdbcsqlite3-adapter', '~> 1.3.18', platforms: :jruby
+    gem 'sqlite3', '~> 1.3.11', platforms: %i[mri rbx]
 
-  gem 'resque', '~> 1.25.2'
-  gem 'resque_spec', github: 'airbrake/resque_spec'
+    gem 'resque', '~> 1.25.2'
+    gem 'resque_spec', github: 'airbrake/resque_spec'
 
-  gem 'delayed_job_active_record', '~> 4.1.0'
+    gem 'delayed_job_active_record', '~> 4.1.0'
 
-  gem 'mime-types', '~> 3.1'
-  gem 'sprockets', '~> 3.7'
+    gem 'mime-types', '~> 3.1'
+    gem 'sprockets', '~> 3.7'
+  end
 end
 
 # Rails 5+ supports only modern Rubies (2.2.2+)
