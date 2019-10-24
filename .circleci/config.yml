@@ -163,6 +163,20 @@ jobs:
       - <<: *rails52
       - <<: *sinatra
       - <<: *rack
+  "ruby-2.7":
+    docker:
+      - image: circleci/ruby:2.7.0-preview1
+    working_directory: ~/airbrake
+    steps:
+      - <<: *repo_restore_cache
+      - <<: *bundle_install
+      - <<: *appraisal_install
+      - <<: *unit
+      - <<: *rails50
+      - <<: *rails51
+      - <<: *rails52
+      - <<: *sinatra
+      - <<: *rack
   "jruby-9.2.0.0":
     docker:
       - image: circleci/jruby:9.2.0.0
@@ -201,6 +215,9 @@ workflows:
           requires:
             - lint
       - "ruby-2.6":
+          requires:
+            - lint
+      - "ruby-2.7":
           requires:
             - lint
       - "jruby-9.2.0.0":
