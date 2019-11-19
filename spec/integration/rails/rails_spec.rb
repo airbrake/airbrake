@@ -97,7 +97,7 @@ RSpec.describe "Rails integration specs" do
 
   describe(
     "Active Record callbacks",
-    skip: Gem::Version.new(Rails.version) < Gem::Version.new('5.1.0')
+    skip: Gem::Version.new(Rails.version) > Gem::Version.new('4.2')
   ) do
     it "reports exceptions in after_commit callbacks" do
       expect(Airbrake).to receive(:notify).with(
