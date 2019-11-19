@@ -60,6 +60,9 @@ DESC
   # minitest > 5.12.0 wants Ruby >= 2.2
   s.add_development_dependency 'minitest', '= 5.11.3'
 
+  # rack-cache > 1.9.0 wants Ruby >= 2.3.
+  s.add_development_dependency 'rack-cache', '= 1.9.0'
+
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
     s.add_development_dependency 'sidekiq', '~> 5'
   end
