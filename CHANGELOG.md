@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v9.5.1][v9.5.1] (November 25, 2019)
+
 * Rails: Stopped including the `after_commit` ActiveRecord patch for Rails
   versions above 4.2 (because they are irrelevant ant cause buggy behaviour)
   ([#1023](https://github.com/airbrake/airbrake/pull/1023))
@@ -772,3 +774,5 @@ Airbrake Changelog
 [v9.4.3]: https://github.com/airbrake/airbrake/releases/tag/v9.4.3
 [v9.4.4]: https://github.com/airbrake/airbrake/releases/tag/v9.4.4
 [v9.4.5]: https://github.com/airbrake/airbrake/releases/tag/v9.4.5
+[v9.5.0]: https://github.com/airbrake/airbrake/releases/tag/v9.5.0
+[v9.5.1]: https://github.com/airbrake/airbrake/releases/tag/v9.5.1
