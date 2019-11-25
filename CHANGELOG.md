@@ -6,6 +6,9 @@ Airbrake Changelog
 * Rails: Stopped including the `after_commit` ActiveRecord patch for Rails
   versions above 4.2 (because they are irrelevant ant cause buggy behaviour)
   ([#1023](https://github.com/airbrake/airbrake/pull/1023))
+* Rails: improved support for route aliases. Fixed bug where an aliased route
+  would be reported as two separate routes. Now it is recognized as the same
+  route ([#1026](https://github.com/airbrake/airbrake/pull/1026))
 
 ### [v9.5.0][v9.5.0] (October 23, 2019)
 

@@ -14,26 +14,13 @@ module Airbrake
 
         notice[:context][:route] =
           if action_dispatch_request?(request)
-            rails_route(request)
+            Airbrake::Rails::App.recognize_route(request)
           elsif sinatra_request?(request)
             sinatra_route(request)
           end
       end
 
       private
-
-      def rails_route(request)
-        ::Rails.application.routes.router.recognize(request) do |route, _parameters|
-          # Rails can recognize multiple routes for the given request. For
-          # example, if we visit /users/2/edit, then Rails sees these routes:
-          #   * "/users/:id/edit(.:format)"
-          #   *  "/"
-          #
-          # We return the first route as, what it seems, the most optimal
-          # approach.
-          return route.path.spec.to_s
-        end
-      end
 
       def sinatra_route(request)
         return unless (route = request.env['sinatra.route'])

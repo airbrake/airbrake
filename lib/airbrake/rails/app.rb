@@ -7,6 +7,19 @@ module Airbrake
     class App
       Route = Struct.new(:path, :controller, :action)
 
+      def self.recognize_route(request)
+        ::Rails.application.routes.router.recognize(request) do |route, _parameters|
+          # Rails can recognize multiple routes for the given request. For
+          # example, if we visit /users/2/edit, then Rails sees these routes:
+          #   * "/users/:id/edit(.:format)"
+          #   *  "/"
+          #
+          # We return the first route as, what it seems, the most optimal
+          # approach.
+          return route.path.spec.to_s
+        end
+      end
+
       def routes
         @routes ||= app_routes.merge(engine_routes).flat_map do |(engine_name, routes)|
           routes.map { |rails_route| build_route(engine_name, rails_route) }
