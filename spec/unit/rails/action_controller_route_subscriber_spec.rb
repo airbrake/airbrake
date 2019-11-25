@@ -28,7 +28,6 @@ RSpec.describe Airbrake::Rails::ActionControllerRouteSubscriber do
 
       before do
         allow(app).to receive(:routes).and_return(routes)
-        allow(event).to receive(:params).and_return(params)
         allow(event).to receive(:method).and_return('HEAD')
         allow(event).to receive(:response_type).and_return(:html)
 
@@ -38,8 +37,9 @@ RSpec.describe Airbrake::Rails::ActionControllerRouteSubscriber do
       after { Airbrake::Rack::RequestStore.clear }
 
       context "and when the route can be found" do
-        let(:params) do
-          OpenStruct.new(controller: 'DummyController', action: 'crash')
+        before do
+          allow(Airbrake::Rails::App)
+            .to receive(:recognize_route).and_return('/crash')
         end
 
         it "stores a route in the request store under :routes" do
@@ -50,8 +50,8 @@ RSpec.describe Airbrake::Rails::ActionControllerRouteSubscriber do
       end
 
       context "and when the event controller can't be found" do
-        let(:params) do
-          OpenStruct.new(controller: 'BananaController', action: 'crash')
+        before do
+          allow(Airbrake::Rails::App).to receive(:recognize_route).and_return(nil)
         end
 
         it "doesn't store any routes in the request store under :routes" do
@@ -61,8 +61,8 @@ RSpec.describe Airbrake::Rails::ActionControllerRouteSubscriber do
       end
 
       context "and when the event action can't be found" do
-        let(:params) do
-          OpenStruct.new(controller: 'DummyController', action: 'banana')
+        before do
+          allow(Airbrake::Rails::App).to receive(:recognize_route).and_return(nil)
         end
 
         it "doesn't store any routes in the request store under :routes" do

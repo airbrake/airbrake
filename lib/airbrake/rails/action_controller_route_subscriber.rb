@@ -23,23 +23,16 @@ module Airbrake
         return unless (routes = Airbrake::Rack::RequestStore[:routes])
 
         event = Airbrake::Rails::Event.new(*args)
-        route = find_route(event.params)
+        route = Airbrake::Rails::App.recognize_route(
+          Airbrake::Rack::RequestStore[:request]
+        )
         return unless route
 
-        routes[route.path] = {
+        routes[route] = {
           method: event.method,
           response_type: event.response_type,
           groups: {}
         }
-      end
-
-      private
-
-      def find_route(params)
-        @app.routes.find do |route|
-          route.controller == params[CONTROLLER_KEY] &&
-            route.action == params[ACTION_KEY]
-        end
       end
     end
   end
