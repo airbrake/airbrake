@@ -1,3 +1,5 @@
+require 'airbrake/rails/app'
+
 module Airbrake
   module Rack
     # Adds route slugs to context/route.
