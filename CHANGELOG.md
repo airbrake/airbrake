@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Rails: fixed engine support for routes which became broken since v9.5.1
+  ([#1028](https://github.com/airbrake/airbrake/pull/1028))
+
 ### [v9.5.1][v9.5.1] (November 25, 2019)
 
 * Rails: Stopped including the `after_commit` ActiveRecord patch for Rails
