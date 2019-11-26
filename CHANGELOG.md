@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v9.5.2][v9.5.2] (November 26, 2019)
+
 * Rails: fixed engine support for routes which became broken since v9.5.1
   ([#1028](https://github.com/airbrake/airbrake/pull/1028))
 
@@ -779,3 +781,4 @@ Airbrake Changelog
 [v9.4.5]: https://github.com/airbrake/airbrake/releases/tag/v9.4.5
 [v9.5.0]: https://github.com/airbrake/airbrake/releases/tag/v9.5.0
 [v9.5.1]: https://github.com/airbrake/airbrake/releases/tag/v9.5.1
+[v9.5.2]: https://github.com/airbrake/airbrake/releases/tag/v9.5.2
