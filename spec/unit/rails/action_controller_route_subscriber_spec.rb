@@ -22,12 +22,7 @@ RSpec.describe Airbrake::Rails::ActionControllerRouteSubscriber do
     end
 
     context "when request store has the :routes key" do
-      let(:routes) do
-        [Airbrake::Rails::App::Route.new('/crash', 'DummyController', 'crash')]
-      end
-
       before do
-        allow(app).to receive(:routes).and_return(routes)
         allow(event).to receive(:method).and_return('HEAD')
         allow(event).to receive(:response_type).and_return(:html)
 
@@ -38,8 +33,11 @@ RSpec.describe Airbrake::Rails::ActionControllerRouteSubscriber do
 
       context "and when the route can be found" do
         before do
-          allow(Airbrake::Rails::App)
-            .to receive(:recognize_route).and_return('/crash')
+          route = double
+          allow(route).to receive_message_chain('app.app') { nil }
+          allow(route).to receive_message_chain('path.spec.to_s') { '/crash' }
+
+          allow(Airbrake::Rails::App).to receive(:recognize_route).and_return(route)
         end
 
         it "stores a route in the request store under :routes" do
@@ -49,18 +47,24 @@ RSpec.describe Airbrake::Rails::ActionControllerRouteSubscriber do
         end
       end
 
-      context "and when the event controller can't be found" do
+      context "and when the route belongs to an engine" do
         before do
-          allow(Airbrake::Rails::App).to receive(:recognize_route).and_return(nil)
+          route = double
+          allow(route).to receive_message_chain('app.app.engine_name') { 'engine' }
+          allow(route).to receive_message_chain('path.spec.to_s') { '/crash' }
+
+          allow(Airbrake::Rails::App).to receive(:recognize_route).and_return(route)
         end
 
-        it "doesn't store any routes in the request store under :routes" do
+        it "stores a route in the request store under :routes with engine info" do
           subject.call(event_params)
-          expect(Airbrake::Rack::RequestStore[:routes]).to be_empty
+          expect(Airbrake::Rack::RequestStore[:routes]).to eq(
+            'engine#/crash' => { method: 'HEAD', response_type: :html, groups: {} }
+          )
         end
       end
 
-      context "and when the event action can't be found" do
+      context "and when the route can't be found" do
         before do
           allow(Airbrake::Rails::App).to receive(:recognize_route).and_return(nil)
         end

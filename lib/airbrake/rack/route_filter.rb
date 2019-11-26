@@ -14,13 +14,18 @@ module Airbrake
 
         notice[:context][:route] =
           if action_dispatch_request?(request)
-            Airbrake::Rails::App.recognize_route(request)
+            rails_route(request)
           elsif sinatra_request?(request)
             sinatra_route(request)
           end
       end
 
       private
+
+      def rails_route(request)
+        return unless (route = Airbrake::Rails::App.recognize_route(request))
+        route.path.spec.to_s
+      end
 
       def sinatra_route(request)
         return unless (route = request.env['sinatra.route'])
