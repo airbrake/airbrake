@@ -33,34 +33,15 @@ RSpec.describe Airbrake::Rails::ActionControllerRouteSubscriber do
 
       context "and when the route can be found" do
         before do
-          route = double
-          allow(route).to receive_message_chain('app.app') { nil }
-          allow(route).to receive_message_chain('path.spec.to_s') { '/crash' }
-
-          allow(Airbrake::Rails::App).to receive(:recognize_route).and_return(route)
+          allow(Airbrake::Rails::App).to receive(:recognize_route).and_return(
+            Airbrake::Rails::App::Route.new('/crash')
+          )
         end
 
         it "stores a route in the request store under :routes" do
           subject.call(event_params)
           expect(Airbrake::Rack::RequestStore[:routes])
             .to eq('/crash' => { method: 'HEAD', response_type: :html, groups: {} })
-        end
-      end
-
-      context "and when the route belongs to an engine" do
-        before do
-          route = double
-          allow(route).to receive_message_chain('app.app.engine_name') { 'engine' }
-          allow(route).to receive_message_chain('path.spec.to_s') { '/crash' }
-
-          allow(Airbrake::Rails::App).to receive(:recognize_route).and_return(route)
-        end
-
-        it "stores a route in the request store under :routes with engine info" do
-          subject.call(event_params)
-          expect(Airbrake::Rack::RequestStore[:routes]).to eq(
-            'engine#/crash' => { method: 'HEAD', response_type: :html, groups: {} }
-          )
         end
       end
 

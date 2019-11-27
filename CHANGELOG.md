@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Rails APM: fixed bug when client sends a request that couldn't be tied to a
+  certain route ([#1032](https://github.com/airbrake/airbrake/issues/1032))
+
 ### [v9.5.3][v9.5.3] (November 27, 2019)
 
 * Fixed `uninitialized constant Airbrake::Rails::App`

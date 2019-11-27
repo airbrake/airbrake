@@ -26,7 +26,7 @@ module Airbrake
 
       def rails_route(request)
         return unless (route = Airbrake::Rails::App.recognize_route(request))
-        route.path.spec.to_s
+        route.path
       end
 
       def sinatra_route(request)
