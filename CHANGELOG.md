@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v9.5.4][v9.5.4] (November 27, 2019)
+
 * Rails APM: fixed bug when client sends a request that couldn't be tied to a
   certain route ([#1032](https://github.com/airbrake/airbrake/issues/1032))
 
@@ -791,3 +793,4 @@ Airbrake Changelog
 [v9.5.1]: https://github.com/airbrake/airbrake/releases/tag/v9.5.1
 [v9.5.2]: https://github.com/airbrake/airbrake/releases/tag/v9.5.2
 [v9.5.3]: https://github.com/airbrake/airbrake/releases/tag/v9.5.3
+[v9.5.4]: https://github.com/airbrake/airbrake/releases/tag/v9.5.4
