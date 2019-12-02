@@ -10,7 +10,10 @@ module Airbrake
       # @param [] request
       # @return [Airbrake::Rails::App::Route, nil]
       def self.recognize_route(request)
-        ::Rails.application.routes.router.recognize(request) do |route, _params|
+        # Duplicate `request` because `recognize` *can* strip the request's
+        # `path_info`, which results in broken engine links (when the engine has
+        # an isolated namespace).
+        ::Rails.application.routes.router.recognize(request.dup) do |route, _params|
           path =
             if route.app.respond_to?(:app) && route.app.app.respond_to?(:engine_name)
               "#{route.app.app.engine_name}##{route.path.spec}"

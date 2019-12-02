@@ -3,6 +3,11 @@ Airbrake Changelog
 
 ### master
 
+### [v9.5.5][v9.5.5] (December 2, 2019)
+
+* Rails APM: fixed issue with engine links when the enigne has an isolated
+  namespace ([#1035](https://github.com/airbrake/airbrake/issues/1035))
+
 ### [v9.5.4][v9.5.4] (November 27, 2019)
 
 * Rails APM: fixed bug when client sends a request that couldn't be tied to a
