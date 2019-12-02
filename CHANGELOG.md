@@ -799,3 +799,4 @@ Airbrake Changelog
 [v9.5.2]: https://github.com/airbrake/airbrake/releases/tag/v9.5.2
 [v9.5.3]: https://github.com/airbrake/airbrake/releases/tag/v9.5.3
 [v9.5.4]: https://github.com/airbrake/airbrake/releases/tag/v9.5.4
+[v9.5.5]: https://github.com/airbrake/airbrake/releases/tag/v9.5.5
