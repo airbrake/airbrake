@@ -3,31 +3,87 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
   require 'sidekiq/cli'
   require 'airbrake/sidekiq'
 
-  RSpec.describe "airbrake/sidekiq/error_handler" do
-    let(:endpoint) { 'https://api.airbrake.io/api/v3/projects/113743/notices' }
-
-    def wait_for_a_request_with_body(body)
-      wait_for(a_request(:post, endpoint).with(body: body)).to have_been_made.once
+  RSpec.describe Airbrake::Sidekiq::ErrorHandler do
+    let(:notices_endpoint) do
+      'https://api.airbrake.io/api/v3/projects/113743/notices'
     end
 
-    def call_handler
-      handler = Sidekiq.error_handlers.last
-      handler.call(
-        AirbrakeTestError.new('sidekiq error'),
-        'class' => 'HardSidekiqWorker', 'args' => %w[bango bongo],
-      )
+    let(:queues_endpoint) do
+      'https://api.airbrake.io/api/v5/projects/113743/queues-stats'
     end
 
     before do
-      stub_request(:post, endpoint).to_return(status: 201, body: '{}')
+      stub_request(:post, notices_endpoint).to_return(status: 201, body: '{}')
+      stub_request(:put, queues_endpoint).to_return(status: 201, body: '{}')
+
+      allow(Airbrake).to receive(:notify)
+      allow(Airbrake).to receive(:notify_queue)
     end
 
-    it "sends a notice to Airbrake" do
-      expect(call_handler).to be_a(Airbrake::Promise)
+    context "when the worker errors" do
+      let(:exception) { RuntimeError.new('sidekiq error') }
 
-      wait_for_a_request_with_body(/"message":"sidekiq\serror"/)
-      wait_for_a_request_with_body(/"params":{.*"args":\["bango","bongo"\]/)
-      wait_for_a_request_with_body(/"component":"sidekiq","action":"HardSidekiqWorker"/)
+      def call_handler
+        subject.call(
+          anything,
+          { 'class' => 'HardSidekiqWorker', 'args' => %w[bango bongo] },
+          'queue-name',
+        ) do
+          raise exception
+        end
+      rescue StandardError # rubocop:disable Lint/HandleExceptions
+        # Do nothing.
+      end
+
+      it "sends error" do
+        expect(Airbrake).to receive(:notify).with(
+          exception,
+          'args' => %w[bango bongo],
+          'class' => 'HardSidekiqWorker',
+        )
+        call_handler
+      end
+
+      it "sends component & action" do
+        expect(Airbrake).to receive(:notify) do |notice|
+          expect(notice[:context][:component]).to eq('sidekiq')
+          expect(notice[:context][:action]).to eq('123')
+        end
+        call_handler
+      end
+
+      it "sends queue info with positive error count" do
+        expect(Airbrake).to receive(:notify_queue).with(
+          queue: 'HardSidekiqWorker',
+          error_count: 1,
+        )
+        call_handler
+      end
+    end
+
+    context "when the worker finishes without an error" do
+      def call_handler
+        subject.call(
+          anything,
+          { 'class' => 'HardSidekiqWorker', 'args' => %w[bango bongo] },
+          'queue-name',
+        ) do
+          # Do nothing.
+        end
+      end
+
+      it "doesn't send a notice" do
+        expect(Airbrake).not_to receive(:notify)
+      end
+
+      it "sends a zero error count queue info with groups" do
+        expect(Airbrake).to receive(:notify_queue).with(
+          queue: 'HardSidekiqWorker',
+          error_count: 0,
+          groups: { 'other' => an_instance_of(Float) },
+        )
+        call_handler
+      end
     end
   end
 end
