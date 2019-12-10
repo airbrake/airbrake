@@ -16,20 +16,20 @@ module Airbrake
           # exist in Rails 5 anymore.
           app.config.middleware.insert_after(
             ActionDispatch::DebugExceptions,
-            Airbrake::Rack::Middleware
+            Airbrake::Rack::Middleware,
           )
         elsif defined?(::ActiveRecord::ConnectionAdapters::ConnectionManagement)
           # Insert after ConnectionManagement to avoid DB connection leakage:
           # https://github.com/airbrake/airbrake/pull/568
           app.config.middleware.insert_after(
             ::ActiveRecord::ConnectionAdapters::ConnectionManagement,
-            'Airbrake::Rack::Middleware'
+            'Airbrake::Rack::Middleware',
           )
         else
           # Insert after DebugExceptions for apps without ActiveRecord.
           app.config.middleware.insert_after(
             ActionDispatch::DebugExceptions,
-            'Airbrake::Rack::Middleware'
+            'Airbrake::Rack::Middleware',
           )
         end
       end
@@ -55,21 +55,21 @@ module Airbrake
             require 'airbrake/rails/action_controller_route_subscriber'
             ActiveSupport::Notifications.subscribe(
               'start_processing.action_controller',
-              Airbrake::Rails::ActionControllerRouteSubscriber.new
+              Airbrake::Rails::ActionControllerRouteSubscriber.new,
             )
 
             # Send route stats.
             require 'airbrake/rails/action_controller_notify_subscriber'
             ActiveSupport::Notifications.subscribe(
               'process_action.action_controller',
-              Airbrake::Rails::ActionControllerNotifySubscriber.new
+              Airbrake::Rails::ActionControllerNotifySubscriber.new,
             )
 
             # Send performance breakdown: where a request spends its time.
             require 'airbrake/rails/action_controller_performance_breakdown_subscriber'
             ActiveSupport::Notifications.subscribe(
               'process_action.action_controller',
-              Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber.new
+              Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber.new,
             )
 
             require 'airbrake/rails/net_http' if defined?(Net) && defined?(Net::HTTP)
@@ -112,8 +112,8 @@ module Airbrake
             # Filter out parameters from SQL body.
             Airbrake.add_performance_filter(
               Airbrake::Filters::SqlFilter.new(
-                ::ActiveRecord::Base.connection_config[:adapter]
-              )
+                ::ActiveRecord::Base.connection_config[:adapter],
+              ),
             )
           end
         end

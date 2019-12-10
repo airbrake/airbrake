@@ -24,7 +24,7 @@ module Airbrake
       def notice_context(queue, body)
         {
           queue: queue,
-          body: body.is_a?(Array) ? { batch: body } : { body: body }
+          body: body.is_a?(Array) ? { batch: body } : { body: body },
         }
       end
     end

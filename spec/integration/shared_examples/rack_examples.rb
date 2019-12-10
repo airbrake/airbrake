@@ -25,7 +25,7 @@ RSpec.shared_examples 'rack examples' do
     describe "/crash" do
       it "returns 500 and sends a notice to Airbrake" do
         expect(Airbrake).to receive(:notify).with(
-          an_instance_of(Airbrake::Notice)
+          an_instance_of(Airbrake::Notice),
         ) do |notice|
           expect(notice[:errors].first[:type]).to eq('AirbrakeTestError')
         end
@@ -42,7 +42,7 @@ RSpec.shared_examples 'rack examples' do
         email: 'qa@example.com',
         username: 'qa-dept',
         first_name: 'John',
-        last_name: 'Doe'
+        last_name: 'Doe',
       )
     end
 

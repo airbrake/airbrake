@@ -123,8 +123,8 @@ class DummyController < ActionController::Base
       'dummy/breakdown_excon.erb' => 'breakdown_excon',
       'dummy/breakdown_http_rb.erb' => 'breakdown_http_rb',
       'dummy/breakdown_http_client.erb' => 'breakdown_http_client',
-      'dummy/breakdown_typhoeus.erb' => 'breakdown_typhoeus'
-    )
+      'dummy/breakdown_typhoeus.erb' => 'breakdown_typhoeus',
+    ),
   ]
 
   def index; end
@@ -228,8 +228,8 @@ ActiveRecord::Migration.verbose = false
 migration_template = File.open(
   File.join(
     $LOAD_PATH.grep(/delayed_job/)[0],
-    'generators/delayed_job/templates/migration.rb'
-  )
+    'generators/delayed_job/templates/migration.rb',
+  ),
 )
 
 # need to eval the template with the migration_version intact

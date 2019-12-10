@@ -94,7 +94,7 @@ end
   Airbrake::Rack::SessionFilter,
   Airbrake::Rack::HttpParamsFilter,
   Airbrake::Rack::HttpHeadersFilter,
-  Airbrake::Rack::RouteFilter
+  Airbrake::Rack::RouteFilter,
 ].each do |filter|
   Airbrake.add_filter(filter.new)
 end

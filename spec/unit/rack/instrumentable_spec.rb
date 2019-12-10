@@ -45,8 +45,8 @@ RSpec.describe Airbrake::Rack::Instrumentable do
           '/about' => {
             method: 'GET',
             response_type: :html,
-            groups: {}
-          }
+            groups: {},
+          },
         }
       end
 
@@ -81,7 +81,7 @@ RSpec.describe Airbrake::Rack::Instrumentable do
 
         expect(groups).to match(
           'method' => be > 0,
-          'method_with_arg' => be > 0
+          'method_with_arg' => be > 0,
         )
       end
 

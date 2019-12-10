@@ -12,7 +12,7 @@ module Airbrake
 
           # Rails.logger is not set in some Rake tasks such as
           # 'airbrake:deploy'. In this case we use a sensible fallback.
-          level: (::Rails.logger ? ::Rails.logger.level : Logger::ERROR)
+          level: (::Rails.logger ? ::Rails.logger.level : Logger::ERROR),
         )
       end
     end

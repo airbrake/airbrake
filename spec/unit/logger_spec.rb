@@ -55,7 +55,7 @@ RSpec.describe Airbrake::AirbrakeLogger do
 
         wait_for(
           a_request(:post, endpoint)
-            .with(body: %r{"file":".+/logger.rb"})
+            .with(body: %r{"file":".+/logger.rb"}),
         ).not_to have_been_made
         wait_for(a_request(:post, endpoint)).to have_been_made.once
       end

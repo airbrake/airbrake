@@ -20,7 +20,7 @@ module Airbrake
             route: route,
             response_type: event.response_type,
             groups: groups,
-            start_time: event.time
+            start_time: event.time,
           }
 
           Airbrake.notify_performance_breakdown(breakdown_info, stash)

@@ -29,7 +29,7 @@ RSpec.describe "Rails integration specs" do
       OpenStruct.new(
         id: 1,
         email: 'qa@example.com',
-        username: 'qa-dept'
+        username: 'qa-dept',
       )
     end
 
@@ -97,11 +97,11 @@ RSpec.describe "Rails integration specs" do
 
   describe(
     "Active Record callbacks",
-    skip: Gem::Version.new(Rails.version) > Gem::Version.new('4.2')
+    skip: Gem::Version.new(Rails.version) > Gem::Version.new('4.2'),
   ) do
     it "reports exceptions in after_commit callbacks" do
       expect(Airbrake).to receive(:notify).with(
-        an_instance_of(AirbrakeTestError)
+        an_instance_of(AirbrakeTestError),
       ) do |exception|
         expect(exception.message).to eq('after_commit')
       end
@@ -111,7 +111,7 @@ RSpec.describe "Rails integration specs" do
 
     it "reports exceptions in after_rollback callbacks" do
       expect(Airbrake).to receive(:notify).with(
-        an_instance_of(AirbrakeTestError)
+        an_instance_of(AirbrakeTestError),
       ) do |exception|
         expect(exception.message).to eq('after_rollback')
       end
@@ -136,13 +136,13 @@ RSpec.describe "Rails integration specs" do
           # integration will try to handle error 500 and we want to prevent
           # that: https://github.com/airbrake/airbrake/pull/583
           allow_any_instance_of(Airbrake::Rack::Middleware).to(
-            receive(:notify_airbrake).and_return(nil)
+            receive(:notify_airbrake).and_return(nil),
           )
         end
 
         it "doesn't report errors" do
           expect(Airbrake).to receive(:notify).with(
-            an_instance_of(Airbrake::Notice)
+            an_instance_of(Airbrake::Notice),
           ) { |notice|
             # TODO: this doesn't actually fail but prints a failure. Figure
             # out how to test properly.
@@ -162,8 +162,8 @@ RSpec.describe "Rails integration specs" do
         anything,
         hash_including(
           'class' => 'BingoWorker',
-          'args' => %w[bango bongo]
-        )
+          'args' => %w[bango bongo],
+        ),
       )
       with_resque { get '/resque' }
     end
@@ -176,8 +176,8 @@ RSpec.describe "Rails integration specs" do
       expect(Airbrake).to receive(:notify).with(
         anything,
         'job' => hash_including(
-          'handler' => "--- !ruby/struct:BangoJob\nbingo: bingo\nbongo: bongo\n"
-        )
+          'handler' => "--- !ruby/struct:BangoJob\nbingo: bingo\nbongo: bongo\n",
+        ),
       )
 
       get '/delayed_job'
@@ -189,8 +189,8 @@ RSpec.describe "Rails integration specs" do
       expect(Airbrake).to receive(:notify).with(
         anything,
         hash_including(
-          'handler' => "--- !ruby/struct:BangoJob\nbingo: bingo\nbongo: bongo\n"
-        )
+          'handler' => "--- !ruby/struct:BangoJob\nbingo: bingo\nbongo: bongo\n",
+        ),
       )
 
       get '/delayed_job'
@@ -203,7 +203,7 @@ RSpec.describe "Rails integration specs" do
         OpenStruct.new(
           id: 1,
           email: 'qa@example.com',
-          username: 'qa-dept'
+          username: 'qa-dept',
         )
       end
 
@@ -233,8 +233,8 @@ RSpec.describe "Rails integration specs" do
       expect(Airbrake).to receive(:notify_request).with(
         hash_including(
           route: '/crash(.:format)',
-          method: 'GET'
-        )
+          method: 'GET',
+        ),
       )
       get '/crash'
     end
@@ -247,8 +247,8 @@ RSpec.describe "Rails integration specs" do
         hash_including(
           route: '/crash(.:format)',
           method: 'HEAD',
-          status_code: 500
-        )
+          status_code: 500,
+        ),
       )
       head '/crash'
     end
@@ -264,8 +264,8 @@ RSpec.describe "Rails integration specs" do
           method: 'GET',
           func: 'call',
           file: 'lib/airbrake/rails/active_record_subscriber.rb',
-          line: anything
-        )
+          line: anything,
+        ),
       ).at_least(:once)
 
       get '/crash'
@@ -281,8 +281,8 @@ RSpec.describe "Rails integration specs" do
             method: 'GET',
             func: nil,
             file: nil,
-            line: nil
-          )
+            line: nil,
+          ),
         ).at_least(:once)
 
         get '/crash'
@@ -299,9 +299,9 @@ RSpec.describe "Rails integration specs" do
           route: '/breakdown(.:format)',
           method: 'GET',
           response_type: :html,
-          groups: hash_including(db: an_instance_of(Float))
+          groups: hash_including(db: an_instance_of(Float)),
         ),
-        an_instance_of(Hash)
+        an_instance_of(Hash),
       ).at_least(:once)
 
       get '/breakdown'
@@ -331,7 +331,7 @@ RSpec.describe "Rails integration specs" do
       it "includes the http breakdown" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
           hash_including(groups: { view: be > 0, http: be > 0 }),
-          an_instance_of(Hash)
+          an_instance_of(Hash),
         )
         get '/breakdown_http'
         expect(example_request).to have_been_made
@@ -348,7 +348,7 @@ RSpec.describe "Rails integration specs" do
       it "includes the http breakdown" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
           hash_including(groups: { view: be > 0, http: be > 0 }),
-          an_instance_of(Hash)
+          an_instance_of(Hash),
         )
         get '/breakdown_curl_http'
         expect(example_request).to have_been_made
@@ -365,7 +365,7 @@ RSpec.describe "Rails integration specs" do
       it "includes the http breakdown" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
           hash_including(groups: { view: be > 0, http: be > 0 }),
-          an_instance_of(Hash)
+          an_instance_of(Hash),
         )
         get '/breakdown_curl_http_easy'
         expect(example_request).to have_been_made
@@ -378,7 +378,7 @@ RSpec.describe "Rails integration specs" do
       it "includes the http breakdown" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
           hash_including(groups: { view: be > 0, http: be > 0 }),
-          an_instance_of(Hash)
+          an_instance_of(Hash),
         )
         get '/breakdown_curl_http_multi'
       end
@@ -392,7 +392,7 @@ RSpec.describe "Rails integration specs" do
       it "includes the http breakdown" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
           hash_including(groups: { http: be > 0 }),
-          an_instance_of(Hash)
+          an_instance_of(Hash),
         )
         get '/breakdown_excon'
         expect(example_request).to have_been_made
@@ -407,7 +407,7 @@ RSpec.describe "Rails integration specs" do
       it "includes the http breakdown" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
           hash_including(groups: { http: be > 0 }),
-          an_instance_of(Hash)
+          an_instance_of(Hash),
         )
         get '/breakdown_http_rb'
         expect(example_request).to have_been_made
@@ -422,7 +422,7 @@ RSpec.describe "Rails integration specs" do
       it "includes the http breakdown" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
           hash_including(groups: { http: be > 0 }),
-          an_instance_of(Hash)
+          an_instance_of(Hash),
         )
         get '/breakdown_http_client'
         expect(example_request).to have_been_made
@@ -437,7 +437,7 @@ RSpec.describe "Rails integration specs" do
       it "includes the http breakdown" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
           hash_including(groups: { http: be > 0 }),
-          an_instance_of(Hash)
+          an_instance_of(Hash),
         )
         get '/breakdown_typhoeus'
         expect(example_request).to have_been_made
@@ -459,8 +459,8 @@ RSpec.describe "Rails integration specs" do
           an_instance_of(Hash),
           hash_including(
             request: anything,
-            user: { id: '1', username: 'qa-dept', email: 'qa@example.com' }
-          )
+            user: { id: '1', username: 'qa-dept', email: 'qa@example.com' },
+          ),
         )
 
         get '/breakdown'

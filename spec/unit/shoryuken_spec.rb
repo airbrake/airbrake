@@ -46,7 +46,7 @@ RSpec.describe Airbrake::Shoryuken::ErrorHandler do
         wait_for_a_request_with_body(/"message":"shoryuken\serror"/)
         wait_for_a_request_with_body(/"params":{.*"queue":"#{queue}"/)
         wait_for_a_request_with_body(
-          /"params":{.*"batch":\[\{"message1":"message1"\},\{"message2":"message2"\}\]/
+          /"params":{.*"batch":\[\{"message1":"message1"\},\{"message2":"message2"\}\]/,
         )
         wait_for_a_request_with_body(/"component":"shoryuken","action":"FooWorker"/)
       end

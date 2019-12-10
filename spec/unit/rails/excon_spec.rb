@@ -21,7 +21,7 @@ RSpec.describe Airbrake::Rails::Excon do
 
     before do
       Airbrake::Rack::RequestStore[:routes] = {
-        '/test-route' => { groups: {} }
+        '/test-route' => { groups: {} },
       }
 
       expect(event).to receive(:duration).and_return(0.1)

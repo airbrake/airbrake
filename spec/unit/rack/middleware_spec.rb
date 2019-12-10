@@ -55,7 +55,7 @@ RSpec.describe Airbrake::Rack::Middleware do
           .to raise_error(AirbrakeTestError)
 
         wait_for_a_request_with_body(
-          /"context":{.*"versions":{"(rails|sinatra|rack_version)"/
+          /"context":{.*"versions":{"(rails|sinatra|rack_version)"/,
         )
       end
     end

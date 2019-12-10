@@ -23,7 +23,7 @@ module Airbrake
             file: frame[:file],
             line: frame[:line],
             start_time: event.time,
-            end_time: event.end
+            end_time: event.end,
           )
         end
       end
@@ -33,7 +33,7 @@ module Airbrake
       def last_caller
         exception = StandardError.new
         exception.set_backtrace(
-          Airbrake::Rails::BacktraceCleaner.clean(Kernel.caller)
+          Airbrake::Rails::BacktraceCleaner.clean(Kernel.caller),
         )
         Airbrake::Backtrace.parse(exception).first || {}
       end

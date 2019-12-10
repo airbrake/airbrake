@@ -7,7 +7,7 @@ DummyApp = Rack::Builder.new do
     run(
       proc do |_env|
         [200, { 'Content-Type' => 'text/plain' }, ['Hello from index']]
-      end
+      end,
     )
   end
 

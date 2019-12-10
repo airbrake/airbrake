@@ -49,7 +49,7 @@ module Airbrake
           else
             {
               'rack_version' => ::Rack.version,
-              'rack_release' => ::Rack.release
+              'rack_release' => ::Rack.release,
             }
           end
       end

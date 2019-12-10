@@ -12,7 +12,7 @@ RSpec.describe Airbrake::Rails::ActionCable::NotifyCallback do
 
       it "notifies Airbrake" do
         expect(Airbrake).to(
-          receive(:notify).with(an_instance_of(Airbrake::Notice))
+          receive(:notify).with(an_instance_of(Airbrake::Notice)),
         ) do |notice|
           expect(notice[:context][:component]).to eq('action_cable')
           expect(notice[:context][:action]).to eq('web_notifications')

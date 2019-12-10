@@ -13,7 +13,7 @@ RSpec.describe Airbrake::Rack::HttpHeadersFilter do
     {
       'HTTP_HOST' => 'example.com',
       'CONTENT_TYPE' => 'text/html',
-      'CONTENT_LENGTH' => 100500
+      'CONTENT_LENGTH' => 100500,
     }
   end
 
