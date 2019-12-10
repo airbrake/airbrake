@@ -55,7 +55,7 @@ namespace :airbrake do
       username: ENV['USERNAME'],
       revision: ENV['REVISION'],
       repository: ENV['REPOSITORY'],
-      version: ENV['VERSION']
+      version: ENV['VERSION'],
     }
     promise = Airbrake.notify_deploy(deploy_params)
     promise.then do

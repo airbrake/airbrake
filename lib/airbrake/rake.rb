@@ -30,7 +30,7 @@ module Rake
       notice[:params].merge!(
         rake_task: task_info,
         execute_args: args,
-        argv: ARGV.join(' ')
+        argv: ARGV.join(' '),
       )
 
       Airbrake.notify_sync(notice)

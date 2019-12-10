@@ -7,7 +7,7 @@ RSpec.describe Airbrake::Rack::User do
       email: 'qa@example.com',
       username: 'qa-dept',
       first_name: 'Bingo',
-      last_name: 'Bongo'
+      last_name: 'Bongo',
     )
   end
 
@@ -210,7 +210,7 @@ RSpec.describe Airbrake::Rack::User do
             def username(*optional_params)
               "username is #{optional_params.inspect}"
             end
-          end.new
+          end.new,
         ).as_json
       end
 

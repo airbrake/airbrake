@@ -21,8 +21,8 @@ RSpec.describe Airbrake::Rack do
           '/about' => {
             method: 'GET',
             response_type: :html,
-            groups: {}
-          }
+            groups: {},
+          },
         }
       end
 
@@ -34,7 +34,7 @@ RSpec.describe Airbrake::Rack do
         expect(routes['/about'][:groups]).to match(
           'operation 1' => be > 0,
           'operation 2' => be > 0,
-          'operation 3' => be > 0
+          'operation 3' => be > 0,
         )
       end
 

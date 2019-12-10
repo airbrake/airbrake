@@ -14,7 +14,7 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
       handler = Sidekiq.error_handlers.last
       handler.call(
         AirbrakeTestError.new('sidekiq error'),
-        'class' => 'HardSidekiqWorker', 'args' => %w[bango bongo]
+        'class' => 'HardSidekiqWorker', 'args' => %w[bango bongo],
       )
     end
 

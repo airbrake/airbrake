@@ -12,7 +12,7 @@ RSpec.describe Airbrake::Rails::ActionControllerRouteSubscriber do
         Time.new,
         Time.new,
         '123',
-        { method: 'HEAD', path: '/crash' }
+        { method: 'HEAD', path: '/crash' },
       ]
     end
 
@@ -34,7 +34,7 @@ RSpec.describe Airbrake::Rails::ActionControllerRouteSubscriber do
       context "and when the route can be found" do
         before do
           allow(Airbrake::Rails::App).to receive(:recognize_route).and_return(
-            Airbrake::Rails::App::Route.new('/crash')
+            Airbrake::Rails::App::Route.new('/crash'),
           )
         end
 

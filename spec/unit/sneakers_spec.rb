@@ -7,7 +7,7 @@ RSpec.describe Airbrake::Sneakers::ErrorReporter do
     allow(queue).to receive_messages(
       name: 'test-queue',
       opts: {},
-      exchange: instance_double('exchange')
+      exchange: instance_double('exchange'),
     )
 
     Class.new do
@@ -64,7 +64,7 @@ RSpec.describe Airbrake::Sneakers::ErrorReporter do
     wait_for_a_request_with_body(/"action":"String"/)
     wait_for_a_request_with_body(/"component":"sneakers"/)
     wait_for_a_request_with_body(
-      /"params":{"message":"my_special_message","delivery_info":{}}/
+      /"params":{"message":"my_special_message","delivery_info":{}}/,
     )
   end
 
@@ -75,7 +75,7 @@ RSpec.describe Airbrake::Sneakers::ErrorReporter do
           error, '', message: 'msg', delivery_info: { key => 'a', foo: 'b' }
         )
         wait_for_a_request_with_body(
-          /"params":{"message":"msg","delivery_info":{"foo":"b"}}/
+          /"params":{"message":"msg","delivery_info":{"foo":"b"}}/,
         )
       end
     end

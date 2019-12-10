@@ -9,7 +9,7 @@ module Airbrake
       HTTP_HEADER_PREFIXES = [
         'HTTP_'.freeze,
         'CONTENT_TYPE'.freeze,
-        'CONTENT_LENGTH'.freeze
+        'CONTENT_LENGTH'.freeze,
       ].freeze
 
       # @return [Integer]
@@ -34,7 +34,7 @@ module Airbrake
         notice[:context].merge!(
           httpMethod: request.request_method,
           referer: request.referer,
-          headers: http_headers
+          headers: http_headers,
         )
       end
     end

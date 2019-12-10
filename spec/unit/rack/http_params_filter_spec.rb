@@ -30,7 +30,7 @@ RSpec.describe Airbrake::Rack::HttpParamsFilter do
       {
         'rack.request.form_hash' => params,
         'rack.request.form_input' => input,
-        'rack.input' => input
+        'rack.input' => input,
       }
     end
 

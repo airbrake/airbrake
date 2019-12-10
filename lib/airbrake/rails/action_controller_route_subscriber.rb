@@ -14,14 +14,14 @@ module Airbrake
 
         event = Airbrake::Rails::Event.new(*args)
         route = Airbrake::Rails::App.recognize_route(
-          Airbrake::Rack::RequestStore[:request]
+          Airbrake::Rack::RequestStore[:request],
         )
         return unless route
 
         routes[route.path] = {
           method: event.method,
           response_type: event.response_type,
-          groups: {}
+          groups: {},
         }
       end
     end

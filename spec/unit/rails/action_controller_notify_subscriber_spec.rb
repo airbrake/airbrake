@@ -20,7 +20,7 @@ RSpec.describe Airbrake::Rails::ActionControllerNotifySubscriber do
     context "when there's a route in the request store" do
       before do
         Airbrake::Rack::RequestStore[:routes] = {
-          '/test-route' => { method: 'GET', response_type: :html }
+          '/test-route' => { method: 'GET', response_type: :html },
         }
 
         expect(event).to receive(:method).and_return('GET')
@@ -33,8 +33,8 @@ RSpec.describe Airbrake::Rails::ActionControllerNotifySubscriber do
           hash_including(
             method: 'GET',
             route: '/test-route',
-            status_code: 200
-          )
+            status_code: 200,
+          ),
         )
         subject.call([])
       end

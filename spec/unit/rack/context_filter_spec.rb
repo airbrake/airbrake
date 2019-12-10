@@ -16,7 +16,7 @@ RSpec.describe Airbrake::Rack::ContextFilter do
     subject.call(notice)
     expect(notice[:context][:versions]).to include(
       'rack_version' => a_string_matching(/\d.\d/),
-      'rack_release' => a_string_matching(/\d.\d\.\d/)
+      'rack_release' => a_string_matching(/\d.\d\.\d/),
     )
   end
 

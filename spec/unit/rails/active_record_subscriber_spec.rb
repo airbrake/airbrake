@@ -20,14 +20,14 @@ RSpec.describe Airbrake::Rails::ActiveRecordSubscriber do
     context "when there's a route in the request store" do
       before do
         Airbrake::Rack::RequestStore[:routes] = {
-          '/test-route' => { method: 'GET', response_type: :html }
+          '/test-route' => { method: 'GET', response_type: :html },
         }
 
         allow(event).to receive(:sql).and_return('SELECT * FROM bananas')
         allow(event).to receive(:time).and_return(Time.now)
         allow(event).to receive(:end).and_return(Time.now)
         allow(Airbrake::Rails::BacktraceCleaner).to receive(:clean).and_return(
-          "/lib/pry/cli.rb:117:in `start'"
+          "/lib/pry/cli.rb:117:in `start'",
         )
       end
 
@@ -39,8 +39,8 @@ RSpec.describe Airbrake::Rails::ActiveRecordSubscriber do
             query: 'SELECT * FROM bananas',
             func: 'start',
             line: 117,
-            file: '/lib/pry/cli.rb'
-          )
+            file: '/lib/pry/cli.rb',
+          ),
         )
         subject.call([])
       end
@@ -59,8 +59,8 @@ RSpec.describe Airbrake::Rails::ActiveRecordSubscriber do
               query: 'SELECT * FROM bananas',
               func: nil,
               line: nil,
-              file: nil
-            )
+              file: nil,
+            ),
           )
           subject.call([])
         end

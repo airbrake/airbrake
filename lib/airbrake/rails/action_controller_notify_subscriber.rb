@@ -19,7 +19,7 @@ module Airbrake
             route: route,
             status_code: event.status_code,
             start_time: event.time,
-            end_time: Time.new
+            end_time: Time.new,
           )
         end
       end

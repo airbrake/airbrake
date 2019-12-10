@@ -42,8 +42,8 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
           '/test-route' => {
             method: 'GET',
             response_type: :html,
-            groups: { http: 0.5 }
-          }
+            groups: { http: 0.5 },
+          },
         }
       end
 
@@ -53,7 +53,7 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
             route: '/test-route',
             method: 'GET',
             response_type: :html,
-            groups: { db: 0.5, view: 0.5, http: 0.5 }
+            groups: { db: 0.5, view: 0.5, http: 0.5 },
           ),
           {}
         )
@@ -69,14 +69,14 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
         Airbrake::Rack::RequestStore[:request] = request
 
         Airbrake::Rack::RequestStore[:routes] = {
-          '/test-route' => { method: 'GET', response_type: :html, groups: {} }
+          '/test-route' => { method: 'GET', response_type: :html, groups: {} },
         }
       end
 
       it "sends request info as resource stash" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
           an_instance_of(Hash),
-          hash_including(request: request)
+          hash_including(request: request),
         )
         subject.call([])
       end
@@ -87,14 +87,14 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
         before do
           expect(Airbrake::Rack::User).to receive(:extract).and_return(user)
           expect(user).to receive(:as_json).and_return(
-            user: { 'id' => 1, 'name' => 'Arthur' }
+            user: { 'id' => 1, 'name' => 'Arthur' },
           )
         end
 
         it "sends user info as resource stash" do
           expect(Airbrake).to receive(:notify_performance_breakdown).with(
             an_instance_of(Hash),
-            hash_including(user: { 'id' => 1, 'name' => 'Arthur' })
+            hash_including(user: { 'id' => 1, 'name' => 'Arthur' }),
           )
           subject.call([])
         end
