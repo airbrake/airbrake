@@ -2,16 +2,25 @@ require 'airbrake/sidekiq/retryable_jobs_filter'
 
 module Airbrake
   module Sidekiq
+    DEFAULT_SPAN = 'other'.freeze
+
     # Provides integration with Sidekiq v2+.
     class ErrorHandler
-      # rubocop:disable Lint/RescueException
       def call(_worker, context, _queue)
-        yield
-      rescue Exception => exception
+        timed_trace = Airbrake::TimedTrace.span(DEFAULT_SPAN) do
+          yield
+        end
+      rescue Exception => exception # rubocop:disable Lint/RescueException
         notify_airbrake(exception, context)
+        Airbrake.notify_queue(queue: context['class'], error_count: 1)
         raise exception
+      else
+        Airbrake.notify_queue(
+          queue: context['class'],
+          error_count: 0,
+          groups: timed_trace.spans,
+        )
       end
-      # rubocop:enable Lint/RescueException
 
       private
 
@@ -34,14 +43,8 @@ module Airbrake
   end
 end
 
-if Sidekiq::VERSION < '3'
-  Sidekiq.configure_server do |config|
-    config.server_middleware do |chain|
-      chain.add(Airbrake::Sidekiq::ErrorHandler)
-    end
-  end
-else
-  Sidekiq.configure_server do |config|
-    config.error_handlers << Airbrake::Sidekiq::ErrorHandler.new.method(:notify_airbrake)
+Sidekiq.configure_server do |config|
+  config.server_middleware do |chain|
+    chain.add(Airbrake::Sidekiq::ErrorHandler)
   end
 end

@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Sidekiq: started sending job execution statistics
+  ([#1040](https://github.com/airbrake/airbrake/issues/1040))
+
 ### [v9.5.5][v9.5.5] (December 2, 2019)
 
 * Rails APM: fixed issue with engine links when the engine has an isolated
