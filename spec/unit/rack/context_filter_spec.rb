@@ -3,9 +3,11 @@ RSpec.describe Airbrake::Rack::ContextFilter do
     Rack::MockRequest.env_for(url, opts)
   end
 
+  let(:request) { Rack::Request.new(env_for(uri, opts)) }
+
   let(:notice) do
     Airbrake.build_notice('oops').tap do |notice|
-      notice.stash[:rack_request] = Rack::Request.new(env_for(uri, opts))
+      notice.stash[:rack_request] = request
     end
   end
 
@@ -58,9 +60,24 @@ RSpec.describe Airbrake::Rack::ContextFilter do
       { 'HTTP_X_FORWARDED_FOR' => '8.8.8.8, 9.9.9.9' }
     end
 
-    it "adds userAddr to the context" do
-      subject.call(notice)
-      expect(notice[:context][:userAddr]).to eq('9.9.9.9')
+    context "and when request responds to #remote_ip" do
+      before { allow(request).to receive(:remote_ip).and_return('8.8.8.8') }
+
+      it "adds userAddr based on request.remote_ip to the context" do
+        subject.call(notice)
+        expect(notice[:context][:userAddr]).to eq('8.8.8.8')
+      end
+    end
+
+    context "and when request DOESN'T respond to #remote_ip" do
+      before do
+        allow(request).to receive(:respond_to?).with(:remote_ip).and_return(nil)
+      end
+
+      it "adds userAddr based on request.ip to the context" do
+        subject.call(notice)
+        expect(notice[:context][:userAddr]).to eq('9.9.9.9')
+      end
     end
   end
 

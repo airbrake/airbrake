@@ -18,7 +18,12 @@ module Airbrake
         context = notice[:context]
 
         context[:url] = request.url
-        context[:userAddr] = request.ip
+        context[:userAddr] =
+          if request.respond_to?(:remote_ip)
+            request.remote_ip
+          else
+            request.ip
+          end
         context[:userAgent] = request.user_agent
 
         add_framework_version(context)
