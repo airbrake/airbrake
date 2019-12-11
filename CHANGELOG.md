@@ -5,6 +5,9 @@ Airbrake Changelog
 
 * Sidekiq: started sending job execution statistics
   ([#1040](https://github.com/airbrake/airbrake/issues/1040))
+* Rack: fixed `context/userAddr` sometimes not reporting the actual client IP
+  (but a proxy IP instead)
+  ([#1042](https://github.com/airbrake/airbrake/issues/1042))
 
 ### [v9.5.5][v9.5.5] (December 2, 2019)
 
