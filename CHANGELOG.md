@@ -8,6 +8,8 @@ Airbrake Changelog
 * Rack: fixed `context/userAddr` sometimes not reporting the actual client IP
   (but a proxy IP instead)
   ([#1042](https://github.com/airbrake/airbrake/issues/1042))
+* Bumped airbrake-ruby requirement to `~> 4.10`
+  ([#1043](https://github.com/airbrake/airbrake/issues/1043))
 
 ### [v9.5.5][v9.5.5] (December 2, 2019)
 
