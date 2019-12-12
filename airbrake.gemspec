@@ -63,6 +63,9 @@ DESC
   # rack-cache > 1.9.0 wants Ruby >= 2.3.
   s.add_development_dependency 'rack-cache', '= 1.9.0'
 
+  # redis-namespace > 1.6.0 wants Ruby >= 2.4.
+  s.add_development_dependency 'redis-namespace', '= 1.6.0'
+
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
     s.add_development_dependency 'sidekiq', '~> 5'
   end
