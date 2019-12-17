@@ -1,14 +1,18 @@
 module Delayed
   module Plugins
     # Provides integration with Delayed Job.
-    # rubocop:disable Lint/RescueException
+    # rubocop:disable Metrics/BlockLength
     class Airbrake < ::Delayed::Plugin
+      DEFAULT_SPAN = 'other'.freeze
+
       callbacks do |lifecycle|
         lifecycle.around(:invoke_job) do |job, *args, &block|
           begin
-            # Forward the call to the next callback in the callback chain
-            block.call(job, *args)
-          rescue Exception => exception
+            timed_trace = ::Airbrake::TimedTrace.span(DEFAULT_SPAN) do
+              # Forward the call to the next callback in the callback chain
+              block.call(job, *args)
+            end
+          rescue Exception => exception # rubocop:disable Lint/RescueException
             params = job.as_json
 
             # If DelayedJob is used through ActiveJob, it contains extra info.
@@ -17,17 +21,30 @@ module Delayed
               job_class = job.payload_object.job_data['job_class']
             end
 
+            action = job_class || job.payload_object.class.name
+
             ::Airbrake.notify(exception, params) do |notice|
               notice[:context][:component] = 'delayed_job'
-              notice[:context][:action] = job_class || job.payload_object.class.name
+              notice[:context][:action] = action
             end
 
+            ::Airbrake.notify_queue_sync(
+              queue: action,
+              error_count: 1,
+            )
+
             raise exception
+          else
+            ::Airbrake.notify_queue_sync(
+              queue: job_class || job.payload_object.class.name,
+              error_count: 0,
+              groups: timed_trace.spans,
+            )
           end
         end
       end
     end
-    # rubocop:enable Lint/RescueException
+    # rubocop:enable Metrics/BlockLength
   end
 end
 
