@@ -32,3 +32,33 @@ module Airbrake
 end
 
 Sneakers.error_reporters << Airbrake::Sneakers::ErrorReporter.new
+
+module Sneakers
+  # @todo Migrate to Sneakers v2.12.0 middleware API when it's released
+  # @see https://github.com/jondot/sneakers/pull/364
+  module Worker
+    DEFAULT_SPAN = 'other'.freeze
+
+    # Sneakers v2.7.0+ renamed `do_work` to `process_work`.
+    if method_defined?(:process_work)
+      alias process_work_without_airbrake process_work
+    else
+      alias process_work_without_airbrake do_work
+    end
+
+    def process_work(delivery_info, metadata, msg, handler)
+      timed_trace = Airbrake::TimedTrace.span(DEFAULT_SPAN) do
+        process_work_without_airbrake(delivery_info, metadata, msg, handler)
+      end
+    rescue Exception => exception # rubocop:disable Lint/RescueException
+      Airbrake.notify_queue(queue: self.class.to_s, error_count: 1)
+      raise exception
+    else
+      Airbrake.notify_queue(
+        queue: self.class.to_s,
+        error_count: 0,
+        groups: timed_trace.spans,
+      )
+    end
+  end
+end
