@@ -46,7 +46,7 @@ unless Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.7.0')
   end
 end
 
-# Rails 5+ supports only modern Rubies (2.2.2+)
+# Rails 5.0 & 5.1 supports only modern Rubies (2.2.2+)
 if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
   appraise 'rails-5.0' do
     gem 'rails', '~> 5.0.7'
@@ -90,7 +90,10 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
 
     gem 'sprockets', '~> 3.7'
   end
+end
 
+# Rails 5.2+ supports only modern Rubies (2.3+)
+if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.3')
   appraise 'rails-5.2' do
     gem 'rails', '~> 5.2.0'
     gem 'warden', '~> 1.2.6'
