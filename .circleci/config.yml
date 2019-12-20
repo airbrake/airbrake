@@ -96,7 +96,6 @@ jobs:
       - <<: *rails42
       - <<: *rails50
       - <<: *rails51
-      - <<: *rails52
       - <<: *sinatra
       - <<: *rack
   "ruby-2.3":
