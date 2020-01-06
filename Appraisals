@@ -47,7 +47,7 @@ unless Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.7.0')
 end
 
 # Rails 5.0 & 5.1 supports only modern Rubies (2.2.2+)
-if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
+if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2')
   appraise 'rails-5.0' do
     gem 'rails', '~> 5.0.7'
     gem 'warden', '~> 1.2.3'
