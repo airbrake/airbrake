@@ -56,6 +56,7 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
         expect(Airbrake).to receive(:notify_queue).with(
           queue: 'HardSidekiqWorker',
           error_count: 1,
+          timing: 0.01,
         )
         call_handler
       end
@@ -80,7 +81,7 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
         expect(Airbrake).to receive(:notify_queue).with(
           queue: 'HardSidekiqWorker',
           error_count: 0,
-          groups: { 'other' => an_instance_of(Float) },
+          timing: an_instance_of(Float),
         )
         call_handler
       end
