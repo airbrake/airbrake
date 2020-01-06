@@ -4,11 +4,23 @@ module Airbrake
     class ErrorHandler
       # rubocop:disable Lint/RescueException
       def call(worker, queue, _sqs_msg, body)
-        yield
+        timing = Airbrake::Benchmark.measure do
+          yield
+        end
       rescue Exception => exception
         notify_airbrake(exception, worker, queue, body)
-
+        Airbrake.notify_queue(
+          queue: worker.class.to_s,
+          error_count: 1,
+          timing: 0.01,
+        )
         raise exception
+      else
+        Airbrake.notify_queue(
+          queue: worker.class.to_s,
+          error_count: 0,
+          timing: timing,
+        )
       end
       # rubocop:enable Lint/RescueException
 
