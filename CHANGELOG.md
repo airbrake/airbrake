@@ -5,6 +5,8 @@ Airbrake Changelog
 
 * Sidekiq: started sending job execution statistics
   ([#1040](https://github.com/airbrake/airbrake/issues/1040))
+* Resque: started sending job execution statistics
+  ([#1044](https://github.com/airbrake/airbrake/issues/1044))
 * Rack: fixed `context/userAddr` sometimes not reporting the actual client IP
   (but a proxy IP instead)
   ([#1042](https://github.com/airbrake/airbrake/issues/1042))

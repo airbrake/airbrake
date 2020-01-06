@@ -34,23 +34,25 @@ module Resque
   #
   # @since v9.6.0
   class Job
-    DEFAULT_SPAN = 'other'.freeze
-
     # Store the original method to use it later.
     alias perform_without_airbrake perform
 
     def perform
-      timed_trace = Airbrake::TimedTrace.span(DEFAULT_SPAN) do
+      timing = Airbrake::Benchmark.measure do
         perform_without_airbrake
       end
     rescue StandardError => exception
-      Airbrake.notify_queue_sync(queue: payload['class'], error_count: 1)
+      Airbrake.notify_queue_sync(
+        queue: payload['class'],
+        error_count: 1,
+        timing: 0.01,
+      )
       raise exception
     else
       Airbrake.notify_queue_sync(
         queue: payload['class'],
         error_count: 0,
-        groups: timed_trace.spans,
+        timing: timing,
       )
     end
   end
