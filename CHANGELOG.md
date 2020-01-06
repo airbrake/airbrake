@@ -9,6 +9,8 @@ Airbrake Changelog
   ([#1044](https://github.com/airbrake/airbrake/issues/1044))
 * Sneakers: started sending job execution statistics
   ([#1047](https://github.com/airbrake/airbrake/issues/1047))
+* DelayedJob: started sending job execution statistics
+  ([#1046](https://github.com/airbrake/airbrake/issues/1046))
 * Rack: fixed `context/userAddr` sometimes not reporting the actual client IP
   (but a proxy IP instead)
   ([#1042](https://github.com/airbrake/airbrake/issues/1042))

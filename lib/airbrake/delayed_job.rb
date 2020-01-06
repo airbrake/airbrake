@@ -3,12 +3,10 @@ module Delayed
     # Provides integration with Delayed Job.
     # rubocop:disable Metrics/BlockLength
     class Airbrake < ::Delayed::Plugin
-      DEFAULT_SPAN = 'other'.freeze
-
       callbacks do |lifecycle|
         lifecycle.around(:invoke_job) do |job, *args, &block|
           begin
-            timed_trace = ::Airbrake::TimedTrace.span(DEFAULT_SPAN) do
+            timing = ::Airbrake::Benchmark.measure do
               # Forward the call to the next callback in the callback chain
               block.call(job, *args)
             end
@@ -31,6 +29,7 @@ module Delayed
             ::Airbrake.notify_queue_sync(
               queue: action,
               error_count: 1,
+              timing: 0.01,
             )
 
             raise exception
@@ -38,7 +37,7 @@ module Delayed
             ::Airbrake.notify_queue_sync(
               queue: job_class || job.payload_object.class.name,
               error_count: 0,
-              groups: timed_trace.spans,
+              timing: timing,
             )
           end
         end
