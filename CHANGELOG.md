@@ -13,6 +13,8 @@ Airbrake Changelog
   ([#1046](https://github.com/airbrake/airbrake/issues/1046))
 * Shoryuken: started sending job execution statistics
   ([#1055](https://github.com/airbrake/airbrake/issues/1055))
+* ActiveJob: started sending job execution statistics
+  ([#1056](https://github.com/airbrake/airbrake/issues/1056))
 * Rack: fixed `context/userAddr` sometimes not reporting the actual client IP
   (but a proxy IP instead)
   ([#1042](https://github.com/airbrake/airbrake/issues/1042))
