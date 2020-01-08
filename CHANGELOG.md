@@ -3,7 +3,7 @@ Airbrake Changelog
 
 ### master
 
-### [v10.0.0][v10.0.0] (January 8, 2019)
+### [v10.0.0][v10.0.0] (January 8, 2020)
 
 * Sidekiq: started sending job execution statistics
   ([#1040](https://github.com/airbrake/airbrake/issues/1040))
