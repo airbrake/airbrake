@@ -18,8 +18,8 @@ module Airbrake
             method: event.method,
             route: route,
             status_code: event.status_code,
-            start_time: event.time,
-            end_time: Time.new,
+            timing: event.duration,
+            time: event.time,
           )
         end
       end

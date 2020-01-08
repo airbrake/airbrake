@@ -34,6 +34,7 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
       expect(event).to receive(:method).and_return('GET')
       expect(event).to receive(:response_type).and_return(:html)
       expect(event).to receive(:time).and_return(Time.new)
+      expect(event).to receive(:duration).and_return(1.234)
     end
 
     context "when request store routes have extra groups" do

@@ -26,6 +26,7 @@ RSpec.describe Airbrake::Rails::ActionControllerNotifySubscriber do
         expect(event).to receive(:method).and_return('GET')
         expect(event).to receive(:status_code).and_return(200)
         expect(event).to receive(:time).and_return(Time.now)
+        expect(event).to receive(:duration).and_return(1.234)
       end
 
       it "sends request info to Airbrake" do
