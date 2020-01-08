@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v10.0.0][v10.0.0] (January 8, 2019)
+
 * Sidekiq: started sending job execution statistics
   ([#1040](https://github.com/airbrake/airbrake/issues/1040))
 * Resque: started sending job execution statistics
@@ -823,3 +825,4 @@ Airbrake Changelog
 [v9.5.3]: https://github.com/airbrake/airbrake/releases/tag/v9.5.3
 [v9.5.4]: https://github.com/airbrake/airbrake/releases/tag/v9.5.4
 [v9.5.5]: https://github.com/airbrake/airbrake/releases/tag/v9.5.5
+[v10.0.0]: https://github.com/airbrake/airbrake/releases/tag/v10.0.0
