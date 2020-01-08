@@ -25,7 +25,7 @@ RSpec.describe Airbrake::Rails::ActiveRecordSubscriber do
 
         allow(event).to receive(:sql).and_return('SELECT * FROM bananas')
         allow(event).to receive(:time).and_return(Time.now)
-        allow(event).to receive(:end).and_return(Time.now)
+        allow(event).to receive(:duration).and_return(1.234)
         allow(Airbrake::Rails::BacktraceCleaner).to receive(:clean).and_return(
           "/lib/pry/cli.rb:117:in `start'",
         )

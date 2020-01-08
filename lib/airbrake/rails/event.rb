@@ -43,10 +43,6 @@ module Airbrake
         @event.time
       end
 
-      def end
-        @event.end
-      end
-
       def groups
         groups = {}
         groups[:db] = db_runtime if db_runtime > 0

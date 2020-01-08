@@ -22,8 +22,8 @@ module Airbrake
             func: frame[:function],
             file: frame[:file],
             line: frame[:line],
-            start_time: event.time,
-            end_time: event.end,
+            timing: event.duration,
+            time: event.time,
           )
         end
       end
