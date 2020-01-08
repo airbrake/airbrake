@@ -20,6 +20,9 @@ Airbrake Changelog
   ([#1042](https://github.com/airbrake/airbrake/issues/1042))
 * Bumped airbrake-ruby requirement to `~> 4.12`
   ([#1058](https://github.com/airbrake/airbrake/issues/1058))
+* Rails APM: fixed bug where engine routes would always point to root path (for
+  example, `engine_name#/` instead of `engine_name#my_path`)
+  ([#1059](https://github.com/airbrake/airbrake/issues/1059))
 
 ### [v9.5.5][v9.5.5] (December 2, 2019)
 
