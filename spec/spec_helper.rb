@@ -24,6 +24,7 @@ Airbrake.configure do |c|
   c.performance_stats = true
   c.performance_stats_flush_period = 1
   c.query_stats = true
+  c.default_wrapping_style = :chain
 end
 
 RSpec.configure do |c|
