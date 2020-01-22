@@ -10,12 +10,15 @@ module Airbrake
       # @see https://github.com/airbrake/airbrake/issues/850
       IGNORED_KEYS = %i[delivery_tag consumer channel].freeze
 
-      def call(exception, worker = nil, **context)
+      # rubocop:disable Style/OptionalArguments
+      def call(exception, worker = nil, context)
+        # Later versions add a middle argument.
         Airbrake.notify(exception, filter_context(context)) do |notice|
           notice[:context][:component] = 'sneakers'
           notice[:context][:action] = worker.class.to_s
         end
       end
+      # rubocop:enable Style/OptionalArguments
 
       private
 
