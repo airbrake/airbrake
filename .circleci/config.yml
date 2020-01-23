@@ -41,7 +41,7 @@ references:
     run:
       name: Test Rails 5.1
       command: bundle exec appraisal rails-5.1 rake spec:integration:rails
-  rails51: &rails52
+  rails52: &rails52
     run:
       name: Test Rails 5.2
       command: bundle exec appraisal rails-5.2 rake spec:integration:rails
@@ -164,7 +164,7 @@ jobs:
       - <<: *rack
   "ruby-2.7":
     docker:
-      - image: circleci/ruby:2.7.0-preview1
+      - image: circleci/ruby:2.7.0
     working_directory: ~/airbrake
     steps:
       - <<: *repo_restore_cache
