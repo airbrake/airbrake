@@ -188,8 +188,7 @@ jobs:
       - <<: *rails32
       - <<: *rails42
       - <<: *rails51
-      # https://github.com/jruby/activerecord-jdbc-adapter doesn't support it yet.
-      # - <<: *rails52
+      - <<: *rails52
       - <<: *sinatra
       - <<: *rack
 

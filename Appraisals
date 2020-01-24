@@ -103,8 +103,7 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.3')
     gem 'warden', '~> 1.2.6'
     gem 'rack', '~> 2.0'
 
-    # The gem doesn't support Rails v5.2 yet.
-    # gem 'activerecord-jdbcsqlite3-adapter', '~> 51.0', platforms: :jruby
+    gem 'activerecord-jdbcsqlite3-adapter', '~> 52.0', platforms: :jruby
     gem 'sqlite3', '~> 1.3.11', platforms: %i[mri rbx]
 
     gem 'resque', '~> 1.26'
