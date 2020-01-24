@@ -19,6 +19,8 @@ pkg
 gemfiles/*.lock
 .rbenv-version
 .rvmrc
+.ruby-version
+.ruby-gemset
 resources/notice.xml
 Gemfile.lock
 .#*
