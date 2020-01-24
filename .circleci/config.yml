@@ -41,7 +41,7 @@ references:
     run:
       name: Test Rails 5.1
       command: bundle exec appraisal rails-5.1 rake spec:integration:rails
-  rails51: &rails52
+  rails52: &rails52
     run:
       name: Test Rails 5.2
       command: bundle exec appraisal rails-5.2 rake spec:integration:rails
@@ -164,7 +164,7 @@ jobs:
       - <<: *rack
   "ruby-2.7":
     docker:
-      - image: circleci/ruby:2.7.0-preview1
+      - image: circleci/ruby:2.7.0
     working_directory: ~/airbrake
     steps:
       - <<: *repo_restore_cache
@@ -176,9 +176,9 @@ jobs:
       - <<: *rails52
       - <<: *sinatra
       - <<: *rack
-  "jruby-9.2.0.0":
+  "jruby-9.2.2.0":
     docker:
-      - image: circleci/jruby:9.2.0.0
+      - image: circleci/jruby:9.2.2.0
     working_directory: ~/airbrake
     steps:
       - <<: *repo_restore_cache
@@ -188,8 +188,7 @@ jobs:
       - <<: *rails32
       - <<: *rails42
       - <<: *rails51
-      # https://github.com/jruby/activerecord-jdbc-adapter doesn't support it yet.
-      # - <<: *rails52
+      - <<: *rails52
       - <<: *sinatra
       - <<: *rack
 
@@ -219,6 +218,6 @@ workflows:
       - "ruby-2.7":
           requires:
             - lint
-      - "jruby-9.2.0.0":
+      - "jruby-9.2.2.0":
           requires:
             - lint
