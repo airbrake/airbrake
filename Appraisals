@@ -63,8 +63,10 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2')
 
     gem 'mime-types', '~> 3.1'
 
-    # i18n 2+ supports only Ruby 2.3+.
-    gem 'i18n', '~> 1.4'
+    # i18n 1.5.2+ supports only Ruby 2.3+.
+    gem 'i18n', '< 1.5.2'
+    # nior4 2.4.0+ supports only Ruby 2.3+.
+    gem 'nio4r', '< 2.4.0'
 
     gem 'sprockets', '~> 3.7'
   end
@@ -85,8 +87,10 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2')
 
     gem 'mime-types', '~> 3.1'
 
-    # i18n 2+ supports only Ruby 2.3+.
-    gem 'i18n', '~> 1.4'
+    # i18n 1.5.2+ supports only Ruby 2.3+.
+    gem 'i18n', '< 1.5.2'
+    # nior4 2.4.0+ supports only Ruby 2.3+.
+    gem 'nio4r', '< 2.4.0'
 
     gem 'sprockets', '~> 3.7'
   end
@@ -110,9 +114,6 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.3')
     gem 'delayed_job_active_record', '~> 4.1'
 
     gem 'mime-types', '~> 3.1'
-
-    # i18n 2+ supports only Ruby 2.3+.
-    gem 'i18n', '~> 1.4'
   end
 end
 
