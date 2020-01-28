@@ -4,7 +4,7 @@ module Airbrake
     # 3.2+ apps). It makes Airbrake Ruby work with Rails and report errors
     # occurring in the application automatically.
     class Railtie < ::Rails::Railtie
-      initializer('airbrake.middleware') do |app|
+      initializer('airbrake.middleware', after: :load_config_initializers) do |app|
         # Since Rails 3.2 the ActionDispatch::DebugExceptions middleware is
         # responsible for logging exceptions and showing a debugging page in
         # case the request is local. We want to insert our middleware after

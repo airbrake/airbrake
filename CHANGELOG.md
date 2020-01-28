@@ -5,6 +5,8 @@ Airbrake Changelog
 
 * Bumped airbrake-ruby requirement to `~> 4.13`
   ([#1065](https://github.com/airbrake/airbrake/issues/1065))
+* Rails APM: fixed bug where `query_stats = false` would sometimes have no
+  effect ([#1069](https://github.com/airbrake/airbrake/pull/1069))
 
 ### [v10.0.0][v10.0.0] (January 8, 2020)
 
