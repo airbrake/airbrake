@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Airbrake
   module Rails
     # This railtie works for any Rails application that supports railties (Rails

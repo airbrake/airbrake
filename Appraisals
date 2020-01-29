@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 unless Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.7.0')
   appraise 'rails-3.2' do
     gem 'rails', '~> 3.2.22.5'

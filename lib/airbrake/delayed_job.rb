@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Delayed
   module Plugins
     # Provides integration with Delayed Job.

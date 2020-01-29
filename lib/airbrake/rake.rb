@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This is not bulletproof, but if this file is executed before a task
 # definition, we can grab tasks descriptions and locations.
 # See: https://goo.gl/ksn6PE

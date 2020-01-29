@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Airbrake::Rack::RequestStore do
   after { described_class.clear }
 

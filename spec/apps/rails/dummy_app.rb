@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'curb' unless Airbrake::JRUBY
 require 'excon'
 

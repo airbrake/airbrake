@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Airbrake
   module Sidekiq
     # Filter that can ignore notices from jobs that failed but will be retried

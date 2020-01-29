@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'airbrake/rails/railtie'
 
 module Airbrake

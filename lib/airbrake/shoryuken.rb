@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Airbrake
   module Shoryuken
     # Provides integration with Shoryuken.

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SinatraTestApp < Sinatra::Base
   use Airbrake::Rack::Middleware
   use Warden::Manager

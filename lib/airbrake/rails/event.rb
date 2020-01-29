@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Airbrake
   module Rails
     # Event is a wrapper around ActiveSupport::Notifications::Event.

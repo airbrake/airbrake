@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'airbrake/rails/action_cable/notify_callback'
 
 RSpec.describe Airbrake::Rails::ActionCable::NotifyCallback do

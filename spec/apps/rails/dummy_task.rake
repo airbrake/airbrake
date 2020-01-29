@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Keep this before any task definitions to collect extra info about tasks.
 # Without this line the tests will fail.
 Rake::TaskManager.record_task_metadata = true

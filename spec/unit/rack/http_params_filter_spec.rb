@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Airbrake::Rack::HttpParamsFilter do
   def env_for(url, opts = {})
     Rack::MockRequest.env_for(url, opts)

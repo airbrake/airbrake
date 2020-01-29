@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 DummyApp = Rack::Builder.new do
   use Rack::ShowExceptions
   use Airbrake::Rack::Middleware

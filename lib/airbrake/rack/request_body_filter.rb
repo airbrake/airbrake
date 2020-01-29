@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Airbrake
   module Rack
     # A filter that appends Rack request body to the notice.

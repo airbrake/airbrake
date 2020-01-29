@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Airbrake
   module Rails
     # Enables support for exceptions occurring in ActiveJob jobs.

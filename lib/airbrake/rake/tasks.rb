@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'airbrake-ruby'
 
 namespace :airbrake do
@@ -97,14 +99,14 @@ namespace :airbrake do
       end
     end
 
-    url = "https://airbrake.io/api/v3/projects/#{id}/heroku-deploys?key=#{key}"
+    url = ["https://airbrake.io/api/v3/projects/#{id}/heroku-deploys?key=#{key}"]
     url << "&environment=#{env}"
     url << "&repository=#{repo}" unless repo.empty?
 
-    command = %(heroku addons:create deployhooks:http --url="#{url}")
+    command = [%(heroku addons:create deployhooks:http --url="#{url.join}")]
     command << " --app #{app}" if app
 
-    puts "$ #{command}"
+    puts "$ #{command.join}"
     Bundler.with_clean_env { puts `#{command}` }
   end
 end

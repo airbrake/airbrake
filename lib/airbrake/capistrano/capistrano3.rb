@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :airbrake do
   desc "Notify Airbrake of the deploy"
   task :deploy do

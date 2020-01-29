@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Airbrake
   module Rails
     # Rails <4.2 has a bug with regard to swallowing exceptions in the

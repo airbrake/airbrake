@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'airbrake/rails/action_cable/notify_callback'
 
 %i[subscribe unsubscribe].each do |callback_name|

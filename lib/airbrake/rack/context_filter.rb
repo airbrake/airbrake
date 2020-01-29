@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Airbrake
   module Rack
     # Adds context (URL, User-Agent, framework version, controller and more).

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Airbrake
   module Rack
     # Represents an authenticated user, which can be converted to Airbrake's

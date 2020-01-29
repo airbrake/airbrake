@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Airbrake
   module Rails
     # Contains helper methods that can be used inside Rails controllers to send

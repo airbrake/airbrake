@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Airbrake::Rack::User do
   let(:endpoint) { 'https://api.airbrake.io/api/v3/projects/113743/notices' }
 

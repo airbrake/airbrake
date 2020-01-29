@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'airbrake/rack/user'
 require 'airbrake/rack/user_filter'
 require 'airbrake/rack/context_filter'

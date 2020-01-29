@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Rake integration" do
   let(:task) { Rake::Task['bingo:bango'] }
 

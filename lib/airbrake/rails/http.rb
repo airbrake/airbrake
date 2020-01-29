@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module HTTP
   # Monkey-patch to measure request timing.
   class Client

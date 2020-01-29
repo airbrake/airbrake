@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Airbrake::AirbrakeLogger do
   let(:project_id) { 113743 }
   let(:project_key) { 'fd04e13d806a90f96614ad8e529b2822' }
