@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Airbrake
   module Sneakers
     # Provides integration with Sneakers.

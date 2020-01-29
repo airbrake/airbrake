@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Airbrake
   module Rack
     # Airbrake Rack middleware for Rails and Sinatra applications (or any other

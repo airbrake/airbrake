@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Curl
   # Monkey-patch to measure request timing.
   class Easy

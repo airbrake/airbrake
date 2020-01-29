@@ -30,9 +30,13 @@ Style/NumericLiterals:
 Style/SignalException:
   EnforcedStyle: only_raise
 
-# TODO: enable this when Ruby 3.0 is out.
 Style/FrozenStringLiteralComment:
-  Enabled: false
+  Enabled: true
+  EnforcedStyle: always
+  Exclude:
+    - 'Gemfile'
+    - 'airbrake.gemspec'
+    - '**/*.gemfile'
 
 Metrics/BlockLength:
   CountComments: false

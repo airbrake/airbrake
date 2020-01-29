@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'rack examples' do
   include Warden::Test::Helpers
 

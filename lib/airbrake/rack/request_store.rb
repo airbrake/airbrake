@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Airbrake
   module Rack
     # RequestStore is a thin (and limited) wrapper around *Thread.current* that

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'airbrake/rails/event'
 require 'airbrake/rails/backtrace_cleaner'
 

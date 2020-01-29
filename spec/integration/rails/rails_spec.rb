@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'integration/shared_examples/rack_examples'
 
 RSpec.describe "Rails integration specs" do

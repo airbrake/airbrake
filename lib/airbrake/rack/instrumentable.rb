@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Airbrake
   module Rack
     # Instrumentable holds methods that simplify instrumenting Rack apps.

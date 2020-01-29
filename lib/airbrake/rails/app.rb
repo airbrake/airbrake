@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Airbrake
   module Rails
     # App is a wrapper around Rails.application.

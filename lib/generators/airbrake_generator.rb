@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Creates the Airbrake initializer file for Rails apps.
 #
 # @example Invokation from terminal

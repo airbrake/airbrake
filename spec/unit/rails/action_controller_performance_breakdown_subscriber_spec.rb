@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'airbrake/rails/action_controller_performance_breakdown_subscriber'
 
 RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'airbrake/shoryuken'
 
 RSpec.describe Airbrake::Shoryuken::ErrorHandler do

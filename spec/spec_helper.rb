@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Gems from the gemspec.
 require 'webmock'
 require 'webmock/rspec'

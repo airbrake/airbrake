@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Airbrake::Rack::RouteFilter do
   context "when there's no request object available" do
     it "doesn't add context/route" do

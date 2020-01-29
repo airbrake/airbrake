@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'airbrake/rails/active_record_subscriber'
 
 RSpec.describe Airbrake::Rails::ActiveRecordSubscriber do

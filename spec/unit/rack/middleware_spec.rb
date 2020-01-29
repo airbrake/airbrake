@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Airbrake::Rack::Middleware do
   # The list of Rack filters that read Rack request information and append it to
   # notices.

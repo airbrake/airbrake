@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Airbrake
   # The Capistrano v2 integration.
   module Capistrano

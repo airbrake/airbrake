@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Airbrake::Rack do
   after { Airbrake::Rack::RequestStore.clear }
 

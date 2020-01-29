@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Monkey-patch to measure request timing.
 class HTTPClient
   alias do_get_without_airbrake do_get_block

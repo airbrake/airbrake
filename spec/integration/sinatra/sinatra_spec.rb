@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sinatra'
 
 require 'apps/sinatra/sinatra_test_app'
