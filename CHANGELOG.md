@@ -3,10 +3,23 @@ Airbrake Changelog
 
 ### master
 
+### [v10.0.1][v10.0.1] (January 29, 2020)
+
 * Bumped airbrake-ruby requirement to `~> 4.13`
   ([#1065](https://github.com/airbrake/airbrake/issues/1065))
 * Rails APM: fixed bug where `query_stats = false` would sometimes have no
   effect ([#1069](https://github.com/airbrake/airbrake/pull/1069))
+* Sneakers: fixed ArgumentError occurring in the error handler on some versions
+  ([#1065](https://github.com/airbrake/airbrake/pull/1065))
+* Made all string literals frozen by default
+  ([#1070](https://github.com/airbrake/airbrake/pull/1070))
+* Rack: improved `Airbrake::Rack::Instrumentable#airbrake_capture_timing`
+  ([#1066](https://github.com/airbrake/airbrake/pull/1066)):
+    - added support for methods ending with punctuation (`?`, `!` & `=`)
+    - added support for wrapping operator methods
+    - fixed bug where captured method would lose its original visibility
+    - improved support for Ruby 2.7, specifically method forwarding
+    - added support for capturing `prepend`'ed methods
 
 ### [v10.0.0][v10.0.0] (January 8, 2020)
 
@@ -831,3 +844,4 @@ Airbrake Changelog
 [v9.5.4]: https://github.com/airbrake/airbrake/releases/tag/v9.5.4
 [v9.5.5]: https://github.com/airbrake/airbrake/releases/tag/v9.5.5
 [v10.0.0]: https://github.com/airbrake/airbrake/releases/tag/v10.0.0
+[v10.0.1]: https://github.com/airbrake/airbrake/releases/tag/v10.0.1
