@@ -6,15 +6,7 @@ module Airbrake
     module ActiveJob
       extend ActiveSupport::Concern
 
-      # @return [Array<Regexp>] the list of known adapters
-      ADAPTERS = [/Resque/, /Sidekiq/, /DelayedJob/].freeze
-
       def self.notify_airbrake(exception, job)
-        queue_adapter = job.class.queue_adapter.to_s
-
-        # Do not notify twice if a queue_adapter is configured already.
-        raise exception if ADAPTERS.any? { |a| a =~ queue_adapter }
-
         notice = Airbrake.build_notice(exception)
         notice[:context][:component] = 'active_job'
         notice[:context][:action] = job.class.name

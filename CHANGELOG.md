@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* ActiveJob: fix error reporting
+  ([#1074](https://github.com/airbrake/airbrake/issues/1074))
+
 ### [v10.0.1][v10.0.1] (January 29, 2020)
 
 * Bumped airbrake-ruby requirement to `~> 4.13`
