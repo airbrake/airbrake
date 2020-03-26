@@ -53,7 +53,9 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2')
   appraise 'rails-5.0' do
     gem 'rails', '~> 5.0.7'
     gem 'warden', '~> 1.2.3'
-    gem 'rack', '~> 2.0'
+
+    # Rack 2.2.0+ supports only Ruby 2.3+.
+    gem 'rack', '= 2.1.2'
 
     gem 'activerecord-jdbcsqlite3-adapter', '~> 1.3.18', platforms: :jruby
     gem 'sqlite3', '~> 1.3.11', platforms: %i[mri rbx]
@@ -76,7 +78,9 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2')
   appraise 'rails-5.1' do
     gem 'rails', '~> 5.1.4'
     gem 'warden', '~> 1.2.6'
-    gem 'rack', '~> 2.0'
+
+    # Rack 2.2.0+ supports only Ruby 2.3+.
+    gem 'rack', '= 2.1.2'
 
     gem 'activerecord-jdbcsqlite3-adapter', '~> 51.0', platforms: :jruby
     gem 'sqlite3', '~> 1.3.11', platforms: %i[mri rbx]
