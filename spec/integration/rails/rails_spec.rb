@@ -9,7 +9,7 @@ RSpec.describe "Rails integration specs" do
 
   include_examples 'rack examples'
 
-  if ::Rails.version.start_with?('5.')
+  if ::Rails.version.to_i >= 5
     it "inserts the Airbrake Rack middleware after DebugExceptions" do
       middlewares = Rails.configuration.middleware.middlewares.map(&:inspect)
       own_idx = middlewares.index('Airbrake::Rack::Middleware')

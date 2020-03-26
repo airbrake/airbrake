@@ -22,6 +22,14 @@ class DummyApp < Rails::Application
 
   config.middleware.use Warden::Manager
 
+  # We want to disable Executor, which autoreloads Ruby code because starting
+  # Rails 6.0.2.2 our tests fail due "file_update_checker.rb":
+  # https://app.circleci.com/pipelines/github/airbrake/airbrake/jobs/7996
+  #
+  # https://github.com/rails/rails/issues/36093 states that the issue is fixed
+  # on stable Rails 6 but for us it's not fixed.
+  config.middleware.delete ActionDispatch::Executor if ::Rails.version.to_i >= 6
+
   # In Rails 4.2.x Active Record suppresses errors raised within
   # 'after_rollback' & 'after_commit' callbacks and only print them to the
   # logs. In the next version, these errors will no longer be suppressed.
