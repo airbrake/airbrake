@@ -45,6 +45,10 @@ references:
     run:
       name: Test Rails 5.2
       command: bundle exec appraisal rails-5.2 rake spec:integration:rails
+  rails52: &rails60
+    run:
+      name: Test Rails 6.0
+      command: bundle exec appraisal rails-6.0 rake spec:integration:rails
   sinatra: &sinatra
     run:
       name: Test Sinatra
@@ -144,6 +148,7 @@ jobs:
       - <<: *rails42
       - <<: *rails51
       - <<: *rails52
+      - <<: *rails60
       - <<: *sinatra
       - <<: *rack
   "ruby-2.6":
@@ -160,6 +165,7 @@ jobs:
       - <<: *rails50
       - <<: *rails51
       - <<: *rails52
+      - <<: *rails60
       - <<: *sinatra
       - <<: *rack
   "ruby-2.7":
@@ -174,6 +180,7 @@ jobs:
       - <<: *rails50
       - <<: *rails51
       - <<: *rails52
+      - <<: *rails60
       - <<: *sinatra
       - <<: *rack
   "jruby-9.2.2.0":
@@ -189,6 +196,7 @@ jobs:
       - <<: *rails42
       - <<: *rails51
       - <<: *rails52
+      - <<: *rails60
       - <<: *sinatra
       - <<: *rack
 
