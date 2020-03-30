@@ -1,12 +1,18 @@
 # frozen_string_literal: true
 
-# Monkey-patch Net::HTTP to benchmark it.
-Net::HTTP.class_eval do
-  alias_method :request_without_airbrake, :request
-
-  def request(request, *args, &block)
-    Airbrake::Rack.capture_timing(:http) do
-      request_without_airbrake(request, *args, &block)
+module Airbrake
+  module Rails
+    # Monkey-patch Net::HTTP to benchmark it.
+    # @api private
+    # @since v10.0.2
+    module NetHttp
+      def request(request, *args, &block)
+        Airbrake::Rack.capture_timing(:http) do
+          super(request, *args, &block)
+        end
+      end
     end
   end
 end
+
+Net::HTTP.prepend(Airbrake::Rails::NetHttp)
