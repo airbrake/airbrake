@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v10.0.2][v10.0.2] (March 31, 2020)
+
 * ActiveJob: fix error reporting
   ([#1074](https://github.com/airbrake/airbrake/issues/1074))
 * Fixed `Net::HTTP` performance breakdown when 3rd party code monkey-patches
@@ -850,3 +852,4 @@ Airbrake Changelog
 [v9.5.5]: https://github.com/airbrake/airbrake/releases/tag/v9.5.5
 [v10.0.0]: https://github.com/airbrake/airbrake/releases/tag/v10.0.0
 [v10.0.1]: https://github.com/airbrake/airbrake/releases/tag/v10.0.1
+[v10.0.2]: https://github.com/airbrake/airbrake/releases/tag/v10.0.2
