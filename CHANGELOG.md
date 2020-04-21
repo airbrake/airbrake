@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Rails APM: fixed wrong file/line/function for SQL queries if a query is
+  executed by a Rails engine
+  ([#1082](https://github.com/airbrake/airbrake/issues/1082))
+
 ### [v10.0.2][v10.0.2] (March 31, 2020)
 
 * ActiveJob: fix error reporting
