@@ -45,7 +45,7 @@ references:
     run:
       name: Test Rails 5.2
       command: bundle exec appraisal rails-5.2 rake spec:integration:rails
-  rails52: &rails60
+  rails60: &rails60
     run:
       name: Test Rails 6.0
       command: bundle exec appraisal rails-6.0 rake spec:integration:rails
