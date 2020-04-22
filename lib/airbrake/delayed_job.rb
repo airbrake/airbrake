@@ -28,7 +28,7 @@ module Delayed
               notice[:context][:action] = action
             end
 
-            ::Airbrake.notify_queue_sync(
+            ::Airbrake.notify_queue(
               queue: action,
               error_count: 1,
               timing: 0.01,
@@ -36,7 +36,7 @@ module Delayed
 
             raise exception
           else
-            ::Airbrake.notify_queue_sync(
+            ::Airbrake.notify_queue(
               queue: job_class || job.payload_object.class.name,
               error_count: 0,
               timing: timing,
