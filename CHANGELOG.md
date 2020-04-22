@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v10.0.3][v10.0.3] (April 22, 2020)
+
 * Rails APM: fixed wrong file/line/function for SQL queries if a query is
   executed by a Rails engine
   ([#1082](https://github.com/airbrake/airbrake/issues/1082))
@@ -859,3 +861,4 @@ Airbrake Changelog
 [v10.0.0]: https://github.com/airbrake/airbrake/releases/tag/v10.0.0
 [v10.0.1]: https://github.com/airbrake/airbrake/releases/tag/v10.0.1
 [v10.0.2]: https://github.com/airbrake/airbrake/releases/tag/v10.0.2
+[v10.0.3]: https://github.com/airbrake/airbrake/releases/tag/v10.0.3
