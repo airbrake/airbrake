@@ -22,14 +22,14 @@ module Airbrake
           block.call
         end
       rescue StandardError => exception
-        Airbrake.notify_queue_sync(
+        Airbrake.notify_queue(
           queue: job.class.name,
           error_count: 1,
           timing: 0.01,
         )
         raise exception
       else
-        Airbrake.notify_queue_sync(
+        Airbrake.notify_queue(
           queue: job.class.name,
           error_count: 0,
           timing: timing,
