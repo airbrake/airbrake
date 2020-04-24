@@ -542,6 +542,34 @@ config.after_initialize do
 end
 ```
 
+#### Configuring Rails APM SQL query stats when using Rails engines
+
+By default, the library collects Rails SQL performance stats. For standard Rails
+apps no extra configuration is needed. However if your app uses [Rails
+engines](https://guides.rubyonrails.org/engines.html), you need to take an
+additional step to make sure that the file and line information is present for
+queries being executed in the engine code.
+
+Specifically, you need to make sure that your
+[`Rails.backtrace_cleaner`](https://api.rubyonrails.org/classes/ActiveSupport/BacktraceCleaner.html)
+has a silencer that doesn't silence engine code (will be silenced by
+default). For example, if your engine is called `blorgh` and its main directory
+is in the root of your project, you need to extend the default silencer provided
+with Rails and add the path to your engine:
+
+```rb
+# config/initializers/backtrace_silencers.rb
+
+# Delete default silencer(s).
+Rails.backtrace_cleaner.remove_silencers!
+
+# Define custom silencer, which adds support for the "blorgh" engine
+Rails.backtrace_cleaner.add_silencer do |line|
+  app_dirs_pattern = %r{\A/?(app|config|lib|test|blorgh|\(\w*\))}
+  !app_dirs_pattern.match?(line)
+end
+```
+
 ### Plain Ruby scripts
 
 Airbrake supports _any_ type of Ruby applications including plain Ruby scripts.
