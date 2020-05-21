@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Rails APM: fixed support for "catch-all" routes, which grouped all matching
+  routes as one, instead of reporting those routes separately
+  ([#1092](https://github.com/airbrake/airbrake/issues/1092))
+
 ### [v10.0.3][v10.0.3] (April 22, 2020)
 
 * Rails APM: fixed wrong file/line/function for SQL queries if a query is
