@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v10.0.4][v10.0.4] (May 21, 2020)
+
 * Rails APM: fixed support for "catch-all" routes, which grouped all matching
   routes as one, instead of reporting those routes separately
   ([#1092](https://github.com/airbrake/airbrake/issues/1092))
@@ -866,3 +868,4 @@ Airbrake Changelog
 [v10.0.1]: https://github.com/airbrake/airbrake/releases/tag/v10.0.1
 [v10.0.2]: https://github.com/airbrake/airbrake/releases/tag/v10.0.2
 [v10.0.3]: https://github.com/airbrake/airbrake/releases/tag/v10.0.3
+[v10.0.4]: https://github.com/airbrake/airbrake/releases/tag/v10.0.4
