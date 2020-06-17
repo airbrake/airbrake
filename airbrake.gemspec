@@ -36,7 +36,10 @@ DESC
   s.add_development_dependency 'rspec-wait', '~> 0'
   s.add_development_dependency 'rake', '~> 12'
   s.add_development_dependency 'pry', '~> 0'
-  s.add_development_dependency 'appraisal', '~> 2'
+
+  # appraisal >= 2.3.0 wants Ruby >= 2.3
+  s.add_development_dependency 'appraisal', '= 2.2.0'
+
   s.add_development_dependency 'rack', '~> 1'
   s.add_development_dependency 'webmock', '~> 2'
 
