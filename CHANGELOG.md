@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Fixed deprecation warning about "connection_config" on Rails 6.1+
+  ([#1098](https://github.com/airbrake/airbrake/issues/1098))
+
 ### [v10.0.4][v10.0.4] (May 21, 2020)
 
 * Rails APM: fixed support for "catch-all" routes, which grouped all matching

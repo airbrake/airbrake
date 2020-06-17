@@ -5,6 +5,8 @@ module Airbrake
     # This railtie works for any Rails application that supports railties (Rails
     # 3.2+ apps). It makes Airbrake Ruby work with Rails and report errors
     # occurring in the application automatically.
+    #
+    # rubocop:disable Metrics/ClassLength, Metrics/BlockLength
     class Railtie < ::Rails::Railtie
       initializer('airbrake.middleware', after: :load_config_initializers) do |app|
         # Since Rails 3.2 the ActionDispatch::DebugExceptions middleware is
@@ -44,7 +46,6 @@ module Airbrake
         require 'airbrake/rake/tasks'
       end
 
-      # rubocop:disable Metrics/BlockLength
       initializer('airbrake.action_controller') do
         ActiveSupport.on_load(:action_controller, run_once: true) do
           # Patches ActionController with methods that allow us to retrieve
@@ -92,7 +93,6 @@ module Airbrake
           end
         end
       end
-      # rubocop:enable Metrics/BlockLength
 
       initializer('airbrake.active_record') do
         ActiveSupport.on_load(:active_record, run_once: true) do
@@ -112,11 +112,21 @@ module Airbrake
             )
 
             # Filter out parameters from SQL body.
-            Airbrake.add_performance_filter(
-              Airbrake::Filters::SqlFilter.new(
-                ::ActiveRecord::Base.connection_config[:adapter],
-              ),
-            )
+            if ::ActiveRecord::Base.respond_to?(:connection_db_config)
+              # Rails 6.1+ deprecates "connection_config" in favor of
+              # "connection_db_config", so we need an updated call.
+              Airbrake.add_performance_filter(
+                Airbrake::Filters::SqlFilter.new(
+                  ::ActiveRecord::Base.connection_db_config.configuration_hash[:adapter],
+                ),
+              )
+            else
+              Airbrake.add_performance_filter(
+                Airbrake::Filters::SqlFilter.new(
+                  ::ActiveRecord::Base.connection_config[:adapter],
+                ),
+              )
+            end
           end
         end
       end
@@ -142,5 +152,6 @@ module Airbrake
         end
       end
     end
+    # rubocop:enable Metrics/ClassLength, Metrics/BlockLength
   end
 end
