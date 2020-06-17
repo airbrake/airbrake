@@ -158,7 +158,7 @@ you can configure your notifier the following way:
 ```rb
 # config/initializers/airbrake.rb
 Airbrake.configure do |c|
-  c.blacklist_keys = Rails.application.config.filter_parameters
+  c.blocklist_keys = Rails.application.config.filter_parameters
 end
 ```
 
@@ -168,7 +168,7 @@ There are a few important details:
 2. If you use Lambdas to configure `filter_parameters`, you need to convert them
    to Procs. Otherwise you will get `ArgumentError`
 3. If you use Procs to configure `filter_parameters`, the procs must return an
-   Array of keys compatible with the Airbrake whitelist/blacklist option
+   Array of keys compatible with the Airbrake allowlist/blocklist option
    (String, Symbol, Regexp)
 
 Consult the
