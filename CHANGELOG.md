@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v10.0.5][v10.0.5] (June 17, 2020)
+
 * Fixed deprecation warning about "connection_config" on Rails 6.1+
   ([#1098](https://github.com/airbrake/airbrake/issues/1098))
 * Fixed the `blacklist_keys` deprecation warning in Rails generator
@@ -874,3 +876,4 @@ Airbrake Changelog
 [v10.0.2]: https://github.com/airbrake/airbrake/releases/tag/v10.0.2
 [v10.0.3]: https://github.com/airbrake/airbrake/releases/tag/v10.0.3
 [v10.0.4]: https://github.com/airbrake/airbrake/releases/tag/v10.0.4
+[v10.0.5]: https://github.com/airbrake/airbrake/releases/tag/v10.0.5
