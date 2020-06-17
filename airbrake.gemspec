@@ -69,6 +69,9 @@ DESC
   # redis-namespace > 1.6.0 wants Ruby >= 2.4.
   s.add_development_dependency 'redis-namespace', '= 1.6.0'
 
+  # ffi > 1.12.2 wants Ruby >= 2.3.
+  s.add_development_dependency 'ffi', '= 1.12.2'
+
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
     s.add_development_dependency 'sidekiq', '~> 5'
   end
