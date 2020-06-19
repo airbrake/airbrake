@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Fixes `Airbrake::Sidekiq::RetryableJobsFilter` erroneously reporting retry
+  attempts when it shouldn't
+  ([#1103](https://github.com/airbrake/airbrake/pull/1103))
+
 ### [v10.0.5][v10.0.5] (June 17, 2020)
 
 * Fixed deprecation warning about "connection_config" on Rails 6.1+
