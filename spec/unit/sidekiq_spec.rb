@@ -40,8 +40,10 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
       it "sends error" do
         expect(Airbrake).to receive(:notify).with(
           exception,
-          'args' => %w[bango bongo],
-          'class' => 'HardSidekiqWorker',
+          job: {
+            'args' => %w[bango bongo],
+            'class' => 'HardSidekiqWorker',
+          },
         )
         call_handler
       end

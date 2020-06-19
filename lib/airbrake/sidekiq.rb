@@ -29,7 +29,7 @@ module Airbrake
       private
 
       def notify_airbrake(exception, context)
-        Airbrake.notify(exception, context) do |notice|
+        Airbrake.notify(exception, job: context) do |notice|
           notice[:context][:component] = 'sidekiq'
           notice[:context][:action] = action(context)
         end
