@@ -6,6 +6,8 @@ Airbrake Changelog
 * Fixes `Airbrake::Sidekiq::RetryableJobsFilter` erroneously reporting retry
   attempts when it shouldn't
   ([#1103](https://github.com/airbrake/airbrake/pull/1103))
+* Started depending on airbrake-ruby
+  [v5.0.0.rc.1](https://github.com/airbrake/airbrake-ruby/releases/tag/v5.0.0.rc.1)
 
 ### [v10.0.5][v10.0.5] (June 17, 2020)
 
