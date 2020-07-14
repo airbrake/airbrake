@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v10.1.0.rc.1][v10.1.0.rc.1] (July 14, 2020)
+
 * Fixes `Airbrake::Sidekiq::RetryableJobsFilter` erroneously reporting retry
   attempts when it shouldn't
   ([#1103](https://github.com/airbrake/airbrake/pull/1103))
@@ -883,3 +885,4 @@ Airbrake Changelog
 [v10.0.3]: https://github.com/airbrake/airbrake/releases/tag/v10.0.3
 [v10.0.4]: https://github.com/airbrake/airbrake/releases/tag/v10.0.4
 [v10.0.5]: https://github.com/airbrake/airbrake/releases/tag/v10.0.5
+[v10.1.0.rc.1]: https://github.com/airbrake/airbrake/releases/tag/v10.1.0.rc.1
