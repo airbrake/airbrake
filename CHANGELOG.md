@@ -40,7 +40,7 @@ Airbrake Changelog
 ### [v10.0.1][v10.0.1] (January 29, 2020)
 
 * Bumped airbrake-ruby requirement to `~> 4.13`
-  ([#1065](https://github.com/airbrake/airbrake/issues/1065))
+  ([#1068](https://github.com/airbrake/airbrake/issues/1068))
 * Rails APM: fixed bug where `query_stats = false` would sometimes have no
   effect ([#1069](https://github.com/airbrake/airbrake/pull/1069))
 * Sneakers: fixed ArgumentError occurring in the error handler on some versions
