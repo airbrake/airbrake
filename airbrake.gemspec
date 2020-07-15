@@ -31,6 +31,7 @@ DESC
   s.required_ruby_version = '>= 2.1'
 
   s.add_dependency 'airbrake-ruby', '~> 5.0.0.rc.1'
+  s.add_dependency 'multipart-post', '~> 2.0'
 
   s.add_development_dependency 'rspec', '~> 3'
   s.add_development_dependency 'rspec-wait', '~> 0'

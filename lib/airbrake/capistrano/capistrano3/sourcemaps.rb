@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "net/http/post/multipart"
+
 namespace :airbrake do # rubocop:disable Metrics/BlockLength
   desc "Upload private sourcemaps to Airbrake"
   task :upload_private_sourcemaps do
