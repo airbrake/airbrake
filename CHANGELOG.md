@@ -3,6 +3,9 @@ Airbrake Changelog
 
 ### master
 
+* Rails APM: fixed double slash in front of a route name when mounting engines
+  at `/` ([#1111](https://github.com/airbrake/airbrake/pull/1111))
+
 ### [v10.1.0.rc.1][v10.1.0.rc.1] (July 14, 2020)
 
 * Fixes `Airbrake::Sidekiq::RetryableJobsFilter` erroneously reporting retry
