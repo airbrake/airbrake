@@ -11,11 +11,18 @@ module Airbrake
 
       # @param [] request
       # @return [Airbrake::Rails::App::Route, nil]
+      # rubocop:disable Metrics/AbcSize
       def self.recognize_route(request)
         # Duplicate `request` because `recognize` *can* strip the request's
         # `path_info`, which results in broken engine links (when the engine has
         # an isolated namespace).
         request_copy = request.dup
+
+        # Save original script name because `router.recognize(request)` mutates
+        # it. It's a Rails bug. More info in:
+        #   * https://github.com/airbrake/airbrake/issues/1072
+        #   * https://github.com/rails/rails/issues/31152
+        original_script_name = request.env['SCRIPT_NAME']
 
         # We must search every engine individually to find a concrete route. If
         # we rely only on the `Rails.application.routes.router`, then the
@@ -26,6 +33,10 @@ module Airbrake
         #   * `Marketing::Engine` recognizes it as `marketing#/pricing` (correct)
         engines.each do |engine|
           engine.routes.router.recognize(request_copy) do |route, _params|
+            # Restore original script name. Remove this code when/if the Rails
+            # bug is fixed: https://github.com/airbrake/airbrake/issues/1072
+            request.env['SCRIPT_NAME'] = original_script_name
+
             # Skip "catch-all" routes such as:
             #   get '*path => 'pages#about'
             #
@@ -56,6 +67,7 @@ module Airbrake
 
         nil
       end
+      # rubocop:enable Metrics/AbcSize
 
       def self.engines
         @engines ||= [*::Rails::Engine.subclasses, ::Rails.application]
