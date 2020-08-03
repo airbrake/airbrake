@@ -32,11 +32,11 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
 
   context "when there's a route in the request store" do
     before do
-      expect(event).to receive(:groups).and_return(db: 0.5, view: 0.5)
-      expect(event).to receive(:method).and_return('GET')
-      expect(event).to receive(:response_type).and_return(:html)
-      expect(event).to receive(:time).and_return(Time.new)
-      expect(event).to receive(:duration).and_return(1.234)
+      allow(event).to receive(:groups).and_return(db: 0.5, view: 0.5)
+      allow(event).to receive(:method).and_return('GET')
+      allow(event).to receive(:response_type).and_return(:html)
+      allow(event).to receive(:time).and_return(Time.new)
+      allow(event).to receive(:duration).and_return(1.234)
     end
 
     context "when request store routes have extra groups" do
@@ -50,17 +50,36 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
         }
       end
 
-      it "sends performance info to Airbrake with extra groups" do
-        expect(Airbrake).to receive(:notify_performance_breakdown).with(
-          hash_including(
-            route: '/test-route',
-            method: 'GET',
-            response_type: :html,
-            groups: { db: 0.5, view: 0.5, http: 0.5 },
-          ),
-          {}
-        )
-        subject.call([])
+      context "and when the Airbrake config enables performance stats" do
+        before do
+          allow(Airbrake::Config.instance)
+            .to receive(:performance_stats).and_return(true)
+        end
+
+        it "sends performance info to Airbrake with extra groups" do
+          expect(Airbrake).to receive(:notify_performance_breakdown).with(
+            hash_including(
+              route: '/test-route',
+              method: 'GET',
+              response_type: :html,
+              groups: { db: 0.5, view: 0.5, http: 0.5 },
+            ),
+            {}
+          )
+          subject.call([])
+        end
+      end
+
+      context "and when the Airbrake config disables performance stats" do
+        before do
+          allow(Airbrake::Config.instance)
+            .to receive(:performance_stats).and_return(false)
+        end
+
+        it "doesn't send performance info to Airbrake" do
+          expect(Airbrake).not_to receive(:notify_performance_breakdown)
+          subject.call([])
+        end
       end
     end
 

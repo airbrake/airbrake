@@ -28,20 +28,46 @@ RSpec.describe Airbrake::Rack do
         }
       end
 
-      it "attaches all timings for different operations to the request store" do
-        described_class.capture_timing('operation 1') {}
-        described_class.capture_timing('operation 2') {}
-        described_class.capture_timing('operation 3') {}
+      context "and when the Airbrake config disables performance stats" do
+        before do
+          allow(Airbrake::Config.instance)
+            .to receive(:performance_stats).and_return(false)
+        end
 
-        expect(routes['/about'][:groups]).to match(
-          'operation 1' => be > 0,
-          'operation 2' => be > 0,
-          'operation 3' => be > 0,
-        )
+        it "returns the value of the block" do
+          expect(described_class.capture_timing('operation') { 1 }).to eq(1)
+        end
+
+        it "doesn't attach any timings" do
+          described_class.capture_timing('operation 1') {}
+          described_class.capture_timing('operation 2') {}
+          described_class.capture_timing('operation 3') {}
+
+          expect(routes['/about'][:groups]).to be_empty
+        end
       end
 
-      it "returns the value of the block" do
-        expect(described_class.capture_timing('operation') { 1 }).to eq(1)
+      context "and when the Airbrake config enables performance stats" do
+        before do
+          allow(Airbrake::Config.instance)
+            .to receive(:performance_stats).and_return(true)
+        end
+
+        it "attaches all timings for different operations to the request store" do
+          described_class.capture_timing('operation 1') {}
+          described_class.capture_timing('operation 2') {}
+          described_class.capture_timing('operation 3') {}
+
+          expect(routes['/about'][:groups]).to match(
+            'operation 1' => be > 0,
+            'operation 2' => be > 0,
+            'operation 3' => be > 0,
+          )
+        end
+
+        it "returns the value of the block" do
+          expect(described_class.capture_timing('operation') { 1 }).to eq(1)
+        end
       end
     end
   end

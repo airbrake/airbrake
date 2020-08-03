@@ -11,6 +11,8 @@ module Airbrake
     # @since v8.0.0
     class ActionControllerRouteSubscriber
       def call(*args)
+        return unless Airbrake::Config.instance.performance_stats
+
         # We don't track routeless events.
         return unless (routes = Airbrake::Rack::RequestStore[:routes])
 

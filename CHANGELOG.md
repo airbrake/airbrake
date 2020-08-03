@@ -5,6 +5,10 @@ Airbrake Changelog
 
 * Rails APM: fixed double slash in front of a route name when mounting engines
   at `/` ([#1111](https://github.com/airbrake/airbrake/pull/1111))
+* Rails APM: made it possible to enable/disable APM at runtime
+  ([#1112](https://github.com/airbrake/airbrake/pull/1112))
+* Rails: fixed broken initialization for some apps due to the load order of
+  initializers ([#1112](https://github.com/airbrake/airbrake/pull/1112))
 
 ### [v10.1.0.rc.1][v10.1.0.rc.1] (July 14, 2020)
 

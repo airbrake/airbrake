@@ -8,6 +8,8 @@ module Airbrake
     # @since v9.2.0
     class Excon
       def call(*args)
+        return unless Airbrake::Config.instance.performance_stats
+
         routes = Airbrake::Rack::RequestStore[:routes]
         return if !routes || routes.none?
 

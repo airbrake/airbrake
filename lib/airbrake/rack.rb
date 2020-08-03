@@ -18,6 +18,8 @@ module Airbrake
     # @since v9.2.0
     # @api public
     def self.capture_timing(label)
+      return yield unless Airbrake::Config.instance.performance_stats
+
       routes = Airbrake::Rack::RequestStore[:routes]
       if !routes || routes.none?
         result = yield
