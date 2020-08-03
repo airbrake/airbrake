@@ -3,7 +3,7 @@
 RSpec.describe Airbrake::Rack do
   after { Airbrake::Rack::RequestStore.clear }
 
-  describe ".timing" do
+  describe ".capture_timing" do
     let(:routes) { Airbrake::Rack::RequestStore[:routes] }
 
     context "when request store doesn't have any routes" do
