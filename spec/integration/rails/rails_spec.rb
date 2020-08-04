@@ -6,6 +6,22 @@ RSpec.describe "Rails integration specs" do
   include Warden::Test::Helpers
 
   let(:app) { Rails.application }
+  let(:config) { Airbrake::Config.instance }
+
+  let!(:endpoint) do
+    stub_request(:post, 'https://api.airbrake.io/api/v3/projects/113743/notices')
+      .to_return(status: 200, body: '')
+  end
+
+  before do
+    stub_request(:put, %r{https://api.airbrake.io/api/v5/projects/113743/.+})
+      .to_return(status: 201, body: '{}')
+
+    allow(Airbrake).to receive(:notify_request)
+    allow(Airbrake).to receive(:notify_query)
+    allow(Airbrake).to receive(:notify_performance_breakdown)
+    allow(config).to receive(:performance_stats).and_return(false)
+  end
 
   include_examples 'rack examples'
 
@@ -229,7 +245,10 @@ RSpec.describe "Rails integration specs" do
   end
 
   describe "request performance hook" do
-    before { allow(Airbrake).to receive(:notify) }
+    before do
+      allow(Airbrake).to receive(:notify)
+      allow(config).to receive(:performance_stats).and_return(true)
+    end
 
     it "notifies request" do
       expect(Airbrake).to receive(:notify_request).with(
@@ -257,7 +276,10 @@ RSpec.describe "Rails integration specs" do
   end
 
   describe "query performance hook" do
-    before { allow(Airbrake).to receive(:notify) }
+    before do
+      allow(Airbrake).to receive(:notify)
+      allow(config).to receive(:performance_stats).and_return(true)
+    end
 
     it "sends queries to Airbrake" do
       expect(Airbrake).to receive(:notify_query).with(
@@ -293,7 +315,10 @@ RSpec.describe "Rails integration specs" do
   end
 
   describe "performance breakdown hook" do
-    before { allow(Airbrake).to receive(:notify) }
+    before do
+      allow(Airbrake).to receive(:notify)
+      allow(config).to receive(:performance_stats).and_return(true)
+    end
 
     it "sends performance breakdown info to Airbrake" do
       expect(Airbrake).to receive(:notify_performance_breakdown).with(

@@ -23,6 +23,18 @@ RSpec.describe Airbrake::Rails::ActionControllerRouteSubscriber do
       allow(Airbrake::Rails::Event).to receive(:new).and_return(event)
     end
 
+    context "when the Airbrake config disables performance stats" do
+      before do
+        allow(Airbrake::Config.instance)
+          .to receive(:performance_stats).and_return(false)
+      end
+
+      it "doesn't store any routes in the request store under :routes" do
+        subject.call(event_params)
+        expect(Airbrake::Rack::RequestStore[:routes]).to be_nil
+      end
+    end
+
     context "when request store has the :routes key" do
       before do
         allow(event).to receive(:method).and_return('HEAD')

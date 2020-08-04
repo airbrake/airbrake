@@ -3,7 +3,10 @@
 RSpec.describe "Rake integration" do
   let(:task) { Rake::Task['bingo:bango'] }
 
-  before { Rails.application.load_tasks }
+  before do
+    Rails.application.load_tasks
+    allow(Airbrake).to receive(:notify_sync)
+  end
 
   after do
     expect { task.invoke }.to raise_error(AirbrakeTestError)

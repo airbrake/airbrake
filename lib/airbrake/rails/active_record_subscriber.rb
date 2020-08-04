@@ -10,6 +10,8 @@ module Airbrake
     # @since v8.1.0
     class ActiveRecordSubscriber
       def call(*args)
+        return unless Airbrake::Config.instance.query_stats
+
         routes = Airbrake::Rack::RequestStore[:routes]
         return if !routes || routes.none?
 

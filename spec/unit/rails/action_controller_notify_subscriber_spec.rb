@@ -25,21 +25,45 @@ RSpec.describe Airbrake::Rails::ActionControllerNotifySubscriber do
           '/test-route' => { method: 'GET', response_type: :html },
         }
 
-        expect(event).to receive(:method).and_return('GET')
-        expect(event).to receive(:status_code).and_return(200)
-        expect(event).to receive(:time).and_return(Time.now)
-        expect(event).to receive(:duration).and_return(1.234)
+        allow(event).to receive(:method).and_return('GET')
+        allow(event).to receive(:status_code).and_return(200)
+        allow(event).to receive(:time).and_return(Time.now)
+        allow(event).to receive(:duration).and_return(1.234)
       end
 
-      it "sends request info to Airbrake" do
-        expect(Airbrake).to receive(:notify_request).with(
-          hash_including(
-            method: 'GET',
-            route: '/test-route',
-            status_code: 200,
-          ),
-        )
-        subject.call([])
+      context "and when the Airbrake config disables performance stats" do
+        before do
+          allow(Airbrake::Config.instance)
+            .to receive(:performance_stats).and_return(false)
+        end
+
+        it "doesn't notify requests" do
+          expect(Airbrake).not_to receive(:notify_request)
+          subject.call([])
+        end
+      end
+
+      context "and when the Airbrake config enables performance stats" do
+        before do
+          allow(Airbrake::Config.instance)
+            .to receive(:performance_stats).and_return(true)
+        end
+
+        it "sends request info to Airbrake" do
+          expect(Airbrake).to receive(:notify_request).with(
+            hash_including(
+              method: 'GET',
+              route: '/test-route',
+              status_code: 200,
+            ),
+          )
+          expect(event).to receive(:method).and_return('GET')
+          expect(event).to receive(:status_code).and_return(200)
+          expect(event).to receive(:time).and_return(Time.now)
+          expect(event).to receive(:duration).and_return(1.234)
+
+          subject.call([])
+        end
       end
     end
   end

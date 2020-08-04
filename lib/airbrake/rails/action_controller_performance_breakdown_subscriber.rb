@@ -7,6 +7,8 @@ module Airbrake
     # @since v8.3.0
     class ActionControllerPerformanceBreakdownSubscriber
       def call(*args)
+        return unless Airbrake::Config.instance.performance_stats
+
         routes = Airbrake::Rack::RequestStore[:routes]
         return if !routes || routes.none?
 

@@ -6,9 +6,9 @@ module Airbrake
     # 3.2+ apps). It makes Airbrake Ruby work with Rails and report errors
     # occurring in the application automatically.
     #
-    # rubocop:disable Metrics/ClassLength, Metrics/BlockLength
+    # rubocop:disable Metrics/BlockLength
     class Railtie < ::Rails::Railtie
-      initializer('airbrake.middleware', after: :load_config_initializers) do |app|
+      initializer('airbrake.middleware') do |app|
         # Since Rails 3.2 the ActionDispatch::DebugExceptions middleware is
         # responsible for logging exceptions and showing a debugging page in
         # case the request is local. We want to insert our middleware after
@@ -53,43 +53,37 @@ module Airbrake
           require 'airbrake/rails/action_controller'
           include Airbrake::Rails::ActionController
 
-          if Airbrake::Config.instance.performance_stats
-            # Cache route information for the duration of the request.
-            require 'airbrake/rails/action_controller_route_subscriber'
-            ActiveSupport::Notifications.subscribe(
-              'start_processing.action_controller',
-              Airbrake::Rails::ActionControllerRouteSubscriber.new,
-            )
+          # Cache route information for the duration of the request.
+          require 'airbrake/rails/action_controller_route_subscriber'
+          ActiveSupport::Notifications.subscribe(
+            'start_processing.action_controller',
+            Airbrake::Rails::ActionControllerRouteSubscriber.new,
+          )
 
-            # Send route stats.
-            require 'airbrake/rails/action_controller_notify_subscriber'
-            ActiveSupport::Notifications.subscribe(
-              'process_action.action_controller',
-              Airbrake::Rails::ActionControllerNotifySubscriber.new,
-            )
+          # Send route stats.
+          require 'airbrake/rails/action_controller_notify_subscriber'
+          ActiveSupport::Notifications.subscribe(
+            'process_action.action_controller',
+            Airbrake::Rails::ActionControllerNotifySubscriber.new,
+          )
 
-            # Send performance breakdown: where a request spends its time.
-            require 'airbrake/rails/action_controller_performance_breakdown_subscriber'
-            ActiveSupport::Notifications.subscribe(
-              'process_action.action_controller',
-              Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber.new,
-            )
+          # Send performance breakdown: where a request spends its time.
+          require 'airbrake/rails/action_controller_performance_breakdown_subscriber'
+          ActiveSupport::Notifications.subscribe(
+            'process_action.action_controller',
+            Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber.new,
+          )
 
-            require 'airbrake/rails/net_http' if defined?(Net) && defined?(Net::HTTP)
+          require 'airbrake/rails/net_http' if defined?(Net) && defined?(Net::HTTP)
+          require 'airbrake/rails/curb' if defined?(Curl) && defined?(Curl::CURB_VERSION)
+          require 'airbrake/rails/http' if defined?(HTTP) && defined?(HTTP::Client)
+          require 'airbrake/rails/http_client' if defined?(HTTPClient)
+          require 'airbrake/rails/typhoeus' if defined?(Typhoeus)
 
-            if defined?(Curl) && defined?(Curl::CURB_VERSION)
-              require 'airbrake/rails/curb'
-            end
-
-            require 'airbrake/rails/http' if defined?(HTTP) && defined?(HTTP::Client)
-            require 'airbrake/rails/http_client' if defined?(HTTPClient)
-            require 'airbrake/rails/typhoeus' if defined?(Typhoeus)
-
-            if defined?(Excon)
-              require 'airbrake/rails/excon_subscriber'
-              ActiveSupport::Notifications.subscribe(/excon/, Airbrake::Rails::Excon.new)
-              ::Excon.defaults[:instrumentor] = ActiveSupport::Notifications
-            end
+          if defined?(Excon)
+            require 'airbrake/rails/excon_subscriber'
+            ActiveSupport::Notifications.subscribe(/excon/, Airbrake::Rails::Excon.new)
+            ::Excon.defaults[:instrumentor] = ActiveSupport::Notifications
           end
         end
       end
@@ -104,7 +98,7 @@ module Airbrake
             include Airbrake::Rails::ActiveRecord
           end
 
-          if defined?(ActiveRecord) && Airbrake::Config.instance.query_stats
+          if defined?(ActiveRecord)
             # Send SQL queries.
             require 'airbrake/rails/active_record_subscriber'
             ActiveSupport::Notifications.subscribe(
@@ -152,6 +146,6 @@ module Airbrake
         end
       end
     end
-    # rubocop:enable Metrics/ClassLength, Metrics/BlockLength
+    # rubocop:enable Metrics/BlockLength
   end
 end

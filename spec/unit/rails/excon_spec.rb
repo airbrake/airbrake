@@ -26,22 +26,41 @@ RSpec.describe Airbrake::Rails::Excon do
         '/test-route' => { groups: {} },
       }
 
-      expect(event).to receive(:duration).and_return(0.1)
+      allow(event).to receive(:duration).and_return(0.1)
     end
 
-    it "sets http group value of that route" do
-      subject.call([])
-      expect(route[:groups][:http]).to eq(0.1)
+    context "and when the Airbrake config disables performance stats" do
+      before do
+        allow(Airbrake::Config.instance)
+          .to receive(:performance_stats).and_return(false)
+      end
+
+      it "doesn't set http group value of that route" do
+        subject.call([])
+        expect(route[:groups][:http]).to be_nil
+      end
     end
 
-    context "and when the subscriber is called multiple times" do
-      before { expect(event).to receive(:duration).and_return(0.1) }
+    context "and when the Airbrake config enables performance stats" do
+      before do
+        allow(Airbrake::Config.instance)
+          .to receive(:performance_stats).and_return(true)
+      end
 
-      it "increments http group value of that route" do
+      it "sets http group value of that route" do
         subject.call([])
-        subject.call([])
+        expect(route[:groups][:http]).to eq(0.1)
+      end
 
-        expect(route[:groups][:http]).to eq(0.2)
+      context "and when the subscriber is called multiple times" do
+        before { expect(event).to receive(:duration).and_return(0.1) }
+
+        it "increments http group value of that route" do
+          subject.call([])
+          subject.call([])
+
+          expect(route[:groups][:http]).to eq(0.2)
+        end
       end
     end
   end
