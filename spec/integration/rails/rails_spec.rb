@@ -138,7 +138,7 @@ RSpec.describe "Rails integration specs" do
           # integration will try to handle error 500 and we want to prevent
           # that: https://github.com/airbrake/airbrake/pull/583
           allow_any_instance_of(Airbrake::Rack::Middleware).to(
-            receive(:notify_airbrake).and_return(nil),
+            receive(:notify_airbrake),
           )
         end
 
@@ -211,10 +211,10 @@ RSpec.describe "Rails integration specs" do
 
       before do
         allow_message_expectations_on_nil
-        allow(Warden::Proxy).to receive(:new).and_return(nil)
+        allow(Warden::Proxy).to receive(:new)
         # Mock on_request to make the test pass. Started failing in warden 1.2.8
         # due to: https://github.com/wardencommunity/warden/pull/162
-        allow(nil).to receive(:on_request).and_return(nil)
+        allow(nil).to receive(:on_request)
         allow_any_instance_of(DummyController).to receive(:current_user) { user }
       end
 
@@ -229,7 +229,7 @@ RSpec.describe "Rails integration specs" do
   end
 
   describe "request performance hook" do
-    before { allow(Airbrake).to receive(:notify).and_return(nil) }
+    before { allow(Airbrake).to receive(:notify) }
 
     it "notifies request" do
       expect(Airbrake).to receive(:notify_request).with(
@@ -257,7 +257,7 @@ RSpec.describe "Rails integration specs" do
   end
 
   describe "query performance hook" do
-    before { allow(Airbrake).to receive(:notify).and_return(nil) }
+    before { allow(Airbrake).to receive(:notify) }
 
     it "sends queries to Airbrake" do
       expect(Airbrake).to receive(:notify_query).with(
@@ -293,7 +293,7 @@ RSpec.describe "Rails integration specs" do
   end
 
   describe "performance breakdown hook" do
-    before { allow(Airbrake).to receive(:notify).and_return(nil) }
+    before { allow(Airbrake).to receive(:notify) }
 
     it "sends performance breakdown info to Airbrake" do
       expect(Airbrake).to receive(:notify_performance_breakdown).with(

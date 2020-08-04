@@ -7,7 +7,8 @@ RSpec.shared_examples 'rack examples' do
 
   before do
     stub_request(:post, endpoint).to_return(status: 200, body: '')
-    Airbrake::Config.instance.merge(performance_stats: false)
+    allow(Airbrake::Config.instance)
+      .to receive(:performance_stats).and_return(false)
   end
 
   after { Warden.test_reset! }
