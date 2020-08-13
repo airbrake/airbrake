@@ -13,6 +13,8 @@ Airbrake Changelog
   ([#1118](https://github.com/airbrake/airbrake/pull/1118))
 * Dropped support for Ruby 2.1
   ([#1119](https://github.com/airbrake/airbrake/pull/1119))
+* Dropped support for Ruby 2.2
+  ([#1120](https://github.com/airbrake/airbrake/pull/1120))
 
 ### [v10.1.0.rc.1][v10.1.0.rc.1] (July 14, 2020)
 

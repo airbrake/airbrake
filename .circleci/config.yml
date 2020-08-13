@@ -65,24 +65,6 @@ jobs:
       - run:
           name: Run RuboCop linting
           command: bundle exec rubocop --parallel
-  "ruby-2.2":
-    docker:
-      # We can't upgrade to v2.2.10 because of the Sidekiq bug that was patched
-      # but never backported:
-      # https://github.com/mperham/sidekiq/commit/bca93969d387222a55aad0921d647c7178a0c26f
-      - image: circleci/ruby:2.2.9
-    working_directory: ~/airbrake
-    steps:
-      - <<: *repo_restore_cache
-      - <<: *bundle_install
-      - <<: *appraisal_install
-      - <<: *unit
-      - <<: *rails41
-      - <<: *rails42
-      - <<: *rails50
-      - <<: *rails51
-      - <<: *sinatra
-      - <<: *rack
   "ruby-2.3":
     docker:
       - image: circleci/ruby:2.3
@@ -181,9 +163,6 @@ workflows:
   build:
     jobs:
       - lint
-      - "ruby-2.2":
-          requires:
-            - lint
       - "ruby-2.3":
           requires:
             - lint

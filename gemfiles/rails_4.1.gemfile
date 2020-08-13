@@ -12,5 +12,6 @@ gem "resque_spec", github: "airbrake/resque_spec"
 gem "delayed_job_active_record", "~> 4.1.0"
 gem "mime-types", "~> 3.1"
 gem "sprockets", "~> 3.7"
+gem "rack", "~> 1"
 
 gemspec path: "../"
