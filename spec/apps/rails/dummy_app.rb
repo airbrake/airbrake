@@ -7,10 +7,7 @@ class DummyApp < Rails::Application
   # Rails requires these two keys.
   config.session_store :cookie_store, key: 'jiez4Mielu1AiHugog3shiiPhe3lai3faer'
   config.secret_token = 'ni6aeph6aeriBiphesh8omahv6cohpue5Quah5ceiMohtuvei8'
-
-  if Gem::Version.new(Rails.version) > Gem::Version.new('3.2.0')
-    config.secret_key_base = '62773890cad9d9d584b57320f8612f8f7378a90aadcabc6ee'
-  end
+  config.secret_key_base = '62773890cad9d9d584b57320f8612f8f7378a90aadcabc6ee'
 
   # Configure a logger, without it the tests can't run.
   vsn = Rails.version.split('').values_at(0, 2).join('')

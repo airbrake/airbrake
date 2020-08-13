@@ -9,6 +9,8 @@ Airbrake Changelog
   ([#1112](https://github.com/airbrake/airbrake/pull/1112))
 * Rails: fixed broken initialization for some apps due to the load order of
   initializers ([#1112](https://github.com/airbrake/airbrake/pull/1112))
+* Dropped support for Rails v3.2
+  ([#1118](https://github.com/airbrake/airbrake/pull/1118))
 
 ### [v10.1.0.rc.1][v10.1.0.rc.1] (July 14, 2020)
 

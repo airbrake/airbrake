@@ -189,21 +189,6 @@ RSpec.describe "Rails integration specs" do
 
   describe "DelayedJob jobs" do
     it "reports exceptions occurring in DelayedJob jobs" do
-      skip if Gem::Version.new(Rails.version) > Gem::Version.new('3.2.22.5')
-
-      expect(Airbrake).to receive(:notify).with(
-        anything,
-        'job' => hash_including(
-          'handler' => "--- !ruby/struct:BangoJob\nbingo: bingo\nbongo: bongo\n",
-        ),
-      )
-
-      get '/delayed_job'
-    end
-
-    it "reports exceptions occurring in DelayedJob jobs on Rails 4.2" do
-      skip if Gem::Version.new(Rails.version) == Gem::Version.new('3.2.22.5')
-
       expect(Airbrake).to receive(:notify).with(
         anything,
         hash_including(
