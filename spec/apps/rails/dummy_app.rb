@@ -249,6 +249,7 @@ migration_context = Class.new do
 
   def migration_version
     return unless ActiveRecord::VERSION::MAJOR >= 5
+
     "[#{ActiveRecord::VERSION::MAJOR}.#{ActiveRecord::VERSION::MINOR}]"
   end
 end

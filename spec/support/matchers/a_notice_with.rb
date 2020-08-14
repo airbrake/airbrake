@@ -24,6 +24,7 @@ RSpec::Matchers.define :a_notice_with do |access_keys, expected_val|
     v = hash[keys.shift]
     while keys.any?
       return unless v.is_a?(Hash)
+
       v = v[keys.shift]
     end
     v

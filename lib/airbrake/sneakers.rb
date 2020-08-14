@@ -26,6 +26,7 @@ module Airbrake
 
       def filter_context(context)
         return context unless context[:delivery_info]
+
         h = context.dup
         h[:delivery_info] = context[:delivery_info].reject do |k, _v|
           IGNORED_KEYS.include?(k)

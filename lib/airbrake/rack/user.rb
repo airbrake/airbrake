@@ -28,6 +28,7 @@ module Airbrake
         controller = rack_env['action_controller.instance']
         return unless controller.respond_to?(:current_user, true)
         return unless [-1, 0].include?(controller.method(:current_user).arity)
+
         begin
           controller.__send__(:current_user)
         rescue Exception => _e # rubocop:disable Lint/RescueException
@@ -59,6 +60,7 @@ module Airbrake
         # try methods with no arguments or with variable number of arguments,
         # where none of them are required
         return unless @user.method(key).arity.between?(-1, 0)
+
         String(@user.__send__(key))
       end
 

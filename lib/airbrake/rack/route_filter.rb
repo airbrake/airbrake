@@ -28,11 +28,13 @@ module Airbrake
 
       def rails_route(request)
         return unless (route = Airbrake::Rails::App.recognize_route(request))
+
         route.path
       end
 
       def sinatra_route(request)
         return unless (route = request.env['sinatra.route'])
+
         route.split(' ').drop(1).join(' ')
       end
 
