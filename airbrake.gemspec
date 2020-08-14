@@ -28,7 +28,7 @@ DESC
   s.require_path = 'lib'
   s.files        = ['lib/airbrake.rb', *Dir.glob('lib/**/*')]
 
-  s.required_ruby_version = '>= 2.2'
+  s.required_ruby_version = '>= 2.3'
 
   s.add_dependency 'airbrake-ruby', '~> 5.0.0.rc.1'
 
@@ -36,49 +36,24 @@ DESC
   s.add_development_dependency 'rspec-wait', '~> 0'
   s.add_development_dependency 'rake', '~> 12'
   s.add_development_dependency 'pry', '~> 0'
-
-  # appraisal >= 2.3.0 wants Ruby >= 2.3
-  s.add_development_dependency 'appraisal', '= 2.2.0'
-
-  s.add_development_dependency 'rack', '~> 1'
-  s.add_development_dependency 'webmock', '~> 2'
-
+  s.add_development_dependency 'appraisal'
+  s.add_development_dependency 'rack', '~> 2'
+  s.add_development_dependency 'webmock', '~> 3'
+  s.add_development_dependency 'amq-protocol'
   s.add_development_dependency 'sneakers', '~> 2'
-  # We still support Ruby 2.1.0+, but sneakers 2 wants 2.2+.
-  s.add_development_dependency 'amq-protocol', '= 2.2.0'
-
   s.add_development_dependency 'rack-test', '= 0.6.3'
   s.add_development_dependency 'redis', '= 3.3.3'
-
-  # Fixes build failure with public_suffix v3
-  # https://circleci.com/gh/airbrake/airbrake-ruby/889
-  s.add_development_dependency 'public_suffix', '~> 2.0', '< 3.0'
-
-  # Newer versions don't support Ruby 2.2.0 and lower.
-  s.add_development_dependency 'nokogiri', '= 1.9.1'
-
-  # Parallel above v1.13.0 doesn't support Ruby v2.1 and lower (and we do).
-  s.add_development_dependency 'parallel', '= 1.13.0'
-
-  # minitest > 5.12.0 wants Ruby >= 2.2
-  s.add_development_dependency 'minitest', '= 5.11.3'
-
-  # rack-cache > 1.9.0 wants Ruby >= 2.3.
-  s.add_development_dependency 'rack-cache', '= 1.9.0'
-
-  # redis-namespace > 1.6.0 wants Ruby >= 2.4.
-  s.add_development_dependency 'redis-namespace', '= 1.6.0'
-
-  # ffi > 1.12.2 wants Ruby >= 2.3.
-  s.add_development_dependency 'ffi', '= 1.12.2'
-
-  if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.2')
-    s.add_development_dependency 'sidekiq', '~> 5'
-  end
-
+  s.add_development_dependency 'sidekiq', '~> 5'
   s.add_development_dependency 'curb', '~> 0.9' if RUBY_ENGINE == 'ruby'
   s.add_development_dependency 'excon', '~> 0.64'
   s.add_development_dependency 'http', '~> 2.2'
   s.add_development_dependency 'httpclient', '~> 2.8'
   s.add_development_dependency 'typhoeus', '~> 1.3'
+
+  # Fixes build failure with public_suffix v3
+  # https://circleci.com/gh/airbrake/airbrake-ruby/889
+  s.add_development_dependency 'public_suffix', '~> 2.0', '< 3.0'
+
+  # redis-namespace > 1.6.0 wants Ruby >= 2.4.
+  s.add_development_dependency 'redis-namespace', '= 1.6.0'
 end

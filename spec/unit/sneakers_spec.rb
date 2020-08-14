@@ -32,6 +32,8 @@ RSpec.describe Airbrake::Sneakers::ErrorReporter do
   before do
     stub_request(:post, endpoint).to_return(status: 201, body: '{}')
 
+    allow(Airbrake).to receive(:notify_queue)
+
     Sneakers.configure(daemonize: true, log: '/dev/null')
     Sneakers::Worker.configure_metrics
   end

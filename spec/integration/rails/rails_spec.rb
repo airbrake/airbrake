@@ -2,6 +2,24 @@
 
 require 'integration/shared_examples/rack_examples'
 
+# TODO: remove this when WebMock is fixed.
+#
+# WebMock 3 overrides our integration so we cannot test benchmark HTTP
+# integrations anymore. It incorrectly uses monkey-patching instead of
+# prepending their code. We want to force prepend again in the tests to have
+# higher precedence than WebMock.
+def force_http_libs_prepend
+  Net::HTTP.prepend(Airbrake::Rails::NetHttp)
+  HTTPClient.prepend(Airbrake::Rails::HTTPClient)
+  Typhoeus::Request.prepend(Airbrake::Rails::TyphoeusRequest)
+
+  # Curl doesn't support JRuby.
+  return unless defined?(Curl)
+
+  Curl::Easy.prepend(Airbrake::Rails::CurlEasy)
+  Curl::Multi.singleton_class.prepend(Airbrake::Rails::CurlMulti)
+end
+
 RSpec.describe "Rails integration specs" do
   include Warden::Test::Helpers
 
@@ -12,6 +30,8 @@ RSpec.describe "Rails integration specs" do
     stub_request(:post, 'https://api.airbrake.io/api/v3/projects/113743/notices')
       .to_return(status: 200, body: '')
   end
+
+  before(:all) { force_http_libs_prepend }
 
   before do
     stub_request(:put, %r{https://api.airbrake.io/api/v5/projects/113743/.+})
@@ -340,6 +360,12 @@ RSpec.describe "Rails integration specs" do
         stub_request(:get, 'http://example.com').to_return(body: '')
       end
 
+      before do
+        if Airbrake::JRUBY
+          skip("JRuby and WebMock don't work well with Net::HTTP monkey-patching")
+        end
+      end
+
       it "includes the http breakdown" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
           hash_including(groups: { view: be > 0, http: be > 0 }),
@@ -429,6 +455,12 @@ RSpec.describe "Rails integration specs" do
     context "when an action performs a HTTPClient request" do
       let!(:example_request) do
         stub_request(:get, 'http://example.com').to_return(body: '')
+      end
+
+      before do
+        if Airbrake::JRUBY
+          skip("JRuby and WebMock don't work well with Net::HTTP monkey-patching")
+        end
       end
 
       it "includes the http breakdown" do

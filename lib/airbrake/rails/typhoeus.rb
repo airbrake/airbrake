@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
-module Typhoeus
-  # Monkey-patch to measure request timing.
-  class Request
-    alias run_without_airbrake run
-
-    def run
-      Airbrake::Rack.capture_timing(:http) do
-        run_without_airbrake
+module Airbrake
+  module Rails
+    # Allow measuring request timing.
+    module TyphoeusRequest
+      def run
+        Airbrake::Rack.capture_timing(:http) do
+          super
+        end
       end
     end
   end
 end
+
+Typhoeus::Request.prepend(Airbrake::Rails::TyphoeusRequest)

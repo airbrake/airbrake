@@ -1,37 +1,32 @@
 # frozen_string_literal: true
 
-module Curl
-  # Monkey-patch to measure request timing.
-  class Easy
-    alias http_without_airbrake http
+module Airbrake
+  module Rails
+    # Allows measuring request timing.
+    module CurlEasy
+      def http(verb)
+        Airbrake::Rack.capture_timing(:http) do
+          super(verb)
+        end
+      end
 
-    def http(verb)
-      Airbrake::Rack.capture_timing(:http) do
-        http_without_airbrake(verb)
+      def perform(&block)
+        Airbrake::Rack.capture_timing(:http) do
+          super(&block)
+        end
       end
     end
 
-    alias perform_without_airbrake perform
-
-    def perform(&block)
-      Airbrake::Rack.capture_timing(:http) do
-        perform_without_airbrake(&block)
-      end
-    end
-  end
-end
-
-module Curl
-  # Monkey-patch to measure request timing.
-  class Multi
-    class << self
-      alias http_without_airbrake http
-
+    # Allows measuring request timing.
+    module CurlMulti
       def http(urls_with_config, multi_options = {}, &block)
         Airbrake::Rack.capture_timing(:http) do
-          http_without_airbrake(urls_with_config, multi_options, &block)
+          super(urls_with_config, multi_options, &block)
         end
       end
     end
   end
 end
+
+Curl::Easy.prepend(Airbrake::Rails::CurlEasy)
+Curl::Multi.singleton_class.prepend(Airbrake::Rails::CurlMulti)
