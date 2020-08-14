@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-unless Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.7.0')
+if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.7.0') && RUBY_ENGINE != 'jruby'
   appraise 'rails-4.1' do
     gem 'rails', '~> 4.1.16'
     gem 'warden', '~> 1.2.3'
