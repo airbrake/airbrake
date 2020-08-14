@@ -86,3 +86,6 @@ Style/TrailingCommaInArrayLiteral:
 
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: comma
+
+Naming/RescuedExceptionsVariableName:
+  Enabled: false
