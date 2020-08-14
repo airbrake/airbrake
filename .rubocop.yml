@@ -1,14 +1,14 @@
 # Explanations of all possible options:
 #   https://github.com/bbatsov/rubocop/blob/master/config/default.yml
 AllCops:
-  TargetRubyVersion: 2.1
+  TargetRubyVersion: 2.3
   DisplayCopNames: true
   DisplayStyleGuide: true
 
 Metrics/MethodLength:
   Max: 25
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 90
 
 # Details:
@@ -48,7 +48,7 @@ Metrics/BlockLength:
     - 'airbrake.gemspec'
     - 'lib/airbrake/rake/tasks.rb'
 
-Layout/IndentHeredoc:
+Layout/HeredocIndentation:
   Enabled: false
 
 Naming/FileName:
@@ -68,7 +68,7 @@ Layout/EmptyLinesAroundArguments:
 Bundler/OrderedGems:
   Enabled: false
 
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   Enabled: false
 
 Style/SymbolArray:
