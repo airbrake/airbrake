@@ -32,7 +32,7 @@ RSpec.describe Airbrake::Sidekiq::ErrorHandler do
       ) do
         raise exception
       end
-    rescue StandardError # rubocop:disable Lint/HandleExceptions
+    rescue StandardError
       # Do nothing.
     end
 
