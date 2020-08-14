@@ -98,11 +98,11 @@ module Airbrake
       def self.method_visibility(klass, method_name)
         klass.module_exec do
           if protected_method_defined?(method_name)
-            "protected".freeze
+            "protected"
           elsif private_method_defined?(method_name)
-            "private".freeze
+            "private"
           else
-            "public".freeze
+            "public"
           end
         end
       end
@@ -111,11 +111,11 @@ module Airbrake
       # A method instead of a constant so it isn't accessible in the target.
       if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.7")
         def self.method_signature
-          "*args, **kw_args, &block".freeze
+          "*args, **kw_args, &block"
         end
       else
         def self.method_signature
-          "*args, &block".freeze
+          "*args, &block"
         end
       end
 

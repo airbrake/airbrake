@@ -8,7 +8,7 @@ module Airbrake
     # @api private
     class Event
       # @see https://github.com/rails/rails/issues/8987
-      HTML_RESPONSE_WILDCARD = "*/*".freeze
+      HTML_RESPONSE_WILDCARD = "*/*"
 
       include Airbrake::Loggable
 
