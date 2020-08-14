@@ -14,6 +14,7 @@ module Airbrake
       # @see Airbrake#notify, #notify_airbrake_sync
       def notify_airbrake(exception, params = {}, &block)
         return unless (notice = build_notice(exception, params))
+
         Airbrake.notify(notice, params, &block)
       end
 
@@ -22,6 +23,7 @@ module Airbrake
       # @see Airbrake#notify_sync, #notify_airbrake
       def notify_airbrake_sync(exception, params = {}, &block)
         return unless (notice = build_notice(exception, params))
+
         Airbrake.notify_sync(notice, params, &block)
       end
 
@@ -29,6 +31,7 @@ module Airbrake
       # @return [Airbrake::Notice] the notice with information from the Rack env
       def build_notice(exception, params = {})
         return unless (notice = Airbrake.build_notice(exception, params))
+
         notice.stash[:rack_request] = request
         notice
       end

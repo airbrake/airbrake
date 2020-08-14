@@ -51,12 +51,14 @@ RSpec.describe Airbrake::Rack::Instrumentable do
 
         def method_with_everything!(a, b = nil, *args, foo:, bar: nil)
           raise ArgumentError if !a || !b || !foo || !bar || args.empty?
+
           yield(1)
         end
         airbrake_capture_timing :method_with_everything!
 
         def writer_with_everything=(a, b = nil, *args, foo:, bar: nil)
           raise ArgumentError if !a || !b || !foo || !bar || args.empty?
+
           yield(1)
         end
         airbrake_capture_timing :writer_with_everything=
@@ -87,12 +89,14 @@ RSpec.describe Airbrake::Rack::Instrumentable do
 
         def prepended_method!(a, b = nil, *args, foo:, bar: nil)
           raise ArgumentError if !a || !b || !foo || !bar || args.empty?
+
           yield(1)
         end
         airbrake_capture_timing :prepended_method!
 
         def prepended_writer=(a, b = nil, *args, foo:, bar: nil)
           raise ArgumentError if !a || !b || !foo || !bar || args.empty?
+
           yield(1)
         end
         airbrake_capture_timing :prepended_writer=

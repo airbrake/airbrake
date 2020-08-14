@@ -8,10 +8,10 @@ module Airbrake
     class HttpHeadersFilter
       # @return [Array<String>] the prefixes of the majority of HTTP headers in
       #   Rack (some prefixes match the header names for simplicity)
-      HTTP_HEADER_PREFIXES = [
-        'HTTP_'.freeze,
-        'CONTENT_TYPE'.freeze,
-        'CONTENT_LENGTH'.freeze,
+      HTTP_HEADER_PREFIXES = %w[
+        HTTP_
+        CONTENT_TYPE
+        CONTENT_LENGTH
       ].freeze
 
       # @return [Integer]

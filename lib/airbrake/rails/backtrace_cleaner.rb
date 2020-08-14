@@ -5,7 +5,7 @@ module Airbrake
     # BacktraceCleaner is a wrapper around Rails.backtrace_cleaner.
     class BacktraceCleaner
       # @return [Regexp]
-      AIRBRAKE_FRAME_PATTERN = %r{/airbrake/lib/airbrake/}
+      AIRBRAKE_FRAME_PATTERN = %r{/airbrake/lib/airbrake/}.freeze
 
       def self.clean(backtrace)
         ::Rails.backtrace_cleaner.clean(backtrace).first(1)

@@ -64,7 +64,7 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
               response_type: :html,
               groups: { db: 0.5, view: 0.5, http: 0.5 },
             ),
-            {}
+            {},
           )
           subject.call([])
         end

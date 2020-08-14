@@ -71,7 +71,7 @@ namespace :airbrake do
     app = ENV['HEROKU_APP']
 
     config = Bundler.with_clean_env do
-      `heroku config --shell#{ " --app #{app}" if app }`
+      `heroku config --shell#{" --app #{app}" if app}`
     end
 
     heroku_env = config.each_line.with_object({}) do |line, h|

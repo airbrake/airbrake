@@ -13,7 +13,7 @@ namespace :airbrake do
                             REVISION=#{fetch(:current_revision)} \
                             REPOSITORY=#{fetch(:repo_url)} \
                             VERSION=#{fetch(:app_version)}
-            CMD
+          CMD
 
           info 'Notified Airbrake of the deploy'
         end
