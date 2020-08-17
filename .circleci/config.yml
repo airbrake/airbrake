@@ -56,7 +56,7 @@ references:
 jobs:
   lint:
     docker:
-      - image: circleci/ruby:2.6
+      - image: circleci/ruby:2.7
     working_directory: ~/airbrake
     steps:
       - checkout
