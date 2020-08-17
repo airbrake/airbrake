@@ -3,20 +3,33 @@ Airbrake Changelog
 
 ### master
 
-* Rails APM: fixed double slash in front of a route name when mounting engines
-  at `/` ([#1111](https://github.com/airbrake/airbrake/pull/1111))
-* Rails APM: made it possible to enable/disable APM at runtime
-  ([#1112](https://github.com/airbrake/airbrake/pull/1112))
-* Rails: fixed broken initialization for some apps due to the load order of
-  initializers ([#1112](https://github.com/airbrake/airbrake/pull/1112))
+### [v11.0.0][v11.0.0] (August 17, 2020)
+
+Breaking changes:
+
 * Dropped support for Rails v3.2
   ([#1118](https://github.com/airbrake/airbrake/pull/1118))
 * Dropped support for Ruby 2.1
   ([#1119](https://github.com/airbrake/airbrake/pull/1119))
 * Dropped support for Ruby 2.2
   ([#1120](https://github.com/airbrake/airbrake/pull/1120))
+
+Bug fixes:
+
+* Rails APM: fixed double slash in front of a route name when mounting engines
+  at `/` ([#1111](https://github.com/airbrake/airbrake/pull/1111))
+* Rails: fixed broken initialization for some apps due to the load order of
+  initializers ([#1112](https://github.com/airbrake/airbrake/pull/1112))
+
+Maintenance:
+
 * Bumped airbrake-ruby requirement to `~> 5.0`
   ([#1068](https://github.com/airbrake/airbrake/issues/1068))
+
+Features:
+
+* Rails APM: made it possible to enable/disable APM at runtime
+  ([#1112](https://github.com/airbrake/airbrake/pull/1112))
 
 ### [v10.1.0.rc.1][v10.1.0.rc.1] (July 14, 2020)
 
@@ -901,3 +914,4 @@ Airbrake Changelog
 [v10.0.4]: https://github.com/airbrake/airbrake/releases/tag/v10.0.4
 [v10.0.5]: https://github.com/airbrake/airbrake/releases/tag/v10.0.5
 [v10.1.0.rc.1]: https://github.com/airbrake/airbrake/releases/tag/v10.1.0.rc.1
+[v11.0.0]: https://github.com/airbrake/airbrake/releases/tag/v11.0.0
