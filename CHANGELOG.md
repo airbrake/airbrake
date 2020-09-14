@@ -3,6 +3,11 @@ Airbrake Changelog
 
 ### master
 
+### [v10.0.6][v10.0.6] (September 14, 2020)
+
+* Rails APM: fixed double slash in front of a route name when mounting engines
+  at `/` ([#1111](https://github.com/airbrake/airbrake/pull/1111))
+
 ### [v10.0.5][v10.0.5] (June 17, 2020)
 
 * Fixed deprecation warning about "connection_config" on Rails 6.1+
@@ -877,3 +882,4 @@ Airbrake Changelog
 [v10.0.3]: https://github.com/airbrake/airbrake/releases/tag/v10.0.3
 [v10.0.4]: https://github.com/airbrake/airbrake/releases/tag/v10.0.4
 [v10.0.5]: https://github.com/airbrake/airbrake/releases/tag/v10.0.5
+[v10.0.6]: https://github.com/airbrake/airbrake/releases/tag/v10.0.6
