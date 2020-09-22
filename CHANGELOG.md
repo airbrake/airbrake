@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Fixed `rake airbrake::deploy` crashing with `NoMethodError: undefined method
+  `level' for nil:NilClass` when the `RAILS_LOG_TO_STDOUT` environment variable
+  is set ([#1129](https://github.com/airbrake/airbrake/pull/1129))
+
 ### [v11.0.0][v11.0.0] (August 17, 2020)
 
 Breaking changes:
