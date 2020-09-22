@@ -6,7 +6,7 @@ gem "rubocop", "= 0.55", require: false
 gem "rails", "~> 5.1.4"
 gem "warden", "~> 1.2.6"
 gem "activerecord-jdbcsqlite3-adapter", "~> 51.0", platforms: :jruby
-gem "sqlite3", "~> 1.3.11", platforms: [:mri, :rbx]
+gem "sqlite3", "~> 1.4", platforms: [:mri, :rbx]
 gem "resque", "~> 1.26"
 gem "resque_spec", github: "airbrake/resque_spec"
 gem "delayed_job", github: "collectiveidea/delayed_job"
