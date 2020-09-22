@@ -25,3 +25,4 @@ resources/notice.xml
 Gemfile.lock
 .#*
 *.log
+.ackrc
