@@ -49,6 +49,7 @@ DESC
   s.add_development_dependency 'http', '~> 2.2'
   s.add_development_dependency 'httpclient', '~> 2.8'
   s.add_development_dependency 'typhoeus', '~> 1.3'
+  s.add_development_dependency 'sqlite3', '~> 1.4' if RUBY_ENGINE == 'ruby'
 
   # Fixes build failure with public_suffix v3
   # https://circleci.com/gh/airbrake/airbrake-ruby/889
