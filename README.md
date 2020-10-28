@@ -61,8 +61,7 @@ The list of integrations that are available in this gem includes:
   * Logger<sup>[[link](#logger)]</sup>
 * Plain Ruby scripts<sup>[[link](#plain-ruby-scripts)]</sup>
 
-[Paying Airbrake plans][pricing] support the ability to track deployments of
-your application in Airbrake. We offer several ways to track your deployments:
+Deployment tracking:
 
 * Using Capistrano<sup>[[link](#capistrano)]</sup>
 * Using the Rake task<sup>[[link](#rake-task)]</sup>
@@ -236,14 +235,10 @@ project's dashboard for a new error.
 curl localhost:9292
 ```
 
-If your Sinatra app consists of subprojects and you want to capture errors
-separately for each subproject, make sure to [configure it
-accordingly](#configuring-individual-notifier-for-each-subproject).
-
 ### Rack
 
 To send exceptions to Airbrake from any Rack application, simply `use` our Rack
-middleware, and [configure][config] the default notifier.
+middleware, and [configure][config] the notifier.
 
 ```ruby
 require 'airbrake'
@@ -465,7 +460,7 @@ require 'airbrake/rails/action_cable'
 Airbrake offers Rake tasks integration, which is used by our Rails
 integration<sup>[[link](#rails)]</sup>. To integrate Airbrake in any project,
 just `require` the gem in your `Rakefile`, if it hasn't been required and
-[configure][config] the default notifier.
+[configure][config] the notifier.
 
 ```ruby
 # Rakefile
@@ -579,9 +574,6 @@ gem. The [Airbrake Ruby][airbrake-ruby] gem provides all the needed tooling.
 Deploy tracking
 ---------------
 
-Airbrake has the ability to track your deploys (available only for
-[paid plans][pricing]).
-
 By notifying Airbrake of your application deployments, all errors are resolved
 when a deploy occurs, so that you'll be notified again about any errors that
 reoccur after a deployment. Additionally, it's possible to review the errors in
@@ -655,7 +647,6 @@ Supported Rubies
 
 * CRuby >= 2.3.0
 * JRuby >= 9k
-* Rubinius >= 2.2.10
 
 Contact
 -------
@@ -717,7 +708,6 @@ integration tests and commands to invoke them.
 [airbrake-api]: https://github.com/airbrake/airbrake-ruby#api
 [rails-runner]: http://guides.rubyonrails.org/command_line.html#rails-runner
 [resque-wiki]: https://github.com/resque/resque/wiki/Failure-Backends#using-multiple-failure-backends-at-once
-[pricing]: https://airbrake.io/pricing
 [heroku-addon]: https://elements.heroku.com/addons/airbrake
 [heroku-docs]: https://devcenter.heroku.com/articles/airbrake
 [dashboard]: https://s3.amazonaws.com/airbrake-github-assets/airbrake/airbrake-dashboard.png
