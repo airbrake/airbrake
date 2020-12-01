@@ -8,7 +8,9 @@ Airbrake
 [![Downloads](https://img.shields.io/gem/dt/airbrake.svg?style=flat)](https://rubygems.org/gems/airbrake)
 [![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
 
-![The Airbrake notifier for Ruby][arthur-ruby]
+<p align="center">
+  <img src="https://airbrake-github-assets.s3.amazonaws.com/brand/airbrake-full-logo.png" width="200">
+</p>
 
 * [Airbrake README](https://github.com/airbrake/airbrake)
 * [Airbrake Ruby README](https://github.com/airbrake/airbrake-ruby)
@@ -711,7 +713,6 @@ integration tests and commands to invoke them.
 [heroku-addon]: https://elements.heroku.com/addons/airbrake
 [heroku-docs]: https://devcenter.heroku.com/articles/airbrake
 [dashboard]: https://s3.amazonaws.com/airbrake-github-assets/airbrake/airbrake-dashboard.png
-[arthur-ruby]: https://s3.amazonaws.com/airbrake-github-assets/airbrake/arthur-ruby.jpg
 [rails-13897]: https://github.com/rails/rails/pull/13897
 [rails-sub-keys]: https://github.com/airbrake/airbrake-ruby/issues/137
 [airbrake-notify]: https://github.com/airbrake/airbrake-ruby#airbrakenotify
