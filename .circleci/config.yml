@@ -68,6 +68,10 @@ jobs:
       - run:
           name: Run RuboCop linting
           command: bundle exec rubocop --parallel
+      - run:
+          name: Verify all @since tag versions start with letter 'v'
+          command: |
+            ! egrep -r "# @since [0-9]" lib
   "ruby-2.3":
     docker:
       - image: circleci/ruby:2.3
