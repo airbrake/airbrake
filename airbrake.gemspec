@@ -50,6 +50,10 @@ DESC
   s.add_development_dependency 'httpclient', '~> 2.8'
   s.add_development_dependency 'typhoeus', '~> 1.3'
 
+  # Fixes build failure with ethon v0.13.0
+  # https://app.circleci.com/pipelines/github/airbrake/airbrake/158/workflows/f22d902f-f0bb-449b-8b95-2a0ac76047f2
+  s.add_development_dependency 'ethon', '= 0.12.0'
+
   # Fixes build failure with public_suffix v3
   # https://circleci.com/gh/airbrake/airbrake-ruby/889
   s.add_development_dependency 'public_suffix', '~> 2.0', '< 3.0'
