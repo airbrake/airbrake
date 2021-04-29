@@ -1,0 +1,12 @@
+version: 2
+updates:
+- package-ecosystem: bundler
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "19:00"
+    timezone: US/Central
+  ignore:
+  - dependency-name: ethon
+    versions:
+    - 0.13.0
