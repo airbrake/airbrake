@@ -3,10 +3,11 @@ Airbrake Changelog
 
 ### master
 
+### [v11.0.2][v11.0.2] (May 12, 2021)
+
 * Fixed `HTTP::Client` performance breakdown when 3rd party code monkey-patches
    `HTTP::Client#perform`
    ([#1162](https://github.com/airbrake/airbrake/issues/1162))
-
 
 ### [v11.0.1][v11.0.1] (October 20, 2020)
 
@@ -930,3 +931,4 @@ Features:
 [v10.1.0.rc.1]: https://github.com/airbrake/airbrake/releases/tag/v10.1.0.rc.1
 [v11.0.0]: https://github.com/airbrake/airbrake/releases/tag/v11.0.0
 [v11.0.1]: https://github.com/airbrake/airbrake/releases/tag/v11.0.1
+[v11.0.2]: https://github.com/airbrake/airbrake/releases/tag/v11.0.2
