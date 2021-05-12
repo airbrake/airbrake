@@ -3,6 +3,11 @@ Airbrake Changelog
 
 ### master
 
+* Fixed `HTTP::Client` performance breakdown when 3rd party code monkey-patches
+   `HTTP::Client#perform`
+   ([#1162](https://github.com/airbrake/airbrake/issues/1162))
+
+
 ### [v11.0.1][v11.0.1] (October 20, 2020)
 
 * Fixed `rake airbrake::deploy` crashing with ``NoMethodError: undefined method

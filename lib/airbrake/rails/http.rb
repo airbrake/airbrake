@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 
-module HTTP
-  # Monkey-patch to measure request timing.
-  class Client
-    alias perform_without_airbrake perform
-
-    def perform(request, options)
-      Airbrake::Rack.capture_timing(:http) do
-        perform_without_airbrake(request, options)
+module Airbrake
+  module Rails
+    # Monkey-patch to measure request timing.
+    # @api private
+    # @since v11.0.2
+    module HTTP
+      def perform(request, options)
+        Airbrake::Rack.capture_timing(:http) do
+          super(request, options)
+        end
       end
     end
   end
 end
+
+HTTP::Client.prepend(Airbrake::Rails::HTTP)
