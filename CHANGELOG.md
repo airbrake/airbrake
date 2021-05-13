@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+* Fixed `Sneakers` integration when 3rd party code monkey-patches
+   `Sneakers::Worker#process_work`
+   ([#1164](https://github.com/airbrake/airbrake/issues/1164))
+
 ### [v11.0.2][v11.0.2] (May 12, 2021)
 
 * Fixed `HTTP::Client` performance breakdown when 3rd party code monkey-patches
