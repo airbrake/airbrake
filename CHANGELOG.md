@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v11.0.3][v11.0.3] (May 13, 2021)
+
 * Fixed `Sneakers` integration when 3rd party code monkey-patches
    `Sneakers::Worker#process_work`
    ([#1164](https://github.com/airbrake/airbrake/issues/1164))
@@ -945,3 +947,4 @@ Features:
 [v11.0.0]: https://github.com/airbrake/airbrake/releases/tag/v11.0.0
 [v11.0.1]: https://github.com/airbrake/airbrake/releases/tag/v11.0.1
 [v11.0.2]: https://github.com/airbrake/airbrake/releases/tag/v11.0.2
+[v11.0.3]: https://github.com/airbrake/airbrake/releases/tag/v11.0.3
