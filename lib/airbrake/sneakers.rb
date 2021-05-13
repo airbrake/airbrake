@@ -39,34 +39,36 @@ end
 
 Sneakers.error_reporters << Airbrake::Sneakers::ErrorReporter.new
 
-module Sneakers
-  # @todo Migrate to Sneakers v2.12.0 middleware API when it's released
-  # @see https://github.com/jondot/sneakers/pull/364
-  module Worker
-    # Sneakers v2.7.0+ renamed `do_work` to `process_work`.
-    if method_defined?(:process_work)
-      alias process_work_without_airbrake process_work
-    else
-      alias process_work_without_airbrake do_work
-    end
-
-    def process_work(delivery_info, metadata, msg, handler)
-      timing = Airbrake::Benchmark.measure do
-        process_work_without_airbrake(delivery_info, metadata, msg, handler)
+module Airbrake
+  module Sneakers
+    # @todo Migrate to Sneakers v2.12.0 middleware API when it's released
+    # @see https://github.com/jondot/sneakers/pull/364
+    module Worker
+      # Sneakers v2.7.0+ renamed `do_work` to `process_work`.
+      define_method(
+        ::Sneakers::Worker.method_defined?(:process_work) ? :process_work : :do_work,
+      ) do |delivery_info, metadata, msg, handler|
+        begin
+          timing = Airbrake::Benchmark.measure do
+            super(delivery_info, metadata, msg, handler)
+          end
+        rescue Exception => exception # rubocop:disable Lint/RescueException
+          Airbrake.notify_queue(
+            queue: self.class.to_s,
+            error_count: 1,
+            timing: 0.01,
+          )
+          raise exception
+        else
+          Airbrake.notify_queue(
+            queue: self.class.to_s,
+            error_count: 0,
+            timing: timing,
+          )
+        end
       end
-    rescue Exception => exception # rubocop:disable Lint/RescueException
-      Airbrake.notify_queue(
-        queue: self.class.to_s,
-        error_count: 1,
-        timing: 0.01,
-      )
-      raise exception
-    else
-      Airbrake.notify_queue(
-        queue: self.class.to_s,
-        error_count: 0,
-        timing: timing,
-      )
     end
   end
 end
+
+Sneakers::Worker.prepend(Airbrake::Sneakers::Worker)
