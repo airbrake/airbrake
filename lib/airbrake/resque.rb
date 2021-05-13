@@ -30,32 +30,33 @@ module Resque
   end
 end
 
-module Resque
-  # Measures elapsed time of a job and notifies Airbrake of the execution
-  # status.
-  #
-  # @since v9.6.0
-  class Job
-    # Store the original method to use it later.
-    alias perform_without_airbrake perform
-
-    def perform
-      timing = Airbrake::Benchmark.measure do
-        perform_without_airbrake
+module Airbrake
+  module Resque
+    # Measures elapsed time of a job and notifies Airbrake of the execution
+    # status.
+    #
+    # @since v9.6.0
+    module Job
+      def perform
+        timing = Airbrake::Benchmark.measure do
+          super
+        end
+      rescue StandardError => exception
+        Airbrake.notify_queue_sync(
+          queue: payload['class'],
+          error_count: 1,
+          timing: 0.01,
+        )
+        raise exception
+      else
+        Airbrake.notify_queue_sync(
+          queue: payload['class'],
+          error_count: 0,
+          timing: timing,
+        )
       end
-    rescue StandardError => exception
-      Airbrake.notify_queue_sync(
-        queue: payload['class'],
-        error_count: 1,
-        timing: 0.01,
-      )
-      raise exception
-    else
-      Airbrake.notify_queue_sync(
-        queue: payload['class'],
-        error_count: 0,
-        timing: timing,
-      )
     end
   end
 end
+
+Resque::Job.prepend(Airbrake::Resque::Job)
