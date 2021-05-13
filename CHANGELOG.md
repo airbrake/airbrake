@@ -6,6 +6,9 @@ Airbrake Changelog
 * Fixed `Sneakers` integration when 3rd party code monkey-patches
    `Sneakers::Worker#process_work`
    ([#1164](https://github.com/airbrake/airbrake/issues/1164))
+* Fixed `ActionCable` integration when 3rd party code monkey-patches
+   `ActionCable::Channel::Base#perform_action`
+   ([#1165](https://github.com/airbrake/airbrake/issues/1165))
 
 ### [v11.0.2][v11.0.2] (May 12, 2021)
 

@@ -10,26 +10,28 @@ require 'airbrake/rails/action_cable/notify_callback'
   end
 end
 
-module ActionCable
-  module Channel
-    # @since v8.3.0
-    # @api private
-    # @see https://github.com/rails/rails/blob/master/actioncable/lib/action_cable/channel/base.rb
-    class Base
-      alias perform_action_without_airbrake perform_action
+module Airbrake
+  module ActionCable
+    module Channel
+      # @since v8.3.0
+      # @api private
+      # @see https://github.com/rails/rails/blob/master/actioncable/lib/action_cable/channel/base.rb
+      module Base
+        def perform_action(*args, &block)
+          super(*args, &block)
+        rescue Exception => ex # rubocop:disable Lint/RescueException
+          Airbrake.notify(ex) do |notice|
+            notice.stash[:action_cable_connection] = connection
+            notice[:context][:component] = self.class
+            notice[:context][:action] = args.first['action']
+            notice[:params].merge!(args.first)
+          end
 
-      def perform_action(*args, &block)
-        perform_action_without_airbrake(*args, &block)
-      rescue Exception => ex # rubocop:disable Lint/RescueException
-        Airbrake.notify(ex) do |notice|
-          notice.stash[:action_cable_connection] = connection
-          notice[:context][:component] = self.class
-          notice[:context][:action] = args.first['action']
-          notice[:params].merge!(args.first)
+          raise ex
         end
-
-        raise ex
       end
     end
   end
 end
+
+ActionCable::Channel::Base.prepend(Airbrake::ActionCable::Channel::Base)
