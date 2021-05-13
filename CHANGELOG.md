@@ -9,6 +9,9 @@ Airbrake Changelog
 * Fixed `ActionCable` integration when 3rd party code monkey-patches
    `ActionCable::Channel::Base#perform_action`
    ([#1165](https://github.com/airbrake/airbrake/issues/1165))
+* Fixed `Resque` integration when 3rd party code monkey-patches
+   `Resque::Job#perform`
+   ([#1166](https://github.com/airbrake/airbrake/issues/1166))
 
 ### [v11.0.2][v11.0.2] (May 12, 2021)
 
