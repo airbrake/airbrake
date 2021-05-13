@@ -12,6 +12,9 @@ Airbrake Changelog
 * Fixed `Resque` integration when 3rd party code monkey-patches
    `Resque::Job#perform`
    ([#1166](https://github.com/airbrake/airbrake/issues/1166))
+* Fixed `Rake` integration when 3rd party code monkey-patches
+   `Rake::Task#execute`
+   ([#1167](https://github.com/airbrake/airbrake/issues/1167))
 
 ### [v11.0.2][v11.0.2] (May 12, 2021)
 
