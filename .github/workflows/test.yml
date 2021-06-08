@@ -13,6 +13,11 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+    - name: Install cURL Headers
+      run: curl https://curl.haxx.se/download/curl-$V.tar.gz | sudo tar xz -C /usr --strip-components=1 curl-$V/include
+      env:
+        V: 7.58.0
+
     - uses: actions/checkout@v2
 
     - uses: ruby/setup-ruby@v1
