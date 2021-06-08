@@ -14,9 +14,7 @@ jobs:
 
     steps:
     - name: Install cURL Headers
-      run: curl https://curl.haxx.se/download/curl-$V.tar.gz | sudo tar xz -C /usr --strip-components=1 curl-$V/include
-      env:
-        V: 7.58.0
+      run: sudo apt-get install libcurl4-openssl-dev
 
     - uses: actions/checkout@v2
 
