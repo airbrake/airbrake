@@ -26,6 +26,12 @@ jobs:
     - name: Rubocop lint
       run: bundle exec rubocop
 
+    - name: Install Bundler dependencies
+      run: bundle install
+
+    - name: Install Appraisal dependencies
+      run: bundle exec appraisal install
+
     - name: Display Ruby version
       run: ruby -v
 
