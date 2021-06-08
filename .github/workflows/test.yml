@@ -1,0 +1,59 @@
+name: airbrake
+
+on: [push]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
+        ruby: [2.5, 2.6, 2.7, '3.0', head, jruby, jruby-head]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: true
+
+    - name: Rubocop lint
+      run: bundle exec rubocop
+
+    - name: YARD lint
+      run: |
+        touch README # Workaround for "incorrect" anchor links in README.md
+        bundle exec yardoc --fail-on-warning --no-progress --readme=README
+
+    - name: Display Ruby version
+      run: ruby -v
+
+    - name: Unit tests
+      run: bundle exec rake spec:unit
+
+    - name: Test Rails 4.1
+      run: bundle exec appraisal rails-4.1 rake spec:integration:rails
+
+    - name: Test Rails 4.2
+      run: bundle exec appraisal rails-4.2 rake spec:integration:rails
+
+    - name: Test Rails 5.0
+      run: bundle exec appraisal rails-5.0 rake spec:integration:rails
+
+    - name: Test Rails 5.1
+      run: bundle exec appraisal rails-5.1 rake spec:integration:rails
+
+    - name: Test Rails 5.2
+      run: bundle exec appraisal rails-5.2 rake spec:integration:rails
+
+    - name: Test Rails 6.0
+      run: bundle exec appraisal rails-6.0 rake spec:integration:rails
+
+    - name: Test Sinatra
+      run: bundle exec appraisal sinatra rake spec:integration:sinatra
+
+    - name: Test Rack
+      run: bundle exec appraisal rack rake spec:integration:rack
