@@ -26,11 +26,6 @@ jobs:
     - name: Rubocop lint
       run: bundle exec rubocop
 
-    - name: YARD lint
-      run: |
-        touch README # Workaround for "incorrect" anchor links in README.md
-        bundle exec yardoc --fail-on-warning --no-progress --readme=README
-
     - name: Display Ruby version
       run: ruby -v
 

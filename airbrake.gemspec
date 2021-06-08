@@ -56,6 +56,4 @@ DESC
 
   # redis-namespace > 1.6.0 wants Ruby >= 2.4.
   s.add_development_dependency 'redis-namespace', '= 1.6.0'
-
-  s.add_development_dependency 'yard', '~> 0.9'
 end
