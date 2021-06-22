@@ -694,7 +694,7 @@ bundle exec appraisal install
 To run integration tests for a specific framework, use the `appraisal` command.
 
 ```bash
-bundle exec appraisal rails-4.2 rake spec:integration:rails
+bundle exec appraisal rails-6.0 rake spec:integration:rails
 bundle exec appraisal sinatra rake spec:integration:sinatra
 ```
 

@@ -57,22 +57,16 @@ if ENV['APPRAISAL_INITIALIZED']
 
     rails_vsn = Gem::Version.new(Rails.version)
 
-    ENV['DATABASE_URL'] = if rails_vsn <= Gem::Version.new('4.2')
-                            'sqlite3:///:memory:'
-                          else
-                            'sqlite3::memory:'
-                          end
+    ENV['DATABASE_URL'] = 'sqlite3::memory:'
 
     require 'action_controller'
     require 'action_view'
     require 'action_view/testing/resolvers'
     require 'active_record/railtie'
-    if rails_vsn >= Gem::Version.new('4.2')
-      require 'active_job'
+    require 'active_job'
 
-      # Silence logger.
-      ActiveJob::Base.logger.level = 99
-    end
+    # Silence logger.
+    ActiveJob::Base.logger.level = 99
 
     require 'resque'
     require 'resque_spec'

@@ -91,7 +91,7 @@ module Airbrake
       initializer('airbrake.active_record') do
         ActiveSupport.on_load(:active_record, run_once: true) do
           # Reports exceptions occurring in some bugged ActiveRecord callbacks.
-          # Applicable only to the versions of Rails lower than 4.2.
+          # Applicable only to the versions of Rails lower than or equal to 4.2.
           if defined?(::Rails) &&
              Gem::Version.new(::Rails.version) <= Gem::Version.new('4.2')
             require 'airbrake/rails/active_record'

@@ -27,13 +27,6 @@ class DummyApp < Rails::Application
   # on stable Rails 6 but for us it's not fixed.
   config.middleware.delete ActionDispatch::Executor if ::Rails.version.to_i >= 6
 
-  # In Rails 4.2.x Active Record suppresses errors raised within
-  # 'after_rollback' & 'after_commit' callbacks and only print them to the
-  # logs. In the next version, these errors will no longer be suppressed.
-  # Instead, the errors will propagate normally just like in other Active Record
-  # callbacks.
-  config.active_record.raise_in_transactional_callbacks = true if vsn == '42'
-
   # Silences the warning, which says 'config.eager_load is set to nil'.
   config.eager_load = false
 
@@ -74,20 +67,18 @@ class Book < ActiveRecord::Base
 end
 
 # ActiveJob.
-if Gem::Version.new(Rails.version) >= Gem::Version.new('4.2')
-  class BingoJob < ActiveJob::Base
-    queue_as :bingo
+class BingoJob < ActiveJob::Base
+  queue_as :bingo
 
-    class BingoWrapper
-      def initialize(bingo)
-        @bingo = bingo
-      end
+  class BingoWrapper
+    def initialize(bingo)
+      @bingo = bingo
     end
+  end
 
-    def perform(*_args)
-      @wrapper = BingoWrapper.new(self)
-      raise AirbrakeTestError, 'active_job error'
-    end
+  def perform(*_args)
+    @wrapper = BingoWrapper.new(self)
+    raise AirbrakeTestError, 'active_job error'
   end
 end
 

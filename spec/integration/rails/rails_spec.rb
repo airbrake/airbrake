@@ -133,63 +133,36 @@ RSpec.describe "Rails integration specs" do
     end
   end
 
-  describe(
-    "Active Record callbacks",
-    skip: Gem::Version.new(Rails.version) > Gem::Version.new('4.2'),
-  ) do
-    it "reports exceptions in after_commit callbacks" do
-      expect(Airbrake).to receive(:notify).with(
-        an_instance_of(AirbrakeTestError),
-      ) do |exception|
-        expect(exception.message).to eq('after_commit')
-      end
+  describe "ActiveJob jobs" do
+    it "reports exceptions occurring in ActiveJob workers" do
+      expect(Airbrake).to receive(:notify)
+        .with(an_instance_of(Airbrake::Notice)).at_least(:once)
 
-      get '/active_record_after_commit'
+      get '/active_job'
+      sleep 2 # Wait for ActiveJob job exiting
     end
 
-    it "reports exceptions in after_rollback callbacks" do
-      expect(Airbrake).to receive(:notify).with(
-        an_instance_of(AirbrakeTestError),
-      ) do |exception|
-        expect(exception.message).to eq('after_rollback')
+    context "when Airbrake is not configured" do
+      before do
+        # Make sure we don't call `build_notice` more than 1 time. Rack
+        # integration will try to handle error 500 and we want to prevent
+        # that: https://github.com/airbrake/airbrake/pull/583
+        allow_any_instance_of(Airbrake::Rack::Middleware).to(
+          receive(:notify_airbrake),
+        )
       end
 
-      get '/active_record_after_rollback'
-    end
-  end
-
-  if Gem::Version.new(Rails.version) >= Gem::Version.new('4.2')
-    describe "ActiveJob jobs" do
-      it "reports exceptions occurring in ActiveJob workers" do
-        expect(Airbrake).to receive(:notify)
-          .with(an_instance_of(Airbrake::Notice)).at_least(:once)
+      it "doesn't report errors" do
+        expect(Airbrake).to receive(:notify).with(
+          an_instance_of(Airbrake::Notice),
+        ) { |notice|
+          # TODO: this doesn't actually fail but prints a failure. Figure
+          # out how to test properly.
+          expect(notice[:errors].first[:message]).to eq('active_job error')
+        }.at_least(:once)
 
         get '/active_job'
-        sleep 2 # Wait for ActiveJob job exiting
-      end
-
-      context "when Airbrake is not configured" do
-        before do
-          # Make sure we don't call `build_notice` more than 1 time. Rack
-          # integration will try to handle error 500 and we want to prevent
-          # that: https://github.com/airbrake/airbrake/pull/583
-          allow_any_instance_of(Airbrake::Rack::Middleware).to(
-            receive(:notify_airbrake),
-          )
-        end
-
-        it "doesn't report errors" do
-          expect(Airbrake).to receive(:notify).with(
-            an_instance_of(Airbrake::Notice),
-          ) { |notice|
-            # TODO: this doesn't actually fail but prints a failure. Figure
-            # out how to test properly.
-            expect(notice[:errors].first[:message]).to eq('active_job error')
-          }.at_least(:once)
-
-          get '/active_job'
-          sleep 2
-        end
+        sleep 2
       end
     end
   end
