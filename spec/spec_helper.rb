@@ -55,8 +55,6 @@ if ENV['APPRAISAL_INITIALIZED']
 
     require 'rails'
 
-    rails_vsn = Gem::Version.new(Rails.version)
-
     ENV['DATABASE_URL'] = 'sqlite3::memory:'
 
     require 'action_controller'
