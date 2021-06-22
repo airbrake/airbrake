@@ -45,24 +45,9 @@ class DummyApp < Rails::Application
     get '/breakdown_typhoeus' => 'dummy#breakdown_typhoeus'
     get '/notify_airbrake_helper' => 'dummy#notify_airbrake_helper'
     get '/notify_airbrake_sync_helper' => 'dummy#notify_airbrake_sync_helper'
-    get '/active_record_after_commit' => 'dummy#active_record_after_commit'
-    get '/active_record_after_rollback' => 'dummy#active_record_after_rollback'
     get '/active_job' => 'dummy#active_job'
     get '/resque' => 'dummy#resque'
     get '/delayed_job' => 'dummy#delayed_job'
-  end
-end
-
-class Book < ActiveRecord::Base
-  after_commit :raise_error_after_commit
-  after_rollback :raise_error_after_rollback
-
-  def raise_error_after_commit
-    raise AirbrakeTestError, 'after_commit'
-  end
-
-  def raise_error_after_rollback
-    raise AirbrakeTestError, 'after_rollback'
   end
 end
 
@@ -107,8 +92,6 @@ class DummyController < ActionController::Base
       'dummy/index.html.erb' => 'Hello from index',
       'dummy/notify_airbrake_helper.html.erb' => 'notify_airbrake_helper',
       'dummy/notify_airbrake_sync_helper.html.erb' => 'notify_airbrake_helper_sync',
-      'dummy/active_record_after_commit.html.erb' => 'active_record_after_commit',
-      'dummy/active_record_after_rollback.html.erb' => 'active_record_after_rollback',
       'dummy/active_job.html.erb' => 'active_job',
       'dummy/resque.html.erb' => 'resque',
       'dummy/delayed_job.html.erb' => 'delayed_job',
@@ -187,17 +170,6 @@ class DummyController < ActionController::Base
 
   def notify_airbrake_sync_helper
     notify_airbrake_sync(AirbrakeTestError.new)
-  end
-
-  def active_record_after_commit
-    Book.create(title: 'Bingo')
-  end
-
-  def active_record_after_rollback
-    Book.transaction do
-      Book.create(title: 'Bango')
-      raise ActiveRecord::Rollback
-    end
   end
 
   def active_job
