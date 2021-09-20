@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "rubocop", "= 0.55", require: false
+gem "rubocop", "= 0.81", require: false
 gem "rails", "~> 6.0.2"
 gem "warden", "~> 1.2.6"
 gem "rack", "~> 2.0"

@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "rubocop", "= 0.55", require: false
+gem "rubocop", "= 0.81", require: false
 gem "rails", "~> 5.1.4"
 gem "warden", "~> 1.2.6"
 gem "activerecord-jdbcsqlite3-adapter", "~> 51.0", platforms: :jruby
