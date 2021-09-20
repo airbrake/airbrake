@@ -48,24 +48,22 @@ module Airbrake
       define_method(
         ::Sneakers::Worker.method_defined?(:process_work) ? :process_work : :do_work,
       ) do |delivery_info, metadata, msg, handler|
-        begin
-          timing = Airbrake::Benchmark.measure do
-            super(delivery_info, metadata, msg, handler)
-          end
-        rescue Exception => exception # rubocop:disable Lint/RescueException
-          Airbrake.notify_queue(
-            queue: self.class.to_s,
-            error_count: 1,
-            timing: 0.01,
-          )
-          raise exception
-        else
-          Airbrake.notify_queue(
-            queue: self.class.to_s,
-            error_count: 0,
-            timing: timing,
-          )
+        timing = Airbrake::Benchmark.measure do
+          super(delivery_info, metadata, msg, handler)
         end
+      rescue Exception => exception # rubocop:disable Lint/RescueException
+        Airbrake.notify_queue(
+          queue: self.class.to_s,
+          error_count: 1,
+          timing: 0.01,
+        )
+        raise exception
+      else
+        Airbrake.notify_queue(
+          queue: self.class.to_s,
+          error_count: 0,
+          timing: timing,
+        )
       end
     end
   end

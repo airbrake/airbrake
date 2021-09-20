@@ -28,7 +28,7 @@ DESC
   s.require_path = 'lib'
   s.files        = ['lib/airbrake.rb', *Dir.glob('lib/**/*')]
 
-  s.required_ruby_version = '>= 2.3'
+  s.required_ruby_version = '>= 2.5'
 
   s.add_dependency 'airbrake-ruby', '~> 5.1'
 
