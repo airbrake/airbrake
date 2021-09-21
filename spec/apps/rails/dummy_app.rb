@@ -73,21 +73,18 @@ class Book < ActiveRecord::Base
   end
 end
 
-# ActiveJob.
-if Gem::Version.new(Rails.version) >= Gem::Version.new('4.2')
-  class BingoJob < ActiveJob::Base
-    queue_as :bingo
+class BingoJob < ActiveJob::Base
+  queue_as :bingo
 
-    class BingoWrapper
-      def initialize(bingo)
-        @bingo = bingo
-      end
+  class BingoWrapper
+    def initialize(bingo)
+      @bingo = bingo
     end
+  end
 
-    def perform(*_args)
-      @wrapper = BingoWrapper.new(self)
-      raise AirbrakeTestError, 'active_job error'
-    end
+  def perform(*_args)
+    @wrapper = BingoWrapper.new(self)
+    raise AirbrakeTestError, 'active_job error'
   end
 end
 
