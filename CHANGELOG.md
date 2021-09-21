@@ -10,6 +10,11 @@ Breaking changes:
 * Dropped support for Ruby 2.4
   ([#1180](https://github.com/airbrake/airbrake/issues/1180))
 
+Maintenance:
+
+* Bumped `airbrake-ruby` requirement to `~> 6.0`
+  ([#1181](https://github.com/airbrake/airbrake/issues/1181))
+
 ### [v11.0.3][v11.0.3] (May 13, 2021)
 
 * Fixed `Sneakers` integration when 3rd party code monkey-patches
