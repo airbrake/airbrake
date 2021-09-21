@@ -94,17 +94,21 @@ Configuration
 
 #### Integration
 
-To integrate Airbrake with your Rails application, you need to know
-your [project id and project key][project-idkey]. Invoke the following command
-and replace `PROJECT_ID` and `PROJECT_KEY` with your values:
+To integrate Airbrake with your Rails application, you need to know your
+[project id and project key][project-idkey]. Set `AIRBRAKE_PROJECT_ID` &
+`AIRBRAKE_PROJECT_KEY` environment variables with your project's values and
+generate the Airbrake config:
 
 ```bash
-rails g airbrake PROJECT_ID PROJECT_KEY
+export AIRBRAKE_PROJECT_ID=<PROJECT ID>
+export AIRBRAKE_PROJECT_KEY=<PROJECT KEY>
+
+rails g airbrake
 ```
 
-[Heroku add-on][heroku-addon] users can omit specifying the key and the id and
-invoke the command without arguments (Heroku add-on's environment variables will
-be used) ([Heroku add-on docs][heroku-docs]):
+[Heroku add-on][heroku-addon] users can omit specifying the key and the
+id. Heroku add-on's environment variables will be used ([Heroku add-on
+docs][heroku-docs]):
 
 ```bash
 rails g airbrake
