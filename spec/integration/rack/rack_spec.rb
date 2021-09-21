@@ -3,7 +3,7 @@
 require 'integration/shared_examples/rack_examples'
 
 RSpec.describe "Rack integration specs" do
-  let(:app) { DummyApp }
+  let(:app) { RackApp }
 
   include_examples 'rack examples'
 
