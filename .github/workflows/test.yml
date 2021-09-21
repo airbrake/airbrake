@@ -1,0 +1,53 @@
+name: airbrake
+
+on: [push]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        ruby: [2.5, 2.6, 2.7, jruby]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Update package list
+        run: sudo apt-get update
+
+      - name: Install cURL Headers
+        run: sudo apt-get install libcurl4 libcurl4-openssl-dev
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
+      - name: Rubocop lint
+        run: bundle exec rubocop
+
+      - name: Install Bundler dependencies
+        run: bundle install
+
+      - name: Install Appraisal dependencies
+        run: bundle exec appraisal install
+
+      - name: Display Ruby version
+        run: ruby -v
+
+      - name: Unit tests
+        run: bundle exec rake spec:unit
+
+      - name: Test Rails 5.2
+        run: bundle exec appraisal rails-5.2 rake spec:integration:rails
+
+      - name: Test Rails 6.0
+        run: bundle exec appraisal rails-6.0 rake spec:integration:rails
+
+      - name: Test Sinatra
+        run: bundle exec appraisal sinatra rake spec:integration:sinatra
+
+      - name: Test Rack
+        run: bundle exec appraisal rack rake spec:integration:rack
