@@ -21,22 +21,6 @@ references:
     run:
       name: Run unit tests
       command: bundle exec rake spec:unit
-  rails41: &rails41
-    run:
-      name: Test Rails 4.1
-      command: bundle exec appraisal rails-4.1 rake spec:integration:rails
-  rails42: &rails42
-    run:
-      name: Test Rails 4.2
-      command: bundle exec appraisal rails-4.2 rake spec:integration:rails
-  rails50: &rails50
-    run:
-      name: Test Rails 5.0
-      command: bundle exec appraisal rails-5.0 rake spec:integration:rails
-  rails51: &rails51
-    run:
-      name: Test Rails 5.1
-      command: bundle exec appraisal rails-5.1 rake spec:integration:rails
   rails52: &rails52
     run:
       name: Test Rails 5.2
@@ -84,8 +68,6 @@ jobs:
       - <<: *bundle_install
       - <<: *appraisal_install
       - <<: *unit
-      - <<: *rails42
-      - <<: *rails51
       - <<: *rails52
       - <<: *rails60
       - <<: *sinatra
@@ -102,9 +84,6 @@ jobs:
       - <<: *bundle_install
       - <<: *appraisal_install
       - <<: *unit
-      - <<: *rails42
-      - <<: *rails50
-      - <<: *rails51
       - <<: *rails52
       - <<: *rails60
       - <<: *sinatra
@@ -121,8 +100,6 @@ jobs:
       - <<: *bundle_install
       - <<: *appraisal_install
       - <<: *unit
-      - <<: *rails50
-      - <<: *rails51
       - <<: *rails52
       - <<: *rails60
       - <<: *sinatra
@@ -139,7 +116,6 @@ jobs:
       - <<: *bundle_install
       - <<: *appraisal_install
       - <<: *unit
-      - <<: *rails51
       - <<: *rails52
       - <<: *rails60
       - <<: *sinatra
