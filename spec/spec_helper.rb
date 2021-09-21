@@ -97,7 +97,7 @@ if ENV['APPRAISAL_INITIALIZED']
     # Don't load the Rack app since we want to test Sinatra if it's loaded.
     raise LoadError if defined?(Sinatra)
 
-    require 'apps/rack/dummy_app'
+    require 'apps/rack/rack_app'
   rescue LoadError
     puts '** Skipped Rack specs'
   end
