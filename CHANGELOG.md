@@ -3,6 +3,13 @@ Airbrake Changelog
 
 ### master
 
+Breaking changes:
+
+* Dropped support for Ruby 2.3
+  ([#1180](https://github.com/airbrake/airbrake/issues/1180))
+* Dropped support for Ruby 2.4
+  ([#1180](https://github.com/airbrake/airbrake/issues/1180))
+
 ### [v11.0.3][v11.0.3] (May 13, 2021)
 
 * Fixed `Sneakers` integration when 3rd party code monkey-patches

@@ -72,43 +72,6 @@ jobs:
           name: Verify all @since tag versions start with letter 'v'
           command: |
             ! egrep -r "# @since [0-9]" lib
-  "ruby-2.3":
-    docker:
-      - image: circleci/ruby:2.3
-        auth:
-          username: $DOCKERHUB_USER
-          password: $DOCKERHUB_PASSWORD
-    working_directory: ~/airbrake
-    steps:
-      - <<: *repo_restore_cache
-      - <<: *bundle_install
-      - <<: *appraisal_install
-      - <<: *unit
-      - <<: *rails41
-      - <<: *rails42
-      - <<: *rails50
-      - <<: *rails51
-      - <<: *rails52
-      - <<: *sinatra
-      - <<: *rack
-  "ruby-2.4":
-    docker:
-      - image: circleci/ruby:2.4
-        auth:
-          username: $DOCKERHUB_USER
-          password: $DOCKERHUB_PASSWORD
-    working_directory: ~/airbrake
-    steps:
-      - <<: *repo_restore_cache
-      - <<: *bundle_install
-      - <<: *appraisal_install
-      - <<: *unit
-      - <<: *rails42
-      - <<: *rails50
-      - <<: *rails51
-      - <<: *rails52
-      - <<: *sinatra
-      - <<: *rack
   "ruby-2.5":
     docker:
       - image: circleci/ruby:2.5
@@ -187,12 +150,6 @@ workflows:
   build:
     jobs:
       - lint
-      - "ruby-2.3":
-          requires:
-            - lint
-      - "ruby-2.4":
-          requires:
-            - lint
       - "ruby-2.5":
           requires:
             - lint
