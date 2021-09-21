@@ -478,6 +478,13 @@ RSpec.describe "Rails integration specs" do
         stub_request(:get, 'http://example.com').to_return(body: '')
       end
 
+      before do
+        # On JRuby 9.2.19.0 this fails with a SIGSEGV in JVM:
+        # https://bit.ly/3Everoa
+        # This is somehow related to libcurl.so.
+        skip('SIGSEGV on JRuby 9.2.19.0') if Airbrake::JRUBY
+      end
+
       it "includes the http breakdown" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
           hash_including(groups: { http: be > 0 }),
