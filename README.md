@@ -1,7 +1,7 @@
 Airbrake
 ========
 
-[![Build Status](https://github.com/airbrake/airbrake/workflows/airbrake/badge.svg)
+[![Build Status](https://github.com/airbrake/airbrake/workflows/airbrake/badge.svg)](https://github.com/airbrake/airbrake/actions)
 [![Code Climate](https://codeclimate.com/github/airbrake/airbrake.svg)](https://codeclimate.com/github/airbrake/airbrake)
 [![Gem Version](https://badge.fury.io/rb/airbrake.svg)](http://badge.fury.io/rb/airbrake)
 [![Documentation Status](http://inch-ci.org/github/airbrake/airbrake.svg?branch=master)](http://inch-ci.org/github/airbrake/airbrake)
