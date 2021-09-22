@@ -42,7 +42,10 @@ appraise 'rails-6.1' do
   gem 'warden', '~> 1.2.6'
   gem 'rack', '~> 2.0'
 
-  gem 'activerecord-jdbcsqlite3-adapter', '~> 60.1', platforms: :jruby
+  gem 'activerecord-jdbcsqlite3-adapter',
+      github: 'jruby/activerecord-jdbc-adapter',
+      branch: '61-stable',
+      platforms: :jruby
   gem 'sqlite3', '~> 1.4', platforms: %i[mri rbx]
 
   gem 'resque', '~> 1.26'
