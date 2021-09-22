@@ -4,6 +4,9 @@ AllCops:
   TargetRubyVersion: 2.5
   DisplayCopNames: true
   DisplayStyleGuide: true
+  Exclude:
+    - 'gemfiles/*.gemfile'
+    - 'vendor/**/*'
 
 Metrics/MethodLength:
   Max: 25

@@ -40,7 +40,6 @@ DESC
   s.add_development_dependency 'rack', '~> 2'
   s.add_development_dependency 'webmock', '~> 3'
   s.add_development_dependency 'amq-protocol'
-  s.add_development_dependency 'sneakers', '~> 2'
   s.add_development_dependency 'rack-test', '= 0.6.3'
   s.add_development_dependency 'redis', '= 4.1.4'
   s.add_development_dependency 'sidekiq', '~> 5'
