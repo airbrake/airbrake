@@ -42,7 +42,7 @@ DESC
   s.add_development_dependency 'amq-protocol'
   s.add_development_dependency 'rack-test', '= 0.6.3'
   s.add_development_dependency 'redis', '= 4.1.4'
-  s.add_development_dependency 'sidekiq', '~> 5'
+  s.add_development_dependency 'sidekiq', '~> 6'
   s.add_development_dependency 'curb', '~> 0.9' if RUBY_ENGINE == 'ruby'
   s.add_development_dependency 'excon', '~> 0.64'
   s.add_development_dependency 'http', '~> 2.2'
