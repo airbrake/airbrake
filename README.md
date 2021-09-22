@@ -492,7 +492,7 @@ wrap your logger in Airbrake's decorator class:
 require 'airbrake/logger'
 
 # Create a normal logger
-logger = Logger.new(STDOUT)
+logger = Logger.new($stdout)
 
 # Wrap it
 logger = Airbrake::AirbrakeLogger.new(logger)

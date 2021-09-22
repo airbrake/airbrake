@@ -36,12 +36,16 @@ RSpec.describe Airbrake::Rack::Instrumentable do
         def method_with?(val); end
         airbrake_capture_timing :method_with?
 
+        # rubocop:disable Layout/EmptyLinesAroundAttributeAccessor
         attr_writer :method_with
         airbrake_capture_timing :method_with=
+        # rubocop:enable Layout/EmptyLinesAroundAttributeAccessor
 
+        # rubocop:disable Lint/UselessMethodDefinition
         def ==(other)
           super
         end
+        # rubocop:enable Lint/UselessMethodDefinition
         airbrake_capture_timing :==
 
         def method_with_block
@@ -65,25 +69,33 @@ RSpec.describe Airbrake::Rack::Instrumentable do
 
         prepend(
           Module.new do
+            # rubocop:disable Lint/UselessMethodDefinition
             def prepended_method!(*args, **kw_args)
               super
             end
+            # rubocop:enable Lint/UselessMethodDefinition
 
+            # rubocop:disable Lint/UselessMethodDefinition
             def prepended_writer=(*args, **kw_args)
               super
             end
+            # rubocop:enable Lint/UselessMethodDefinition
 
             protected
 
+            # rubocop:disable Lint/UselessMethodDefinition
             def a_prepended_protected_method
               super
             end
+            # rubocop:enable Lint/UselessMethodDefinition
 
             private
 
+            # rubocop:disable Lint/UselessMethodDefinition
             def a_prepended_private_method
               super
             end
+            # rubocop:enable Lint/UselessMethodDefinition
           end,
         )
 
@@ -236,12 +248,12 @@ RSpec.describe Airbrake::Rack::Instrumentable do
       end
 
       it "attaches timing for a method with all arg types" do
-        klass.new.send('method_with_everything!', 1, 2, 3, foo: 4, bar: 5) {}
+        klass.new.send('method_with_everything!', 1, 2, 3, foo: 4, bar: 5) { 1 }
         expect(groups).to match('method_with_everything!' => be > 0)
       end
 
       it "attaches timing for a writer method with all arg types" do
-        klass.new.send('writer_with_everything=', 1, 2, 3, foo: 4, bar: 5) {}
+        klass.new.send('writer_with_everything=', 1, 2, 3, foo: 4, bar: 5) { 1 }
         expect(groups).to match('writer_with_everything=' => be > 0)
       end
 
@@ -251,7 +263,7 @@ RSpec.describe Airbrake::Rack::Instrumentable do
       end
 
       it "attaches timing for a prepended writer method with all arg types" do
-        klass.new.send('prepended_writer=', 1, 2, 3, foo: 4, bar: 5) {}
+        klass.new.send('prepended_writer=', 1, 2, 3, foo: 4, bar: 5) { 1 }
         expect(groups).to match('prepended_writer=' => be > 0)
       end
 

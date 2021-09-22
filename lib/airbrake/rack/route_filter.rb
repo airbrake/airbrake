@@ -35,7 +35,7 @@ module Airbrake
       def sinatra_route(request)
         return unless (route = request.env['sinatra.route'])
 
-        route.split(' ').drop(1).join(' ')
+        route.split.drop(1).join(' ')
       end
 
       def action_dispatch_request?(request)

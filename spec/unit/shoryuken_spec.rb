@@ -89,7 +89,7 @@ RSpec.describe Airbrake::Shoryuken::ErrorHandler do
         timing: an_instance_of(Float),
       )
 
-      expect { subject.call(worker, queue, nil, body) {} }.not_to raise_error
+      expect { subject.call(worker, queue, nil, body) { 1 } }.not_to raise_error
     end
   end
 end

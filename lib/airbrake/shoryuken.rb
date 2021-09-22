@@ -5,10 +5,8 @@ module Airbrake
     # Provides integration with Shoryuken.
     class ErrorHandler
       # rubocop:disable Lint/RescueException
-      def call(worker, queue, _sqs_msg, body)
-        timing = Airbrake::Benchmark.measure do
-          yield
-        end
+      def call(worker, queue, _sqs_msg, body, &block)
+        timing = Airbrake::Benchmark.measure(&block)
       rescue Exception => exception
         notify_airbrake(exception, worker, queue, body)
         Airbrake.notify_queue(

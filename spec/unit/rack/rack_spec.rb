@@ -8,7 +8,7 @@ RSpec.describe Airbrake::Rack do
 
     context "when request store doesn't have any routes" do
       it "doesn't store timing" do
-        described_class.capture_timing('operation') {}
+        described_class.capture_timing('operation') { 1 }
         expect(Airbrake::Rack::RequestStore.store).to be_empty
       end
 
@@ -39,9 +39,9 @@ RSpec.describe Airbrake::Rack do
         end
 
         it "doesn't attach any timings" do
-          described_class.capture_timing('operation 1') {}
-          described_class.capture_timing('operation 2') {}
-          described_class.capture_timing('operation 3') {}
+          described_class.capture_timing('operation 1') { 1 }
+          described_class.capture_timing('operation 2') { 2 }
+          described_class.capture_timing('operation 3') { 3 }
 
           expect(routes['/about'][:groups]).to be_empty
         end
@@ -54,9 +54,9 @@ RSpec.describe Airbrake::Rack do
         end
 
         it "attaches all timings for different operations to the request store" do
-          described_class.capture_timing('operation 1') {}
-          described_class.capture_timing('operation 2') {}
-          described_class.capture_timing('operation 3') {}
+          described_class.capture_timing('operation 1') { 1 }
+          described_class.capture_timing('operation 2') { 2 }
+          described_class.capture_timing('operation 3') { 3 }
 
           expect(routes['/about'][:groups]).to match(
             'operation 1' => be > 0,

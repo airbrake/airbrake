@@ -41,7 +41,7 @@ RSpec.describe "Rake integration" do
 
     it "includes a timestamp" do
       expected_notice = a_notice_with(
-        %i[params rake_task timestamp], /20\d\d\-\d\d-\d\d.+/
+        %i[params rake_task timestamp], /20\d\d-\d\d-\d\d.+/
       )
       expect(Airbrake).to receive(:notify_sync).with(expected_notice)
     end
