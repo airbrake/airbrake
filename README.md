@@ -1,7 +1,7 @@
 Airbrake
 ========
 
-[![Circle Build Status](https://circleci.com/gh/airbrake/airbrake.png?style=shield)](https://circleci.com/gh/airbrake/airbrake)
+[![Build Status](https://github.com/airbrake/airbrake/workflows/airbrake/badge.svg)
 [![Code Climate](https://codeclimate.com/github/airbrake/airbrake.svg)](https://codeclimate.com/github/airbrake/airbrake)
 [![Gem Version](https://badge.fury.io/rb/airbrake.svg)](http://badge.fury.io/rb/airbrake)
 [![Documentation Status](http://inch-ci.org/github/airbrake/airbrake.svg?branch=master)](http://inch-ci.org/github/airbrake/airbrake)
@@ -702,8 +702,8 @@ bundle exec appraisal rails-4.2 rake spec:integration:rails
 bundle exec appraisal sinatra rake spec:integration:sinatra
 ```
 
-Pro tip: [CircleCI config](/.circleci/config.yml) has the list of all
-integration tests and commands to invoke them.
+Pro tip: [GitHub Actions config](/.github/workflows/test.yml) has the list of
+all the integration tests and commands to invoke them.
 
 [airbrake.io]: https://airbrake.io
 [airbrake-ruby]: https://github.com/airbrake/airbrake-ruby
