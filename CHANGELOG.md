@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v12.0.0][v12.0.0] (September 22, 2021)
+
 Breaking changes:
 
 * Dropped support for Ruby 2.3
@@ -14,6 +16,26 @@ Maintenance:
 
 * Bumped `airbrake-ruby` requirement to `~> 6.0`
   ([#1181](https://github.com/airbrake/airbrake/issues/1181))
+
+Other changes:
+
+* Rails generator no longer embeds project id & project key into the generated
+  initializer file. Set environment variables instead.
+
+  Before:
+
+  ```sh
+  % rails g airbrake PROJECT_ID PROJECT_KEY
+  ```
+
+  After:
+
+  ```sh
+  export AIRBRAKE_PROJECT_ID=<PROJECT ID>
+  export AIRBRAKE_PROJECT_KEY=<PROJECT KEY>
+
+  rails g airbrake
+  ```
 
 ### [v11.0.3][v11.0.3] (May 13, 2021)
 
@@ -960,3 +982,4 @@ Features:
 [v11.0.1]: https://github.com/airbrake/airbrake/releases/tag/v11.0.1
 [v11.0.2]: https://github.com/airbrake/airbrake/releases/tag/v11.0.2
 [v11.0.3]: https://github.com/airbrake/airbrake/releases/tag/v11.0.3
+[v12.0.0]: https://github.com/airbrake/airbrake/releases/tag/v12.0.0
