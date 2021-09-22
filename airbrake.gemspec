@@ -55,5 +55,5 @@ DESC
   s.add_development_dependency 'public_suffix', '~> 4.0', '< 5.0'
 
   # redis-namespace > 1.6.0 wants Ruby >= 2.4.
-  s.add_development_dependency 'redis-namespace', '= 1.6.0'
+  s.add_development_dependency 'redis-namespace', '= 1.8.1'
 end
