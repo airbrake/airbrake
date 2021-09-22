@@ -651,7 +651,7 @@ Then, invoke it like shown in the example for Rails.
 Supported Rubies
 ----------------
 
-* CRuby >= 2.3.0
+* CRuby >= 2.5.0
 * JRuby >= 9k
 
 Contact
