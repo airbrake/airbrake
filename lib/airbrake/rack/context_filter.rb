@@ -20,14 +20,9 @@ module Airbrake
         context = notice[:context]
 
         context[:url] = request.url
-        context[:userAddr] =
-          if request.respond_to?(:remote_ip)
-            request.remote_ip
-          else
-            request.ip
-          end
         context[:userAgent] = request.user_agent
 
+        add_ip(context, request)
         add_framework_version(context)
 
         controller = request.env['action_controller.instance']
@@ -58,6 +53,15 @@ module Airbrake
               'rack_version' => ::Rack.version,
               'rack_release' => ::Rack.release,
             }
+          end
+      end
+
+      def add_ip(context, request)
+        context[:userAddr] =
+          if request.respond_to?(:remote_ip)
+            request.remote_ip
+          else
+            request.ip
           end
       end
     end

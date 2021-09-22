@@ -3,7 +3,6 @@ require './lib/airbrake/version'
 Gem::Specification.new do |s|
   s.name        = 'airbrake'
   s.version     = Airbrake::AIRBRAKE_VERSION.dup
-  s.date        = Time.now.strftime('%Y-%m-%d')
   s.summary     = <<SUMMARY
 Airbrake is an online tool that provides robust exception tracking in any of
 your Ruby applications.

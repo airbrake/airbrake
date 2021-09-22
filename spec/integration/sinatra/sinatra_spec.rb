@@ -25,7 +25,7 @@ RSpec.describe "Sinatra integration specs" do
       get '/crash'
       sleep 2
 
-      body = %r("context":{.*"route":"\/crash".*})
+      body = %r("context":{.*"route":"/crash".*})
       expect(a_request(:post, endpoint).with(body: body)).to have_been_made
     end
   end

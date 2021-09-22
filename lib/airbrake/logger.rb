@@ -9,7 +9,7 @@ module Airbrake
   #
   # @example
   #   # Create a logger like you normally do and decorate it.
-  #   logger = Airbrake::AirbrakeLogger.new(Logger.new(STDOUT))
+  #   logger = Airbrake::AirbrakeLogger.new(Logger.new($stdout))
   #
   #   # Just use the logger like you normally do.
   #   logger.fatal('oops')
@@ -24,6 +24,8 @@ module Airbrake
     attr_reader :airbrake_level
 
     def initialize(logger)
+      super
+
       __setobj__(logger)
       @airbrake_notifier = Airbrake
       self.level = logger.level

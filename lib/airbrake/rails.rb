@@ -11,7 +11,7 @@ module Airbrake
       level = (::Rails.logger ? ::Rails.logger.level : Logger::ERROR)
 
       if ENV['RAILS_LOG_TO_STDOUT'].present?
-        Logger.new(STDOUT, level: level)
+        Logger.new($stdout, level: level)
       else
         Logger.new(::Rails.root.join('log', 'airbrake.log'), level: level)
       end

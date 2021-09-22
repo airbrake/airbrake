@@ -6,10 +6,8 @@ module Airbrake
   module Sidekiq
     # Provides integration with Sidekiq v2+.
     class ErrorHandler
-      def call(_worker, context, _queue)
-        timing = Airbrake::Benchmark.measure do
-          yield
-        end
+      def call(_worker, context, _queue, &block)
+        timing = Airbrake::Benchmark.measure(&block)
       rescue Exception => exception # rubocop:disable Lint/RescueException
         notify_airbrake(exception, context)
         Airbrake.notify_queue(
@@ -38,7 +36,7 @@ module Airbrake
       # @return [String] job's name. When ActiveJob is present, retrieve
       #   job_class. When used directly, use worker's name
       def action(context)
-        klass = context['class'] || context[:job] && context[:job]['class']
+        klass = context['class'] || (context[:job] && context[:job]['class'])
         return klass unless context[:job] && context[:job]['args'].first.is_a?(Hash)
         return klass unless (job_class = context[:job]['args'].first['job_class'])
 

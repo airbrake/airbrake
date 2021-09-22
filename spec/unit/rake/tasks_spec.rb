@@ -11,7 +11,7 @@ RSpec.describe "airbrake/rake/tasks" do
 
   before do
     stub_request(:post, endpoint).to_return(status: 201, body: '{}')
-    allow(STDOUT).to receive(:puts).and_return(nil)
+    allow($stdout).to receive(:puts).and_return(nil)
   end
 
   describe "airbrake:deploy" do
@@ -62,7 +62,7 @@ RSpec.describe "airbrake/rake/tasks" do
 
     describe "parsing environment variables" do
       it "does not raise when an env variable value contains '='" do
-        heroku_config = airbrake_vars + "URL=https://airbrake.io/docs?key=11\n"
+        heroku_config = "#{airbrake_vars} URL=https://airbrake.io/docs?key=11\n"
         expect(Bundler).to receive(:with_clean_env).twice.and_return(heroku_config)
 
         task.invoke

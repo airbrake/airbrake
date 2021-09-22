@@ -57,6 +57,7 @@ module Airbrake
         klass.module_exec do
           mod = __airbrake_capture_timing_module__
           mod.module_exec do
+            # rubocop:disable Style/DocumentDynamicEvalDefinition
             module_eval <<-RUBY, __FILE__, __LINE__ + 1
               def #{method_name}(#{args})
                 Airbrake::Rack.capture_timing(#{label.to_s.inspect}) do
@@ -65,6 +66,7 @@ module Airbrake
               end
               #{visibility} :#{method_name}
             RUBY
+            # rubocop:enable Style/DocumentDynamicEvalDefinition
           end
           prepend mod
         end
@@ -83,6 +85,7 @@ module Airbrake
         klass.module_exec do
           alias_method wrapped_method_name, method_name
           remove_method method_name if needs_removal
+          # rubocop:disable Style/DocumentDynamicEvalDefinition
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
             def #{method_name}(#{args})
               Airbrake::Rack.capture_timing(#{label.to_s.inspect}) do
@@ -91,6 +94,7 @@ module Airbrake
             end
             #{visibility} :#{method_name}
           RUBY
+          # rubocop:enable Style/DocumentDynamicEvalDefinition
         end
       end
 

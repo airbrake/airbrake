@@ -10,7 +10,7 @@ class DummyApp < Rails::Application
   config.secret_key_base = '62773890cad9d9d584b57320f8612f8f7378a90aadcabc6ee'
 
   # Configure a logger, without it the tests can't run.
-  vsn = Rails.version.split('').values_at(0, 2).join('')
+  vsn = Rails.version.chars.values_at(0, 2).join
   log_path = File.join(File.dirname(__FILE__), 'logs', "#{vsn}.log")
   config.logger = Logger.new(log_path)
   Rails.logger = config.logger

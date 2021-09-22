@@ -4,6 +4,7 @@ AllCops:
   TargetRubyVersion: 2.5
   DisplayCopNames: true
   DisplayStyleGuide: true
+  NewCops: enable
   Exclude:
     - 'gemfiles/*.gemfile'
     - 'vendor/**/*'
