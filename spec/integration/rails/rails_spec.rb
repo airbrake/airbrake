@@ -429,7 +429,7 @@ RSpec.describe "Rails integration specs" do
 
       it "includes the http breakdown" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
-          hash_including(groups: { http: be > 0 }),
+          hash_including(groups: { view: be > 0, http: be > 0 }),
           an_instance_of(Hash),
         )
         get '/breakdown_excon'
@@ -444,7 +444,7 @@ RSpec.describe "Rails integration specs" do
 
       it "includes the http breakdown" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
-          hash_including(groups: { http: be > 0 }),
+          hash_including(groups: { view: be > 0, http: be > 0 }),
           an_instance_of(Hash),
         )
         get '/breakdown_http_rb'
@@ -465,7 +465,7 @@ RSpec.describe "Rails integration specs" do
 
       it "includes the http breakdown" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
-          hash_including(groups: { http: be > 0 }),
+          hash_including(groups: { view: be > 0, http: be > 0 }),
           an_instance_of(Hash),
         )
         get '/breakdown_http_client'
@@ -487,7 +487,7 @@ RSpec.describe "Rails integration specs" do
 
       it "includes the http breakdown" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
-          hash_including(groups: { http: be > 0 }),
+          hash_including(groups: { view: be > 0, http: be > 0 }),
           an_instance_of(Hash),
         )
         get '/breakdown_typhoeus'

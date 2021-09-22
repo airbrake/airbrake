@@ -144,47 +144,47 @@ class DummyController < ActionController::Base
   end
 
   def breakdown_view_only
-    render 'dummy/breakdown.html.erb'
+    render 'dummy/breakdown', format: [:erb]
   end
 
   def breakdown_http
     Net::HTTP.get('example.com', '/')
-    render 'dummy/breakdown_http.html.erb'
+    render 'dummy/breakdown_http', format: [:erb]
   end
 
   def breakdown_curl_http
     Curl.get('example.com')
-    render 'dummy/breakdown_curl_http.html.erb'
+    render 'dummy/breakdown_curl_http', format: [:erb]
   end
 
   def breakdown_curl_http_easy
     Curl::Easy.perform('example.com')
-    render 'dummy/breakdown_curl_http_easy.html.erb'
+    render 'dummy/breakdown_curl_http_easy', format: [:erb]
   end
 
   def breakdown_curl_http_multi
     Curl::Multi.get(['example.com'])
-    render 'dummy/breakdown_curl_http_multi.html.erb'
+    render 'dummy/breakdown_curl_http_multi', format: [:erb]
   end
 
   def breakdown_excon
     Excon.get('http://example.com')
-    render 'dummy/breakdown_excon.html.erb'
+    render 'dummy/breakdown_excon', format: [:erb]
   end
 
   def breakdown_http_rb
     HTTP.get('http://example.com')
-    render 'dummy/breakdown_http_rb.html.erb'
+    render 'dummy/breakdown_http_rb', format: [:erb]
   end
 
   def breakdown_http_client
     HTTPClient.new.get('http://example.com')
-    render 'dummy/breakdown_http_client.html.erb'
+    render 'dummy/breakdown_http_client', format: [:erb]
   end
 
   def breakdown_typhoeus
     Typhoeus.get('example.com')
-    render 'dummy/breakdown_typhoeus.html.erb'
+    render 'dummy/breakdown_typhoeus', format: [:erb]
   end
 
   def notify_airbrake_helper
