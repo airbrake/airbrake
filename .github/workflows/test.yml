@@ -48,6 +48,9 @@ jobs:
       - name: Test Rails 6.0
         run: bundle exec appraisal rails-6.0 rake spec:integration:rails
 
+      - name: Test Rails 6.1
+        run: bundle exec appraisal rails-6.1 rake spec:integration:rails
+
       - name: Test Sinatra
         run: bundle exec appraisal sinatra rake spec:integration:sinatra
 
