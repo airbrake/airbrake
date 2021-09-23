@@ -40,7 +40,7 @@ DESC
   s.add_development_dependency 'webmock', '~> 3'
   s.add_development_dependency 'amq-protocol'
   s.add_development_dependency 'rack-test', '~> 1.1'
-  s.add_development_dependency 'redis', '= 4.1.4'
+  s.add_development_dependency 'redis', '= 4.4.0'
   s.add_development_dependency 'sidekiq', '~> 6'
   s.add_development_dependency 'curb', '~> 0.9' if RUBY_ENGINE == 'ruby'
   s.add_development_dependency 'excon', '~> 0.64'
