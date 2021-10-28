@@ -47,26 +47,26 @@ The list of integrations that are available in this gem includes:
 
 * [Heroku support][heroku-docs] (as an [add-on][heroku-addon])
 * Web frameworks
-  * Rails<sup>[[link](#rails)]</sup>
-  * Sinatra<sup>[[link](#sinatra)]</sup>
-  * Rack applications<sup>[[link](#rack)]</sup>
+  * [Rails](#rails)
+  * [Sinatra](#sinatra)
+  * [Rack applications](#rack)
 * Job processing libraries
-  * ActiveJob<sup>[[link](#activejob)]</sup>
-  * Resque<sup>[[link](#resque)]</sup>
-  * Sidekiq<sup>[[link](#sidekiq)]</sup>
-  * DelayedJob<sup>[[link](#delayedjob)]</sup>
-  * Shoryuken<sup>[[link](#shoryuken)]</sup>
-  * Sneakers<sup>[[link](#sneakers)]</sup>
+  * [ActiveJob](#activejob)
+  * [Resque](#resque)
+  * [Sidekiq](#sidekiq)
+  * [DelayedJob](#delayedjob)
+  * [Shoryuken](#shoryuken)
+  * [Sneakers](#sneakers)
 * Other libraries
-  * ActionCable<sup>[[link](#actioncable)]</sup>
-  * Rake<sup>[[link](#rake)]</sup>
-  * Logger<sup>[[link](#logger)]</sup>
-* Plain Ruby scripts<sup>[[link](#plain-ruby-scripts)]</sup>
+  * [ActionCable](#actioncable)
+  * [Rake](#rake)
+  * [Logger](#logger)
+* [Plain Ruby scripts](#plain-ruby-scripts)
 
 Deployment tracking:
 
-* Using Capistrano<sup>[[link](#capistrano)]</sup>
-* Using the Rake task<sup>[[link](#rake-task)]</sup>
+* Using [Capistrano](#capistrano)
+* Using the [Rake task](#rake-task)
 
 Installation
 ------------
