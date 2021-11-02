@@ -292,12 +292,12 @@ Features:
 
 ### [v9.2.2][v9.2.2] (May 10, 2019)
 
-* Rails: started attaching Rack request and User info to the resource object,
+* Rails: started attaching Rack request and User info to the metric object,
   which is accessible through performance hooks:
 
   ```ruby
-  Airbrake.add_performance_filter do |resource|
-    if resource.stash.key?(:user)
+  Airbrake.add_performance_filter do |metric|
+    if metric.stash.key?(:user)
       # custom logic
     end
   end

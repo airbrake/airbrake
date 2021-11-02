@@ -95,7 +95,7 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
         }
       end
 
-      it "sends request info as resource stash" do
+      it "sends request info as metric stash" do
         expect(Airbrake).to receive(:notify_performance_breakdown).with(
           an_instance_of(Hash),
           hash_including(request: request),
@@ -113,7 +113,7 @@ RSpec.describe Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber d
           )
         end
 
-        it "sends user info as resource stash" do
+        it "sends user info as metric stash" do
           expect(Airbrake).to receive(:notify_performance_breakdown).with(
             an_instance_of(Hash),
             hash_including(user: { 'id' => 1, 'name' => 'Arthur' }),
