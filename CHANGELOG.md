@@ -15,7 +15,7 @@ Breaking changes:
 Maintenance:
 
 * Bumped `airbrake-ruby` requirement to `~> 6.0`
-  ([#1181](https://github.com/airbrake/airbrake/issues/1181))
+  ([#1179](https://github.com/airbrake/airbrake/pull/1179))
 
 Other changes:
 
