@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'ostruct'
 require 'airbrake/rails/action_controller_route_subscriber'
 
 RSpec.describe Airbrake::Rails::ActionControllerRouteSubscriber do

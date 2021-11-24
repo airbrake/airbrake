@@ -29,6 +29,10 @@ DESC
 
   s.required_ruby_version = '>= 2.5'
 
+  s.metadata = {
+    'rubygems_mfa_required' => 'true',
+  }
+
   s.add_dependency 'airbrake-ruby', '~> 6.0'
 
   s.add_development_dependency 'rspec', '~> 3'

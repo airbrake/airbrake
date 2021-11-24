@@ -64,11 +64,8 @@ RSpec.describe "Rails integration specs" do
 
   shared_examples "context payload content" do |route|
     let(:user) do
-      OpenStruct.new(
-        id: 1,
-        email: 'qa@example.com',
-        username: 'qa-dept',
-      )
+      stub_const('User', Struct.new(:id, :email, :username))
+      User.new(1, 'qa@example.com', 'qa-dept')
     end
 
     before do
@@ -223,11 +220,8 @@ RSpec.describe "Rails integration specs" do
   describe "user extraction" do
     context "when Warden is not available but 'current_user' is defined" do
       let(:user) do
-        OpenStruct.new(
-          id: 1,
-          email: 'qa@example.com',
-          username: 'qa-dept',
-        )
+        stub_const('User', Struct.new(:id, :email, :username))
+        User.new(1, 'qa@example.com', 'qa-dept')
       end
 
       before do
@@ -497,7 +491,8 @@ RSpec.describe "Rails integration specs" do
 
     context "when current user is logged in" do
       let(:user) do
-        OpenStruct.new(id: 1, email: 'qa@example.com', username: 'qa-dept')
+        stub_const('User', Struct.new(:id, :email, :username))
+        User.new(1, 'qa@example.com', 'qa-dept')
       end
 
       before do
