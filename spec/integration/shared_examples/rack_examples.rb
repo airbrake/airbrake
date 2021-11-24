@@ -40,13 +40,8 @@ RSpec.shared_examples 'rack examples' do
 
   describe "user payload" do
     let(:user) do
-      OpenStruct.new(
-        id: 1,
-        email: 'qa@example.com',
-        username: 'qa-dept',
-        first_name: 'John',
-        last_name: 'Doe',
-      )
+      stub_const('User', Struct.new(:id, :email, :username, :first_name, :last_name))
+      User.new(1, 'qa@example.com', 'qa-dept', 'John', 'Doe')
     end
 
     before { login_as(user) }

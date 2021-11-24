@@ -4,13 +4,8 @@ RSpec.describe Airbrake::Rack::User do
   let(:endpoint) { 'https://api.airbrake.io/api/v3/projects/113743/notices' }
 
   let(:user) do
-    OpenStruct.new(
-      id: 1,
-      email: 'qa@example.com',
-      username: 'qa-dept',
-      first_name: 'Bingo',
-      last_name: 'Bongo',
-    )
+    stub_const('User', Struct.new(:id, :email, :username, :first_name, :last_name))
+    User.new(1, 'qa@example.com', 'qa-dept', 'Bingo', 'Bongo')
   end
 
   def env_for(url, opts = {})
@@ -190,7 +185,7 @@ RSpec.describe Airbrake::Rack::User do
     end
 
     context "when Rack user doesn't contain any of the expect fields" do
-      let(:user_data) { described_class.new(OpenStruct.new).as_json }
+      let(:user_data) { described_class.new({}).as_json }
 
       it "is empty" do
         expect(user_data).to be_empty
