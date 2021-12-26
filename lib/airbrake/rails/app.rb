@@ -39,13 +39,7 @@ module Airbrake
 
             # Skip "catch-all" routes such as:
             #   get '*path => 'pages#about'
-            #
-            # @todo The `glob?` method was added in Rails v4.2.0.beta1. We
-            # should remove the `respond_to?` check once we drop old Rails
-            # versions support.
-            #
-            # https://github.com/rails/rails/commit/5460591f0226a9d248b7b4f89186bd5553e7768f
-            next if route.respond_to?(:glob?) && route.glob?
+            next if route.path.ast.nil? && route.glob?
 
             path =
               if engine == ::Rails.application
