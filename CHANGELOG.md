@@ -6,7 +6,7 @@ Airbrake Changelog
 Breaking changes:
 
 * Dropped support for Ruby 2.5
-  ([#1180](https://github.com/airbrake/airbrake/issues/1180))
+  ([#1208](https://github.com/airbrake/airbrake/issues/1208))
 
 ### [v12.0.0][v12.0.0] (September 22, 2021)
 
