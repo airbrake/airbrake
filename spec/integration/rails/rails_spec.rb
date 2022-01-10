@@ -261,7 +261,7 @@ RSpec.describe "Rails integration specs" do
 
     it "defaults to 500 when status code for exception returns 0" do
       allow(ActionDispatch::ExceptionWrapper)
-        .to receive(:status_code_for_exception).and_return(0)
+        .to receive(:status_code).and_return(0)
 
       expect(Airbrake).to receive(:notify_request).with(
         hash_including(

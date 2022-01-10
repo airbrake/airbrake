@@ -231,8 +231,8 @@ ActiveRecord::Migration.verbose = false
 # Modified version of: https://goo.gl/q8uCJq
 migration_template = File.open(
   File.join(
-    $LOAD_PATH.grep(/delayed_job/)[0],
-    'generators/delayed_job/templates/migration.rb',
+    $LOAD_PATH.grep(/delayed/)[0],
+    'generators/delayed/templates/migration.rb',
   ),
 )
 
