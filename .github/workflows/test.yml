@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        ruby: [2.6, 2.7, 3.0, jruby]
+        ruby: [2.6, 2.7, 3.0, 3.1, jruby]
 
     runs-on: ${{ matrix.os }}
 
@@ -41,7 +41,7 @@ jobs:
         run: bundle exec rake spec:unit
 
       - name: Test Rails 5.2
-        if: ${{ matrix.ruby != '3.0' }}
+        if: ${{ matrix.ruby != '3.0' && matrix.ruby != '3.1' }}
         run: bundle exec appraisal rails-5.2 rake spec:integration:rails
 
       - name: Test Rails 6.0
