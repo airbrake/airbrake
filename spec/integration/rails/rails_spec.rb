@@ -105,7 +105,7 @@ RSpec.describe "Rails integration specs" do
     end
 
     it "includes params" do
-      action = route[1..-1]
+      action = route[1..]
       body = /"context":{.*"params":{.*"controller":"dummy","action":"#{action}".*}/
       expect(a_request(:post, endpoint).with(body: body)).to have_been_made
     end
