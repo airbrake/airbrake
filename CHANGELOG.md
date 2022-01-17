@@ -8,6 +8,12 @@ Breaking changes:
 * Dropped support for Ruby 2.5
   ([#1208](https://github.com/airbrake/airbrake/issues/1208))
 
+Bug fixes:
+
+* Fixed APM not working on Rails 7 due to ``NoMethodError (undefined method
+  `glob?' for nil:NilClass)``
+  ([#1211](https://github.com/airbrake/airbrake/issues/1211))
+
 ### [v12.0.0][v12.0.0] (September 22, 2021)
 
 Breaking changes:
