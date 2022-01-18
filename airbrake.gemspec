@@ -46,7 +46,7 @@ DESC
   s.add_development_dependency 'rack-test', '~> 1.1'
   s.add_development_dependency 'redis', '~> 4.5'
   s.add_development_dependency 'sidekiq', '~> 6'
-  s.add_development_dependency 'curb', '~> 0.9' if RUBY_ENGINE == 'ruby'
+  s.add_development_dependency 'curb', '~> 1.0' if RUBY_ENGINE == 'ruby'
   s.add_development_dependency 'excon', '~> 0.64'
   s.add_development_dependency 'http', '~> 5.0'
   s.add_development_dependency 'httpclient', '~> 2.8'
