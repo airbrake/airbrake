@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v13.0.0][v13.0.0] (January 18, 2022)
+
 Breaking changes:
 
 * Dropped support for Ruby 2.5
@@ -994,3 +996,4 @@ Features:
 [v11.0.2]: https://github.com/airbrake/airbrake/releases/tag/v11.0.2
 [v11.0.3]: https://github.com/airbrake/airbrake/releases/tag/v11.0.3
 [v12.0.0]: https://github.com/airbrake/airbrake/releases/tag/v12.0.0
+[v13.0.0]: https://github.com/airbrake/airbrake/releases/tag/v13.0.0
