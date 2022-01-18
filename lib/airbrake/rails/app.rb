@@ -40,12 +40,12 @@ module Airbrake
             # Skip "catch-all" routes such as:
             #   get '*path => 'pages#about'
             #
-            # @todo The `glob?` method was added in Rails v4.2.0.beta1. We
-            # should remove the `respond_to?` check once we drop old Rails
-            # versions support.
+            # Ideally, we should be using `route.glob?` but in Rails 7+ this
+            # call would fail with a `NoMethodError`. This is because in
+            # Rails 7+ the AST for the route is not kept in memory anymore.
             #
-            # https://github.com/rails/rails/commit/5460591f0226a9d248b7b4f89186bd5553e7768f
-            next if route.respond_to?(:glob?) && route.glob?
+            # See: https://github.com/rails/rails/pull/43006#discussion_r783895766
+            next if route.path.spec.any?(ActionDispatch::Journey::Nodes::Star)
 
             path =
               if engine == ::Rails.application
