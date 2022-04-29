@@ -21,7 +21,7 @@ module Airbrake
                 RAILS_ENV=#{fetch(:rails_env, nil)} \
 
                 bundle exec rake airbrake:deploy \
-                  USERNAME=#{Shellwords.shellescape(ENV['USER'] || ENV['USERNAME'])} \
+                  USERNAME=#{Shellwords.shellescape(ENV.fetch('USER', nil) || ENV.fetch('USERNAME', nil))} \
                   ENVIRONMENT=#{fetch(:airbrake_env, fetch(:rails_env, 'production'))} \
                   REVISION=#{current_revision.strip} \
                   REPOSITORY=#{repository} \

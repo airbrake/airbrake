@@ -53,11 +53,11 @@ namespace :airbrake do
     raise Airbrake::Error, 'airbrake-ruby is not configured' unless Airbrake.configured?
 
     deploy_params = {
-      environment: ENV['ENVIRONMENT'],
-      username: ENV['USERNAME'],
-      revision: ENV['REVISION'],
-      repository: ENV['REPOSITORY'],
-      version: ENV['VERSION'],
+      environment: ENV.fetch('ENVIRONMENT', nil),
+      username: ENV.fetch('USERNAME', nil),
+      revision: ENV.fetch('REVISION', nil),
+      repository: ENV.fetch('REPOSITORY', nil),
+      version: ENV.fetch('VERSION', nil),
     }
     promise = Airbrake.notify_deploy(deploy_params)
     promise.then do
@@ -68,7 +68,7 @@ namespace :airbrake do
 
   desc 'Install a Heroku deploy hook to notify Airbrake of deploys'
   task :install_heroku_deploy_hook do
-    app = ENV['HEROKU_APP']
+    app = ENV.fetch('HEROKU_APP', nil)
 
     config = Bundler.with_clean_env do
       `heroku config --shell#{" --app #{app}" if app}`
@@ -89,7 +89,7 @@ namespace :airbrake do
            " environment will be used."
     end
 
-    unless (repo = ENV['REPOSITORY_URL'])
+    unless (repo = ENV.fetch('REPOSITORY_URL', nil))
       repo = `git remote get-url origin 2>/dev/null`.chomp
       if repo.empty?
         puts "Airbrake couldn't identify your app's repository."
