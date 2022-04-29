@@ -10,3 +10,9 @@ updates:
   - dependency-name: ethon
     versions:
     - 0.13.0
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "19:00"
+    timezone: US/Central
