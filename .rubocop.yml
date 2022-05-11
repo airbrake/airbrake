@@ -45,6 +45,9 @@ Style/FrozenStringLiteralComment:
 Metrics/BlockLength:
   CountComments: false
   Max: 25
+  IgnoredMethods:
+    - describe
+    - context
   Exclude:
     - 'Rakefile'
     - '**/*.rake'

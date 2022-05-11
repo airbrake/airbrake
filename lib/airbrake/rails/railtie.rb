@@ -64,7 +64,7 @@ module Airbrake
           require 'airbrake/rails/action_controller_notify_subscriber'
           ActiveSupport::Notifications.subscribe(
             'process_action.action_controller',
-            Airbrake::Rails::ActionControllerNotifySubscriber.new,
+            Airbrake::Rails::ActionControllerNotifySubscriber.new(::Rails.version),
           )
 
           # Send performance breakdown: where a request spends its time.
