@@ -9,33 +9,8 @@ module Airbrake
     # rubocop:disable Metrics/BlockLength
     class Railtie < ::Rails::Railtie
       initializer('airbrake.middleware') do |app|
-        # Since Rails 3.2 the ActionDispatch::DebugExceptions middleware is
-        # responsible for logging exceptions and showing a debugging page in
-        # case the request is local. We want to insert our middleware after
-        # DebugExceptions, so we don't notify Airbrake about local requests.
-
-        if ::Rails.version.to_i >= 5
-          # Avoid the warning about deprecated strings.
-          # Insert after DebugExceptions, since ConnectionManagement doesn't
-          # exist in Rails 5 anymore.
-          app.config.middleware.insert_after(
-            ActionDispatch::DebugExceptions,
-            Airbrake::Rack::Middleware,
-          )
-        elsif defined?(::ActiveRecord::ConnectionAdapters::ConnectionManagement)
-          # Insert after ConnectionManagement to avoid DB connection leakage:
-          # https://github.com/airbrake/airbrake/pull/568
-          app.config.middleware.insert_after(
-            ::ActiveRecord::ConnectionAdapters::ConnectionManagement,
-            'Airbrake::Rack::Middleware',
-          )
-        else
-          # Insert after DebugExceptions for apps without ActiveRecord.
-          app.config.middleware.insert_after(
-            ActionDispatch::DebugExceptions,
-            'Airbrake::Rack::Middleware',
-          )
-        end
+        require 'airbrake/rails/railties/middleware_tie'
+        Railties::MiddlewareTie.new(app).call
       end
 
       rake_tasks do
