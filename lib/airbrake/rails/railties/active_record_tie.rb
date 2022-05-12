@@ -34,7 +34,15 @@ module Airbrake
         end
 
         def tie_activerecord_apm
-          return unless defined?(ActiveRecord)
+          # Some Rails apps don't use ActiveRecord.
+          return unless defined?(::ActiveRecord)
+
+          # However, some dependencies might still require it, so we need an
+          # extra check. Apps that don't need ActiveRecord will likely have no
+          # AR configurations defined. We will skip APM integration in that
+          # case. See: https://github.com/airbrake/airbrake/issues/1222
+          configurations = ::ActiveRecord::Base.configurations
+          return unless configurations.any?
 
           # Send SQL queries.
           ActiveSupport::Notifications.subscribe(
@@ -43,21 +51,22 @@ module Airbrake
           )
 
           # Filter out parameters from SQL body.
-          if ::ActiveRecord::Base.respond_to?(:connection_db_config)
-            # Rails 6.1+ deprecates "connection_config" in favor of
-            # "connection_db_config", so we need an updated call.
-            Airbrake.add_performance_filter(
-              Airbrake::Filters::SqlFilter.new(
-                ::ActiveRecord::Base.connection_db_config.configuration_hash[:adapter],
-              ),
-            )
-          else
-            Airbrake.add_performance_filter(
-              Airbrake::Filters::SqlFilter.new(
-                ::ActiveRecord::Base.connection_config[:adapter],
-              ),
-            )
+          sql_filter = Airbrake::Filters::SqlFilter.new(
+            detect_activerecord_adapter(configurations),
+          )
+          Airbrake.add_performance_filter(sql_filter)
+        end
+
+        # Rails 6+ introduces the `configs_for` API instead of the deprecated
+        # `#[]`, so we need an updated call.
+        def detect_activerecord_adapter(configurations)
+          unless configurations.respond_to?(:configs_for)
+            return configurations[::Rails.env]['adapter']
           end
+
+          cfg = configurations.configs_for(env_name: ::Rails.env).first
+          # Rails 7+ API : Rails 6 API.
+          cfg.respond_to?(:adapter) ? cfg.adapter : cfg.config['adapter']
         end
       end
     end
