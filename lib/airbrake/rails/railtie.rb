@@ -22,45 +22,8 @@ module Airbrake
       end
 
       initializer('airbrake.action_controller') do
-        ActiveSupport.on_load(:action_controller, run_once: true) do
-          # Patches ActionController with methods that allow us to retrieve
-          # interesting request data. Appends that information to notices.
-          require 'airbrake/rails/action_controller'
-          include Airbrake::Rails::ActionController
-
-          # Cache route information for the duration of the request.
-          require 'airbrake/rails/action_controller_route_subscriber'
-          ActiveSupport::Notifications.subscribe(
-            'start_processing.action_controller',
-            Airbrake::Rails::ActionControllerRouteSubscriber.new,
-          )
-
-          # Send route stats.
-          require 'airbrake/rails/action_controller_notify_subscriber'
-          ActiveSupport::Notifications.subscribe(
-            'process_action.action_controller',
-            Airbrake::Rails::ActionControllerNotifySubscriber.new(::Rails.version),
-          )
-
-          # Send performance breakdown: where a request spends its time.
-          require 'airbrake/rails/action_controller_performance_breakdown_subscriber'
-          ActiveSupport::Notifications.subscribe(
-            'process_action.action_controller',
-            Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber.new,
-          )
-
-          require 'airbrake/rails/net_http' if defined?(Net) && defined?(Net::HTTP)
-          require 'airbrake/rails/curb' if defined?(Curl) && defined?(Curl::CURB_VERSION)
-          require 'airbrake/rails/http' if defined?(HTTP) && defined?(HTTP::Client)
-          require 'airbrake/rails/http_client' if defined?(HTTPClient)
-          require 'airbrake/rails/typhoeus' if defined?(Typhoeus)
-
-          if defined?(Excon)
-            require 'airbrake/rails/excon_subscriber'
-            ActiveSupport::Notifications.subscribe(/excon/, Airbrake::Rails::Excon.new)
-            ::Excon.defaults[:instrumentor] = ActiveSupport::Notifications
-          end
-        end
+        require 'airbrake/rails/railties/action_controller_tie'
+        Railties::ActionControllerTie.new.call
       end
 
       initializer('airbrake.active_record') do
