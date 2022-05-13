@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v13.0.1][v13.0.1] (May 13, 2022)
+
 * Fixed support of APM on Rails 7+, where the reported time of a route was
   malformed, resulting in the complete rejection of the route stats by the
   backend ([#1223](https://github.com/airbrake/airbrake/issues/1223))
@@ -1004,3 +1006,4 @@ Features:
 [v11.0.3]: https://github.com/airbrake/airbrake/releases/tag/v11.0.3
 [v12.0.0]: https://github.com/airbrake/airbrake/releases/tag/v12.0.0
 [v13.0.0]: https://github.com/airbrake/airbrake/releases/tag/v13.0.0
+[v13.0.1]: https://github.com/airbrake/airbrake/releases/tag/v13.0.1
