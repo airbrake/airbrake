@@ -10,10 +10,14 @@ module Airbrake
       # @see https://github.com/rails/rails/issues/8987
       HTML_RESPONSE_WILDCARD = "*/*"
 
+      # @return [Integer]
+      MILLISECOND = 1000
+
       include Airbrake::Loggable
 
       def initialize(*args)
         @event = ActiveSupport::Notifications::Event.new(*args)
+        @rails_7_or_greater = ::Rails::VERSION::MAJOR >= 7
       end
 
       def method
@@ -42,7 +46,15 @@ module Airbrake
       end
 
       def time
-        @event.time
+        # On Rails 7+ `ActiveSupport::Notifications::Event#time` returns an
+        # instance of Float. It represents monotonic time in milliseconds.
+        # Airbrake Ruby expects that the provided time is in seconds. Hence,
+        # we need to convert it from milliseconds to seconds. In the
+        # versions below Rails 7, time is an instance of Time.
+        #
+        # Relevant commit:
+        # https://github.com/rails/rails/commit/81d0dc90becfe0b8e7f7f26beb66c25d84b8ec7f
+        @rails_7_or_greater ? @event.time / MILLISECOND : @event.time
       end
 
       def groups

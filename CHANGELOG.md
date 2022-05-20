@@ -3,6 +3,12 @@ Airbrake Changelog
 
 ### master
 
+* Fixed support of APM on Rails 7+, where the reported time of a performance
+  breakdowns and queries malformed, resulting in the complete rejection of the
+  performance breakdowns or queries by the backend. This improves on the fix
+  introduced in v13.0.1
+  ([#1227](https://github.com/airbrake/airbrake/issues/1227))
+
 ### [v13.0.1][v13.0.1] (May 13, 2022)
 
 * Fixed support of APM on Rails 7+, where the reported time of a route was
