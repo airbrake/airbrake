@@ -15,9 +15,7 @@ module Airbrake
       class ActionControllerTie
         def initialize
           @route_subscriber = Airbrake::Rails::ActionControllerRouteSubscriber.new
-          @notify_subscriber = Airbrake::Rails::ActionControllerNotifySubscriber.new(
-            ::Rails.version,
-          )
+          @notify_subscriber = Airbrake::Rails::ActionControllerNotifySubscriber.new
           @performance_breakdown_subscriber =
             Airbrake::Rails::ActionControllerPerformanceBreakdownSubscriber.new
         end

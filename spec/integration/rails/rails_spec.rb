@@ -246,6 +246,7 @@ RSpec.describe "Rails integration specs" do
   describe "request performance hook" do
     before do
       allow(Airbrake).to receive(:notify)
+      allow(Airbrake).to receive(:notify_request)
       allow(config).to receive(:performance_stats).and_return(true)
     end
 
@@ -271,6 +272,36 @@ RSpec.describe "Rails integration specs" do
         ),
       )
       head '/crash'
+    end
+
+    context "when Rails version is below 7" do
+      before do
+        if Rails::VERSION::MAJOR >= 7
+          skip("This test requires Rails 6 or lower, you're on Rails #{Rails.version}")
+        end
+      end
+
+      it "reports time as an instance of Time" do
+        head '/crash'
+        expect(Airbrake).to have_received(:notify_request).with(
+          hash_including(time: an_instance_of(Time)),
+        )
+      end
+    end
+
+    context "when Rails version is 7+" do
+      before do
+        if Rails::VERSION::MAJOR < 7
+          skip("This test requires Rails 7+, you're on Rails #{Rails.version}")
+        end
+      end
+
+      it "reports time as an instance of Float" do
+        head '/crash'
+        expect(Airbrake).to have_received(:notify_request).with(
+          hash_including(time: an_instance_of(Float)),
+        )
+      end
     end
   end
 

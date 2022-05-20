@@ -3,7 +3,7 @@
 require 'airbrake/rails/action_controller_notify_subscriber'
 
 RSpec.describe Airbrake::Rails::ActionControllerNotifySubscriber do
-  subject(:subscriber) { described_class.new('1.0.0') }
+  subject(:subscriber) { described_class.new }
 
   after { Airbrake::Rack::RequestStore.clear }
 
@@ -47,51 +47,33 @@ RSpec.describe Airbrake::Rails::ActionControllerNotifySubscriber do
       end
 
       context "and when the Airbrake config enables performance stats" do
+        let(:timestamp) { Time.now.to_f }
+
         before do
           allow(Airbrake::Config.instance)
             .to receive(:performance_stats).and_return(true)
 
           allow(event).to receive(:method).and_return('GET')
           allow(event).to receive(:status_code).and_return(200)
+          allow(event).to receive(:time).and_return(timestamp)
           allow(event).to receive(:duration).and_return(1.234)
         end
 
-        context "and also when the passed Rails version is below 7" do
-          let(:time) { Time.new }
+        it "sends request info to Airbrake" do
+          subscriber.call([])
 
-          subject(:subscriber) { described_class.new('6.0.0') }
-
-          before { allow(event).to receive(:time).and_return(time) }
-
-          it "sends request info to Airbrake" do
-            subscriber.call([])
-            expect(Airbrake).to have_received(:notify_request).with(
+          expect(Airbrake).to have_received(:notify_request).with(
+            hash_including(
               method: 'GET',
               route: '/test-route',
               status_code: 200,
-              timing: 1.234,
-              time: time,
-            )
-          end
-        end
-
-        context "and also when the passed Rails version is 7+" do
-          let(:milliseconds) { 1652280862048.6873 }
-
-          subject(:subscriber) { described_class.new('7.0.0') }
-
-          before { allow(event).to receive(:time).and_return(milliseconds) }
-
-          it "sends request info to Airbrake with time in seconds" do
-            subscriber.call([])
-            expect(Airbrake).to have_received(:notify_request).with(
-              method: 'GET',
-              route: '/test-route',
-              status_code: 200,
-              timing: 1.234,
-              time: 1652280862.0486872,
-            )
-          end
+              time: timestamp,
+            ),
+          )
+          expect(event).to have_received(:method)
+          expect(event).to have_received(:status_code)
+          expect(event).to have_received(:time)
+          expect(event).to have_received(:duration)
         end
       end
     end
