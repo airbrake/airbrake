@@ -3,6 +3,8 @@ Airbrake Changelog
 
 ### master
 
+### [v13.0.2][v13.0.2] (May 20, 2022)
+
 * Fixed support of APM on Rails 7+, where the reported time of a performance
   breakdowns and queries malformed, resulting in the complete rejection of the
   performance breakdowns or queries by the backend. This improves on the fix
@@ -1013,3 +1015,4 @@ Features:
 [v12.0.0]: https://github.com/airbrake/airbrake/releases/tag/v12.0.0
 [v13.0.0]: https://github.com/airbrake/airbrake/releases/tag/v13.0.0
 [v13.0.1]: https://github.com/airbrake/airbrake/releases/tag/v13.0.1
+[v13.0.2]: https://github.com/airbrake/airbrake/releases/tag/v13.0.2
