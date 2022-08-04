@@ -85,8 +85,8 @@ namespace :airbrake do
 
     unless (env = heroku_env['RAILS_ENV'])
       env = 'production'
-      puts "Airbrake couldn't identify your app's environment, so the '#{env}'" \
-           " environment will be used."
+      puts "Airbrake couldn't identify your app's environment, " \
+           "so the '#{env}' environment will be used."
     end
 
     unless (repo = ENV.fetch('REPOSITORY_URL', nil))
