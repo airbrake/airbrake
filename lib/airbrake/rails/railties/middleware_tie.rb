@@ -25,7 +25,7 @@ module Airbrake
             return tie_rails_4_or_below_with_active_record
           end
 
-          tie_rails_4_or_below_with_active_record
+          tie_rails_4_or_below_without_active_record
         end
 
         private
