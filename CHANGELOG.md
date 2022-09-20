@@ -3,6 +3,12 @@ Airbrake Changelog
 
 ### master
 
+### [v13.0.3][v13.0.3] (September 20, 2022)
+
+* Fixed `tie_rails_4_or_below_with_active_record': uninitialized constant
+  ActiveRecord (NameError)` for Rails 4 without ActiveRecord
+  ([#1237](https://github.com/airbrake/airbrake/pull/1237))
+
 ### [v13.0.2][v13.0.2] (May 20, 2022)
 
 * Fixed support of APM on Rails 7+, where the reported time of a performance
@@ -1016,3 +1022,4 @@ Features:
 [v13.0.0]: https://github.com/airbrake/airbrake/releases/tag/v13.0.0
 [v13.0.1]: https://github.com/airbrake/airbrake/releases/tag/v13.0.1
 [v13.0.2]: https://github.com/airbrake/airbrake/releases/tag/v13.0.2
+[v13.0.3]: https://github.com/airbrake/airbrake/releases/tag/v13.0.3
