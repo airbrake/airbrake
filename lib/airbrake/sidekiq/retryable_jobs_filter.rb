@@ -16,7 +16,7 @@ module Airbrake
       end
 
       def initialize(max_retries: nil)
-        @max_retries = max_retries
+        @retries_before_notify = max_retries
       end
 
       def call(notice)
@@ -36,8 +36,8 @@ module Airbrake
       end
 
       def max_attempts_for(job)
-        if @max_retries
-          @max_retries
+        if @retries_before_notify
+          @retries_before_notify
         elsif job['retry'].is_a?(Integer)
           job['retry']
         else

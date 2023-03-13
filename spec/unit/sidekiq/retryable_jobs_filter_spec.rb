@@ -40,7 +40,7 @@ RSpec.describe Airbrake::Sidekiq::RetryableJobsFilter do
     expect { filter.call(notice) }.to_not raise_error
   end
 
-  context 'with max_retries = 2' do
+  context 'with max_retries = 2 arg passed to initializer' do
     subject(:filter) { described_class.new(max_retries: 2) }
 
     it "ignores notices when retry_count is null" do
@@ -59,6 +59,34 @@ RSpec.describe Airbrake::Sidekiq::RetryableJobsFilter do
       notice = build_notice('retry' => 5, 'retry_count' => 1)
       filter.call(notice)
       expect(notice).to_not be_ignored
+    end
+
+    context "when Sidekiq thread reused" do
+      it "should not ignore a job with a higher than default retry limit" do
+        # This first job uses the global default retry limit and should memoize @max_retries
+        notice1 = build_notice('retry' => true, 'retry_count' => 0)
+        filter.call(notice1)
+        expect(notice1).to be_ignored
+
+        # This second job has a retry limit configured higher than the global default
+        notice2 = build_notice('retry' => 1000, 'retry_count' => 900)
+        filter.call(notice2)
+        expect(notice2).not_to be_ignored
+      end
+    end
+  end
+
+  context "when Sidekiq thread reused" do
+    it "should ignore a job with a higher than default retry limit" do
+      # This first job uses the global default retry limit and should memoize @max_retries
+      notice1 = build_notice('retry' => true, 'retry_count' => 0)
+      filter.call(notice1)
+      expect(notice1).to be_ignored
+
+      # This second job has a retry limit configured higher than the global default
+      notice2 = build_notice('retry' => 1000, 'retry_count' => 900)
+      filter.call(notice2)
+      expect(notice2).to be_ignored
     end
   end
 end
