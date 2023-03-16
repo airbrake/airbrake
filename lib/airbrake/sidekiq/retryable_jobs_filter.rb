@@ -6,13 +6,16 @@ module Airbrake
     # by Sidekiq
     # @since v7.3.0
     class RetryableJobsFilter
-      if Gem::Version.new(::Sidekiq::VERSION) < Gem::Version.new('5.0.0')
+      SIDEKIQ_GTE_5_0_0 = Gem::Version.new(::Sidekiq::VERSION) >= Gem::Version.new('5.0.0')
+      SIDEKIQ_GTE_7_0_0 = Gem::Version.new(::Sidekiq::VERSION) >= Gem::Version.new('7.0.0')
+
+      if SIDEKIQ_GTE_5_0_0
+        require 'sidekiq/job_retry'
+        DEFAULT_MAX_RETRY_ATTEMPTS = ::Sidekiq::JobRetry::DEFAULT_MAX_RETRY_ATTEMPTS
+      else
         require 'sidekiq/middleware/server/retry_jobs'
         DEFAULT_MAX_RETRY_ATTEMPTS = \
           ::Sidekiq::Middleware::Server::RetryJobs::DEFAULT_MAX_RETRY_ATTEMPTS
-      else
-        require 'sidekiq/job_retry'
-        DEFAULT_MAX_RETRY_ATTEMPTS = ::Sidekiq::JobRetry::DEFAULT_MAX_RETRY_ATTEMPTS
       end
 
       def initialize(max_retries: nil)
@@ -46,7 +49,10 @@ module Airbrake
       end
 
       def max_retries
-        @max_retries ||= ::Sidekiq.options[:max_retries] || DEFAULT_MAX_RETRY_ATTEMPTS
+        @max_retries ||= begin
+          config = SIDEKIQ_GTE_7_0_0 ? ::Sidekiq.default_configuration : ::Sidekiq.options
+          config[:max_retries] || DEFAULT_MAX_RETRY_ATTEMPTS
+        end
       end
     end
   end
