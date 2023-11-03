@@ -14,7 +14,7 @@ module Airbrake
   end
 end
 
-if defined?(Rails)
+if Airbrake::Def.rails?
   # Silence own frames to let the cleaner proceed to the next line (and probably
   # find the correct call-site coming from the app code rather this library).
   Rails.backtrace_cleaner.add_silencer do |line|

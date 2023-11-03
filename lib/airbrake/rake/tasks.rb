@@ -4,7 +4,7 @@ require 'airbrake-ruby'
 
 namespace :airbrake do
   desc 'Verify your gem installation by sending a test exception'
-  task test: (:environment if defined?(Rails)) do
+  task test: (:environment if Airbrake::Def.rails?) do
     raise Airbrake::Error, 'airbrake-ruby is not configured' unless Airbrake.configured?
 
     require 'pp'
@@ -38,7 +38,7 @@ namespace :airbrake do
 
   desc 'Notify Airbrake of a new deploy'
   task :deploy do
-    if defined?(Rails)
+    if Airbrake::Def.rails?
       initializer = Rails.root.join('config', 'initializers', 'airbrake.rb')
 
       # Avoid loading the environment to speed up the deploy task and try guess
