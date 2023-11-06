@@ -17,7 +17,7 @@ module Airbrake
         return unless (request = notice.stash[:rack_request])
 
         notice[:context][:route] =
-          if action_dispatch_request?(request)
+          if action_dispatch_request?(request) && Def.rails?
             rails_route(request)
           elsif sinatra_request?(request)
             sinatra_route(request)
