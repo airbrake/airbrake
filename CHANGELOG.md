@@ -3,6 +3,10 @@ Airbrake Changelog
 
 ### master
 
+### [][] ()
+
+* Added Def class to improve on recognising Rails gem presence vs Rails class.
+
 ### [v13.0.3][v13.0.3] (September 20, 2022)
 
 * Fixed `tie_rails_4_or_below_with_active_record': uninitialized constant

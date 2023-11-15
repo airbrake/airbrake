@@ -8,12 +8,13 @@ require 'English'
 require 'airbrake-ruby'
 
 require 'airbrake/version'
+require 'airbrake/def'
 
 # Automatically load needed files for the environment the library is running in.
 if defined?(Rack)
   require 'airbrake/rack'
 
-  require 'airbrake/rails' if defined?(Rails)
+  require 'airbrake/rails' if Airbrake::Def.rails?
 end
 
 require 'airbrake/rake' if defined?(Rake::Task)
