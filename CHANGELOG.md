@@ -3,6 +3,11 @@ Airbrake Changelog
 
 ### master
 
+### [v13.0.4][v13.0.4] (November 27, 2023)
+
+* Add support for sidekiq 7 ([#1245](https://github.com/airbrake/airbrake/pull/1245))
+* Separate var when overriding max retries before notify in Sidekiq jobs ([#1244](https://github.com/airbrake/airbrake/pull/1244))
+
 ### [v13.0.3][v13.0.3] (September 20, 2022)
 
 * Fixed `tie_rails_4_or_below_with_active_record': uninitialized constant
@@ -1023,3 +1028,4 @@ Features:
 [v13.0.1]: https://github.com/airbrake/airbrake/releases/tag/v13.0.1
 [v13.0.2]: https://github.com/airbrake/airbrake/releases/tag/v13.0.2
 [v13.0.3]: https://github.com/airbrake/airbrake/releases/tag/v13.0.3
+[v13.0.4]: https://github.com/airbrake/airbrake/releases/tag/v13.0.4
