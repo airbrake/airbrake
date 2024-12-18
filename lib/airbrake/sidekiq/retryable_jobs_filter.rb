@@ -6,8 +6,10 @@ module Airbrake
     # by Sidekiq
     # @since v7.3.0
     class RetryableJobsFilter
-      SIDEKIQ_GTE_5_0_0 = Gem::Version.new(::Sidekiq::VERSION) >= Gem::Version.new('5.0.0')
-      SIDEKIQ_GTE_7_0_0 = Gem::Version.new(::Sidekiq::VERSION) >= Gem::Version.new('7.0.0')
+      SIDEKIQ_GTE_5_0_0 =
+        Gem::Version.new(::Sidekiq::VERSION) >= Gem::Version.new('5.0.0')
+      SIDEKIQ_GTE_7_0_0 =
+        Gem::Version.new(::Sidekiq::VERSION) >= Gem::Version.new('7.0.0')
 
       if SIDEKIQ_GTE_5_0_0
         require 'sidekiq/job_retry'

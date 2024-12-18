@@ -63,7 +63,8 @@ RSpec.describe Airbrake::Sidekiq::RetryableJobsFilter do
 
     context "when Sidekiq thread reused" do
       it "should not ignore a job with a higher than default retry limit" do
-        # This first job uses the global default retry limit and should memoize @max_retries
+        # This first job uses the global default retry limit
+        # and should memoize @max_retries
         notice1 = build_notice('retry' => true, 'retry_count' => 0)
         filter.call(notice1)
         expect(notice1).to be_ignored
