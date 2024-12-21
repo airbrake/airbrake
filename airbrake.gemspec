@@ -33,7 +33,7 @@ DESC
     'rubygems_mfa_required' => 'true',
   }
 
-  s.add_dependency 'airbrake-ruby', '~> 6.0'
+  # s.add_dependency 'airbrake-ruby', git: 'git://github.com/airbrake/airbrake-ruby.git', branch: 'jruby-debugging'
 
   s.add_development_dependency 'rspec', '~> 3'
   s.add_development_dependency 'rspec-wait', '~> 0'
