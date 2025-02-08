@@ -40,7 +40,7 @@ DESC
   s.add_development_dependency 'rake', '~> 13'
   s.add_development_dependency 'pry', '~> 0'
   s.add_development_dependency 'appraisal'
-  s.add_development_dependency 'rack', '~> 2'
+  s.add_development_dependency 'rack', '~> 3'
   s.add_development_dependency 'webmock', '~> 3'
   s.add_development_dependency 'amq-protocol'
   s.add_development_dependency 'rack-test', '~> 2.0'
