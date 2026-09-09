@@ -64,9 +64,24 @@ module Airbrake
             return configurations[::Rails.env]['adapter']
           end
 
-          cfg = configurations.configs_for(env_name: ::Rails.env).first
+          cfg = configurations.configs_for(env_name: ::Rails.env).first ||
+                hidden_activerecord_config(configurations)
+          return unless cfg
+
           # Rails 7+ API : Rails 6 API.
           cfg.respond_to?(:adapter) ? cfg.adapter : cfg.config['adapter']
+        end
+
+        # Databases flagged `database_tasks: false` are treated as "hidden" and
+        # excluded from the default `configs_for` lookup on Rails 7+. Apps whose
+        # databases are all hidden would otherwise resolve no config here and
+        # crash on boot with `undefined method 'config' for nil`, so retry while
+        # including hidden configs. `include_hidden` only exists on Rails 7+.
+        # See: https://github.com/airbrake/airbrake/issues/1222
+        def hidden_activerecord_config(configurations)
+          return unless ::ActiveRecord.version >= Gem::Version.new('7.0')
+
+          configurations.configs_for(env_name: ::Rails.env, include_hidden: true).first
         end
       end
     end
