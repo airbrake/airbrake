@@ -3,6 +3,11 @@ Airbrake Changelog
 
 ### master
 
+* Fixed a boot-time `NoMethodError` (`undefined method 'config' for nil`) when
+  every ActiveRecord database is hidden (`database_tasks: false`) on Rails 7+.
+  Detecting the SQL adapter now falls back to including hidden configurations
+  ([#1222](https://github.com/airbrake/airbrake/issues/1222))
+
 ### [v13.0.5][v13.0.5] (December 12, 2024)
 * Fixed time conversion error for Rails 7.1 and up
   ([#1262](https://github.com/airbrake/airbrake/pull/1262))
